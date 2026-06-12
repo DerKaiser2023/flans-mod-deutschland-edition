@@ -75,7 +75,6 @@ import java.util.Collections;
 import net.minecraft.client.Minecraft;
 import java.util.List;
 import net.minecraft.entity.player.EntityPlayer;
-import com.EconomyPlus.lib.util.NBTParser;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagCompound;
@@ -186,7 +185,7 @@ public class ItemGun extends Item implements IPaintableItem
         final NBTTagList ammoTagsList = gun.field_77990_d.func_150295_c(s, 10);
         final NBTTagCompound ammoTags = ammoTagsList.func_150305_b(id);
         try {
-            return NBTParser.parseItemStack(ammoTags);
+            return ItemStack.loadItemStackFromNBT(ammoTags);
         }
         catch (final Exception e) {
             e.printStackTrace();
@@ -214,7 +213,7 @@ public class ItemGun extends Item implements IPaintableItem
         }
         final NBTTagList ammoTagsList = gun.field_77990_d.func_150295_c(s, 10);
         NBTTagCompound ammoTags = ammoTagsList.func_150305_b(id);
-        ammoTags = ((bullet == null) ? new NBTTagCompound() : NBTParser.toNBT(bullet));
+        ammoTags = ((bullet == null) ? new NBTTagCompound() : bullet.writeToNBT(new NBTTagCompound()));
         final NBTTagList newTagList = new NBTTagList();
         for (int j = 0; j < ammoTagsList.func_74745_c(); ++j) {
             newTagList.func_74742_a((NBTBase)((j == id) ? ammoTags : ammoTagsList.func_150305_b(j)));

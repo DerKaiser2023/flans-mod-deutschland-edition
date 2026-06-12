@@ -8,7 +8,6 @@ import net.minecraft.util.MovingObjectPosition;
 import cpw.mods.fml.common.network.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTBase;
-import com.EconomyPlus.lib.util.NBTParser;
 import net.minecraft.nbt.NBTTagCompound;
 import cpw.mods.fml.relauncher.SideOnly;
 import com.flansmod.common.network.PacketMGFire;
@@ -443,7 +442,7 @@ public class EntityAAGun extends Entity implements IEntityAdditionalSpawnData
         nbttagcompound.func_74776_a("RotationPitch", this.field_70125_A);
         for (int i = 0; i < this.type.numBarrels; ++i) {
             if (this.ammo[i] != null) {
-                nbttagcompound.func_74782_a("Ammo " + i, (NBTBase)NBTParser.toNBT(this.ammo[i]));
+                nbttagcompound.func_74782_a("Ammo " + i, (NBTBase)this.ammo[i].writeToNBT(new NBTTagCompound()));
             }
         }
         nbttagcompound.func_74778_a("Placer", this.placer.func_70005_c_());
@@ -462,7 +461,7 @@ public class EntityAAGun extends Entity implements IEntityAdditionalSpawnData
         this.field_70125_A = nbttagcompound.func_74760_g("RotationPitch");
         for (int i = 0; i < this.type.numBarrels; ++i) {
             try {
-                this.ammo[i] = NBTParser.parseItemStack(nbttagcompound.func_74775_l("Ammo " + i));
+                this.ammo[i] = ItemStack.loadItemStackFromNBT(nbttagcompound.func_74775_l("Ammo " + i));
             }
             catch (final Exception e) {
                 e.printStackTrace();

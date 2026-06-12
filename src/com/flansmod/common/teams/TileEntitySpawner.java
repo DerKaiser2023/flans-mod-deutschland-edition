@@ -6,7 +6,6 @@ package com.flansmod.common.teams;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTBase;
-import com.EconomyPlus.lib.util.NBTParser;
 import com.flansmod.common.guns.ItemAAGun;
 import com.flansmod.common.driveables.ItemVehicle;
 import com.flansmod.common.driveables.ItemPlane;
@@ -118,7 +117,7 @@ public class TileEntitySpawner extends TileEntity implements ITeamObject
         nbt.func_74768_a("dim", this.field_145850_b.field_73011_w.field_76574_g);
         nbt.func_74768_a("numStacks", this.stacksToSpawn.size());
         for (int i = 0; i < this.stacksToSpawn.size(); ++i) {
-            final NBTTagCompound stackNBT = NBTParser.toNBT((ItemStack)this.stacksToSpawn.get(i));
+            final NBTTagCompound stackNBT = ((ItemStack)this.stacksToSpawn.get(i)).writeToNBT(new NBTTagCompound());
             nbt.func_74782_a("stack" + i, (NBTBase)stackNBT);
         }
     }
@@ -139,7 +138,7 @@ public class TileEntitySpawner extends TileEntity implements ITeamObject
         }
         for (int i = 0; i < nbt.func_74762_e("numStacks"); ++i) {
             try {
-                this.stacksToSpawn.add(NBTParser.parseItemStack(nbt.func_74775_l("stack" + i)));
+                this.stacksToSpawn.add(ItemStack.loadItemStackFromNBT(nbt.func_74775_l("stack" + i)));
             }
             catch (final Exception e) {
                 e.printStackTrace();

@@ -10,7 +10,6 @@ import com.flansmod.common.guns.ItemGun;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTBase;
-import com.EconomyPlus.lib.util.NBTParser;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.item.ItemStack;
 import java.util.HashMap;
@@ -40,7 +39,7 @@ public class MechaInventory implements IInventory
         }
         for (final EnumMechaSlotType type : EnumMechaSlotType.values()) {
             try {
-                this.stacks.put(type, NBTParser.parseItemStack(tags.func_74775_l(type.toString())));
+                this.stacks.put(type, ItemStack.loadItemStackFromNBT(tags.func_74775_l(type.toString())));
             }
             catch (final Exception e) {
                 e.printStackTrace();
@@ -54,7 +53,7 @@ public class MechaInventory implements IInventory
         }
         for (final EnumMechaSlotType type : EnumMechaSlotType.values()) {
             if (this.stacks.get(type) != null) {
-                tags.func_74782_a(type.toString(), (NBTBase)NBTParser.toNBT((ItemStack)this.stacks.get(type)));
+                tags.func_74782_a(type.toString(), (NBTBase)((ItemStack)this.stacks.get(type)).writeToNBT(new NBTTagCompound()));
             }
         }
         return tags;

@@ -7,8 +7,6 @@ package com.flansmod.common.paintjob;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.network.Packet;
-import net.minecraft.nbt.NBTBase;
-import com.EconomyPlus.lib.util.NBTParser;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -72,7 +70,7 @@ public class TileEntityPaintjobTable extends TileEntity implements IInventory, I
         for (int i = 0; i < this.inventoryStacks.length; ++i) {
             NBTTagCompound stackNBT = new NBTTagCompound();
             if (this.func_70301_a(i) != null) {
-                stackNBT = NBTParser.toNBT(this.func_70301_a(i));
+                stackNBT = this.func_70301_a(i).writeToNBT(new NBTTagCompound());
             }
             nbt.func_74782_a("stack_" + i, (NBTBase)stackNBT);
         }
@@ -82,7 +80,7 @@ public class TileEntityPaintjobTable extends TileEntity implements IInventory, I
         super.func_145839_a(nbt);
         for (int i = 0; i < this.inventoryStacks.length; ++i) {
             try {
-                this.func_70299_a(i, NBTParser.parseItemStack(nbt.func_74775_l("stack_" + i)));
+                this.func_70299_a(i, ItemStack.loadItemStackFromNBT(nbt.func_74775_l("stack_" + i)));
             }
             catch (final Exception e) {
                 e.printStackTrace();

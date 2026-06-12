@@ -9,7 +9,6 @@ import com.flansmod.common.guns.ItemBullet;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTBase;
 import java.util.Iterator;
-import com.EconomyPlus.lib.util.NBTParser;
 import net.minecraft.nbt.NBTTagCompound;
 import java.util.HashMap;
 import com.flansmod.common.parts.PartType;
@@ -116,7 +115,7 @@ public class DriveableData implements IInventory
         this.cargo = new ItemStack[this.numCargo];
         for (int i = 0; i < this.numGuns; ++i) {
             try {
-                this.ammo[i] = NBTParser.parseItemStack(tag.func_74775_l("Ammo " + i));
+                this.ammo[i] = ItemStack.loadItemStackFromNBT(tag.func_74775_l("Ammo " + i));
             }
             catch (final Exception e) {
                 e.printStackTrace();
@@ -124,7 +123,7 @@ public class DriveableData implements IInventory
         }
         for (int i = 0; i < this.numBombs; ++i) {
             try {
-                this.bombs[i] = NBTParser.parseItemStack(tag.func_74775_l("Bombs " + i));
+                this.bombs[i] = ItemStack.loadItemStackFromNBT(tag.func_74775_l("Bombs " + i));
             }
             catch (final Exception e) {
                 e.printStackTrace();
@@ -132,7 +131,7 @@ public class DriveableData implements IInventory
         }
         for (int i = 0; i < this.numMissiles; ++i) {
             try {
-                this.missiles[i] = NBTParser.parseItemStack(tag.func_74775_l("Missiles " + i));
+                this.missiles[i] = ItemStack.loadItemStackFromNBT(tag.func_74775_l("Missiles " + i));
             }
             catch (final Exception e) {
                 e.printStackTrace();
@@ -140,14 +139,14 @@ public class DriveableData implements IInventory
         }
         for (int i = 0; i < this.numCargo; ++i) {
             try {
-                this.cargo[i] = NBTParser.parseItemStack(tag.func_74775_l("Cargo " + i));
+                this.cargo[i] = ItemStack.loadItemStackFromNBT(tag.func_74775_l("Cargo " + i));
             }
             catch (final Exception e) {
                 e.printStackTrace();
             }
         }
         try {
-            this.fuel = NBTParser.parseItemStack(tag.func_74775_l("Fuel"));
+            this.fuel = ItemStack.loadItemStackFromNBT(tag.func_74775_l("Fuel"));
         }
         catch (final Exception e2) {
             e2.printStackTrace();
@@ -181,26 +180,26 @@ public class DriveableData implements IInventory
         tag.func_74768_a("Paint", this.paintjobID);
         for (int i = 0; i < this.ammo.length; ++i) {
             if (this.ammo[i] != null) {
-                tag.func_74782_a("Ammo " + i, (NBTBase)NBTParser.toNBT(this.ammo[i]));
+                tag.func_74782_a("Ammo " + i, (NBTBase)this.ammo[i].writeToNBT(new NBTTagCompound()));
             }
         }
         for (int i = 0; i < this.bombs.length; ++i) {
             if (this.bombs[i] != null) {
-                tag.func_74782_a("Bombs " + i, (NBTBase)NBTParser.toNBT(this.bombs[i]));
+                tag.func_74782_a("Bombs " + i, (NBTBase)this.bombs[i].writeToNBT(new NBTTagCompound()));
             }
         }
         for (int i = 0; i < this.missiles.length; ++i) {
             if (this.missiles[i] != null) {
-                tag.func_74782_a("Missiles " + i, (NBTBase)NBTParser.toNBT(this.missiles[i]));
+                tag.func_74782_a("Missiles " + i, (NBTBase)this.missiles[i].writeToNBT(new NBTTagCompound()));
             }
         }
         for (int i = 0; i < this.cargo.length; ++i) {
             if (this.cargo[i] != null) {
-                tag.func_74782_a("Cargo " + i, (NBTBase)NBTParser.toNBT(this.cargo[i]));
+                tag.func_74782_a("Cargo " + i, (NBTBase)this.cargo[i].writeToNBT(new NBTTagCompound()));
             }
         }
         if (this.fuel != null) {
-            tag.func_74782_a("Fuel", (NBTBase)NBTParser.toNBT(this.fuel));
+            tag.func_74782_a("Fuel", (NBTBase)this.fuel.writeToNBT(new NBTTagCompound()));
         }
         tag.func_74768_a("FuelInTank", (int)this.fuelInTank);
         for (final DriveablePart part : this.parts.values()) {

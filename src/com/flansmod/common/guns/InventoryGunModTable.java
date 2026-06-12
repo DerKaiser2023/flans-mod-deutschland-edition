@@ -6,7 +6,6 @@ package com.flansmod.common.guns;
 
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
-import com.EconomyPlus.lib.util.NBTParser;
 import net.minecraft.item.ItemStack;
 import net.minecraft.inventory.InventoryBasic;
 
@@ -38,7 +37,7 @@ public class InventoryGunModTable extends InventoryBasic
             final NBTTagCompound attachmentTags = gunStack.field_77990_d.func_74775_l("attachments");
             for (int i = 0; i < 8; ++i) {
                 try {
-                    this.func_70299_a(i + 1, NBTParser.parseItemStack(attachmentTags.func_74775_l(tags[i])));
+                    this.func_70299_a(i + 1, ItemStack.loadItemStackFromNBT(attachmentTags.func_74775_l(tags[i])));
                 }
                 catch (final Exception e) {
                     e.printStackTrace();
@@ -47,7 +46,7 @@ public class InventoryGunModTable extends InventoryBasic
             this.genericScroll = 0;
             for (int i = 0; i < Math.min(this.gunType.numGenericAttachmentSlots, 8); ++i) {
                 try {
-                    this.func_70299_a(tags.length + i + 1, NBTParser.parseItemStack(attachmentTags.func_74775_l("generic_" + i)));
+                    this.func_70299_a(tags.length + i + 1, ItemStack.loadItemStackFromNBT(attachmentTags.func_74775_l("generic_" + i)));
                 }
                 catch (final Exception e) {
                     e.printStackTrace();
@@ -82,7 +81,7 @@ public class InventoryGunModTable extends InventoryBasic
     public void writeAttachmentTags(final NBTTagCompound attachmentTags, final ItemStack attachmentStack, final String attachmentName) {
         NBTTagCompound tags = new NBTTagCompound();
         if (attachmentStack != null) {
-            tags = NBTParser.toNBT(attachmentStack);
+            tags = attachmentStack.writeToNBT(new NBTTagCompound());
         }
         attachmentTags.func_74782_a(attachmentName, (NBTBase)tags);
     }

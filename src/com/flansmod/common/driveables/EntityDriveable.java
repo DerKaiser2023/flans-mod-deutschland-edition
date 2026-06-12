@@ -27,8 +27,6 @@ import com.flansmod.common.parts.PartType;
 import net.minecraft.item.Item;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.NetworkRegistry;
-import com.EconomyPlus.network.packets.UpdateEntityPacket;
-import com.EconomyPlus.network.PacketDispatcher;
 import java.util.HashSet;
 import net.minecraft.init.Items;
 import com.flansmod.common.parts.ItemPart;
@@ -80,14 +78,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import java.util.HashMap;
 import com.hfr.faction.IFaction;
 import com.flansmod.common.RotatedAxes;
-import com.flansmod.common.vector.Vector3f;
-import com.EconomyPlus.handlers.IUpdatable;
-import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
 import com.flansmod.api.IExplodeable;
 import com.flansmod.api.IControllable;
 import net.minecraft.entity.Entity;
 
-public abstract class EntityDriveable extends Entity implements IControllable, IExplodeable, IEntityAdditionalSpawnData, IUpdatable
+public abstract class EntityDriveable extends Entity implements IControllable, IExplodeable, IEntityAdditionalSpawnData
 {
     public boolean syncFromServer;
     public boolean crushed;
@@ -1778,9 +1773,6 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
         }
         for (final String a : remove) {
             this.unlocks.remove(a);
-        }
-        if (!this.field_70170_p.field_72995_K) {
-            PacketDispatcher.wrapper.sendToAllAround((IMessage)new UpdateEntityPacket((IUpdatable)this), new NetworkRegistry.TargetPoint(this.field_71093_bK, this.field_70165_t, this.field_70163_u, this.field_70161_v, 100.0));
         }
     }
     

@@ -7,9 +7,6 @@ package com.flansmod.common.guns;
 import java.util.ArrayList;
 import net.minecraft.util.MovingObjectPosition;
 import cpw.mods.fml.common.network.ByteBufUtils;
-import io.netty.buffer.ByteBuf;
-import net.minecraft.nbt.NBTBase;
-import com.EconomyPlus.lib.util.NBTParser;
 import net.minecraft.nbt.NBTTagCompound;
 import com.flansmod.common.teams.EntityGunItem;
 import java.util.Arrays;
@@ -329,7 +326,7 @@ public class EntityMG extends Entity implements IEntityAdditionalSpawnData
         }
         nbttagcompound.func_74778_a("Type", this.type.shortName);
         if (this.ammo != null) {
-            nbttagcompound.func_74782_a("Ammo", (NBTBase)NBTParser.toNBT(this.ammo));
+            nbttagcompound.func_74782_a("Ammo", (NBTBase)this.ammo.writeToNBT(new NBTTagCompound()));
         }
         nbttagcompound.func_74768_a("BlockX", this.blockX);
         nbttagcompound.func_74768_a("BlockY", this.blockY);
@@ -349,7 +346,7 @@ public class EntityMG extends Entity implements IEntityAdditionalSpawnData
         this.blockZ = nbttagcompound.func_74762_e("BlockZ");
         this.direction = nbttagcompound.func_74771_c("Dir");
         try {
-            this.ammo = NBTParser.parseItemStack(nbttagcompound.func_74775_l("Ammo"));
+            this.ammo = ItemStack.loadItemStackFromNBT(nbttagcompound.func_74775_l("Ammo"));
         }
         catch (final Exception e) {
             e.printStackTrace();

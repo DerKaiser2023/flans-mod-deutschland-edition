@@ -6,7 +6,6 @@ package com.flansmod.common.teams;
 
 import net.minecraft.nbt.NBTTagCompound;
 import cpw.mods.fml.common.network.ByteBufUtils;
-import com.EconomyPlus.lib.util.NBTParser;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -105,7 +104,7 @@ public class EntityTeamItem extends EntityItem implements IEntityAdditionalSpawn
             data.writeInt(this.spawner.field_145849_e);
         }
         data.writeDouble(this.angle);
-        final NBTTagCompound tags = NBTParser.toNBT(this.func_92059_d());
+        final NBTTagCompound tags = this.func_92059_d().writeToNBT(new NBTTagCompound());
         ByteBufUtils.writeTag(data, tags);
     }
     
@@ -115,7 +114,7 @@ public class EntityTeamItem extends EntityItem implements IEntityAdditionalSpawn
         this.zCoord = data.readInt();
         this.angle = data.readDouble();
         try {
-            this.func_92058_a(NBTParser.parseItemStack(ByteBufUtils.readTag(data)));
+            this.func_92058_a(ItemStack.loadItemStackFromNBT(ByteBufUtils.readTag(data)));
         }
         catch (final Exception e) {
             e.printStackTrace();

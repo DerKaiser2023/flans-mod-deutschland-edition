@@ -7,7 +7,6 @@ package com.flansmod.common.guns;
 import net.minecraft.client.model.ModelBase;
 import com.flansmod.common.paintjob.Paintjob;
 import net.minecraft.nbt.NBTBase;
-import com.EconomyPlus.lib.util.NBTParser;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagCompound;
 import java.util.Iterator;
@@ -1053,7 +1052,7 @@ public class GunType extends PaintableType implements IScope
     public ItemStack getAttachmentItemStack(final ItemStack gun, final String name) {
         this.checkForTags(gun);
         try {
-            return NBTParser.parseItemStack(gun.field_77990_d.func_74775_l("attachments").func_74775_l(name));
+            return ItemStack.loadItemStackFromNBT(gun.field_77990_d.func_74775_l("attachments").func_74775_l(name));
         }
         catch (final Exception e) {
             e.printStackTrace();
