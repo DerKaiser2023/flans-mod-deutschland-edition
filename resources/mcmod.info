@@ -1,0 +1,16 @@
+[
+{
+  "modid": "flansmod",
+  "name": "Flan's LabCat Mod",
+  "description": "Guns, planes and other vehicles in Minecraft. Also fuzed with clowder and HBM NTM",
+  "version": "1.0",
+  "mcversion": "1.7.10",
+  "url": "http://www.flansmod.com",
+  "updateUrl": "",
+  "authorList": ["jamioflan"],["HbMinecraft"],["LabJac"],["Baris"],
+  "credits": "All code contributors.",
+  "logoFile": "flansmod.png",
+  "screenshots": [],
+  "dependencies": []
+}
+]

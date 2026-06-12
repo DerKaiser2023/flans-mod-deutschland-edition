@@ -1,0 +1,143 @@
+// 
+// Decompiled by Procyon v0.6.0
+// 
+
+package com.flansmod.client.model.monolith;
+
+import net.minecraft.client.model.ModelBase;
+import com.flansmod.client.tmt.ModelRendererTurbo;
+import com.flansmod.client.model.ModelVehicle;
+
+public class ModelOnager extends ModelVehicle
+{
+    int textureX;
+    int textureY;
+    
+    public ModelOnager() {
+        this.textureX = 256;
+        this.textureY = 128;
+        this.bodyModel = new ModelRendererTurbo[20];
+        this.leftBackWheelModel = new ModelRendererTurbo[6];
+        this.rightBackWheelModel = new ModelRendererTurbo[6];
+        this.initbodyModel_1();
+        this.initleftBackWheelModel_1();
+        this.initrightBackWheelModel_1();
+        this.translateAll(0.0f, 0.0f, 0.0f);
+        this.flipAll();
+    }
+    
+    private void initbodyModel_1() {
+        this.bodyModel[0] = new ModelRendererTurbo(this, 1, 1, this.textureX, this.textureY);
+        this.bodyModel[1] = new ModelRendererTurbo(this, 1, 17, this.textureX, this.textureY);
+        this.bodyModel[2] = new ModelRendererTurbo(this, 105, 33, this.textureX, this.textureY);
+        this.bodyModel[3] = new ModelRendererTurbo(this, 169, 33, this.textureX, this.textureY);
+        this.bodyModel[4] = new ModelRendererTurbo(this, 233, 25, this.textureX, this.textureY);
+        this.bodyModel[5] = new ModelRendererTurbo(this, 145, 33, this.textureX, this.textureY);
+        this.bodyModel[6] = new ModelRendererTurbo(this, 1, 41, this.textureX, this.textureY);
+        this.bodyModel[7] = new ModelRendererTurbo(this, 49, 49, this.textureX, this.textureY);
+        this.bodyModel[8] = new ModelRendererTurbo(this, 97, 65, this.textureX, this.textureY);
+        this.bodyModel[9] = new ModelRendererTurbo(this, 233, 49, this.textureX, this.textureY);
+        this.bodyModel[10] = new ModelRendererTurbo(this, 177, 65, this.textureX, this.textureY);
+        this.bodyModel[11] = new ModelRendererTurbo(this, 193, 65, this.textureX, this.textureY);
+        this.bodyModel[12] = new ModelRendererTurbo(this, 209, 65, this.textureX, this.textureY);
+        this.bodyModel[13] = new ModelRendererTurbo(this, 1, 81, this.textureX, this.textureY);
+        this.bodyModel[14] = new ModelRendererTurbo(this, 1, 41, this.textureX, this.textureY);
+        this.bodyModel[15] = new ModelRendererTurbo(this, 1, 89, this.textureX, this.textureY);
+        this.bodyModel[16] = new ModelRendererTurbo(this, 233, 9, this.textureX, this.textureY);
+        this.bodyModel[17] = new ModelRendererTurbo(this, 169, 33, this.textureX, this.textureY);
+        this.bodyModel[18] = new ModelRendererTurbo(this, 49, 41, this.textureX, this.textureY);
+        this.bodyModel[19] = new ModelRendererTurbo(this, 9, 81, this.textureX, this.textureY);
+        this.bodyModel[0].addShapeBox(0.0f, 0.0f, 0.0f, 80, 4, 5, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+        this.bodyModel[0].func_78793_a(-40.0f, 3.5f, -17.5f);
+        this.bodyModel[1].addShapeBox(0.0f, 0.0f, 0.0f, 80, 4, 5, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+        this.bodyModel[1].func_78793_a(-40.0f, 3.5f, 12.5f);
+        this.bodyModel[2].addShapeBox(0.0f, 0.0f, 0.0f, 4, 4, 25, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+        this.bodyModel[2].func_78793_a(-40.0f, 3.5f, -12.5f);
+        this.bodyModel[3].addShapeBox(0.0f, 0.0f, 0.0f, 4, 4, 25, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+        this.bodyModel[3].func_78793_a(36.0f, 3.5f, -12.5f);
+        this.bodyModel[4].addShapeBox(0.0f, 0.0f, 0.0f, 5, 20, 3, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+        this.bodyModel[4].func_78793_a(1.0f, -16.0f, -16.5f);
+        this.bodyModel[5].addShapeBox(0.0f, 0.0f, 0.0f, 5, 20, 3, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+        this.bodyModel[5].func_78793_a(1.0f, -16.0f, 13.5f);
+        this.bodyModel[6].addShapeBox(0.0f, 0.0f, 0.0f, 5, 3, 33, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+        this.bodyModel[6].func_78793_a(1.0f, -19.0f, -16.5f);
+        this.bodyModel[7].addShapeBox(0.0f, 0.0f, 0.0f, 4, 4, 35, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+        this.bodyModel[7].func_78793_a(6.0f, -1.0f, -17.5f);
+        this.bodyModel[8].addShapeBox(0.0f, 0.0f, 0.0f, 4, 4, 33, 0.0f, -0.4f, -0.4f, 0.0f, -0.4f, -0.4f, 0.0f, -0.4f, -0.4f, 0.0f, -0.4f, -0.4f, 0.0f, -0.4f, -0.4f, 0.0f, -0.4f, -0.4f, 0.0f, -0.4f, -0.4f, 0.0f, -0.4f, -0.4f, 0.0f);
+        this.bodyModel[8].func_78793_a(-5.0f, 3.5f, -16.5f);
+        this.bodyModel[9].addShapeBox(0.0f, 0.0f, 0.0f, 4, 38, 3, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+        this.bodyModel[9].func_78793_a(1.0f, -10.0f, 13.5f);
+        this.bodyModel[9].field_78808_h = 1.0995574f;
+        this.bodyModel[10].addShapeBox(0.0f, 0.0f, 0.0f, 4, 38, 3, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+        this.bodyModel[10].func_78793_a(1.0f, -10.0f, -16.5f);
+        this.bodyModel[10].field_78808_h = 1.0995574f;
+        this.bodyModel[11].addShapeBox(0.0f, 0.0f, 0.0f, 4, 38, 3, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+        this.bodyModel[11].func_78793_a(4.0f, -13.0f, 13.5f);
+        this.bodyModel[11].field_78808_h = -1.0995574f;
+        this.bodyModel[12].addShapeBox(0.0f, 0.0f, 0.0f, 4, 38, 3, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+        this.bodyModel[12].func_78793_a(4.0f, -13.0f, -16.5f);
+        this.bodyModel[12].field_78808_h = -1.0995574f;
+        this.bodyModel[13].addShapeBox(0.5f, 4.0f, 0.0f, 2, 35, 3, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+        this.bodyModel[13].func_78793_a(-20.0f, -30.0f, -1.5f);
+        this.bodyModel[13].field_78808_h = 0.41887903f;
+        this.bodyModel[14].addShapeBox(-1.5f, -6.0f, -2.0f, 4, 10, 9, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+        this.bodyModel[14].func_78793_a(-20.0f, -30.0f, -2.5f);
+        this.bodyModel[14].field_78808_h = 0.41887903f;
+        this.bodyModel[15].addShapeBox(0.0f, 0.0f, 0.0f, 2, 3, 37, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+        this.bodyModel[15].func_78793_a(6.0f, -16.0f, -18.5f);
+        this.bodyModel[16].addShapeBox(0.0f, 0.0f, 0.0f, 9, 3, 2, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+        this.bodyModel[16].func_78793_a(1.0f, -16.0f, -24.5f);
+        this.bodyModel[16].field_78796_g = 0.7330383f;
+        this.bodyModel[17].addShapeBox(0.0f, 0.0f, 0.0f, 9, 3, 2, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+        this.bodyModel[17].func_78793_a(0.0f, -16.0f, 23.0f);
+        this.bodyModel[17].field_78796_g = -0.7330383f;
+        this.bodyModel[18].addShapeBox(0.0f, 0.0f, 0.0f, 28, 1, 1, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+        this.bodyModel[18].func_78793_a(-14.0f, -15.0f, 0.0f);
+        this.bodyModel[18].field_78796_g = -1.0297443f;
+        this.bodyModel[19].addShapeBox(0.0f, 0.0f, 0.0f, 28, 1, 1, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+        this.bodyModel[19].func_78793_a(-13.0f, -15.0f, -1.0f);
+        this.bodyModel[19].field_78796_g = 1.0297443f;
+    }
+    
+    private void initleftBackWheelModel_1() {
+        this.leftBackWheelModel[0] = new ModelRendererTurbo(this, 169, 25, this.textureX, this.textureY);
+        this.leftBackWheelModel[1] = new ModelRendererTurbo(this, 201, 25, this.textureX, this.textureY);
+        this.leftBackWheelModel[2] = new ModelRendererTurbo(this, 1, 33, this.textureX, this.textureY);
+        this.leftBackWheelModel[3] = new ModelRendererTurbo(this, 33, 33, this.textureX, this.textureY);
+        this.leftBackWheelModel[4] = new ModelRendererTurbo(this, 65, 33, this.textureX, this.textureY);
+        this.leftBackWheelModel[5] = new ModelRendererTurbo(this, 97, 33, this.textureX, this.textureY);
+        this.leftBackWheelModel[0].addShapeBox(-4.5f, 1.5f, 0.0f, 9, 3, 4, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -3.0f, 0.0f, 0.0f, -3.0f, 0.0f, 0.0f, -3.0f, 0.0f, 0.0f, -3.0f, 0.0f, 0.0f);
+        this.leftBackWheelModel[0].func_78793_a(24.0f, 5.5f, 17.5f);
+        this.leftBackWheelModel[1].addShapeBox(-4.5f, -1.5f, 0.0f, 9, 3, 4, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+        this.leftBackWheelModel[1].func_78793_a(24.0f, 5.5f, 17.5f);
+        this.leftBackWheelModel[2].addShapeBox(-4.5f, -4.5f, 0.0f, 9, 3, 4, 0.0f, -3.0f, 0.0f, 0.0f, -3.0f, 0.0f, 0.0f, -3.0f, 0.0f, 0.0f, -3.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+        this.leftBackWheelModel[2].func_78793_a(24.0f, 5.5f, 17.5f);
+        this.leftBackWheelModel[3].addShapeBox(-4.5f, -4.5f, 0.0f, 9, 3, 4, 0.0f, -3.0f, 0.0f, 0.0f, -3.0f, 0.0f, 0.0f, -3.0f, 0.0f, 0.0f, -3.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+        this.leftBackWheelModel[3].func_78793_a(-24.0f, 5.5f, 17.5f);
+        this.leftBackWheelModel[4].addShapeBox(-4.5f, -1.5f, 0.0f, 9, 3, 4, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+        this.leftBackWheelModel[4].func_78793_a(-24.0f, 5.5f, 17.5f);
+        this.leftBackWheelModel[5].addShapeBox(-4.5f, 1.5f, 0.0f, 9, 3, 4, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -3.0f, 0.0f, 0.0f, -3.0f, 0.0f, 0.0f, -3.0f, 0.0f, 0.0f, -3.0f, 0.0f, 0.0f);
+        this.leftBackWheelModel[5].func_78793_a(-24.0f, 5.5f, 17.5f);
+    }
+    
+    private void initrightBackWheelModel_1() {
+        this.rightBackWheelModel[0] = new ModelRendererTurbo(this, 177, 1, this.textureX, this.textureY);
+        this.rightBackWheelModel[1] = new ModelRendererTurbo(this, 209, 1, this.textureX, this.textureY);
+        this.rightBackWheelModel[2] = new ModelRendererTurbo(this, 169, 9, this.textureX, this.textureY);
+        this.rightBackWheelModel[3] = new ModelRendererTurbo(this, 201, 9, this.textureX, this.textureY);
+        this.rightBackWheelModel[4] = new ModelRendererTurbo(this, 177, 17, this.textureX, this.textureY);
+        this.rightBackWheelModel[5] = new ModelRendererTurbo(this, 209, 17, this.textureX, this.textureY);
+        this.rightBackWheelModel[0].addShapeBox(-4.5f, -1.5f, 0.0f, 9, 3, 4, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+        this.rightBackWheelModel[0].func_78793_a(-24.0f, 5.5f, -21.5f);
+        this.rightBackWheelModel[1].addShapeBox(-4.5f, 1.5f, 0.0f, 9, 3, 4, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -3.0f, 0.0f, 0.0f, -3.0f, 0.0f, 0.0f, -3.0f, 0.0f, 0.0f, -3.0f, 0.0f, 0.0f);
+        this.rightBackWheelModel[1].func_78793_a(-24.0f, 5.5f, -21.5f);
+        this.rightBackWheelModel[2].addShapeBox(-4.5f, -4.5f, 0.0f, 9, 3, 4, 0.0f, -3.0f, 0.0f, 0.0f, -3.0f, 0.0f, 0.0f, -3.0f, 0.0f, 0.0f, -3.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+        this.rightBackWheelModel[2].func_78793_a(-24.0f, 5.5f, -21.5f);
+        this.rightBackWheelModel[3].addShapeBox(-4.5f, 1.5f, 0.0f, 9, 3, 4, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -3.0f, 0.0f, 0.0f, -3.0f, 0.0f, 0.0f, -3.0f, 0.0f, 0.0f, -3.0f, 0.0f, 0.0f);
+        this.rightBackWheelModel[3].func_78793_a(24.0f, 5.5f, -21.5f);
+        this.rightBackWheelModel[4].addShapeBox(-4.5f, -1.5f, 0.0f, 9, 3, 4, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+        this.rightBackWheelModel[4].func_78793_a(24.0f, 5.5f, -21.5f);
+        this.rightBackWheelModel[5].addShapeBox(-4.5f, -4.5f, 0.0f, 9, 3, 4, 0.0f, -3.0f, 0.0f, 0.0f, -3.0f, 0.0f, 0.0f, -3.0f, 0.0f, 0.0f, -3.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+        this.rightBackWheelModel[5].func_78793_a(24.0f, 5.5f, -21.5f);
+    }
+}

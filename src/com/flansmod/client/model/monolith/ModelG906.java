@@ -1,0 +1,194 @@
+// 
+// Decompiled by Procyon v0.6.0
+// 
+
+package com.flansmod.client.model.monolith;
+
+import net.minecraft.client.model.ModelBase;
+import com.flansmod.client.tmt.ModelRendererTurbo;
+import com.flansmod.client.model.ModelVehicle;
+
+public class ModelG906 extends ModelVehicle
+{
+    int textureX;
+    int textureY;
+    
+    public ModelG906() {
+        this.textureX = 512;
+        this.textureY = 64;
+        this.bodyModel = new ModelRendererTurbo[51];
+        this.turretModel = new ModelRendererTurbo[2];
+        this.initbodyModel_1();
+        this.initturretModel_1();
+        this.translateAll(0.0f, 0.0f, 0.0f);
+        this.flipAll();
+    }
+    
+    private void initbodyModel_1() {
+        this.bodyModel[0] = new ModelRendererTurbo(this, 1, 1, this.textureX, this.textureY);
+        this.bodyModel[1] = new ModelRendererTurbo(this, 49, 1, this.textureX, this.textureY);
+        this.bodyModel[2] = new ModelRendererTurbo(this, 89, 1, this.textureX, this.textureY);
+        this.bodyModel[3] = new ModelRendererTurbo(this, 121, 1, this.textureX, this.textureY);
+        this.bodyModel[4] = new ModelRendererTurbo(this, 145, 1, this.textureX, this.textureY);
+        this.bodyModel[5] = new ModelRendererTurbo(this, 225, 1, this.textureX, this.textureY);
+        this.bodyModel[6] = new ModelRendererTurbo(this, 305, 1, this.textureX, this.textureY);
+        this.bodyModel[7] = new ModelRendererTurbo(this, 377, 1, this.textureX, this.textureY);
+        this.bodyModel[8] = new ModelRendererTurbo(this, 409, 1, this.textureX, this.textureY);
+        this.bodyModel[9] = new ModelRendererTurbo(this, 433, 1, this.textureX, this.textureY);
+        this.bodyModel[10] = new ModelRendererTurbo(this, 1, 17, this.textureX, this.textureY);
+        this.bodyModel[11] = new ModelRendererTurbo(this, 57, 17, this.textureX, this.textureY);
+        this.bodyModel[12] = new ModelRendererTurbo(this, 489, 1, this.textureX, this.textureY);
+        this.bodyModel[13] = new ModelRendererTurbo(this, 113, 17, this.textureX, this.textureY);
+        this.bodyModel[14] = new ModelRendererTurbo(this, 145, 17, this.textureX, this.textureY);
+        this.bodyModel[15] = new ModelRendererTurbo(this, 153, 17, this.textureX, this.textureY);
+        this.bodyModel[16] = new ModelRendererTurbo(this, 1, 1, this.textureX, this.textureY);
+        this.bodyModel[17] = new ModelRendererTurbo(this, 41, 1, this.textureX, this.textureY);
+        this.bodyModel[18] = new ModelRendererTurbo(this, 73, 1, this.textureX, this.textureY);
+        this.bodyModel[19] = new ModelRendererTurbo(this, 209, 1, this.textureX, this.textureY);
+        this.bodyModel[20] = new ModelRendererTurbo(this, 289, 1, this.textureX, this.textureY);
+        this.bodyModel[21] = new ModelRendererTurbo(this, 89, 1, this.textureX, this.textureY);
+        this.bodyModel[22] = new ModelRendererTurbo(this, 369, 1, this.textureX, this.textureY);
+        this.bodyModel[23] = new ModelRendererTurbo(this, 425, 1, this.textureX, this.textureY);
+        this.bodyModel[24] = new ModelRendererTurbo(this, 225, 1, this.textureX, this.textureY);
+        this.bodyModel[25] = new ModelRendererTurbo(this, 305, 1, this.textureX, this.textureY);
+        this.bodyModel[26] = new ModelRendererTurbo(this, 481, 1, this.textureX, this.textureY);
+        this.bodyModel[27] = new ModelRendererTurbo(this, 401, 1, this.textureX, this.textureY);
+        this.bodyModel[28] = new ModelRendererTurbo(this, 505, 1, this.textureX, this.textureY);
+        this.bodyModel[29] = new ModelRendererTurbo(this, 1, 17, this.textureX, this.textureY);
+        this.bodyModel[30] = new ModelRendererTurbo(this, 49, 17, this.textureX, this.textureY);
+        this.bodyModel[31] = new ModelRendererTurbo(this, 161, 17, this.textureX, this.textureY);
+        this.bodyModel[32] = new ModelRendererTurbo(this, 177, 17, this.textureX, this.textureY);
+        this.bodyModel[33] = new ModelRendererTurbo(this, 105, 17, this.textureX, this.textureY);
+        this.bodyModel[34] = new ModelRendererTurbo(this, 193, 17, this.textureX, this.textureY);
+        this.bodyModel[35] = new ModelRendererTurbo(this, 209, 17, this.textureX, this.textureY);
+        this.bodyModel[36] = new ModelRendererTurbo(this, 41, 1, this.textureX, this.textureY);
+        this.bodyModel[37] = new ModelRendererTurbo(this, 225, 17, this.textureX, this.textureY);
+        this.bodyModel[38] = new ModelRendererTurbo(this, 241, 17, this.textureX, this.textureY);
+        this.bodyModel[39] = new ModelRendererTurbo(this, 257, 17, this.textureX, this.textureY);
+        this.bodyModel[40] = new ModelRendererTurbo(this, 161, 17, this.textureX, this.textureY);
+        this.bodyModel[41] = new ModelRendererTurbo(this, 273, 17, this.textureX, this.textureY);
+        this.bodyModel[42] = new ModelRendererTurbo(this, 289, 17, this.textureX, this.textureY);
+        this.bodyModel[43] = new ModelRendererTurbo(this, 305, 17, this.textureX, this.textureY);
+        this.bodyModel[44] = new ModelRendererTurbo(this, 321, 17, this.textureX, this.textureY);
+        this.bodyModel[45] = new ModelRendererTurbo(this, 417, 17, this.textureX, this.textureY);
+        this.bodyModel[46] = new ModelRendererTurbo(this, 417, 17, this.textureX, this.textureY);
+        this.bodyModel[47] = new ModelRendererTurbo(this, 177, 25, this.textureX, this.textureY);
+        this.bodyModel[48] = new ModelRendererTurbo(this, 465, 17, this.textureX, this.textureY);
+        this.bodyModel[49] = new ModelRendererTurbo(this, 233, 25, this.textureX, this.textureY);
+        this.bodyModel[50] = new ModelRendererTurbo(this, 377, 17, this.textureX, this.textureY);
+        this.bodyModel[0].addShapeBox(0.0f, 0.0f, 0.0f, 11, 4, 10, 0.0f, 45.0f, 0.0f, 0.0f, 45.0f, 0.0f, 0.0f, 45.0f, 0.0f, 0.0f, 45.0f, 0.0f, 0.0f, 45.0f, 0.0f, 0.0f, 45.0f, 0.0f, 0.0f, 45.0f, 0.0f, 0.0f, 45.0f, 0.0f, 0.0f);
+        this.bodyModel[0].func_78793_a(-18.0f, -1.0f, -5.0f);
+        this.bodyModel[1].addShapeBox(0.0f, 0.0f, 0.0f, 7, 4, 9, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+        this.bodyModel[1].func_78793_a(12.0f, -5.0f, -4.5f);
+        this.bodyModel[2].addShapeBox(0.0f, 0.0f, 0.0f, 5, 4, 9, 0.0f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, -1.0f, -0.5f, 0.0f, 0.0f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, -1.0f, -0.5f, 0.0f, 0.0f);
+        this.bodyModel[2].func_78793_a(18.5f, -5.0f, -4.5f);
+        this.bodyModel[3].addShapeBox(0.0f, 0.0f, 0.0f, 4, 13, 4, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.4f, 0.0f, 0.0f, 1.4f, 0.0f, 0.0f, 1.4f, 0.0f, 0.0f, -1.4f, 0.0f, 0.0f);
+        this.bodyModel[3].func_78793_a(-11.5f, -14.0f, -2.0f);
+        this.bodyModel[4].addShapeBox(0.0f, 0.0f, 0.0f, 26, 4, 10, 0.0f, -0.5f, -1.0f, 0.0f, 0.0f, 0.0f, -4.5f, 0.0f, 0.0f, -4.5f, -0.5f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -4.5f, 0.0f, 0.0f, -4.5f, 0.0f, 0.0f, 0.0f);
+        this.bodyModel[4].func_78793_a(38.0f, -5.0f, -5.0f);
+        this.bodyModel[5].addShapeBox(0.0f, 0.0f, 0.0f, 26, 4, 10, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -4.5f, 0.0f, 0.0f, -4.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -4.5f, 0.0f, 0.0f, -4.5f, 0.0f, 0.0f, 0.0f);
+        this.bodyModel[5].func_78793_a(38.0f, -1.0f, -5.0f);
+        this.bodyModel[6].addShapeBox(0.0f, 0.0f, 0.0f, 25, 1, 10, 0.0f, -0.5f, 0.0f, -1.0f, -22.0f, 0.5f, -1.5f, -22.0f, 0.5f, -1.5f, -0.5f, 0.0f, -1.0f, 0.5f, 0.0f, 0.0f, 0.0f, -1.0f, -4.5f, 0.0f, -1.0f, -4.5f, 0.5f, 0.0f, 0.0f);
+        this.bodyModel[6].func_78793_a(39.0f, -5.0f, -5.0f);
+        this.bodyModel[7].addShapeBox(0.0f, 0.0f, 0.0f, 7, 5, 7, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+        this.bodyModel[7].func_78793_a(11.5f, -6.0f, -3.5f);
+        this.bodyModel[8].addShapeBox(0.0f, 0.0f, 0.0f, 4, 13, 4, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.4f, 0.0f, 0.0f, 1.4f, 0.0f, 0.0f, 1.4f, 0.0f, 0.0f, -1.4f, 0.0f, 0.0f);
+        this.bodyModel[8].func_78793_a(13.5f, -14.0f, -2.0f);
+        this.bodyModel[9].addShapeBox(0.0f, 0.0f, 0.0f, 15, 3, 10, 0.0f, 0.0f, 0.0f, -2.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -2.0f, -3.0f, 0.0f, -2.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -3.0f, 0.0f, -2.0f);
+        this.bodyModel[9].func_78793_a(-78.0f, 0.0f, -5.0f);
+        this.bodyModel[10].addShapeBox(0.0f, 0.0f, 0.0f, 15, 1, 10, 0.0f, 0.0f, 0.0f, -2.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -2.0f, 0.0f, 0.0f, -2.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -2.0f);
+        this.bodyModel[10].func_78793_a(-78.0f, -1.0f, -5.0f);
+        this.bodyModel[11].addShapeBox(0.0f, 0.0f, 0.0f, 15, 1, 10, 0.0f, 0.0f, 0.0f, -2.0f, -3.0f, 0.0f, -0.8f, -3.0f, 0.0f, -0.8f, 0.0f, 0.0f, -2.0f, 0.0f, 0.0f, -2.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -2.0f);
+        this.bodyModel[11].func_78793_a(-78.0f, -2.0f, -5.0f);
+        this.bodyModel[12].addShapeBox(0.0f, 0.0f, 0.0f, 1, 4, 7, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+        this.bodyModel[12].func_78793_a(22.5f, -9.0f, -3.5f);
+        this.bodyModel[13].addShapeBox(0.0f, 0.0f, 0.0f, 1, 21, 1, 0.0f, -0.2f, 0.0f, -0.2f, -0.2f, 0.0f, -0.2f, -0.2f, 0.0f, -0.2f, -0.2f, 0.0f, -0.2f, -0.2f, 0.0f, -0.2f, -0.2f, 0.0f, -0.2f, -0.2f, 0.0f, -0.2f, -0.2f, 0.0f, -0.2f);
+        this.bodyModel[13].func_78793_a(18.5f, -26.0f, -0.5f);
+        this.bodyModel[14].addShapeBox(0.0f, 0.0f, 0.0f, 1, 17, 1, 0.0f, -0.2f, 0.0f, -0.2f, -0.2f, 0.0f, -0.2f, -0.2f, 0.0f, -0.2f, -0.2f, 0.0f, -0.2f, -0.2f, 0.0f, -0.2f, -0.2f, 0.0f, -0.2f, -0.2f, 0.0f, -0.2f, -0.2f, 0.0f, -0.2f);
+        this.bodyModel[14].func_78793_a(-38.0f, -17.0f, -0.5f);
+        this.bodyModel[14].field_78808_h = 0.08726646f;
+        this.bodyModel[15].addShapeBox(0.0f, 0.0f, 0.0f, 1, 16, 1, 0.0f, -0.35f, 0.0f, -0.35f, -0.35f, 0.0f, -0.35f, -0.35f, 0.0f, -0.35f, -0.35f, 0.0f, -0.35f, -0.35f, 0.0f, -0.35f, -0.35f, 0.0f, -0.35f, -0.35f, 0.0f, -0.35f, -0.35f, 0.0f, -0.35f);
+        this.bodyModel[15].func_78793_a(-40.0f, -32.0f, -0.5f);
+        this.bodyModel[15].field_78808_h = 0.13089968f;
+        this.bodyModel[16].addShapeBox(0.0f, 0.0f, 0.0f, 1, 2, 1, 0.0f, -0.35f, 0.0f, -0.35f, -0.35f, 0.0f, -0.35f, -0.35f, 0.0f, -0.35f, -0.35f, 0.0f, -0.35f, -0.35f, 0.0f, -0.35f, -0.35f, 0.0f, -0.35f, -0.35f, 0.0f, -0.35f, -0.35f, 0.0f, -0.35f);
+        this.bodyModel[16].func_78793_a(-40.0f, -34.0f, -0.5f);
+        this.bodyModel[17].addShapeBox(0.0f, 0.0f, 0.0f, 1, 1, 6, 0.0f, -0.35f, -0.3f, -0.35f, -0.35f, -0.3f, -0.35f, -0.35f, -0.3f, -0.35f, -0.35f, -0.3f, -0.35f, -0.35f, -0.3f, -0.35f, -0.35f, -0.3f, -0.35f, -0.35f, -0.3f, -0.35f, -0.35f, -0.3f, -0.35f);
+        this.bodyModel[17].func_78793_a(-40.0f, -32.0f, -3.0f);
+        this.bodyModel[18].addShapeBox(0.0f, 0.0f, 0.0f, 3, 1, 1, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+        this.bodyModel[18].func_78793_a(-1.5f, -1.5f, -0.5f);
+        this.bodyModel[19].addShapeBox(1.5f, -0.7f, -0.5f, 4, 1, 1, 0.0f, 0.0f, 0.2f, 0.0f, 0.0f, 0.2f, 0.0f, 0.0f, 0.2f, 0.0f, 0.0f, 0.2f, 0.0f, 0.0f, 0.2f, 0.0f, 0.0f, -0.8f, 0.0f, 0.0f, -0.8f, 0.0f, 0.0f, 0.2f, 0.0f);
+        this.bodyModel[19].func_78793_a(-17.0f, -2.0f, 0.0f);
+        this.bodyModel[20].addShapeBox(-4.5f, -0.7f, -0.5f, 6, 1, 1, 0.0f, 0.0f, 0.2f, 0.0f, 0.0f, 0.2f, 0.0f, 0.0f, 0.2f, 0.0f, 0.0f, 0.2f, 0.0f, 0.0f, 0.2f, 0.0f, 0.0f, 0.2f, 0.0f, 0.0f, 0.2f, 0.0f, 0.0f, 0.2f, 0.0f);
+        this.bodyModel[20].func_78793_a(-17.0f, -2.0f, 0.0f);
+        this.bodyModel[21].addShapeBox(0.0f, 0.0f, 0.0f, 3, 1, 1, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+        this.bodyModel[21].func_78793_a(-18.5f, -1.5f, -0.5f);
+        this.bodyModel[22].addShapeBox(1.5f, -0.7f, -0.5f, 4, 1, 1, 0.0f, 0.0f, 0.2f, 0.0f, 0.0f, 0.2f, 0.0f, 0.0f, 0.2f, 0.0f, 0.0f, 0.2f, 0.0f, 0.0f, 0.2f, 0.0f, 0.0f, -0.8f, 0.0f, 0.0f, -0.8f, 0.0f, 0.0f, 0.2f, 0.0f);
+        this.bodyModel[22].func_78793_a(31.5f, -2.0f, 0.0f);
+        this.bodyModel[23].addShapeBox(-4.5f, -0.7f, -0.5f, 6, 1, 1, 0.0f, 0.0f, 0.2f, 0.0f, 0.0f, 0.2f, 0.0f, 0.0f, 0.2f, 0.0f, 0.0f, 0.2f, 0.0f, 0.0f, 0.2f, 0.0f, 0.0f, 0.2f, 0.0f, 0.0f, 0.2f, 0.0f, 0.0f, 0.2f, 0.0f);
+        this.bodyModel[23].func_78793_a(31.5f, -2.0f, 0.0f);
+        this.bodyModel[24].addShapeBox(0.0f, 0.0f, 0.0f, 3, 1, 1, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+        this.bodyModel[24].func_78793_a(30.0f, -1.5f, -0.5f);
+        this.bodyModel[25].addShapeBox(0.0f, 0.0f, 0.0f, 2, 3, 2, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+        this.bodyModel[25].func_78793_a(24.2f, -3.5f, -1.0f);
+        this.bodyModel[26].addShapeBox(0.0f, 0.0f, 0.0f, 2, 2, 2, 0.0f, -0.5f, 0.0f, 0.0f, 0.0f, 0.7f, 0.0f, 0.0f, 0.7f, 0.0f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+        this.bodyModel[26].func_78793_a(24.2f, -5.5f, -1.0f);
+        this.bodyModel[27].addShapeBox(0.0f, 0.0f, 0.0f, 1, 2, 2, 0.0f, 0.0f, 0.0f, 0.0f, -0.5f, 0.0f, 0.0f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.5f, 0.0f, -0.5f, 0.5f, 0.0f, -0.5f, 0.5f, 0.0f, 0.0f, 0.5f, 0.0f);
+        this.bodyModel[27].func_78793_a(26.2f, -6.2f, -1.0f);
+        this.bodyModel[28].addShapeBox(0.0f, 0.0f, 0.0f, 1, 2, 2, 0.0f, 0.0f, 0.0f, 0.0f, -0.5f, 0.0f, 0.0f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.5f, 0.0f, -0.5f, 0.5f, 0.0f, -0.5f, 0.5f, 0.0f, 0.0f, 0.5f, 0.0f);
+        this.bodyModel[28].func_78793_a(9.0f, -5.2f, -1.0f);
+        this.bodyModel[29].addShapeBox(0.0f, 0.0f, 0.0f, 2, 2, 2, 0.0f, -0.5f, 0.0f, 0.0f, 0.0f, 0.7f, 0.0f, 0.0f, 0.7f, 0.0f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+        this.bodyModel[29].func_78793_a(7.0f, -4.5f, -1.0f);
+        this.bodyModel[30].addShapeBox(0.0f, 0.0f, 0.0f, 2, 2, 2, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+        this.bodyModel[30].func_78793_a(7.0f, -2.5f, -1.0f);
+        this.bodyModel[31].addShapeBox(0.0f, 0.0f, 0.0f, 3, 3, 7, 0.0f, -0.4f, 0.5f, -0.4f, 0.0f, 0.5f, -0.4f, 0.0f, 0.5f, -0.4f, -0.4f, 0.5f, -0.4f, -0.4f, 0.0f, -0.4f, 0.0f, 0.0f, -0.4f, 0.0f, 0.0f, -0.4f, -0.4f, 0.0f, -0.4f);
+        this.bodyModel[31].func_78793_a(19.5f, -8.0f, -3.5f);
+        this.bodyModel[32].addShapeBox(0.0f, 0.0f, 0.0f, 3, 2, 2, 0.0f, -0.5f, 0.0f, 0.0f, 0.0f, 0.7f, 0.0f, 0.0f, 0.7f, 0.0f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+        this.bodyModel[32].func_78793_a(-26.0f, -5.0f, -1.0f);
+        this.bodyModel[33].addShapeBox(0.0f, 0.0f, 0.0f, 1, 2, 2, 0.0f, 0.0f, 0.0f, 0.0f, -0.5f, 0.0f, 0.0f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.5f, 0.0f, -0.5f, 0.5f, 0.0f, -0.5f, 0.5f, 0.0f, 0.0f, 0.5f, 0.0f);
+        this.bodyModel[33].func_78793_a(-23.0f, -5.7f, -1.0f);
+        this.bodyModel[34].addShapeBox(0.0f, 0.0f, 0.0f, 3, 3, 2, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+        this.bodyModel[34].func_78793_a(-26.0f, -3.0f, -1.0f);
+        this.bodyModel[35].addShapeBox(0.0f, 0.0f, 0.0f, 4, 5, 2, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+        this.bodyModel[35].func_78793_a(-54.0f, -4.5f, -1.0f);
+        this.bodyModel[36].addShapeBox(0.0f, 0.0f, 0.0f, 1, 3, 1, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+        this.bodyModel[36].func_78793_a(-52.5f, -6.5f, -0.5f);
+        this.bodyModel[37].addShapeBox(0.0f, 0.0f, 0.0f, 3, 1, 1, 0.0f, -0.2f, 0.2f, 0.2f, -0.2f, 0.2f, 0.2f, -0.2f, 0.2f, 0.2f, -0.2f, 0.2f, 0.2f, -0.2f, 0.2f, 0.2f, -0.2f, 0.2f, 0.2f, -0.2f, 0.2f, 0.2f, -0.2f, 0.2f, 0.2f);
+        this.bodyModel[37].func_78793_a(-53.5f, -6.5f, -0.5f);
+        this.bodyModel[38].addShapeBox(0.0f, 0.0f, 0.0f, 4, 1, 1, 0.0f, -0.2f, -0.2f, -0.2f, -0.2f, -0.2f, -0.2f, -0.2f, -0.2f, -0.2f, -0.2f, -0.2f, -0.2f, -0.2f, -0.2f, -0.2f, -0.2f, -0.2f, -0.2f, -0.2f, -0.2f, -0.2f, -0.2f, -0.2f, -0.2f);
+        this.bodyModel[38].func_78793_a(-57.0f, -6.5f, -0.5f);
+        this.bodyModel[39].addShapeBox(0.0f, 0.0f, 0.0f, 4, 1, 1, 0.0f, -0.2f, -0.3f, -0.3f, -0.2f, -0.3f, -0.3f, -0.2f, -0.3f, -0.3f, -0.2f, -0.3f, -0.3f, -0.2f, -0.3f, -0.3f, -0.2f, -0.3f, -0.3f, -0.2f, -0.3f, -0.3f, -0.2f, -0.3f, -0.3f);
+        this.bodyModel[39].func_78793_a(-31.5f, -3.9f, -0.5f);
+        this.bodyModel[40].addShapeBox(0.0f, 0.0f, 0.0f, 1, 3, 1, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+        this.bodyModel[40].func_78793_a(-32.5f, -3.5f, -0.5f);
+        this.bodyModel[41].addShapeBox(0.0f, 0.0f, 0.0f, 3, 1, 1, 0.0f, -0.2f, 0.2f, 0.2f, -0.2f, 0.2f, 0.2f, -0.2f, 0.2f, 0.2f, -0.2f, 0.2f, 0.2f, -0.2f, -0.2f, 0.2f, -0.2f, -0.2f, 0.2f, -0.2f, -0.2f, 0.2f, -0.2f, -0.2f, 0.2f);
+        this.bodyModel[41].func_78793_a(-33.5f, -3.5f, -0.5f);
+        this.bodyModel[42].addShapeBox(0.0f, 0.0f, 0.0f, 3, 1, 1, 0.0f, -0.2f, 0.2f, 0.2f, -0.2f, 0.2f, 0.2f, -0.2f, 0.2f, 0.2f, -0.2f, 0.2f, 0.2f, -0.2f, -0.2f, 0.2f, -0.2f, -0.2f, 0.2f, -0.2f, -0.2f, 0.2f, -0.2f, -0.2f, 0.2f);
+        this.bodyModel[42].func_78793_a(40.0f, -7.7f, -0.5f);
+        this.bodyModel[43].addShapeBox(0.0f, 0.0f, 0.0f, 4, 1, 1, 0.0f, -0.2f, -0.3f, -0.3f, -0.2f, -0.3f, -0.3f, -0.2f, -0.3f, -0.3f, -0.2f, -0.3f, -0.3f, -0.2f, -0.3f, -0.3f, -0.2f, -0.3f, -0.3f, -0.2f, -0.3f, -0.3f, -0.2f, -0.3f, -0.3f);
+        this.bodyModel[43].func_78793_a(42.0f, -8.1f, -0.5f);
+        this.bodyModel[44].addShapeBox(0.0f, 0.0f, 0.0f, 1, 3, 1, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+        this.bodyModel[44].func_78793_a(41.0f, -7.7f, -0.5f);
+        this.bodyModel[45].addShapeBox(0.0f, 0.0f, 0.0f, 12, 5, 10, 0.0f, 4.5f, 0.0f, 0.0f, 4.5f, 0.0f, 0.0f, 4.5f, 0.0f, 0.0f, 4.5f, 0.0f, 0.0f, 4.5f, -2.0f, -2.0f, 4.5f, 1.0f, -2.0f, 4.5f, 1.0f, -2.0f, 4.5f, -2.0f, -2.0f);
+        this.bodyModel[45].func_78793_a(-58.5f, 3.0f, -5.0f);
+        this.bodyModel[46].addShapeBox(0.0f, 0.0f, 0.0f, 12, 5, 10, 0.0f, 0.0f, 0.0f, -2.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -2.0f, -1.0f, -2.5f, -4.0f, 0.0f, -2.0f, -2.0f, 0.0f, -2.0f, -2.0f, -1.0f, -2.5f, -4.0f);
+        this.bodyModel[46].func_78793_a(-75.0f, 3.0f, -5.0f);
+        this.bodyModel[47].addShapeBox(0.0f, 0.0f, 0.0f, 16, 6, 10, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -2.8f, 0.0f, 0.0f, -2.8f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -2.0f, 0.0f, 0.0f, -3.5f, 0.0f, 0.0f, -3.5f, 0.0f, 0.0f, -2.0f);
+        this.bodyModel[47].func_78793_a(38.0f, 3.0f, -5.0f);
+        this.bodyModel[48].addShapeBox(0.0f, 0.0f, 0.0f, 10, 6, 10, 0.0f, 35.0f, 0.0f, 0.0f, 35.0f, 0.0f, 0.0f, 35.0f, 0.0f, 0.0f, 35.0f, 0.0f, 0.0f, 35.0f, 0.0f, -2.0f, 35.0f, 0.0f, -2.0f, 35.0f, 0.0f, -2.0f, 35.0f, 0.0f, -2.0f);
+        this.bodyModel[48].func_78793_a(-7.0f, 3.0f, -5.0f);
+        this.bodyModel[49].addShapeBox(0.0f, 0.0f, 0.0f, 10, 6, 10, 0.0f, 0.0f, 0.0f, -2.8f, 0.0f, 0.0f, -4.5f, 0.0f, 0.0f, -4.5f, 0.0f, 0.0f, -2.8f, 0.0f, 0.0f, -3.5f, -2.0f, -2.0f, -4.5f, -2.0f, -2.0f, -4.5f, 0.0f, 0.0f, -3.5f);
+        this.bodyModel[49].func_78793_a(54.0f, 3.0f, -5.0f);
+        this.bodyModel[50].addShapeBox(-10.5f, -3.5f, 0.0f, 14, 13, 1, 0.0f, -3.35f, -4.0f, -0.45f, -3.35f, -4.0f, -0.45f, -3.35f, -4.0f, -0.45f, -3.35f, -4.0f, -0.45f, -3.35f, -4.0f, -0.45f, -3.35f, -4.0f, -0.45f, -3.35f, -4.0f, -0.45f, -3.35f, -4.0f, -0.45f);
+        this.bodyModel[50].func_78793_a(-39.8f, -32.0f, -0.5f);
+        this.bodyModel[50].field_78808_h = 0.17453294f;
+    }
+    
+    private void initturretModel_1() {
+        this.turretModel[0] = new ModelRendererTurbo(this, 137, 1, this.textureX, this.textureY);
+        this.turretModel[1] = new ModelRendererTurbo(this, 113, 1, this.textureX, this.textureY);
+        this.turretModel[0].addShapeBox(-4.5f, -0.7f, -0.5f, 6, 1, 1, 0.0f, 0.0f, 0.2f, 0.0f, 0.0f, 0.2f, 0.0f, 0.0f, 0.2f, 0.0f, 0.0f, 0.2f, 0.0f, 0.0f, 0.2f, 0.0f, 0.0f, 0.2f, 0.0f, 0.0f, 0.2f, 0.0f, 0.0f, 0.2f, 0.0f);
+        this.turretModel[0].func_78793_a(0.0f, -2.0f, 0.0f);
+        this.turretModel[1].addShapeBox(1.5f, -0.7f, -0.5f, 4, 1, 1, 0.0f, 0.0f, 0.2f, 0.0f, 0.0f, 0.2f, 0.0f, 0.0f, 0.2f, 0.0f, 0.0f, 0.2f, 0.0f, 0.0f, 0.2f, 0.0f, 0.0f, -0.8f, 0.0f, 0.0f, -0.8f, 0.0f, 0.0f, 0.2f, 0.0f);
+        this.turretModel[1].func_78793_a(0.0f, -2.0f, 0.0f);
+    }
+}
