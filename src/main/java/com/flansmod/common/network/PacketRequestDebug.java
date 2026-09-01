@@ -34,7 +34,7 @@ public class PacketRequestDebug extends PacketBase
     
     @Override
     public void handleServerSide(final EntityPlayerMP playerEntity) {
-        if (MinecraftServer.func_71276_C().func_71203_ab().func_152596_g(playerEntity.func_146103_bH())) {
+        if (MinecraftServer.getServer().getConfigurationManager().canSendCommands(playerEntity.getGameProfile())) {
             FlansMod.packetHandler.sendTo(new PacketRequestDebug(true), playerEntity);
         }
     }

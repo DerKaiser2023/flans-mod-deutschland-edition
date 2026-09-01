@@ -31,7 +31,7 @@ public class PacketBreakSound extends PacketBase
         this.x = x;
         this.y = y;
         this.z = z;
-        this.blockID = Block.func_149682_b(block);
+        this.blockID = Block.getIdFromBlock(block);
     }
     
     @Override
@@ -58,8 +58,8 @@ public class PacketBreakSound extends PacketBase
     @SideOnly(Side.CLIENT)
     @Override
     public void handleClientSide(final EntityPlayer clientPlayer) {
-        final Block block = Block.func_149729_e(this.blockID);
-        FMLClientHandler.instance().getClient().field_71452_i.func_78867_a(this.x, this.y, this.z, 1);
-        FMLClientHandler.instance().getClient().func_147118_V().func_147682_a((ISound)new PositionedSoundRecord(new ResourceLocation(block.field_149762_H.func_150495_a()), this.x + 0.5f, this.y + 0.5f, this.z + 0.5f, (block.field_149762_H.func_150497_c() + 1.0f) / 2.0f, block.field_149762_H.func_150494_d() * 0.8f));
+        final Block block = Block.getBlockById(this.blockID);
+        FMLClientHandler.instance().getClient().effectRenderer.addBlockHitEffects(this.x, this.y, this.z, 1);
+        FMLClientHandler.instance().getClient().getSoundHandler().playSound((ISound)new PositionedSoundRecord(new ResourceLocation(block.stepSound.getDigResourcePath()), this.x + 0.5f, this.y + 0.5f, this.z + 0.5f, (block.stepSound.getVolume() + 1.0f) / 2.0f, block.stepSound.getFrequency() * 0.8f));
     }
 }

@@ -45,7 +45,7 @@ public class PacketBuyArmour extends PacketBase
     @Override
     public void handleServerSide(final EntityPlayerMP playerEntity) {
         final ArmourBoxType box = ArmourBoxType.getBox(this.boxShortName);
-        box.block.buyArmour(this.armourShortName, this.piece, playerEntity.field_71071_by);
+        box.block.buyArmour(this.armourShortName, this.piece, playerEntity.inventory);
     }
     
     @SideOnly(Side.CLIENT)

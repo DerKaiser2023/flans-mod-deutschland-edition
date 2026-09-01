@@ -25,12 +25,12 @@ public class PacketOffHandGunInfo extends PacketBase
     }
     
     public PacketOffHandGunInfo(final EntityPlayerMP playerEntity, final int slot) {
-        this.entityID = playerEntity.func_145782_y();
+        this.entityID = playerEntity.getEntityId();
         if (slot == 0) {
             this.gunStack = null;
         }
         else {
-            this.gunStack = playerEntity.field_71071_by.func_70301_a(slot - 1);
+            this.gunStack = playerEntity.inventory.getStackInSlot(slot - 1);
         }
     }
     
@@ -53,7 +53,7 @@ public class PacketOffHandGunInfo extends PacketBase
     
     @Override
     public void handleClientSide(final EntityPlayer clientPlayer) {
-        final Entity entity = clientPlayer.field_70170_p.func_73045_a(this.entityID);
+        final Entity entity = clientPlayer.worldObj.getEntityByID(this.entityID);
         if (entity instanceof EntityPlayer && entity != clientPlayer) {
             final PlayerData data = PlayerHandler.getPlayerData((EntityPlayer)entity, Side.CLIENT);
             data.offHandGunStack = this.gunStack;

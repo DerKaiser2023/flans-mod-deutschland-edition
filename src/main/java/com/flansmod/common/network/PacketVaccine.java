@@ -30,10 +30,10 @@ public class PacketVaccine extends PacketBase
     @SideOnly(Side.CLIENT)
     @Override
     public void handleClientSide(final EntityPlayer clientPlayer) {
-        final Entity last = clientPlayer.field_70154_o;
-        clientPlayer.field_70154_o = null;
-        last.field_70153_n = null;
-        clientPlayer.func_70078_a(last);
+        final Entity last = clientPlayer.ridingEntity;
+        clientPlayer.ridingEntity = null;
+        last.riddenByEntity = null;
+        clientPlayer.mountEntity(last);
         if (FlansMod.lastRidden == null) {
             System.out.println("uh oh stinky fall out of planes boo boo");
         }

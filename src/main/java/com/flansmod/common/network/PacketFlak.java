@@ -63,15 +63,15 @@ public class PacketFlak extends PacketBase
     @SideOnly(Side.CLIENT)
     @Override
     public void handleClientSide(final EntityPlayer clientPlayer) {
-        final World world = clientPlayer.field_70170_p;
+        final World world = clientPlayer.worldObj;
         for (int i = 0; i < this.numParticles; ++i) {
             final EntityFX obj = FlansModClient.getParticle(this.particleType, world, this.x + PacketFlak.rand.nextGaussian(), this.y + PacketFlak.rand.nextGaussian(), this.z + PacketFlak.rand.nextGaussian());
             if (obj != null) {
-                obj.field_70159_w = PacketFlak.rand.nextGaussian() / 20.0;
-                obj.field_70181_x = PacketFlak.rand.nextGaussian() / 20.0;
-                obj.field_70179_y = PacketFlak.rand.nextGaussian() / 20.0;
-                obj.field_70155_l = 250.0;
-                FMLClientHandler.instance().getClient().field_71452_i.func_78873_a(obj);
+                obj.motionX = PacketFlak.rand.nextGaussian() / 20.0;
+                obj.motionY = PacketFlak.rand.nextGaussian() / 20.0;
+                obj.motionZ = PacketFlak.rand.nextGaussian() / 20.0;
+                obj.renderDistanceWeight = 250.0;
+                FMLClientHandler.instance().getClient().effectRenderer.addEffect(obj);
             }
         }
     }

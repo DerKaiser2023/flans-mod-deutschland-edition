@@ -72,7 +72,7 @@ public class PacketBaseEdit extends PacketBase
     
     @Override
     public void handleServerSide(final EntityPlayerMP playerEntity) {
-        if (!MinecraftServer.func_71276_C().func_71203_ab().func_152596_g(playerEntity.func_146103_bH())) {
+        if (!MinecraftServer.getServer().getConfigurationManager().canSendCommands(playerEntity.getGameProfile())) {
             return;
         }
         final ITeamBase base = TeamsManager.getInstance().getBase(this.baseID);
@@ -86,12 +86,12 @@ public class PacketBaseEdit extends PacketBase
             base.setMapFirstTime(TeamsManager.getInstance().getMapFromFullName(this.maps[this.mapID]));
         }
         base.setName(this.baseName);
-        FlansMod.log(playerEntity.func_70005_c_() + " modified attributes of base " + this.baseID);
+        FlansMod.log(playerEntity.getCommandSenderName() + " modified attributes of base " + this.baseID);
     }
     
     @SideOnly(Side.CLIENT)
     @Override
     public void handleClientSide(final EntityPlayer clientPlayer) {
-        Minecraft.func_71410_x().func_147108_a((GuiScreen)new GuiBaseEditor(this));
+        Minecraft.getMinecraft().displayGuiScreen((GuiScreen)new GuiBaseEditor(this));
     }
 }

@@ -251,17 +251,17 @@ public abstract class InfoType
     
     public static ItemStack getRecipeElement(final String s, final int amount, final int damage, final String requester) {
         if (s.equals("doorIron")) {
-            return new ItemStack(Items.field_151139_aw, amount);
+            return new ItemStack(Items.iron_door, amount);
         }
         if (s.equals("doorWood")) {
-            return new ItemStack(Items.field_151135_aq, amount);
+            return new ItemStack(Items.wooden_door, amount);
         }
         if (s.equals("clayItem")) {
-            return new ItemStack(Items.field_151119_aD, amount);
+            return new ItemStack(Items.clay_ball, amount);
         }
-        for (final Object object : Item.field_150901_e) {
+        for (final Object object : Item.itemRegistry) {
             final Item item = (Item)object;
-            if (item != null && item.func_77658_a() != null && (item.func_77658_a().equals("item." + s) || item.func_77658_a().equals("tile." + s))) {
+            if (item != null && item.getUnlocalizedName() != null && (item.getUnlocalizedName().equals("item." + s) || item.getUnlocalizedName().equals("tile." + s))) {
                 return new ItemStack(item, amount, damage);
             }
         }
@@ -271,10 +271,10 @@ public abstract class InfoType
             }
         }
         if (s.equals("gunpowder")) {
-            return new ItemStack(Items.field_151016_H, amount);
+            return new ItemStack(Items.gunpowder, amount);
         }
         if (s.equals("iron")) {
-            return new ItemStack(Items.field_151042_j, amount);
+            return new ItemStack(Items.iron_ingot, amount);
         }
         FlansMod.log("Could not find " + s + " when adding recipe for " + requester);
         return null;
@@ -282,8 +282,8 @@ public abstract class InfoType
     
     protected int getDyeDamageValue(final String dyeName) {
         int damage = -1;
-        for (int i = 0; i < ItemDye.field_150923_a.length; ++i) {
-            if (ItemDye.field_150923_a[i].equals(dyeName)) {
+        for (int i = 0; i < ItemDye.dyeColorNames.length; ++i) {
+            if (ItemDye.dyeColorNames[i].equals(dyeName)) {
                 damage = i;
             }
         }
@@ -323,7 +323,7 @@ public abstract class InfoType
         if (itemStack == null) {
             return null;
         }
-        final Item item = itemStack.func_77973_b();
+        final Item item = itemStack.getItem();
         if (item instanceof IFlanItem) {
             return ((IFlanItem)item).getInfoType();
         }
@@ -338,7 +338,7 @@ public abstract class InfoType
     }
     
     public static Material getMaterial(final String mat) {
-        return Material.field_151578_c;
+        return Material.ground;
     }
     
     static {

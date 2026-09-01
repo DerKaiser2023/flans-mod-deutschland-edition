@@ -70,19 +70,19 @@ public class PacketDriveableControl extends PacketBase
     }
     
     public PacketDriveableControl(final EntityDriveable driveable) {
-        this.entityId = driveable.func_145782_y();
-        this.posX = driveable.field_70165_t;
-        this.posY = driveable.field_70163_u;
-        this.posZ = driveable.field_70161_v;
-        this.prevPosX = driveable.field_70169_q;
-        this.prevPosY = driveable.field_70167_r;
-        this.prevPosZ = driveable.field_70166_s;
+        this.entityId = driveable.getEntityId();
+        this.posX = driveable.posX;
+        this.posY = driveable.posY;
+        this.posZ = driveable.posZ;
+        this.prevPosX = driveable.prevPosX;
+        this.prevPosY = driveable.prevPosY;
+        this.prevPosZ = driveable.prevPosZ;
         this.yaw = driveable.axes.getYaw();
         this.pitch = driveable.axes.getPitch();
         this.roll = driveable.axes.getRoll();
-        this.motX = driveable.field_70159_w;
-        this.motY = driveable.field_70181_x;
-        this.motZ = driveable.field_70179_y;
+        this.motX = driveable.motionX;
+        this.motY = driveable.motionY;
+        this.motZ = driveable.motionZ;
         this.avelx = driveable.angularVelocity.x;
         this.avely = driveable.angularVelocity.y;
         this.avelz = driveable.angularVelocity.z;
@@ -230,8 +230,8 @@ public class PacketDriveableControl extends PacketBase
     @Override
     public void handleServerSide(final EntityPlayerMP playerEntity) {
         EntityDriveable driveable = null;
-        for (final Object obj : playerEntity.field_70170_p.field_72996_f) {
-            if (obj instanceof EntityDriveable && ((Entity)obj).func_145782_y() == this.entityId) {
+        for (final Object obj : playerEntity.worldObj.loadedEntityList) {
+            if (obj instanceof EntityDriveable && ((Entity)obj).getEntityId() == this.entityId) {
                 driveable = (EntityDriveable)obj;
                 break;
             }
@@ -245,9 +245,9 @@ public class PacketDriveableControl extends PacketBase
         driveable.setPositionRotationAndMotion(this.posX, this.posY, this.posZ, this.yaw, this.pitch, this.roll, this.motX, this.motY, this.motZ, this.avelx, this.avely, this.avelz, this.throttle, this.steeringYaw, this.throttlePeepee);
         driveable.pitchSignal = this.pitchSignal;
         driveable.yawSignal = this.yawSignal;
-        driveable.field_70169_q = this.prevPosX;
-        driveable.field_70167_r = this.prevPosY;
-        driveable.field_70166_s = this.prevPosZ;
+        driveable.prevPosX = this.prevPosX;
+        driveable.prevPosY = this.prevPosY;
+        driveable.prevPosZ = this.prevPosZ;
         driveable.driveableData.fuelInTank = this.fuelInTank;
         driveable.driveableData.sinkingTimer = this.sinkingTimer;
         driveable.driveableData.repairingTimer = this.repairingTimer;
@@ -277,19 +277,19 @@ public class PacketDriveableControl extends PacketBase
     @SideOnly(Side.CLIENT)
     @Override
     public void handleClientSide(final EntityPlayer clientPlayer) {
-        if (clientPlayer == null || clientPlayer.field_70170_p == null) {
+        if (clientPlayer == null || clientPlayer.worldObj == null) {
             return;
         }
         EntityDriveable driveable = null;
-        for (final Object obj : clientPlayer.field_70170_p.field_72996_f) {
-            if (obj instanceof EntityDriveable && ((Entity)obj).func_145782_y() == this.entityId) {
+        for (final Object obj : clientPlayer.worldObj.loadedEntityList) {
+            if (obj instanceof EntityDriveable && ((Entity)obj).getEntityId() == this.entityId) {
                 driveable = (EntityDriveable)obj;
                 driveable.driveableData.fuelInTank = this.fuelInTank;
                 driveable.driveableData.sinkLimit = this.sinkLimit;
                 driveable.driveableData.sinkingTimer = this.sinkingTimer;
                 driveable.driveableData.repairLimit = this.repairLimit;
                 driveable.driveableData.repairingTimer = this.repairingTimer;
-                if (driveable.seats[0] != null && driveable.seats[0].field_70153_n == clientPlayer) {
+                if (driveable.seats[0] != null && driveable.seats[0].riddenByEntity == clientPlayer) {
                     return;
                 }
                 break;

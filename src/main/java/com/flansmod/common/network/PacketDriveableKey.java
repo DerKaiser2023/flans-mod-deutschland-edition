@@ -36,8 +36,8 @@ public class PacketDriveableKey extends PacketBase
     
     @Override
     public void handleServerSide(final EntityPlayerMP playerEntity) {
-        if (playerEntity.field_70154_o != null && playerEntity.field_70154_o instanceof IControllable) {
-            ((IControllable)playerEntity.field_70154_o).pressKey(this.key, (EntityPlayer)playerEntity);
+        if (playerEntity.ridingEntity != null && playerEntity.ridingEntity instanceof IControllable) {
+            ((IControllable)playerEntity.ridingEntity).pressKey(this.key, (EntityPlayer)playerEntity);
         }
     }
     

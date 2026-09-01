@@ -47,24 +47,24 @@ public class PacketReload extends PacketBase
     @Override
     public void handleServerSide(final EntityPlayerMP playerEntity) {
         final PlayerData data = PlayerHandler.getPlayerData((EntityPlayer)playerEntity);
-        ItemStack stack = playerEntity.func_71045_bC();
+        ItemStack stack = playerEntity.getCurrentEquippedItem();
         if (this.left && data.offHandGunSlot != 0) {
-            stack = playerEntity.field_71071_by.func_70301_a(data.offHandGunSlot - 1);
+            stack = playerEntity.inventory.getStackInSlot(data.offHandGunSlot - 1);
         }
-        if (data != null && stack != null && stack.func_77973_b() instanceof ItemGun) {
-            final GunType type = ((ItemGun)stack.func_77973_b()).type;
+        if (data != null && stack != null && stack.getItem() instanceof ItemGun) {
+            final GunType type = ((ItemGun)stack.getItem()).type;
             boolean empty = true;
             for (int i = 0; i < type.getNumAmmoItemsInGun(stack); ++i) {
-                final ItemStack bulletStack = ((ItemGun)stack.func_77973_b()).getBulletItemStack(stack, i);
-                if (bulletStack != null && bulletStack.func_77973_b() != null && bulletStack.func_77960_j() < bulletStack.func_77958_k()) {
+                final ItemStack bulletStack = ((ItemGun)stack.getItem()).getBulletItemStack(stack, i);
+                if (bulletStack != null && bulletStack.getItem() != null && bulletStack.getMetadata() < bulletStack.getMaxDurability()) {
                     empty = false;
                     break;
                 }
             }
-            if (((ItemGun)stack.func_77973_b()).reload(stack, type, playerEntity.field_70170_p, (EntityPlayer)playerEntity, true, this.left)) {
+            if (((ItemGun)stack.getItem()).reload(stack, type, playerEntity.worldObj, (EntityPlayer)playerEntity, true, this.left)) {
                 final PlayerData playerData = data;
                 final PlayerData playerData2 = data;
-                final float n = (float)((int)(type.reloadTime * ((ItemGun)stack.func_77973_b()).pouchMultiplier) + 1);
+                final float n = (float)((int)(type.reloadTime * ((ItemGun)stack.getItem()).pouchMultiplier) + 1);
                 playerData2.shootTimeLeft = n;
                 playerData.shootTimeRight = n;
                 if (this.left) {
@@ -76,7 +76,7 @@ public class PacketReload extends PacketBase
                 if (type.sidearm) {
                     final PlayerData playerData3 = data;
                     final PlayerData playerData4 = data;
-                    final float n2 = (float)((int)(type.reloadTime * ((ItemGun)stack.func_77973_b()).pouchMultiplier) + 1);
+                    final float n2 = (float)((int)(type.reloadTime * ((ItemGun)stack.getItem()).pouchMultiplier) + 1);
                     playerData4.stabTimeLeft = n2;
                     playerData3.stabTimeRight = n2;
                 }
@@ -93,7 +93,7 @@ public class PacketReload extends PacketBase
                     soundToPlay = type.reloadSound;
                 }
                 if (soundToPlay != null) {
-                    PacketPlaySound.sendSoundPacket(playerEntity.field_70165_t, playerEntity.field_70163_u, playerEntity.field_70161_v, type.reloadSoundRange, playerEntity.field_71093_bK, soundToPlay, true);
+                    PacketPlaySound.sendSoundPacket(playerEntity.posX, playerEntity.posY, playerEntity.posZ, type.reloadSoundRange, playerEntity.dimension, soundToPlay, true);
                 }
             }
         }
@@ -102,13 +102,13 @@ public class PacketReload extends PacketBase
     @SideOnly(Side.CLIENT)
     @Override
     public void handleClientSide(final EntityPlayer clientPlayer) {
-        ItemStack stack = clientPlayer.func_71045_bC();
+        ItemStack stack = clientPlayer.getCurrentEquippedItem();
         final PlayerData data = PlayerHandler.getPlayerData(clientPlayer, Side.CLIENT);
         if (this.left) {
-            stack = clientPlayer.field_71071_by.func_70301_a(data.offHandGunSlot - 1);
+            stack = clientPlayer.inventory.getStackInSlot(data.offHandGunSlot - 1);
         }
-        if (stack != null && stack.func_77973_b() instanceof ItemGun) {
-            final GunType type = ((ItemGun)stack.func_77973_b()).type;
+        if (stack != null && stack.getItem() instanceof ItemGun) {
+            final GunType type = ((ItemGun)stack.getItem()).type;
             if (this.left) {
                 FlansModClient.shootTimeLeft = (float)(int)type.getReloadTime(stack);
                 if (type.sidearm) {
@@ -142,13 +142,13 @@ public class PacketReload extends PacketBase
             final int pumpTime = (type.model == null) ? 1 : type.model.pumpTime;
             final int chargeDelay = (type.model == null) ? 0 : type.model.chargeDelayAfterReload;
             final int chargeTime = (type.model == null) ? 1 : type.model.chargeTime;
-            animations.doReload((int)(type.reloadTime * ((ItemGun)stack.func_77973_b()).pouchMultiplier) + 1, pumpDelay, pumpTime, chargeDelay, chargeTime);
+            animations.doReload((int)(type.reloadTime * ((ItemGun)stack.getItem()).pouchMultiplier) + 1, pumpDelay, pumpTime, chargeDelay, chargeTime);
             int bestSlot = -1;
             int bulletsInBestSlot = 0;
-            for (int j = 0; j < clientPlayer.field_71071_by.func_70302_i_(); ++j) {
-                final ItemStack item = clientPlayer.field_71071_by.func_70301_a(j);
-                if (item != null && item.func_77973_b() instanceof ItemShootable && type.isAmmo(((ItemShootable)item.func_77973_b()).type, stack)) {
-                    final int bulletsInThisSlot = item.func_77958_k() - item.func_77960_j();
+            for (int j = 0; j < clientPlayer.inventory.getSizeInventory(); ++j) {
+                final ItemStack item = clientPlayer.inventory.getStackInSlot(j);
+                if (item != null && item.getItem() instanceof ItemShootable && type.isAmmo(((ItemShootable)item.getItem()).type, stack)) {
+                    final int bulletsInThisSlot = item.getMaxDurability() - item.getMetadata();
                     if (bulletsInThisSlot > bulletsInBestSlot) {
                         bestSlot = j;
                         bulletsInBestSlot = bulletsInThisSlot;
@@ -156,16 +156,16 @@ public class PacketReload extends PacketBase
                 }
             }
             if (bestSlot != -1) {
-                ItemStack newBulletStack = clientPlayer.field_71071_by.func_70301_a(bestSlot);
-                final ShootableType newBulletType = ((ItemShootable)newBulletStack.func_77973_b()).type;
-                if (!clientPlayer.field_71075_bZ.field_75098_d) {
+                ItemStack newBulletStack = clientPlayer.inventory.getStackInSlot(bestSlot);
+                final ShootableType newBulletType = ((ItemShootable)newBulletStack.getItem()).type;
+                if (!clientPlayer.capabilities.isCreativeMode) {
                     final ItemStack itemStack = newBulletStack;
-                    --itemStack.field_77994_a;
+                    --itemStack.stackSize;
                 }
-                if (newBulletStack.field_77994_a <= 0) {
+                if (newBulletStack.stackSize <= 0) {
                     newBulletStack = null;
                 }
-                clientPlayer.field_71071_by.func_70299_a(bestSlot, newBulletStack);
+                clientPlayer.inventory.setInventorySlotContents(bestSlot, newBulletStack);
             }
         }
     }

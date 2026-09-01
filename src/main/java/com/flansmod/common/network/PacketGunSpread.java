@@ -24,7 +24,7 @@ public class PacketGunSpread extends PacketBase
     
     public PacketGunSpread(final ItemStack stack, final float amount) {
         this.spread = 0.0f;
-        if (stack != null && stack.func_77973_b() instanceof ItemGun) {
+        if (stack != null && stack.getItem() instanceof ItemGun) {
             this.spread = amount;
         }
     }
@@ -41,14 +41,14 @@ public class PacketGunSpread extends PacketBase
     
     @Override
     public void handleServerSide(final EntityPlayerMP player) {
-        final ItemStack stack = player.field_71071_by.func_70448_g();
-        if (stack != null && stack.func_77973_b() instanceof ItemGun) {
-            final GunType type = ((ItemGun)stack.func_77973_b()).type;
+        final ItemStack stack = player.inventory.getCurrentItem();
+        if (stack != null && stack.getItem() instanceof ItemGun) {
+            final GunType type = ((ItemGun)stack.getItem()).type;
             if (type.getGrip(stack) != null && type.getSecondaryFire(stack)) {
-                ((ItemGun)stack.func_77973_b()).type.getGrip(stack).secondarySpread = this.spread;
+                ((ItemGun)stack.getItem()).type.getGrip(stack).secondarySpread = this.spread;
             }
             else {
-                ((ItemGun)stack.func_77973_b()).type.bulletSpread = this.spread;
+                ((ItemGun)stack.getItem()).type.bulletSpread = this.spread;
             }
         }
     }

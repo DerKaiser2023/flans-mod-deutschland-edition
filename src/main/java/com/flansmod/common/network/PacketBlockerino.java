@@ -34,7 +34,7 @@ public class PacketBlockerino extends PacketBase
     }
     
     public PacketBlockerino(final EntityPlayer player, final int left, final int right, final int top, final int bottom, final int minigun) {
-        this.entityID = player.func_145782_y();
+        this.entityID = player.getEntityId();
         this.lefty = left;
         this.righty = right;
         this.topy = top;
@@ -73,7 +73,7 @@ public class PacketBlockerino extends PacketBase
         data.isBlockingBottom = this.bottomy;
         data.minigunSpeed = this.minigunSpeed;
         System.out.println(this.lefty + "this one is based packet");
-        FlansMod.getPacketHandler().sendToAllAround(new PacketBlockerinoInfo(playerEntity, this.lefty, this.righty, this.topy, this.minigunSpeed), playerEntity.field_70165_t, playerEntity.field_70163_u, playerEntity.field_70161_v, 25.0f, playerEntity.field_71093_bK);
+        FlansMod.getPacketHandler().sendToAllAround(new PacketBlockerinoInfo(playerEntity, this.lefty, this.righty, this.topy, this.minigunSpeed), playerEntity.posX, playerEntity.posY, playerEntity.posZ, 25.0f, playerEntity.dimension);
     }
     
     @Override

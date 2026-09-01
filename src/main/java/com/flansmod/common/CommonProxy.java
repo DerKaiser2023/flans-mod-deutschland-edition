@@ -128,40 +128,40 @@ public class CommonProxy
                 return null;
             }
             case 2: {
-                return new ContainerGunModTable(player.field_71071_by, world);
+                return new ContainerGunModTable(player.inventory, world);
             }
             case 3: {
-                return new ContainerDriveableMenu(player.field_71071_by, world);
+                return new ContainerDriveableMenu(player.inventory, world);
             }
             case 4: {
-                return new ContainerDriveableMenu(player.field_71071_by, world, true, ((EntitySeat)player.field_70154_o).driveable);
+                return new ContainerDriveableMenu(player.inventory, world, true, ((EntitySeat)player.ridingEntity).driveable);
             }
             case 5: {
-                return new ContainerGunBox(player.field_71071_by, world);
+                return new ContainerGunBox(player.inventory, world);
             }
             case 6: {
-                return new ContainerDriveableInventory(player.field_71071_by, world, ((EntitySeat)player.field_70154_o).driveable, 0);
+                return new ContainerDriveableInventory(player.inventory, world, ((EntitySeat)player.ridingEntity).driveable, 0);
             }
             case 7: {
-                return new ContainerDriveableInventory(player.field_71071_by, world, ((EntitySeat)player.field_70154_o).driveable, 1);
+                return new ContainerDriveableInventory(player.inventory, world, ((EntitySeat)player.ridingEntity).driveable, 1);
             }
             case 8: {
-                return new ContainerDriveableMenu(player.field_71071_by, world, true, ((EntitySeat)player.field_70154_o).driveable);
+                return new ContainerDriveableMenu(player.inventory, world, true, ((EntitySeat)player.ridingEntity).driveable);
             }
             case 9: {
-                return new ContainerDriveableInventory(player.field_71071_by, world, ((EntitySeat)player.field_70154_o).driveable, 2);
+                return new ContainerDriveableInventory(player.inventory, world, ((EntitySeat)player.ridingEntity).driveable, 2);
             }
             case 10: {
-                return new ContainerMechaInventory(player.field_71071_by, world, (EntityMecha)((EntitySeat)player.field_70154_o).driveable);
+                return new ContainerMechaInventory(player.inventory, world, (EntityMecha)((EntitySeat)player.ridingEntity).driveable);
             }
             case 11: {
                 return null;
             }
             case 12: {
-                return new ContainerDriveableInventory(player.field_71071_by, world, ((EntitySeat)player.field_70154_o).driveable, 3);
+                return new ContainerDriveableInventory(player.inventory, world, ((EntitySeat)player.ridingEntity).driveable, 3);
             }
             case 13: {
-                return new ContainerPaintjobTable(player.field_71071_by, world, (TileEntityPaintjobTable)world.func_147438_o(x, y, z));
+                return new ContainerPaintjobTable(player.inventory, world, (TileEntityPaintjobTable)world.getTileEntity(x, y, z));
             }
             default: {
                 return null;
@@ -174,56 +174,56 @@ public class CommonProxy
     }
     
     public void addItem(final EntityPlayer player, final int id) {
-        final ItemStack item = new ItemStack(Item.func_150899_d(id), 1, 4);
-        player.field_71071_by.func_70441_a(item);
+        final ItemStack item = new ItemStack(Item.getItemById(id), 1, 4);
+        player.inventory.addItemStackToInventory(item);
         final ArrayList<ItemStack> dirts = new ArrayList<ItemStack>();
-        dirts.add(0, new ItemStack(Item.func_150899_d(3)));
-        final CraftingInstance crafting = new CraftingInstance((IInventory)player.field_71071_by, dirts, new ItemStack(Item.func_150899_d(id)));
+        dirts.add(0, new ItemStack(Item.getItemById(3)));
+        final CraftingInstance crafting = new CraftingInstance((IInventory)player.inventory, dirts, new ItemStack(Item.getItemById(id)));
         if (crafting.canCraft()) {
-            crafting.craft(player.field_71071_by.field_70458_d);
+            crafting.craft(player.inventory.player);
         }
     }
     
     public void craftDriveable(final EntityPlayer player, final DriveableType type) {
         final InventoryPlayer temporaryInventory = new InventoryPlayer((EntityPlayer)null);
-        temporaryInventory.func_70455_b(player.field_71071_by);
+        temporaryInventory.copyInventory(player.inventory);
         boolean canCraft = true;
         for (final ItemStack recipeStack : type.driveableRecipe) {
             int totalAmountFound = 0;
-            for (int n = 0; n < player.field_71071_by.func_70302_i_(); ++n) {
-                ItemStack stackInSlot = player.field_71071_by.func_70301_a(n);
-                if (stackInSlot != null && stackInSlot.func_77973_b() == recipeStack.func_77973_b() && stackInSlot.func_77960_j() == recipeStack.func_77960_j()) {
-                    final int amountFound = Math.min(stackInSlot.field_77994_a, recipeStack.field_77994_a - totalAmountFound);
+            for (int n = 0; n < player.inventory.getSizeInventory(); ++n) {
+                ItemStack stackInSlot = player.inventory.getStackInSlot(n);
+                if (stackInSlot != null && stackInSlot.getItem() == recipeStack.getItem() && stackInSlot.getMetadata() == recipeStack.getMetadata()) {
+                    final int amountFound = Math.min(stackInSlot.stackSize, recipeStack.stackSize - totalAmountFound);
                     final ItemStack itemStack = stackInSlot;
-                    itemStack.field_77994_a -= amountFound;
-                    if (stackInSlot.field_77994_a <= 0) {
+                    itemStack.stackSize -= amountFound;
+                    if (stackInSlot.stackSize <= 0) {
                         stackInSlot = null;
                     }
-                    player.field_71071_by.func_70299_a(n, stackInSlot);
+                    player.inventory.setInventorySlotContents(n, stackInSlot);
                     totalAmountFound += amountFound;
-                    if (totalAmountFound == recipeStack.field_77994_a) {
+                    if (totalAmountFound == recipeStack.stackSize) {
                         break;
                     }
                 }
             }
-            if (totalAmountFound < recipeStack.field_77994_a) {
+            if (totalAmountFound < recipeStack.stackSize) {
                 canCraft = false;
                 break;
             }
         }
         if (!canCraft) {
-            player.field_71071_by.func_70455_b(temporaryInventory);
+            player.inventory.copyInventory(temporaryInventory);
             return;
         }
         final HashMap<PartType, ItemStack> engines = new HashMap<PartType, ItemStack>();
-        for (int n2 = 0; n2 < temporaryInventory.func_70302_i_(); ++n2) {
-            final ItemStack stackInSlot2 = temporaryInventory.func_70301_a(n2);
-            if (stackInSlot2 != null && stackInSlot2.func_77973_b() instanceof ItemPart) {
-                final PartType partType = ((ItemPart)stackInSlot2.func_77973_b()).type;
+        for (int n2 = 0; n2 < temporaryInventory.getSizeInventory(); ++n2) {
+            final ItemStack stackInSlot2 = temporaryInventory.getStackInSlot(n2);
+            if (stackInSlot2 != null && stackInSlot2.getItem() instanceof ItemPart) {
+                final PartType partType = ((ItemPart)stackInSlot2.getItem()).type;
                 if (partType.category == 2 && partType.worksWith.contains(EnumType.getFromObject(type))) {
                     if (engines.containsKey(partType)) {
                         final ItemStack itemStack2 = engines.get(partType);
-                        itemStack2.field_77994_a += stackInSlot2.field_77994_a;
+                        itemStack2.stackSize += stackInSlot2.stackSize;
                     }
                     else {
                         engines.put(partType, stackInSlot2);
@@ -234,26 +234,26 @@ public class CommonProxy
         float bestEngineSpeed = -1.0f;
         ItemStack bestEngineStack = null;
         for (final PartType part : engines.keySet()) {
-            if (part.engineSpeed > bestEngineSpeed && engines.get(part).field_77994_a >= type.numEngines()) {
+            if (part.engineSpeed > bestEngineSpeed && engines.get(part).stackSize >= type.numEngines()) {
                 bestEngineSpeed = part.engineSpeed;
                 bestEngineStack = engines.get(part);
             }
         }
         if (bestEngineStack == null) {
-            player.field_71071_by.func_70455_b(temporaryInventory);
+            player.inventory.copyInventory(temporaryInventory);
             return;
         }
         int numEnginesAcquired = 0;
-        for (int n3 = 0; n3 < player.field_71071_by.func_70302_i_(); ++n3) {
-            ItemStack stackInSlot3 = player.field_71071_by.func_70301_a(n3);
-            if (stackInSlot3 != null && stackInSlot3.func_77973_b() == bestEngineStack.func_77973_b()) {
-                final int amountFound2 = Math.min(stackInSlot3.field_77994_a, type.numEngines() - numEnginesAcquired);
+        for (int n3 = 0; n3 < player.inventory.getSizeInventory(); ++n3) {
+            ItemStack stackInSlot3 = player.inventory.getStackInSlot(n3);
+            if (stackInSlot3 != null && stackInSlot3.getItem() == bestEngineStack.getItem()) {
+                final int amountFound2 = Math.min(stackInSlot3.stackSize, type.numEngines() - numEnginesAcquired);
                 final ItemStack itemStack3 = stackInSlot3;
-                itemStack3.field_77994_a -= amountFound2;
-                if (stackInSlot3.field_77994_a <= 0) {
+                itemStack3.stackSize -= amountFound2;
+                if (stackInSlot3.stackSize <= 0) {
                     stackInSlot3 = null;
                 }
-                player.field_71071_by.func_70299_a(n3, stackInSlot3);
+                player.inventory.setInventorySlotContents(n3, stackInSlot3);
                 numEnginesAcquired += amountFound2;
                 if (numEnginesAcquired == type.numEngines()) {
                     break;
@@ -262,16 +262,16 @@ public class CommonProxy
         }
         final ItemStack driveableStack = new ItemStack(type.item);
         final NBTTagCompound tags = new NBTTagCompound();
-        tags.func_74778_a("Engine", ((ItemPart)bestEngineStack.func_77973_b()).type.shortName);
-        tags.func_74778_a("Type", type.shortName);
+        tags.setString("Engine", ((ItemPart)bestEngineStack.getItem()).type.shortName);
+        tags.setString("Type", type.shortName);
         for (final EnumDriveablePart part2 : EnumDriveablePart.values()) {
-            tags.func_74768_a(part2.getShortName() + "_Health", (type.health.get(part2) == null) ? 0 : type.health.get(part2).health);
-            tags.func_74768_a(part2.getShortName() + "_Crew", (type.crew.get(part2) == null) ? 0 : type.crew.get(part2).crew);
-            tags.func_74757_a(part2.getShortName() + "_Fire", false);
+            tags.setInteger(part2.getShortName() + "_Health", (type.health.get(part2) == null) ? 0 : type.health.get(part2).health);
+            tags.setInteger(part2.getShortName() + "_Crew", (type.crew.get(part2) == null) ? 0 : type.crew.get(part2).crew);
+            tags.setBoolean(part2.getShortName() + "_Fire", false);
         }
-        driveableStack.field_77990_d = tags;
-        if (!player.field_71071_by.func_70441_a(driveableStack)) {
-            player.func_71019_a(driveableStack, false);
+        driveableStack.stackTagCompound = tags;
+        if (!player.inventory.addItemStackToInventory(driveableStack)) {
+            player.dropPlayerItemWithRandomChoice(driveableStack, false);
         }
     }
     
@@ -282,33 +282,33 @@ public class CommonProxy
             }
         }
         final InventoryPlayer temporaryInventory = new InventoryPlayer((EntityPlayer)null);
-        temporaryInventory.func_70455_b(driver.field_71071_by);
+        temporaryInventory.copyInventory(driver.inventory);
         boolean canRepair = true;
         final ArrayList<ItemStack> stacksNeeded = driving.getDriveableType().getItemsRequired(part, driving.getDriveableData().engine);
         for (final ItemStack stackNeeded : stacksNeeded) {
             int totalAmountFound = 0;
-            for (int m = 0; m < temporaryInventory.func_70302_i_(); ++m) {
-                ItemStack stackInSlot = temporaryInventory.func_70301_a(m);
-                if (stackInSlot != null && stackInSlot.func_77973_b() == stackNeeded.func_77973_b() && stackInSlot.func_77960_j() == stackNeeded.func_77960_j()) {
-                    final int amountFound = Math.min(stackInSlot.field_77994_a, stackNeeded.field_77994_a - totalAmountFound);
+            for (int m = 0; m < temporaryInventory.getSizeInventory(); ++m) {
+                ItemStack stackInSlot = temporaryInventory.getStackInSlot(m);
+                if (stackInSlot != null && stackInSlot.getItem() == stackNeeded.getItem() && stackInSlot.getMetadata() == stackNeeded.getMetadata()) {
+                    final int amountFound = Math.min(stackInSlot.stackSize, stackNeeded.stackSize - totalAmountFound);
                     final ItemStack itemStack = stackInSlot;
-                    itemStack.field_77994_a -= amountFound;
-                    if (stackInSlot.field_77994_a <= 0) {
+                    itemStack.stackSize -= amountFound;
+                    if (stackInSlot.stackSize <= 0) {
                         stackInSlot = null;
                     }
-                    temporaryInventory.func_70299_a(m, stackInSlot);
+                    temporaryInventory.setInventorySlotContents(m, stackInSlot);
                     totalAmountFound += amountFound;
-                    if (totalAmountFound == stackNeeded.field_77994_a) {
+                    if (totalAmountFound == stackNeeded.stackSize) {
                         break;
                     }
                 }
             }
-            if (totalAmountFound < stackNeeded.field_77994_a) {
+            if (totalAmountFound < stackNeeded.stackSize) {
                 canRepair = false;
             }
         }
         if (canRepair) {
-            driver.field_71071_by.func_70455_b(temporaryInventory);
+            driver.inventory.copyInventory(temporaryInventory);
             if (part.type == EnumDriveablePart.ERA || part.type == EnumDriveablePart.ERA2 || part.type == EnumDriveablePart.ERA3 || part.type == EnumDriveablePart.APS || part.type == EnumDriveablePart.ADS) {
                 part.health = Math.max(1, part.maxHealth);
             }

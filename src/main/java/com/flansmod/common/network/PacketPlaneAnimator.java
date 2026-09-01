@@ -53,7 +53,7 @@ public class PacketPlaneAnimator extends PacketBase
     }
     
     public PacketPlaneAnimator(final EntityPlane plane) {
-        this.entityId = plane.func_145782_y();
+        this.entityId = plane.getEntityId();
         this.wingPosx = plane.wingPos.x;
         this.wingRotx = plane.wingRot.x;
         this.wingWheelPosx = plane.wingWheelPos.x;
@@ -159,8 +159,8 @@ public class PacketPlaneAnimator extends PacketBase
     @Override
     public void handleServerSide(final EntityPlayerMP playerEntity) {
         EntityPlane plane = null;
-        for (final Object obj : playerEntity.field_70170_p.field_72996_f) {
-            if (obj instanceof EntityPlane && ((Entity)obj).func_145782_y() == this.entityId) {
+        for (final Object obj : playerEntity.worldObj.loadedEntityList) {
+            if (obj instanceof EntityPlane && ((Entity)obj).getEntityId() == this.entityId) {
                 plane = (EntityPlane)obj;
                 break;
             }
@@ -186,14 +186,14 @@ public class PacketPlaneAnimator extends PacketBase
     @SideOnly(Side.CLIENT)
     @Override
     public void handleClientSide(final EntityPlayer clientPlayer) {
-        if (clientPlayer == null || clientPlayer.field_70170_p == null) {
+        if (clientPlayer == null || clientPlayer.worldObj == null) {
             return;
         }
         EntityPlane plane = null;
-        for (final Object obj : clientPlayer.field_70170_p.field_72996_f) {
-            if (obj instanceof EntityPlane && ((Entity)obj).func_145782_y() == this.entityId) {
+        for (final Object obj : clientPlayer.worldObj.loadedEntityList) {
+            if (obj instanceof EntityPlane && ((Entity)obj).getEntityId() == this.entityId) {
                 plane = (EntityPlane)obj;
-                if (plane.seats[0] != null && plane.seats[0].field_70153_n == clientPlayer) {
+                if (plane.seats[0] != null && plane.seats[0].riddenByEntity == clientPlayer) {
                     return;
                 }
                 break;

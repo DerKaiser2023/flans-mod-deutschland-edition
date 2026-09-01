@@ -37,31 +37,31 @@ public class PacketDriveableGUI extends PacketBase
     
     @Override
     public void handleServerSide(final EntityPlayerMP playerEntity) {
-        if (playerEntity.field_70154_o != null && playerEntity.field_70154_o instanceof EntitySeat) {
-            final EntityDriveable d = ((EntitySeat)playerEntity.field_70154_o).driveable;
+        if (playerEntity.ridingEntity != null && playerEntity.ridingEntity instanceof EntitySeat) {
+            final EntityDriveable d = ((EntitySeat)playerEntity.ridingEntity).driveable;
             switch (this.guiID) {
                 case 0: {
-                    playerEntity.openGui((Object)FlansMod.INSTANCE, 6, playerEntity.field_70170_p, d.field_70176_ah, d.field_70162_ai, d.field_70164_aj);
+                    playerEntity.openGui((Object)FlansMod.INSTANCE, 6, playerEntity.worldObj, d.chunkCoordX, d.chunkCoordY, d.chunkCoordZ);
                     break;
                 }
                 case 1: {
-                    playerEntity.openGui((Object)FlansMod.INSTANCE, 7, playerEntity.field_70170_p, d.field_70176_ah, d.field_70162_ai, d.field_70164_aj);
+                    playerEntity.openGui((Object)FlansMod.INSTANCE, 7, playerEntity.worldObj, d.chunkCoordX, d.chunkCoordY, d.chunkCoordZ);
                     break;
                 }
                 case 2: {
-                    playerEntity.openGui((Object)FlansMod.INSTANCE, 8, playerEntity.field_70170_p, d.field_70176_ah, d.field_70162_ai, d.field_70164_aj);
+                    playerEntity.openGui((Object)FlansMod.INSTANCE, 8, playerEntity.worldObj, d.chunkCoordX, d.chunkCoordY, d.chunkCoordZ);
                     break;
                 }
                 case 3: {
-                    playerEntity.openGui((Object)FlansMod.INSTANCE, 9, playerEntity.field_70170_p, d.field_70176_ah, d.field_70162_ai, d.field_70164_aj);
+                    playerEntity.openGui((Object)FlansMod.INSTANCE, 9, playerEntity.worldObj, d.chunkCoordX, d.chunkCoordY, d.chunkCoordZ);
                     break;
                 }
                 case 4: {
-                    playerEntity.openGui((Object)FlansMod.INSTANCE, 10, playerEntity.field_70170_p, d.field_70176_ah, d.field_70162_ai, d.field_70164_aj);
+                    playerEntity.openGui((Object)FlansMod.INSTANCE, 10, playerEntity.worldObj, d.chunkCoordX, d.chunkCoordY, d.chunkCoordZ);
                     break;
                 }
                 case 5: {
-                    playerEntity.openGui((Object)FlansMod.INSTANCE, 12, playerEntity.field_70170_p, d.field_70176_ah, d.field_70162_ai, d.field_70164_aj);
+                    playerEntity.openGui((Object)FlansMod.INSTANCE, 12, playerEntity.worldObj, d.chunkCoordX, d.chunkCoordY, d.chunkCoordZ);
                     break;
                 }
             }

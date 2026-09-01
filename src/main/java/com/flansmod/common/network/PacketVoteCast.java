@@ -38,7 +38,7 @@ public class PacketVoteCast extends PacketBase
     @Override
     public void handleServerSide(final EntityPlayerMP playerEntity) {
         if (this.vote < 0 || this.vote > TeamsManager.getInstance().voteOptions.length) {
-            FlansMod.log("Invalid vote " + this.vote + " from " + playerEntity.func_70005_c_());
+            FlansMod.log("Invalid vote " + this.vote + " from " + playerEntity.getCommandSenderName());
             return;
         }
         final PlayerData data = PlayerHandler.getPlayerData((EntityPlayer)playerEntity, Side.SERVER);

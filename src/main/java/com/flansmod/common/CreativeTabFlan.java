@@ -37,11 +37,11 @@ public class CreativeTabFlan extends CreativeTabs
         this.type = i;
     }
     
-    public Item func_78016_d() {
+    public Item getTabIconItem() {
         return null;
     }
     
-    public ItemStack func_151244_d() {
+    public ItemStack getIconItemStack() {
         this.icon = FlansMod.ticker / 20;
         switch (this.type) {
             case 0: {
@@ -66,15 +66,15 @@ public class CreativeTabFlan extends CreativeTabs
     }
     
     @SideOnly(Side.CLIENT)
-    public void func_78018_a(final List list) {
-        super.func_78018_a(list);
+    public void displayAllReleventItems(final List list) {
+        super.displayAllReleventItems(list);
         final Comparator cmp = new Comparator<ItemStack>() {
             @Override
             public int compare(final ItemStack is1, final ItemStack is2) {
-                final String s1 = is1.func_77977_a();
-                final String s2 = is2.func_77977_a();
-                final Item i1 = is1.func_77973_b();
-                final Item i2 = is2.func_77973_b();
+                final String s1 = is1.getUnlocalizedName();
+                final String s2 = is2.getUnlocalizedName();
+                final Item i1 = is1.getItem();
+                final Item i2 = is2.getItem();
                 if (i1 instanceof IFlanItem && i2 instanceof IFlanItem) {
                     final String it1 = ((IFlanItem)i1).getInfoType().packName;
                     final String it2 = ((IFlanItem)i2).getInfoType().packName;

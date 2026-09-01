@@ -56,10 +56,10 @@ public class PacketGunMode extends PacketBase
     
     @Override
     public void handleServerSide(final EntityPlayerMP playerEntity) {
-        final ItemStack itemStack = playerEntity.field_71071_by.func_70448_g();
+        final ItemStack itemStack = playerEntity.inventory.getCurrentItem();
         if (this.handle == 1) {
-            if (itemStack != null && itemStack.func_77973_b() instanceof ItemGun) {
-                final ItemGun gun = (ItemGun)itemStack.func_77973_b();
+            if (itemStack != null && itemStack.getItem() instanceof ItemGun) {
+                final ItemGun gun = (ItemGun)itemStack.getItem();
                 EnumFireMode nextMode;
                 final EnumFireMode currentMode = nextMode = gun.type.getFireMode(itemStack);
                 final EnumFireMode[] submode = gun.type.submode;
@@ -77,14 +77,14 @@ public class PacketGunMode extends PacketBase
         }
         else {
             final PlayerData data = PlayerHandler.getPlayerData((EntityPlayer)playerEntity);
-            if (itemStack != null && itemStack.func_77973_b() instanceof ItemGun) {
-                final GunType type = ((ItemGun)itemStack.func_77973_b()).type;
+            if (itemStack != null && itemStack.getItem() instanceof ItemGun) {
+                final GunType type = ((ItemGun)itemStack.getItem()).type;
                 final AttachmentType attachment = type.getGrip(itemStack);
                 if (attachment != null && attachment.secondaryFire) {
                     final boolean mode = type.getSecondaryFire(itemStack);
-                    ((ItemGun)itemStack.func_77973_b()).type.setSecondaryFire(itemStack, !mode);
+                    ((ItemGun)itemStack.getItem()).type.setSecondaryFire(itemStack, !mode);
                     if (attachment.toggleSound != null) {
-                        PacketPlaySound.sendSoundPacket(playerEntity.field_70165_t, playerEntity.field_70163_u, playerEntity.field_70161_v, type.reloadSoundRange, playerEntity.field_71093_bK, attachment.toggleSound, true);
+                        PacketPlaySound.sendSoundPacket(playerEntity.posX, playerEntity.posY, playerEntity.posZ, type.reloadSoundRange, playerEntity.dimension, attachment.toggleSound, true);
                     }
                 }
             }
@@ -94,18 +94,18 @@ public class PacketGunMode extends PacketBase
     @SideOnly(Side.CLIENT)
     @Override
     public void handleClientSide(final EntityPlayer clientPlayer) {
-        final ItemStack itemStack = clientPlayer.field_71071_by.func_70448_g();
+        final ItemStack itemStack = clientPlayer.inventory.getCurrentItem();
         if (this.handle == 1) {
-            if (itemStack != null && itemStack.func_77973_b() instanceof ItemGun) {
-                ((ItemGun)itemStack.func_77973_b()).type.setFireMode(itemStack, this.mode.ordinal());
+            if (itemStack != null && itemStack.getItem() instanceof ItemGun) {
+                ((ItemGun)itemStack.getItem()).type.setFireMode(itemStack, this.mode.ordinal());
             }
         }
         else {
-            final GunType type = ((ItemGun)itemStack.func_77973_b()).type;
+            final GunType type = ((ItemGun)itemStack.getItem()).type;
             final AttachmentType attachment = type.getGrip(itemStack);
             if (attachment != null && attachment.secondaryFire) {
                 final boolean mode = type.getSecondaryFire(itemStack);
-                ((ItemGun)itemStack.func_77973_b()).type.setSecondaryFire(itemStack, !mode);
+                ((ItemGun)itemStack.getItem()).type.setSecondaryFire(itemStack, !mode);
             }
         }
     }

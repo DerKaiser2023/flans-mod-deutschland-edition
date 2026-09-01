@@ -214,14 +214,14 @@ public class FlansMod
             FlansMod.flanDir.mkdirs();
             FlansMod.flanDir.mkdir();
         }
-        GameRegistry.registerBlock((Block)(FlansMod.workbench = (BlockFlansWorkbench)new BlockFlansWorkbench(1, 0).func_149663_c("flansWorkbench").func_149658_d("flansWorkbench")), (Class)ItemBlockManyNames.class, "flansWorkbench");
-        GameRegistry.addRecipe(new ItemStack((Block)FlansMod.workbench, 1, 0), new Object[] { "BBB", "III", "III", 'B', Items.field_151054_z, 'I', Items.field_151042_j });
-        GameRegistry.addRecipe(new ItemStack((Block)FlansMod.workbench, 1, 1), new Object[] { "ICI", "III", 'C', Items.field_151066_bu, 'I', Items.field_151042_j });
+        GameRegistry.registerBlock((Block)(FlansMod.workbench = (BlockFlansWorkbench)new BlockFlansWorkbench(1, 0).setUnlocalizedName("flansWorkbench").setTextureName("flansWorkbench")), (Class)ItemBlockManyNames.class, "flansWorkbench");
+        GameRegistry.addRecipe(new ItemStack((Block)FlansMod.workbench, 1, 0), new Object[] { "BBB", "III", "III", 'B', Items.bowl, 'I', Items.iron_ingot });
+        GameRegistry.addRecipe(new ItemStack((Block)FlansMod.workbench, 1, 1), new Object[] { "ICI", "III", 'C', Items.cauldron, 'I', Items.iron_ingot });
         GameRegistry.registerItem((Item)(FlansMod.opStick = new ItemOpStick()), "opStick", "flansmod");
-        FlansMod.flag = (ItemFlagpole)new ItemFlagpole().func_77655_b("flagpole");
-        FlansMod.Shekel = (ItemTeamsShekel)new ItemTeamsShekel().func_77655_b("Shekel");
+        FlansMod.flag = (ItemFlagpole)new ItemFlagpole().setUnlocalizedName("flagpole");
+        FlansMod.Shekel = (ItemTeamsShekel)new ItemTeamsShekel().setUnlocalizedName("Shekel");
         GameRegistry.registerItem((Item)FlansMod.flag, "flagpole", "flansmod");
-        GameRegistry.registerBlock((Block)(FlansMod.spawner = (BlockSpawner)new BlockSpawner(Material.field_151573_f).func_149663_c("teamsSpawner").func_149722_s().func_149752_b(1000000.0f)), (Class)ItemBlockManyNames.class, "teamsSpawner");
+        GameRegistry.registerBlock((Block)(FlansMod.spawner = (BlockSpawner)new BlockSpawner(Material.iron).setUnlocalizedName("teamsSpawner").setBlockUnbreakable().setResistance(1000000.0f)), (Class)ItemBlockManyNames.class, "teamsSpawner");
         GameRegistry.registerTileEntity((Class)TileEntitySpawner.class, "teamsSpawner");
         GameRegistry.registerBlock((Block)(FlansMod.paintjobTable = new BlockPaintjobTable()), "paintjobTable");
         GameRegistry.registerTileEntity((Class)TileEntityPaintjobTable.class, "flansmod");
@@ -245,8 +245,8 @@ public class FlansMod
             type.addRecipe();
         }
         if (FlansMod.addGunpowderRecipe) {
-            final ItemStack charcoal = new ItemStack(Items.field_151044_h, 1, 1);
-            GameRegistry.addShapelessRecipe(new ItemStack(Items.field_151016_H), new Object[] { charcoal, charcoal, charcoal, new ItemStack(Items.field_151114_aO) });
+            final ItemStack charcoal = new ItemStack(Items.coal, 1, 1);
+            GameRegistry.addShapelessRecipe(new ItemStack(Items.gunpowder), new Object[] { charcoal, charcoal, charcoal, new ItemStack(Items.glowstone_dust) });
         }
         log("Loaded recipes.");
         EntityRegistry.registerGlobalEntityID((Class)EntityFlagpole.class, "Flagpole", EntityRegistry.findGlobalUniqueEntityId());
@@ -295,7 +295,7 @@ public class FlansMod
     public void playerDrops(final PlayerDropsEvent event) {
         for (int i = event.drops.size() - 1; i >= 0; --i) {
             final EntityItem ent = event.drops.get(i);
-            final InfoType type = InfoType.getType(ent.func_92059_d());
+            final InfoType type = InfoType.getType(ent.getEntityItem());
             if (type != null && !type.canDrop) {
                 event.drops.remove(i);
             }
@@ -304,7 +304,7 @@ public class FlansMod
     
     @SubscribeEvent
     public void playerDrops(final ItemTossEvent event) {
-        final InfoType type = InfoType.getType(event.entityItem.func_92059_d());
+        final InfoType type = InfoType.getType(event.entityItem.getEntityItem());
         if (type != null && !type.canDrop) {
             event.setCanceled(true);
         }
@@ -312,9 +312,9 @@ public class FlansMod
     
     @Mod.EventHandler
     public void registerCommand(final FMLServerStartedEvent e) {
-        final CommandHandler handler = (CommandHandler)FMLCommonHandler.instance().getSidedDelegate().getServer().func_71187_D();
-        handler.func_71560_a((ICommand)new CommandTeams());
-        handler.func_71560_a((ICommand)new CommandShekel());
+        final CommandHandler handler = (CommandHandler)FMLCommonHandler.instance().getSidedDelegate().getServer().getCommandManager();
+        handler.registerCommand((ICommand)new CommandTeams());
+        handler.registerCommand((ICommand)new CommandShekel());
     }
     
     @SubscribeEvent
@@ -326,24 +326,24 @@ public class FlansMod
     
     @SubscribeEvent
     public void onLivingSpecialSpawn(final LivingSpawnEvent.CheckSpawn event) {
-        final int chance = event.world.field_73012_v.nextInt(101);
+        final int chance = event.world.rand.nextInt(101);
         if (chance < FlansMod.armourSpawnRate && (event.entityLiving instanceof EntityZombie || event.entityLiving instanceof EntitySkeleton)) {
-            if (event.world.field_73012_v.nextBoolean() && ArmourType.armours.size() > 0) {
-                final ArmourType armour = ArmourType.armours.get(event.world.field_73012_v.nextInt(ArmourType.armours.size()));
+            if (event.world.rand.nextBoolean() && ArmourType.armours.size() > 0) {
+                final ArmourType armour = ArmourType.armours.get(event.world.rand.nextInt(ArmourType.armours.size()));
                 if (armour != null && armour.type != 2) {
-                    event.entityLiving.func_70062_b(armour.type + 1, new ItemStack(armour.item));
+                    event.entityLiving.setCurrentItemOrArmor(armour.type + 1, new ItemStack(armour.item));
                 }
             }
             else if (Team.teams.size() > 0) {
-                final Team team = Team.teams.get(event.world.field_73012_v.nextInt(Team.teams.size()));
+                final Team team = Team.teams.get(event.world.rand.nextInt(Team.teams.size()));
                 if (team.hat != null) {
-                    event.entityLiving.func_70062_b(1, team.hat.func_77946_l());
+                    event.entityLiving.setCurrentItemOrArmor(1, team.hat.copy());
                 }
                 if (team.chest != null) {
-                    event.entityLiving.func_70062_b(2, team.chest.func_77946_l());
+                    event.entityLiving.setCurrentItemOrArmor(2, team.chest.copy());
                 }
                 if (team.shoes != null) {
-                    event.entityLiving.func_70062_b(4, team.shoes.func_77946_l());
+                    event.entityLiving.setCurrentItemOrArmor(4, team.shoes.copy());
                 }
             }
         }
@@ -453,59 +453,59 @@ public class FlansMod
                     infoType.read(typeFile);
                     switch (type) {
                         case bullet: {
-                            FlansMod.bulletItems.add((ItemBullet)new ItemBullet((BulletType)infoType).func_77655_b(infoType.shortName));
+                            FlansMod.bulletItems.add((ItemBullet)new ItemBullet((BulletType)infoType).setUnlocalizedName(infoType.shortName));
                             continue;
                         }
                         case attachment: {
-                            FlansMod.attachmentItems.add((ItemAttachment)new ItemAttachment((AttachmentType)infoType).func_77655_b(infoType.shortName));
+                            FlansMod.attachmentItems.add((ItemAttachment)new ItemAttachment((AttachmentType)infoType).setUnlocalizedName(infoType.shortName));
                             continue;
                         }
                         case gun: {
-                            FlansMod.gunItems.add((ItemGun)new ItemGun((GunType)infoType).func_77655_b(infoType.shortName));
+                            FlansMod.gunItems.add((ItemGun)new ItemGun((GunType)infoType).setUnlocalizedName(infoType.shortName));
                             continue;
                         }
                         case grenade: {
-                            FlansMod.grenadeItems.add((ItemGrenade)new ItemGrenade((GrenadeType)infoType).func_77655_b(infoType.shortName));
+                            FlansMod.grenadeItems.add((ItemGrenade)new ItemGrenade((GrenadeType)infoType).setUnlocalizedName(infoType.shortName));
                             continue;
                         }
                         case part: {
-                            FlansMod.partItems.add((ItemPart)new ItemPart((PartType)infoType).func_77655_b(infoType.shortName));
+                            FlansMod.partItems.add((ItemPart)new ItemPart((PartType)infoType).setUnlocalizedName(infoType.shortName));
                             continue;
                         }
                         case plane: {
-                            FlansMod.planeItems.add((ItemPlane)new ItemPlane((PlaneType)infoType).func_77655_b(infoType.shortName));
+                            FlansMod.planeItems.add((ItemPlane)new ItemPlane((PlaneType)infoType).setUnlocalizedName(infoType.shortName));
                             continue;
                         }
                         case vehicle: {
-                            FlansMod.vehicleItems.add((ItemVehicle)new ItemVehicle((VehicleType)infoType).func_77655_b(infoType.shortName));
+                            FlansMod.vehicleItems.add((ItemVehicle)new ItemVehicle((VehicleType)infoType).setUnlocalizedName(infoType.shortName));
                             continue;
                         }
                         case aa: {
-                            FlansMod.aaGunItems.add((ItemAAGun)new ItemAAGun((AAGunType)infoType).func_77655_b(infoType.shortName));
+                            FlansMod.aaGunItems.add((ItemAAGun)new ItemAAGun((AAGunType)infoType).setUnlocalizedName(infoType.shortName));
                             continue;
                         }
                         case mechaItem: {
-                            FlansMod.mechaToolItems.add((ItemMechaAddon)new ItemMechaAddon((MechaItemType)infoType).func_77655_b(infoType.shortName));
+                            FlansMod.mechaToolItems.add((ItemMechaAddon)new ItemMechaAddon((MechaItemType)infoType).setUnlocalizedName(infoType.shortName));
                             continue;
                         }
                         case mecha: {
-                            FlansMod.mechaItems.add((ItemMecha)new ItemMecha((MechaType)infoType).func_77655_b(infoType.shortName));
+                            FlansMod.mechaItems.add((ItemMecha)new ItemMecha((MechaType)infoType).setUnlocalizedName(infoType.shortName));
                             continue;
                         }
                         case tool: {
-                            FlansMod.toolItems.add((ItemTool)new ItemTool((ToolType)infoType).func_77655_b(infoType.shortName));
+                            FlansMod.toolItems.add((ItemTool)new ItemTool((ToolType)infoType).setUnlocalizedName(infoType.shortName));
                             continue;
                         }
                         case box: {
-                            FlansMod.gunBoxBlocks.add((BlockGunBox)new BlockGunBox((GunBoxType)infoType).func_149663_c(infoType.shortName));
+                            FlansMod.gunBoxBlocks.add((BlockGunBox)new BlockGunBox((GunBoxType)infoType).setUnlocalizedName(infoType.shortName));
                             continue;
                         }
                         case armour: {
-                            FlansMod.armourItems.add((ItemTeamArmour)new ItemTeamArmour((ArmourType)infoType).func_77655_b(infoType.shortName));
+                            FlansMod.armourItems.add((ItemTeamArmour)new ItemTeamArmour((ArmourType)infoType).setUnlocalizedName(infoType.shortName));
                             continue;
                         }
                         case armourBox: {
-                            FlansMod.armourBoxBlocks.add((BlockArmourBox)new BlockArmourBox((ArmourBoxType)infoType).func_149663_c(infoType.shortName));
+                            FlansMod.armourBoxBlocks.add((BlockArmourBox)new BlockArmourBox((ArmourBoxType)infoType).setUnlocalizedName(infoType.shortName));
                             continue;
                         }
                         case playerClass: {

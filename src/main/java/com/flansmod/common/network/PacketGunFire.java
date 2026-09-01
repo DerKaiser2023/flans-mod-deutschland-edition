@@ -49,15 +49,15 @@ public class PacketGunFire extends PacketBase
     
     @Override
     public void handleServerSide(final EntityPlayerMP playerEntity) {
-        final ItemStack currentItem = playerEntity.field_71071_by.func_70448_g();
-        if (currentItem != null && currentItem.func_77973_b() != null && currentItem.func_77973_b() instanceof ItemGun) {
-            final float bkYaw = playerEntity.field_70177_z;
-            final float bkPitch = playerEntity.field_70125_A;
-            playerEntity.field_70177_z = this.yaw;
-            playerEntity.field_70125_A = this.pitch;
-            ((ItemGun)currentItem.func_77973_b()).onMouseHeld(currentItem, playerEntity.field_70170_p, playerEntity, this.left, this.held);
-            playerEntity.field_70177_z = bkYaw;
-            playerEntity.field_70125_A = bkPitch;
+        final ItemStack currentItem = playerEntity.inventory.getCurrentItem();
+        if (currentItem != null && currentItem.getItem() != null && currentItem.getItem() instanceof ItemGun) {
+            final float bkYaw = playerEntity.rotationYaw;
+            final float bkPitch = playerEntity.rotationPitch;
+            playerEntity.rotationYaw = this.yaw;
+            playerEntity.rotationPitch = this.pitch;
+            ((ItemGun)currentItem.getItem()).onMouseHeld(currentItem, playerEntity.worldObj, playerEntity, this.left, this.held);
+            playerEntity.rotationYaw = bkYaw;
+            playerEntity.rotationPitch = bkPitch;
         }
     }
     
@@ -65,6 +65,6 @@ public class PacketGunFire extends PacketBase
     @Override
     public void handleClientSide(final EntityPlayer clientPlayer) {
         FlansMod.log("Received gun button packet on client. Skipping.");
-        final ItemStack currentItem = clientPlayer.field_71071_by.func_70448_g();
+        final ItemStack currentItem = clientPlayer.inventory.getCurrentItem();
     }
 }

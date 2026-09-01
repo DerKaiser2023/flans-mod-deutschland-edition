@@ -33,7 +33,7 @@ public class PacketSeatUpdates extends PacketBase
     }
     
     public PacketSeatUpdates(final EntitySeat seat) {
-        this.entityId = seat.driveable.func_145782_y();
+        this.entityId = seat.driveable.getEntityId();
         this.seatId = seat.seatInfo.id;
         this.yaw = seat.looking.getYaw();
         this.pitch = seat.looking.getPitch();
@@ -76,8 +76,8 @@ public class PacketSeatUpdates extends PacketBase
     @Override
     public void handleServerSide(final EntityPlayerMP playerEntity) {
         EntityDriveable driveable = null;
-        for (final Object obj : playerEntity.field_70170_p.field_72996_f) {
-            if (obj instanceof EntityDriveable && ((Entity)obj).func_145782_y() == this.entityId) {
+        for (final Object obj : playerEntity.worldObj.loadedEntityList) {
+            if (obj instanceof EntityDriveable && ((Entity)obj).getEntityId() == this.entityId) {
                 driveable = (EntityDriveable)obj;
                 break;
             }
@@ -91,7 +91,7 @@ public class PacketSeatUpdates extends PacketBase
             driveable.seats[this.seatId].playPitchSound = this.playPitchSound;
             driveable.seats[this.seatId].yawSoundDelay = this.yawSoundDelay;
             driveable.seats[this.seatId].pitchSoundDelay = this.pitchSoundDelay;
-            FlansMod.getPacketHandler().sendToAllAround(this, driveable.field_70165_t, driveable.field_70163_u, driveable.field_70161_v, FlansMod.driveableUpdateRange, driveable.field_71093_bK);
+            FlansMod.getPacketHandler().sendToAllAround(this, driveable.posX, driveable.posY, driveable.posZ, FlansMod.driveableUpdateRange, driveable.dimension);
         }
     }
     
@@ -100,14 +100,14 @@ public class PacketSeatUpdates extends PacketBase
     public void handleClientSide(final EntityPlayer clientPlayer) {
         EntityDriveable driveable = null;
         final EntitySeat seat = null;
-        for (final Object obj : clientPlayer.field_70170_p.field_72996_f) {
-            if (obj instanceof EntityDriveable && ((Entity)obj).func_145782_y() == this.entityId) {
+        for (final Object obj : clientPlayer.worldObj.loadedEntityList) {
+            if (obj instanceof EntityDriveable && ((Entity)obj).getEntityId() == this.entityId) {
                 driveable = (EntityDriveable)obj;
                 break;
             }
         }
         if (driveable != null) {
-            if (driveable.seats[this.seatId] == null || driveable.seats[this.seatId].field_70153_n == clientPlayer) {
+            if (driveable.seats[this.seatId] == null || driveable.seats[this.seatId].riddenByEntity == clientPlayer) {
                 return;
             }
             driveable.seats[this.seatId].prevLooking = driveable.seats[this.seatId].looking.clone();

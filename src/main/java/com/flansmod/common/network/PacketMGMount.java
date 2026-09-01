@@ -23,8 +23,8 @@ public class PacketMGMount extends PacketBase
     }
     
     public PacketMGMount(final EntityPlayer player, final EntityMG mg, final boolean mounting) {
-        this.playerEntityId = player.func_145782_y();
-        this.mgEntityId = mg.func_145782_y();
+        this.playerEntityId = player.getEntityId();
+        this.mgEntityId = mg.getEntityId();
         this.mounting = mounting;
     }
     
@@ -50,8 +50,8 @@ public class PacketMGMount extends PacketBase
     @SideOnly(Side.CLIENT)
     @Override
     public void handleClientSide(final EntityPlayer clientPlayer) {
-        final EntityPlayer player = (EntityPlayer)clientPlayer.field_70170_p.func_73045_a(this.playerEntityId);
-        final EntityMG mg = (EntityMG)clientPlayer.field_70170_p.func_73045_a(this.mgEntityId);
+        final EntityPlayer player = (EntityPlayer)clientPlayer.worldObj.getEntityByID(this.playerEntityId);
+        final EntityMG mg = (EntityMG)clientPlayer.worldObj.getEntityByID(this.mgEntityId);
         if (mg != null && player != null) {
             mg.mountGun(player, this.mounting);
         }

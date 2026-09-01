@@ -34,12 +34,12 @@ public class PacketGunPaint extends PacketBase
     
     @Override
     public void handleServerSide(final EntityPlayerMP playerEntity) {
-        if (playerEntity.field_71070_bA instanceof ContainerGunModTable) {
-            final ContainerGunModTable gunModTable = (ContainerGunModTable)playerEntity.field_71070_bA;
+        if (playerEntity.openContainer instanceof ContainerGunModTable) {
+            final ContainerGunModTable gunModTable = (ContainerGunModTable)playerEntity.openContainer;
             gunModTable.clickPaintjob(this.paintjobID);
         }
-        else if (playerEntity.field_71070_bA instanceof ContainerPaintjobTable) {
-            final ContainerPaintjobTable paintjobTable = (ContainerPaintjobTable)playerEntity.field_71070_bA;
+        else if (playerEntity.openContainer instanceof ContainerPaintjobTable) {
+            final ContainerPaintjobTable paintjobTable = (ContainerPaintjobTable)playerEntity.openContainer;
             paintjobTable.clickPaintjob(this.paintjobID);
         }
     }

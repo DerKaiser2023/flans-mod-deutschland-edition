@@ -21,7 +21,7 @@ public class PacketAAGunAngles extends PacketBase
     }
     
     public PacketAAGunAngles(final EntityAAGun entity) {
-        this.entityID = entity.func_145782_y();
+        this.entityID = entity.getEntityId();
         this.gunYaw = entity.gunYaw;
         this.gunPitch = entity.gunPitch;
     }
@@ -46,7 +46,7 @@ public class PacketAAGunAngles extends PacketBase
     
     @Override
     public void handleClientSide(final EntityPlayer clientPlayer) {
-        final Entity entity = clientPlayer.field_70170_p.func_73045_a(this.entityID);
+        final Entity entity = clientPlayer.worldObj.getEntityByID(this.entityID);
         if (entity instanceof EntityAAGun) {
             final EntityAAGun aa = (EntityAAGun)entity;
             aa.prevGunYaw = aa.gunYaw;

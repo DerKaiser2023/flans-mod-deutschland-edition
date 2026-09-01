@@ -33,13 +33,13 @@ public class CraftingInstance
         this.craftingSuccessful = true;
         for (final ItemStack check : this.requiredStacks) {
             int numMatchingStuff = 0;
-            for (int j = 0; j < this.inventory.func_70302_i_(); ++j) {
-                final ItemStack stack = this.inventory.func_70301_a(j);
-                if (stack != null && stack.func_77973_b() == check.func_77973_b() && stack.func_77960_j() == check.func_77960_j()) {
-                    numMatchingStuff += stack.field_77994_a;
+            for (int j = 0; j < this.inventory.getSizeInventory(); ++j) {
+                final ItemStack stack = this.inventory.getStackInSlot(j);
+                if (stack != null && stack.getItem() == check.getItem() && stack.getMetadata() == check.getMetadata()) {
+                    numMatchingStuff += stack.stackSize;
                 }
             }
-            if (numMatchingStuff < check.field_77994_a) {
+            if (numMatchingStuff < check.stackSize) {
                 this.craftingSuccessful = false;
             }
         }
@@ -51,17 +51,17 @@ public class CraftingInstance
             return;
         }
         for (final ItemStack remove : this.requiredStacks) {
-            int amountLeft = remove.field_77994_a;
-            for (int j = 0; j < this.inventory.func_70302_i_(); ++j) {
-                final ItemStack stack = this.inventory.func_70301_a(j);
-                if (amountLeft > 0 && stack != null && stack.func_77973_b() == remove.func_77973_b() && stack.func_77960_j() == remove.func_77960_j()) {
-                    amountLeft -= this.inventory.func_70298_a(j, amountLeft).field_77994_a;
+            int amountLeft = remove.stackSize;
+            for (int j = 0; j < this.inventory.getSizeInventory(); ++j) {
+                final ItemStack stack = this.inventory.getStackInSlot(j);
+                if (amountLeft > 0 && stack != null && stack.getItem() == remove.getItem() && stack.getMetadata() == remove.getMetadata()) {
+                    amountLeft -= this.inventory.decrStackSize(j, amountLeft).stackSize;
                 }
             }
         }
         for (final ItemStack stack2 : this.outputStacks) {
-            if (!player.field_71071_by.func_70441_a(stack2)) {
-                player.func_71019_a(stack2, false);
+            if (!player.inventory.addItemStackToInventory(stack2)) {
+                player.dropPlayerItemWithRandomChoice(stack2, false);
             }
         }
     }

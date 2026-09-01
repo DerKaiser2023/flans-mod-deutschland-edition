@@ -17,20 +17,20 @@ public class PacketChecker extends PacketBase
 {
     @Override
     public void handleServerSide(final EntityPlayerMP playerEntity) {
-        if (playerEntity.field_70154_o != null) {
-            final Entity last = playerEntity.field_70154_o;
-            playerEntity.func_70078_a((Entity)null);
-            last.field_70153_n = null;
+        if (playerEntity.ridingEntity != null) {
+            final Entity last = playerEntity.ridingEntity;
+            playerEntity.mountEntity((Entity)null);
+            last.riddenByEntity = null;
             ServerTickEvent.remount.add(new Object[] { playerEntity, last });
-            last.field_70159_w = 0.0;
-            last.field_70181_x = 0.0;
-            last.field_70179_y = 0.0;
+            last.motionX = 0.0;
+            last.motionY = 0.0;
+            last.motionZ = 0.0;
             if (last instanceof EntitySeat) {
                 final EntitySeat seat = (EntitySeat)last;
                 final EntityDriveable plane = seat.driveable;
-                plane.field_70159_w = 0.0;
-                plane.field_70181_x = 0.1;
-                plane.field_70179_y = 0.0;
+                plane.motionX = 0.0;
+                plane.motionY = 0.1;
+                plane.motionZ = 0.0;
             }
         }
     }

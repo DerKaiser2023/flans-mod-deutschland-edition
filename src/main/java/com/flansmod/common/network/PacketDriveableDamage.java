@@ -31,7 +31,7 @@ public class PacketDriveableDamage extends PacketBase
     }
     
     public PacketDriveableDamage(final EntityDriveable driveable) {
-        this.entityId = driveable.func_145782_y();
+        this.entityId = driveable.getEntityId();
         this.health = new short[EnumDriveablePart.values().length];
         this.crew = new short[EnumDriveablePart.values().length];
         this.onFire = new boolean[EnumDriveablePart.values().length];
@@ -73,8 +73,8 @@ public class PacketDriveableDamage extends PacketBase
     @Override
     public void handleClientSide(final EntityPlayer clientPlayer) {
         EntityDriveable driveable = null;
-        for (final Object obj : clientPlayer.field_70170_p.field_72996_f) {
-            if (obj instanceof EntityDriveable && ((Entity)obj).func_145782_y() == this.entityId) {
+        for (final Object obj : clientPlayer.worldObj.loadedEntityList) {
+            if (obj instanceof EntityDriveable && ((Entity)obj).getEntityId() == this.entityId) {
                 driveable = (EntityDriveable)obj;
                 break;
             }

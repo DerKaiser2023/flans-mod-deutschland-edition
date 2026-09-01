@@ -1,0 +1,5 @@
+#!/bin/sh
+set -e
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+export JAVA_HOME="$SCRIPT_DIR/.buildtools/jdk8u504-b01"
+exec "$SCRIPT_DIR/.buildtools/gradle-4.5/bin/gradle" "$@"

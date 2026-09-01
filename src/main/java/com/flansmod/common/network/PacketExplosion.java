@@ -54,6 +54,6 @@ public class PacketExplosion extends PacketBase
     @SideOnly(Side.CLIENT)
     @Override
     public void handleClientSide(final EntityPlayer clientPlayer) {
-        FlansModExplosion.clientExplosion(clientPlayer.field_70170_p, this.explosionSize, this.explosionX, this.explosionY, this.explosionZ);
+        FlansModExplosion.clientExplosion(clientPlayer.worldObj, this.explosionSize, this.explosionX, this.explosionY, this.explosionZ);
     }
 }

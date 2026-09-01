@@ -13,14 +13,14 @@ public class ItemBlockManyNames extends ItemBlock
 {
     public ItemBlockManyNames(final Block b) {
         super(b);
-        this.func_77627_a(true);
+        this.setHasSubtypes(true);
     }
     
-    public String func_77667_c(final ItemStack stack) {
-        return super.func_77658_a() + "." + stack.func_77960_j();
+    public String getUnlocalizedName(final ItemStack stack) {
+        return super.getUnlocalizedName() + "." + stack.getMetadata();
     }
     
-    public int func_77647_b(final int par1) {
+    public int getMetadata(final int par1) {
         return par1;
     }
     

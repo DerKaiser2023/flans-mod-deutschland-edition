@@ -44,10 +44,10 @@ public class PacketCurrentMissile extends PacketBase
     
     @Override
     public void handleServerSide(final EntityPlayerMP playerEntity) {
-        final Entity e = playerEntity.field_70170_p.func_73045_a(this.entityid);
+        final Entity e = playerEntity.worldObj.getEntityByID(this.entityid);
         if (e != null && e instanceof EntityDriveable) {
             final EntityDriveable v = (EntityDriveable)e;
-            if (!v.field_70170_p.field_72995_K && System.currentTimeMillis() - v.lastshellswitchedat > 1000L) {
+            if (!v.worldObj.isRemote && System.currentTimeMillis() - v.lastshellswitchedat > 1000L) {
                 v.lastshellswitchedat = System.currentTimeMillis();
                 final DriveableData dd = v.getDriveableData();
                 final ArrayList<ItemStack> notnull = new ArrayList<ItemStack>();
@@ -67,7 +67,7 @@ public class PacketCurrentMissile extends PacketBase
                         newmissiles[i - 1] = is;
                     }
                     dd.missiles = newmissiles;
-                    PacketPlaySound.sendSoundPacket(e.field_70165_t, e.field_70163_u, e.field_70161_v, 4.0, e.field_71093_bK, "AnalogComputerSound", false);
+                    PacketPlaySound.sendSoundPacket(e.posX, e.posY, e.posZ, 4.0, e.dimension, "AnalogComputerSound", false);
                 }
             }
         }
@@ -75,9 +75,9 @@ public class PacketCurrentMissile extends PacketBase
     
     @Override
     public void handleClientSide(final EntityPlayer clientPlayer) {
-        final Entity e = clientPlayer.field_70170_p.func_73045_a(this.entityid);
-        if (e != null && e instanceof EntityDriveable && this.missile.func_77973_b() instanceof ItemBullet) {
-            ((EntityDriveable)e).currentAmmo = ((ItemBullet)this.missile.func_77973_b()).type.name;
+        final Entity e = clientPlayer.worldObj.getEntityByID(this.entityid);
+        if (e != null && e instanceof EntityDriveable && this.missile.getItem() instanceof ItemBullet) {
+            ((EntityDriveable)e).currentAmmo = ((ItemBullet)this.missile.getItem()).type.name;
         }
     }
 }

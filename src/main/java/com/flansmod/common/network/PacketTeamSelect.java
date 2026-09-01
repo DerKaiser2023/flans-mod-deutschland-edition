@@ -133,13 +133,13 @@ public class PacketTeamSelect extends PacketBase
             return;
         }
         if (this.classChoicesPacket) {
-            Minecraft.func_71410_x().func_147108_a((GuiScreen)new GuiTeamSelect(this.playerClasses));
+            Minecraft.getMinecraft().displayGuiScreen((GuiScreen)new GuiTeamSelect(this.playerClasses));
         }
         else if (this.info) {
             GuiTeamSelect.teamChoices = this.teams;
         }
         else {
-            Minecraft.func_71410_x().func_147108_a((GuiScreen)new GuiTeamSelect(this.teams));
+            Minecraft.getMinecraft().displayGuiScreen((GuiScreen)new GuiTeamSelect(this.teams));
         }
     }
 }

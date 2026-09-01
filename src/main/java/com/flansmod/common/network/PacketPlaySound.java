@@ -91,7 +91,7 @@ public class PacketPlaySound extends PacketBase
     @SideOnly(Side.CLIENT)
     @Override
     public void handleClientSide(final EntityPlayer clientPlayer) {
-        FMLClientHandler.instance().getClient().func_147118_V().func_147682_a((ISound)new PositionedSoundRecord(FlansModResourceHandler.getSound(this.sound), this.silenced ? 5.0f : 10.0f, (this.distort ? (1.0f / (PacketPlaySound.rand.nextFloat() * 0.4f + 0.8f)) : 1.0f) * (this.silenced ? 2.0f : 1.0f), this.posX, this.posY, this.posZ));
+        FMLClientHandler.instance().getClient().getSoundHandler().playSound((ISound)new PositionedSoundRecord(FlansModResourceHandler.getSound(this.sound), this.silenced ? 5.0f : 10.0f, (this.distort ? (1.0f / (PacketPlaySound.rand.nextFloat() * 0.4f + 0.8f)) : 1.0f) * (this.silenced ? 2.0f : 1.0f), this.posX, this.posY, this.posZ));
     }
     
     static {

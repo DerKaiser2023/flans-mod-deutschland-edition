@@ -77,8 +77,8 @@ public class PacketVoting extends PacketBase
     @SideOnly(Side.CLIENT)
     @Override
     public void handleClientSide(final EntityPlayer clientPlayer) {
-        if (!(Minecraft.func_71410_x().field_71462_r instanceof GuiVoting)) {
-            Minecraft.func_71410_x().func_147108_a((GuiScreen)new GuiVoting(this));
+        if (!(Minecraft.getMinecraft().currentScreen instanceof GuiVoting)) {
+            Minecraft.getMinecraft().displayGuiScreen((GuiScreen)new GuiVoting(this));
         }
         else {
             GuiVoting.packet = this;

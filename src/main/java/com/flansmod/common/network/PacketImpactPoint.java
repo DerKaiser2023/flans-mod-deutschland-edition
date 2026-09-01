@@ -46,8 +46,8 @@ public class PacketImpactPoint extends PacketBase
     
     @Override
     public void handleServerSide(final EntityPlayerMP playerEntity) {
-        if (playerEntity.func_71045_bC() != null && playerEntity.func_71045_bC().func_77973_b() instanceof ItemGun) {
-            final ItemGun itemGun = (ItemGun)playerEntity.func_71045_bC().func_77973_b();
+        if (playerEntity.getCurrentEquippedItem() != null && playerEntity.getCurrentEquippedItem().getItem() instanceof ItemGun) {
+            final ItemGun itemGun = (ItemGun)playerEntity.getCurrentEquippedItem().getItem();
             itemGun.impactX = this.x;
             itemGun.impactY = this.y;
             itemGun.impactZ = this.z;

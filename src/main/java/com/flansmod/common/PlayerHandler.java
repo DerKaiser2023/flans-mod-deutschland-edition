@@ -52,10 +52,10 @@ public class PlayerHandler
     public void onEntityHurt(final LivingAttackEvent event) {
         final EntityLivingBase entity = event.entityLiving;
         if (event instanceof LivingAttackEvent) {
-            if (entity.field_70154_o instanceof EntityDriveable && ((EntityDriveable)entity.field_70154_o).getDriveableType().invinciblePilotType) {
+            if (entity.ridingEntity instanceof EntityDriveable && ((EntityDriveable)entity.ridingEntity).getDriveableType().invinciblePilotType) {
                 event.setCanceled(true);
             }
-            if (entity.field_70154_o instanceof EntitySeat && ((EntitySeat)entity.field_70154_o).seatInfo.invincible) {
+            if (entity.ridingEntity instanceof EntitySeat && ((EntitySeat)entity.ridingEntity).seatInfo.invincible) {
                 event.setCanceled(true);
             }
         }
@@ -77,14 +77,14 @@ public class PlayerHandler
             if (shootableType != null && shootableType.ignoreArmorProbability > 0.0f && PlayerHandler.rand.nextFloat() < shootableType.ignoreArmorProbability) {
                 final EntityLivingBase entity = event.entityLiving;
                 final float f1 = damage;
-                damage = Math.max(damage - entity.func_110139_bj(), 0.0f);
-                entity.func_110149_m(entity.func_110139_bj() - (f1 - damage));
+                damage = Math.max(damage - entity.getAbsorptionAmount(), 0.0f);
+                entity.setAbsorptionAmount(entity.getAbsorptionAmount() - (f1 - damage));
                 damage *= shootableType.ignoreArmorDamageFactor;
                 if (damage != 0.0f) {
-                    final float health = entity.func_110143_aJ();
-                    entity.func_70606_j(health - damage);
-                    entity.func_110142_aN().func_94547_a((DamageSource)source, health, damage);
-                    entity.func_110149_m(entity.func_110139_bj() - damage);
+                    final float health = entity.getHealth();
+                    entity.setHealth(health - damage);
+                    entity.getCombatTracker().func_94547_a((DamageSource)source, health, damage);
+                    entity.setAbsorptionAmount(entity.getAbsorptionAmount() - damage);
                 }
                 event.setCanceled(true);
             }
@@ -100,16 +100,16 @@ public class PlayerHandler
     }
     
     public void serverTick() {
-        for (final WorldServer world : MinecraftServer.func_71276_C().field_71305_c) {
-            for (final Object player : world.field_73010_i) {
+        for (final WorldServer world : MinecraftServer.getServer().worldServers) {
+            for (final Object player : world.playerEntities) {
                 getPlayerData((EntityPlayer)player).tick((EntityPlayer)player);
             }
         }
     }
     
     public void clientTick() {
-        if (Minecraft.func_71410_x().field_71441_e != null) {
-            for (final Object player : Minecraft.func_71410_x().field_71441_e.field_73010_i) {
+        if (Minecraft.getMinecraft().theWorld != null) {
+            for (final Object player : Minecraft.getMinecraft().theWorld.playerEntities) {
                 getPlayerData((EntityPlayer)player).tick((EntityPlayer)player);
             }
         }
@@ -119,7 +119,7 @@ public class PlayerHandler
         if (player == null) {
             return null;
         }
-        return getPlayerData(player.func_70005_c_(), player.field_70170_p.field_72995_K ? Side.CLIENT : Side.SERVER);
+        return getPlayerData(player.getCommandSenderName(), player.worldObj.isRemote ? Side.CLIENT : Side.SERVER);
     }
     
     public static PlayerData getPlayerData(final String username) {
@@ -130,7 +130,7 @@ public class PlayerHandler
         if (player == null) {
             return null;
         }
-        return getPlayerData(player.func_70005_c_(), side);
+        return getPlayerData(player.getCommandSenderName(), side);
     }
     
     public static PlayerData getPlayerData(final String username, final Side side) {
@@ -152,7 +152,7 @@ public class PlayerHandler
                 FlansMod.packetHandler.sendTo(new PacketRequestDebug(false), (EntityPlayerMP)event.player);
             }
             final EntityPlayer player = event.player;
-            final String username = player.func_70005_c_();
+            final String username = player.getCommandSenderName();
             if (!PlayerHandler.serverSideData.containsKey(username)) {
                 PlayerHandler.serverSideData.put(username, new PlayerData(username));
             }
@@ -162,7 +162,7 @@ public class PlayerHandler
         }
         else if (event instanceof PlayerEvent.PlayerLoggedOutEvent) {
             final EntityPlayer player = event.player;
-            final String username = player.func_70005_c_();
+            final String username = player.getCommandSenderName();
             if (TeamsManager.getInstance().currentRound == null) {
                 PlayerHandler.serverSideData.remove(username);
             }
@@ -172,7 +172,7 @@ public class PlayerHandler
         }
         else if (event instanceof PlayerEvent.PlayerRespawnEvent) {
             final EntityPlayer player = event.player;
-            final String username = player.func_70005_c_();
+            final String username = player.getCommandSenderName();
             if (!PlayerHandler.serverSideData.containsKey(username)) {
                 PlayerHandler.serverSideData.put(username, new PlayerData(username));
             }

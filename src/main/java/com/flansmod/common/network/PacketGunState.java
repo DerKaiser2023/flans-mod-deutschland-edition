@@ -40,16 +40,16 @@ public class PacketGunState extends PacketBase
     
     @Override
     public void handleServerSide(final EntityPlayerMP player) {
-        if (player.func_71045_bC() != null && player.func_71045_bC().func_77973_b() instanceof ItemGun) {
-            final ItemGun itemGun = (ItemGun)player.func_71045_bC().func_77973_b();
-            final ItemStack itemstack = player.func_71045_bC();
+        if (player.getCurrentEquippedItem() != null && player.getCurrentEquippedItem().getItem() instanceof ItemGun) {
+            final ItemGun itemGun = (ItemGun)player.getCurrentEquippedItem().getItem();
+            final ItemStack itemstack = player.getCurrentEquippedItem();
             final AttachmentType scope = itemGun.type.getScope(itemstack);
             if (scope != null && scope.hasNightVision && this.isScoped) {
-                player.func_70690_d(new PotionEffect(Potion.field_76439_r.field_76415_H, 2400, 0));
+                player.addPotionEffect(new PotionEffect(Potion.nightVision.id, 2400, 0));
                 ServerTickEvent.nightVisionPlayers.add(player);
             }
             else if (scope != null && scope.hasNightVision && !this.isScoped) {
-                player.func_82170_o(Potion.field_76439_r.field_76415_H);
+                player.removePotionEffect(Potion.nightVision.id);
                 ServerTickEvent.nightVisionPlayers.remove(player);
             }
         }

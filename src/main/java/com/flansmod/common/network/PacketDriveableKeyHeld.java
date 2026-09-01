@@ -40,8 +40,8 @@ public class PacketDriveableKeyHeld extends PacketBase
     
     @Override
     public void handleServerSide(final EntityPlayerMP playerEntity) {
-        if (playerEntity.field_70154_o != null && playerEntity.field_70154_o instanceof IControllable) {
-            ((IControllable)playerEntity.field_70154_o).updateKeyHeldState(this.key, this.held);
+        if (playerEntity.ridingEntity != null && playerEntity.ridingEntity instanceof IControllable) {
+            ((IControllable)playerEntity.ridingEntity).updateKeyHeldState(this.key, this.held);
         }
     }
     

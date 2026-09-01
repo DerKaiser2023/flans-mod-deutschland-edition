@@ -89,7 +89,7 @@ public class PacketHandler extends MessageToMessageCodec<FMLProxyPacket, PacketB
             }
             case SERVER: {
                 final INetHandler netHandler = (INetHandler)ctx.channel().attr(NetworkRegistry.NET_HANDLER).get();
-                packet.handleServerSide(((NetHandlerPlayServer)netHandler).field_147369_b);
+                packet.handleServerSide(((NetHandlerPlayServer)netHandler).playerEntity);
                 break;
             }
         }
@@ -164,7 +164,7 @@ public class PacketHandler extends MessageToMessageCodec<FMLProxyPacket, PacketB
     
     @SideOnly(Side.CLIENT)
     private static EntityPlayer getClientPlayer() {
-        return (EntityPlayer)Minecraft.func_71410_x().field_71439_g;
+        return (EntityPlayer)Minecraft.getMinecraft().thePlayer;
     }
     
     public void sendToAll(final PacketBase packet) {
@@ -196,23 +196,23 @@ public class PacketHandler extends MessageToMessageCodec<FMLProxyPacket, PacketB
     }
     
     public void sendToAll(final Packet packet) {
-        MinecraftServer.func_71276_C().func_71203_ab().func_148540_a(packet);
+        MinecraftServer.getServer().getConfigurationManager().sendPacketToAllPlayers(packet);
     }
     
     public void sendTo(final Packet packet, final EntityPlayerMP player) {
-        player.field_71135_a.func_147359_a(packet);
+        player.playerNetServerHandler.sendPacket(packet);
     }
     
     public void sendToAllAround(final Packet packet, final NetworkRegistry.TargetPoint point) {
-        MinecraftServer.func_71276_C().func_71203_ab().func_148541_a(point.x, point.y, point.z, point.range, point.dimension, packet);
+        MinecraftServer.getServer().getConfigurationManager().sendToAllNear(point.x, point.y, point.z, point.range, point.dimension, packet);
     }
     
     public void sendToDimension(final Packet packet, final int dimensionID) {
-        MinecraftServer.func_71276_C().func_71203_ab().func_148537_a(packet, dimensionID);
+        MinecraftServer.getServer().getConfigurationManager().sendPacketToAllPlayersInDimension(packet, dimensionID);
     }
     
     public void sendToServer(final Packet packet) {
-        Minecraft.func_71410_x().field_71439_g.field_71174_a.func_147297_a(packet);
+        Minecraft.getMinecraft().thePlayer.sendQueue.addToSendQueue(packet);
     }
     
     public void sendToAllAround(final PacketBase packet, final double x, final double y, final double z, final float range, final int dimension) {
@@ -222,18 +222,18 @@ public class PacketHandler extends MessageToMessageCodec<FMLProxyPacket, PacketB
     public void sendToDonut(final PacketBase packet, final double x, final double y, final double z, final float minRange, final float maxRange, final int dimension) {
         List players;
         if (FMLCommonHandler.instance().getSide().isClient()) {
-            players = Minecraft.func_71410_x().field_71441_e.field_73010_i;
+            players = Minecraft.getMinecraft().theWorld.playerEntities;
         }
         else {
-            players = MinecraftServer.func_71276_C().func_71203_ab().field_72404_b;
+            players = MinecraftServer.getServer().getConfigurationManager().playerEntityList;
         }
         for (final Object p : players) {
             if (p instanceof EntityPlayerMP) {
                 final EntityPlayerMP pl = (EntityPlayerMP)p;
-                if (pl.field_71093_bK != dimension) {
+                if (pl.dimension != dimension) {
                     continue;
                 }
-                final double dist = Math.sqrt((pl.field_70165_t - x) * (pl.field_70165_t - x) + (pl.field_70163_u - y) * (pl.field_70163_u - y) + (pl.field_70161_v - z) * (pl.field_70161_v - z));
+                final double dist = Math.sqrt((pl.posX - x) * (pl.posX - x) + (pl.posY - y) * (pl.posY - y) + (pl.posZ - z) * (pl.posZ - z));
                 if (dist <= minRange || dist >= maxRange) {
                     continue;
                 }

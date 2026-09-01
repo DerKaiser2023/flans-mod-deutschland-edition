@@ -162,22 +162,22 @@ public class PlayerData
             else {
                 sound = "death" + random;
             }
-            FlansMod.getPacketHandler().sendToAllAround(new PacketPlaySound(player.field_70165_t, player.field_70163_u, player.field_70161_v, sound, false, false), player.field_70165_t, player.field_70163_u, player.field_70161_v, 10.0f, player.field_71093_bK);
-            FlansMod.getPacketHandler().sendToAllAround(new PacketPlaySound(player.field_70165_t, player.field_70163_u, player.field_70161_v, sound, false, false), player.field_70165_t, player.field_70163_u, player.field_70161_v, 25.0f, player.field_71093_bK);
+            FlansMod.getPacketHandler().sendToAllAround(new PacketPlaySound(player.posX, player.posY, player.posZ, sound, false, false), player.posX, player.posY, player.posZ, 10.0f, player.dimension);
+            FlansMod.getPacketHandler().sendToAllAround(new PacketPlaySound(player.posX, player.posY, player.posZ, sound, false, false), player.posX, player.posY, player.posZ, 25.0f, player.dimension);
             this.died = 0;
         }
         if (PlayerHandler.getPlayerData(player).killStreakTimer == 10) {
             if (PlayerHandler.getPlayerData(player).killStreak == 1) {
-                PacketPlaySound.sendSoundPacket(player.field_70165_t, player.field_70163_u, player.field_70161_v, 3.0, player.field_71093_bK, "killSound", false);
+                PacketPlaySound.sendSoundPacket(player.posX, player.posY, player.posZ, 3.0, player.dimension, "killSound", false);
             }
             else if (PlayerHandler.getPlayerData(player).killStreak > 1) {
-                PacketPlaySound.sendSoundPacket(player.field_70165_t, player.field_70163_u, player.field_70161_v, 5.0, player.field_71093_bK, "killStreak" + this.killStreak, false);
+                PacketPlaySound.sendSoundPacket(player.posX, player.posY, player.posZ, 5.0, player.dimension, "killStreak" + this.killStreak, false);
             }
         }
         if (this.shieldHit > 0) {
             --this.shieldHit;
         }
-        if (player.field_70170_p.field_72995_K) {
+        if (player.worldObj.isRemote) {
             this.clientTick(player);
         }
         if (this.shootTimeRight > 0.0f) {
@@ -266,23 +266,23 @@ public class PlayerData
             --this.shootClickDelay;
         }
         for (int i = 0; i < 5; ++i) {
-            final ItemStack stack = player.func_71124_b(i);
+            final ItemStack stack = player.getEquipmentInSlot(i);
             if (stack != null) {
-                if (!(player.field_70154_o instanceof EntitySeat) && !player.func_82165_m(Potion.field_76441_p.field_76415_H) && !(stack.func_77973_b() instanceof ItemTeamArmour)) {
-                    player.func_82142_c(false);
+                if (!(player.ridingEntity instanceof EntitySeat) && !player.isPotionActive(Potion.invisibility.id) && !(stack.getItem() instanceof ItemTeamArmour)) {
+                    player.setInvisible(false);
                 }
             }
-            else if (!(player.field_70154_o instanceof EntitySeat) && !player.func_82165_m(Potion.field_76441_p.field_76415_H)) {
-                player.func_82142_c(false);
+            else if (!(player.ridingEntity instanceof EntitySeat) && !player.isPotionActive(Potion.invisibility.id)) {
+                player.setInvisible(false);
             }
         }
-        if (this.timer < 60 && !(player.field_70154_o instanceof EntitySeat)) {
+        if (this.timer < 60 && !(player.ridingEntity instanceof EntitySeat)) {
             ++this.timer;
         }
         if (this.timer >= 60) {
             this.timer = 0;
         }
-        if (this.timerSlow < 120 && !(player.field_70154_o instanceof EntitySeat)) {
+        if (this.timerSlow < 120 && !(player.ridingEntity instanceof EntitySeat)) {
             ++this.timerSlow;
         }
         if (this.timerSlow >= 120) {
@@ -329,22 +329,22 @@ public class PlayerData
             this.hemorrhaging = (this.Bleed - 25) * 2;
         }
         if (this.blood <= 80.0f) {
-            player.func_70690_d(new PotionEffect(Potion.field_76438_s.field_76415_H, 200));
+            player.addPotionEffect(new PotionEffect(Potion.hunger.id, 200));
         }
         if (this.blood <= 60.0f) {
-            player.func_70690_d(new PotionEffect(Potion.field_76437_t.field_76415_H, 200));
+            player.addPotionEffect(new PotionEffect(Potion.weakness.id, 200));
         }
         if (this.blood <= 45.0f) {
-            player.func_70690_d(new PotionEffect(Potion.field_76437_t.field_76415_H, 400));
+            player.addPotionEffect(new PotionEffect(Potion.weakness.id, 400));
         }
         if (this.blood <= 40.0f) {
-            player.func_70690_d(new PotionEffect(Potion.field_76431_k.field_76415_H, 240));
+            player.addPotionEffect(new PotionEffect(Potion.confusion.id, 240));
         }
         if (this.blood <= 30.0f) {
-            player.func_70690_d(new PotionEffect(Potion.field_76440_q.field_76415_H, 240));
+            player.addPotionEffect(new PotionEffect(Potion.blindness.id, 240));
         }
         if (this.blood <= 0.0f) {
-            player.func_70690_d(new PotionEffect(Potion.field_76433_i.field_76415_H, 10, 5));
+            player.addPotionEffect(new PotionEffect(Potion.harm.id, 10, 5));
             this.minorBleed = 0;
             this.Bleed = 0;
             this.hemorrhaging = 0;
@@ -362,7 +362,7 @@ public class PlayerData
     }
     
     public void clientTick(final EntityPlayer player) {
-        if (player.func_71045_bC() == null || !(player.func_71045_bC().func_77973_b() instanceof ItemGun) || ((ItemGun)player.func_71045_bC().func_77973_b()).type.oneHanded || player.func_71045_bC() == this.offHandGunStack) {
+        if (player.getCurrentEquippedItem() == null || !(player.getCurrentEquippedItem().getItem() instanceof ItemGun) || ((ItemGun)player.getCurrentEquippedItem().getItem()).type.oneHanded || player.getCurrentEquippedItem() == this.offHandGunStack) {
             this.offHandGunStack = null;
         }
     }
@@ -406,15 +406,15 @@ public class PlayerData
         if (slot == 0) {
             return true;
         }
-        if (slot - 1 == player.field_71071_by.field_70461_c) {
+        if (slot - 1 == player.inventory.currentItem) {
             return false;
         }
-        final ItemStack stackInSlot = player.field_71071_by.func_70301_a(slot - 1);
+        final ItemStack stackInSlot = player.inventory.getStackInSlot(slot - 1);
         if (stackInSlot == null) {
             return false;
         }
-        if (stackInSlot.func_77973_b() instanceof ItemGun) {
-            final ItemGun item = (ItemGun)stackInSlot.func_77973_b();
+        if (stackInSlot.getItem() instanceof ItemGun) {
+            final ItemGun item = (ItemGun)stackInSlot.getItem();
             if (item.type.oneHanded) {
                 return true;
             }
@@ -447,13 +447,13 @@ public class PlayerData
             final Vector3f nextPos = type.meleePath.get(0);
             final Vector3f nextAngles = type.meleePathAngles.get(0);
             final RotatedAxes nextAxes = new RotatedAxes(-nextAngles.y, -nextAngles.z, nextAngles.x);
-            final Vector3f nextPosInPlayerCoords = new RotatedAxes(player.field_70177_z + 90.0f, player.field_70125_A, 0.0f).findLocalVectorGlobally(nextAxes.findLocalVectorGlobally(meleeDamagePoint));
+            final Vector3f nextPosInPlayerCoords = new RotatedAxes(player.rotationYaw + 90.0f, player.rotationPitch, 0.0f).findLocalVectorGlobally(nextAxes.findLocalVectorGlobally(meleeDamagePoint));
             Vector3f.add(nextPos, nextPosInPlayerCoords, nextPosInPlayerCoords);
             if (!FlansMod.proxy.isThePlayer(player)) {
                 final Vector3f vector3f = nextPosInPlayerCoords;
                 vector3f.y += 1.6f;
             }
-            this.lastMeleePositions[k] = new Vector3f(player.field_70165_t + nextPosInPlayerCoords.x, player.field_70163_u + nextPosInPlayerCoords.y, player.field_70161_v + nextPosInPlayerCoords.z);
+            this.lastMeleePositions[k] = new Vector3f(player.posX + nextPosInPlayerCoords.x, player.posY + nextPosInPlayerCoords.y, player.posZ + nextPosInPlayerCoords.z);
         }
     }
     
@@ -465,13 +465,13 @@ public class PlayerData
             final Vector3f nextPos = type.meleeLeftPath.get(0);
             final Vector3f nextAngles = type.meleeLeftPathAngles.get(0);
             final RotatedAxes nextAxes = new RotatedAxes(-nextAngles.y, -nextAngles.z, nextAngles.x);
-            final Vector3f nextPosInPlayerCoordsLeft = new RotatedAxes(player.field_70177_z + 90.0f, player.field_70125_A, 0.0f).findLocalVectorGlobally(nextAxes.findLocalVectorGlobally(meleeDamagePoint));
+            final Vector3f nextPosInPlayerCoordsLeft = new RotatedAxes(player.rotationYaw + 90.0f, player.rotationPitch, 0.0f).findLocalVectorGlobally(nextAxes.findLocalVectorGlobally(meleeDamagePoint));
             Vector3f.add(nextPos, nextPosInPlayerCoordsLeft, nextPosInPlayerCoordsLeft);
             if (!FlansMod.proxy.isThePlayer(player)) {
                 final Vector3f vector3f = nextPosInPlayerCoordsLeft;
                 vector3f.y += 1.6f;
             }
-            this.lastMeleeLeftPositions[k] = new Vector3f(player.field_70165_t + nextPosInPlayerCoordsLeft.x, player.field_70163_u + nextPosInPlayerCoordsLeft.y, player.field_70161_v + nextPosInPlayerCoordsLeft.z);
+            this.lastMeleeLeftPositions[k] = new Vector3f(player.posX + nextPosInPlayerCoordsLeft.x, player.posY + nextPosInPlayerCoordsLeft.y, player.posZ + nextPosInPlayerCoordsLeft.z);
         }
     }
     
@@ -483,13 +483,13 @@ public class PlayerData
             final Vector3f nextPos = type.meleeRightPath.get(0);
             final Vector3f nextAngles = type.meleeRightPathAngles.get(0);
             final RotatedAxes nextAxes = new RotatedAxes(-nextAngles.y, -nextAngles.z, nextAngles.x);
-            final Vector3f nextPosInPlayerCoords = new RotatedAxes(player.field_70177_z + 90.0f, player.field_70125_A, 0.0f).findLocalVectorGlobally(nextAxes.findLocalVectorGlobally(meleeDamagePoint));
+            final Vector3f nextPosInPlayerCoords = new RotatedAxes(player.rotationYaw + 90.0f, player.rotationPitch, 0.0f).findLocalVectorGlobally(nextAxes.findLocalVectorGlobally(meleeDamagePoint));
             Vector3f.add(nextPos, nextPosInPlayerCoords, nextPosInPlayerCoords);
             if (!FlansMod.proxy.isThePlayer(player)) {
                 final Vector3f vector3f = nextPosInPlayerCoords;
                 vector3f.y += 1.6f;
             }
-            this.lastMeleeRightPositions[k] = new Vector3f(player.field_70165_t + nextPosInPlayerCoords.x, player.field_70163_u + nextPosInPlayerCoords.y, player.field_70161_v + nextPosInPlayerCoords.z);
+            this.lastMeleeRightPositions[k] = new Vector3f(player.posX + nextPosInPlayerCoords.x, player.posY + nextPosInPlayerCoords.y, player.posZ + nextPosInPlayerCoords.z);
         }
     }
     
@@ -501,13 +501,13 @@ public class PlayerData
             final Vector3f nextPosDown = type.meleeDownPath.get(0);
             final Vector3f nextAnglesDown = type.meleeDownPathAngles.get(0);
             final RotatedAxes nextAxesDown = new RotatedAxes(-nextAnglesDown.y, -nextAnglesDown.z, nextAnglesDown.x);
-            final Vector3f nextPosInPlayerCoordsDown = new RotatedAxes(player.field_70177_z + 90.0f, player.field_70125_A, 0.0f).findLocalVectorGlobally(nextAxesDown.findLocalVectorGlobally(meleeDamagePointDown));
+            final Vector3f nextPosInPlayerCoordsDown = new RotatedAxes(player.rotationYaw + 90.0f, player.rotationPitch, 0.0f).findLocalVectorGlobally(nextAxesDown.findLocalVectorGlobally(meleeDamagePointDown));
             Vector3f.add(nextPosDown, nextPosInPlayerCoordsDown, nextPosInPlayerCoordsDown);
             if (!FlansMod.proxy.isThePlayer(player)) {
                 final Vector3f vector3f = nextPosInPlayerCoordsDown;
                 vector3f.y += 1.6f;
             }
-            this.lastMeleeDownPositions[k] = new Vector3f(player.field_70165_t + nextPosInPlayerCoordsDown.x, player.field_70163_u + nextPosInPlayerCoordsDown.y, player.field_70161_v + nextPosInPlayerCoordsDown.z);
+            this.lastMeleeDownPositions[k] = new Vector3f(player.posX + nextPosInPlayerCoordsDown.x, player.posY + nextPosInPlayerCoordsDown.y, player.posZ + nextPosInPlayerCoordsDown.z);
         }
     }
 }
