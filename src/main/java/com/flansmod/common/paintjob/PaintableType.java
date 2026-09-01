@@ -44,7 +44,7 @@ public abstract class PaintableType extends InfoType
             if (split[0].toLowerCase().equals("paintjob")) {
                 final ItemStack[] dyeStacks = new ItemStack[(split.length - 3) / 2];
                 for (int i = 0; i < (split.length - 3) / 2; ++i) {
-                    dyeStacks[i] = new ItemStack(Items.field_151100_aR, Integer.parseInt(split[i * 2 + 4]), this.getDyeDamageValue(split[i * 2 + 3]));
+                    dyeStacks[i] = new ItemStack(Items.dye, Integer.parseInt(split[i * 2 + 4]), this.getDyeDamageValue(split[i * 2 + 3]));
                 }
                 this.paintjobs.add(new Paintjob(this.nextPaintjobID++, split[1], split[2], dyeStacks));
             }
@@ -59,7 +59,7 @@ public abstract class PaintableType extends InfoType
             if (split[0].toLowerCase().equals("advpaintjob")) {
                 final ItemStack[] dyeStacks = new ItemStack[(split.length - 4) / 2];
                 for (int i = 0; i < (split.length - 4) / 2; ++i) {
-                    dyeStacks[i] = new ItemStack(Items.field_151100_aR, Integer.parseInt(split[i * 2 + 5]), this.getDyeDamageValue(split[i * 2 + 4]));
+                    dyeStacks[i] = new ItemStack(Items.dye, Integer.parseInt(split[i * 2 + 5]), this.getDyeDamageValue(split[i * 2 + 4]));
                 }
                 this.paintjobs.add(new Paintjob(this.nextPaintjobID++, split[1], split[2], split[3], dyeStacks));
             }

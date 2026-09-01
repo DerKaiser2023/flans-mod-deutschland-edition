@@ -173,7 +173,7 @@ public class ClientProxy extends CommonProxy
     
     @Override
     public void forceReload() {
-        Minecraft.func_71410_x().func_110436_a();
+        Minecraft.getMinecraft().refreshResources();
     }
     
     @Override
@@ -230,63 +230,63 @@ public class ClientProxy extends CommonProxy
     
     @Override
     public void doTutorialStuff(final EntityPlayer player, final EntityDriveable entityType) {
-        player.func_146105_b((IChatComponent)new ChatComponentText("Press " + Keyboard.getKeyName(KeyInputHandler.inventoryKey.func_151463_i()) + " to open the menu"));
-        player.func_146105_b((IChatComponent)new ChatComponentText("Hold " + Keyboard.getKeyName(Minecraft.func_71410_x().field_71474_y.field_74311_E.func_151463_i()) + " to get out"));
-        player.func_146105_b((IChatComponent)new ChatComponentText("Press " + Keyboard.getKeyName(KeyInputHandler.eject.func_151463_i()) + " to eject and ban passengers"));
-        player.func_146105_b((IChatComponent)new ChatComponentText("Press " + Keyboard.getKeyName(KeyInputHandler.openBorders.func_151463_i()) + " to allow passengers again"));
+        player.addChatComponentMessage((IChatComponent)new ChatComponentText("Press " + Keyboard.getKeyName(KeyInputHandler.inventoryKey.getKeyCode()) + " to open the menu"));
+        player.addChatComponentMessage((IChatComponent)new ChatComponentText("Hold " + Keyboard.getKeyName(Minecraft.getMinecraft().gameSettings.keyBindSneak.getKeyCode()) + " to get out"));
+        player.addChatComponentMessage((IChatComponent)new ChatComponentText("Press " + Keyboard.getKeyName(KeyInputHandler.eject.getKeyCode()) + " to eject and ban passengers"));
+        player.addChatComponentMessage((IChatComponent)new ChatComponentText("Press " + Keyboard.getKeyName(KeyInputHandler.openBorders.getKeyCode()) + " to allow passengers again"));
         if (entityType instanceof EntityPlane) {
-            player.func_146105_b((IChatComponent)new ChatComponentText("Hold " + Keyboard.getKeyName(KeyInputHandler.nintendoSwitch.func_151463_i()) + " to switch seats"));
-            player.func_146105_b((IChatComponent)new ChatComponentText("Press " + Keyboard.getKeyName(KeyInputHandler.controlSwitchKey.func_151463_i()) + " for mouse control mode"));
+            player.addChatComponentMessage((IChatComponent)new ChatComponentText("Hold " + Keyboard.getKeyName(KeyInputHandler.nintendoSwitch.getKeyCode()) + " to switch seats"));
+            player.addChatComponentMessage((IChatComponent)new ChatComponentText("Press " + Keyboard.getKeyName(KeyInputHandler.controlSwitchKey.getKeyCode()) + " for mouse control mode"));
             if (PlaneType.getPlane(((EntityPlane)entityType).driveableType).hasGear) {
-                player.func_146105_b((IChatComponent)new ChatComponentText("Press " + Keyboard.getKeyName(KeyInputHandler.gearKey.func_151463_i()) + " to switch the gear"));
+                player.addChatComponentMessage((IChatComponent)new ChatComponentText("Press " + Keyboard.getKeyName(KeyInputHandler.gearKey.getKeyCode()) + " to switch the gear"));
             }
             if (PlaneType.getPlane(((EntityPlane)entityType).driveableType).hasDoor) {
-                player.func_146105_b((IChatComponent)new ChatComponentText("Press " + Keyboard.getKeyName(KeyInputHandler.doorKey.func_151463_i()) + " to switch the doors"));
+                player.addChatComponentMessage((IChatComponent)new ChatComponentText("Press " + Keyboard.getKeyName(KeyInputHandler.doorKey.getKeyCode()) + " to switch the doors"));
             }
             if (PlaneType.getPlane(((EntityPlane)entityType).driveableType).hasAfterBurner) {
-                player.func_146105_b((IChatComponent)new ChatComponentText("Press " + Keyboard.getKeyName(KeyInputHandler.trimKey.func_151463_i()) + " to toggle afterburner"));
+                player.addChatComponentMessage((IChatComponent)new ChatComponentText("Press " + Keyboard.getKeyName(KeyInputHandler.trimKey.getKeyCode()) + " to toggle afterburner"));
             }
             if (PlaneType.getPlane(((EntityPlane)entityType).driveableType).mode == EnumPlaneMode.VTOL) {
-                player.func_146105_b((IChatComponent)new ChatComponentText("Press " + Keyboard.getKeyName(KeyInputHandler.modeKey.func_151463_i()) + " to switch VTOL mode"));
+                player.addChatComponentMessage((IChatComponent)new ChatComponentText("Press " + Keyboard.getKeyName(KeyInputHandler.modeKey.getKeyCode()) + " to switch VTOL mode"));
             }
             else if (PlaneType.getPlane(((EntityPlane)entityType).driveableType).mode != EnumPlaneMode.VTOL && PlaneType.getPlane(((EntityPlane)entityType).driveableType).mode == EnumPlaneMode.PLANE) {
-                player.func_146105_b((IChatComponent)new ChatComponentText("Press " + Keyboard.getKeyName(KeyInputHandler.modeKey.func_151463_i()) + " to toggle landing flaps"));
+                player.addChatComponentMessage((IChatComponent)new ChatComponentText("Press " + Keyboard.getKeyName(KeyInputHandler.modeKey.getKeyCode()) + " to toggle landing flaps"));
             }
             if (PlaneType.getPlane(((EntityPlane)entityType).driveableType).carrierLandable || PlaneType.getPlane(((EntityPlane)entityType).driveableType).helipadLandable) {
-                player.func_146105_b((IChatComponent)new ChatComponentText("Press " + Keyboard.getKeyName(KeyInputHandler.gunKey.func_151463_i()) + " to dock on helipad / floatplane hangar"));
+                player.addChatComponentMessage((IChatComponent)new ChatComponentText("Press " + Keyboard.getKeyName(KeyInputHandler.gunKey.getKeyCode()) + " to dock on helipad / floatplane hangar"));
             }
             if (entityType.getDriveableType().hasMagicArtilleryMode) {
-                player.func_146105_b((IChatComponent)new ChatComponentText("Press " + Keyboard.getKeyName(KeyInputHandler.artilleryMode.func_151463_i()) + " to toggle magic ammo vision"));
+                player.addChatComponentMessage((IChatComponent)new ChatComponentText("Press " + Keyboard.getKeyName(KeyInputHandler.artilleryMode.getKeyCode()) + " to toggle magic ammo vision"));
             }
         }
         if (entityType instanceof EntityVehicle) {
-            player.func_146105_b((IChatComponent)new ChatComponentText("Hold " + Keyboard.getKeyName(KeyInputHandler.nintendoSwitch.func_151463_i()) + " to switch seats"));
+            player.addChatComponentMessage((IChatComponent)new ChatComponentText("Hold " + Keyboard.getKeyName(KeyInputHandler.nintendoSwitch.getKeyCode()) + " to switch seats"));
             if (((EntityVehicle)entityType).getVehicleType().tank) {
-                player.func_146105_b((IChatComponent)new ChatComponentText("Press " + Keyboard.getKeyName(KeyInputHandler.leftRollKey.func_151463_i()) + " to lock a tank turret / cannon"));
+                player.addChatComponentMessage((IChatComponent)new ChatComponentText("Press " + Keyboard.getKeyName(KeyInputHandler.leftRollKey.getKeyCode()) + " to lock a tank turret / cannon"));
             }
             if (((EntityVehicle)entityType).getVehicleType().tank) {
-                player.func_146105_b((IChatComponent)new ChatComponentText("Press " + Keyboard.getKeyName(KeyInputHandler.rightRollKey.func_151463_i()) + " to unlock a tank turret / cannon"));
+                player.addChatComponentMessage((IChatComponent)new ChatComponentText("Press " + Keyboard.getKeyName(KeyInputHandler.rightRollKey.getKeyCode()) + " to unlock a tank turret / cannon"));
             }
             if (((EntityVehicle)entityType).getVehicleType().thermalSight) {
-                player.func_146105_b((IChatComponent)new ChatComponentText("Press " + Keyboard.getKeyName(KeyInputHandler.thermal.func_151463_i()) + " to toggle thermal sights"));
+                player.addChatComponentMessage((IChatComponent)new ChatComponentText("Press " + Keyboard.getKeyName(KeyInputHandler.thermal.getKeyCode()) + " to toggle thermal sights"));
             }
             if (entityType.getDriveableType().hasMagicArtilleryMode) {
-                player.func_146105_b((IChatComponent)new ChatComponentText("Press " + Keyboard.getKeyName(KeyInputHandler.artilleryMode.func_151463_i()) + " to toggle magic ammo vision"));
+                player.addChatComponentMessage((IChatComponent)new ChatComponentText("Press " + Keyboard.getKeyName(KeyInputHandler.artilleryMode.getKeyCode()) + " to toggle magic ammo vision"));
             }
             if (entityType.getDriveableType().hasRadar) {
-                player.func_146105_b((IChatComponent)new ChatComponentText("Press " + Keyboard.getKeyName(KeyInputHandler.artilleryMode.func_151463_i()) + " to toggle active / passive radar"));
+                player.addChatComponentMessage((IChatComponent)new ChatComponentText("Press " + Keyboard.getKeyName(KeyInputHandler.artilleryMode.getKeyCode()) + " to toggle active / passive radar"));
             }
             if (entityType.getDriveableType().hasScope) {
-                player.func_146105_b((IChatComponent)new ChatComponentText("Press " + Keyboard.getKeyName(KeyInputHandler.downKey.func_151463_i()) + " to toggle gun optic"));
+                player.addChatComponentMessage((IChatComponent)new ChatComponentText("Press " + Keyboard.getKeyName(KeyInputHandler.downKey.getKeyCode()) + " to toggle gun optic"));
             }
-            player.func_146105_b((IChatComponent)new ChatComponentText("Hold the spacebar to brake"));
+            player.addChatComponentMessage((IChatComponent)new ChatComponentText("Hold the spacebar to brake"));
         }
     }
     
     @Override
     public void changeControlMode(final EntityPlayer player) {
         if (FlansModClient.flipControlMode()) {
-            player.func_146105_b((IChatComponent)new ChatComponentText("Mouse Control mode is now set to " + FlansModClient.controlModeMouse));
+            player.addChatComponentMessage((IChatComponent)new ChatComponentText("Mouse Control mode is now set to " + FlansModClient.controlModeMouse));
         }
     }
     
@@ -297,45 +297,45 @@ public class ClientProxy extends CommonProxy
     
     @Override
     public Object getClientGui(final int ID, final EntityPlayer player, final World world, final int x, final int y, final int z) {
-        if (((ID >= 6 && ID <= 10) || ID == 12) && player.field_70154_o == null) {
+        if (((ID >= 6 && ID <= 10) || ID == 12) && player.ridingEntity == null) {
             return null;
         }
         switch (ID) {
             case 0: {
-                return new GuiDriveableCrafting(player.field_71071_by, world, x, y, z);
+                return new GuiDriveableCrafting(player.inventory, world, x, y, z);
             }
             case 1: {
                 return new GuiDriveableRepair(player);
             }
             case 2: {
-                return new GuiGunModTable(player.field_71071_by, world);
+                return new GuiGunModTable(player.inventory, world);
             }
             case 5: {
-                return new GuiGunBox(player.field_71071_by, ((BlockGunBox)world.func_147439_a(x, y, z)).type, world);
+                return new GuiGunBox(player.inventory, ((BlockGunBox)world.getBlock(x, y, z)).type, world);
             }
             case 6: {
-                return new GuiDriveableInventory(player.field_71071_by, world, ((EntitySeat)player.field_70154_o).driveable, 0);
+                return new GuiDriveableInventory(player.inventory, world, ((EntitySeat)player.ridingEntity).driveable, 0);
             }
             case 7: {
-                return new GuiDriveableInventory(player.field_71071_by, world, ((EntitySeat)player.field_70154_o).driveable, 1);
+                return new GuiDriveableInventory(player.inventory, world, ((EntitySeat)player.ridingEntity).driveable, 1);
             }
             case 8: {
-                return new GuiDriveableFuel(player.field_71071_by, world, ((EntitySeat)player.field_70154_o).driveable);
+                return new GuiDriveableFuel(player.inventory, world, ((EntitySeat)player.ridingEntity).driveable);
             }
             case 9: {
-                return new GuiDriveableInventory(player.field_71071_by, world, ((EntitySeat)player.field_70154_o).driveable, 2);
+                return new GuiDriveableInventory(player.inventory, world, ((EntitySeat)player.ridingEntity).driveable, 2);
             }
             case 10: {
-                return new GuiMechaInventory(player.field_71071_by, world, (EntityMecha)((EntitySeat)player.field_70154_o).driveable);
+                return new GuiMechaInventory(player.inventory, world, (EntityMecha)((EntitySeat)player.ridingEntity).driveable);
             }
             case 11: {
-                return new GuiArmourBox(player.field_71071_by, ((BlockArmourBox)world.func_147439_a(x, y, z)).type);
+                return new GuiArmourBox(player.inventory, ((BlockArmourBox)world.getBlock(x, y, z)).type);
             }
             case 12: {
-                return new GuiDriveableInventory(player.field_71071_by, world, ((EntitySeat)player.field_70154_o).driveable, 3);
+                return new GuiDriveableInventory(player.inventory, world, ((EntitySeat)player.ridingEntity).driveable, 3);
             }
             case 13: {
-                return new GuiPaintjobTable(player.field_71071_by, world, (TileEntityPaintjobTable)world.func_147438_o(x, y, z));
+                return new GuiPaintjobTable(player.inventory, world, (TileEntityPaintjobTable)world.getTileEntity(x, y, z));
             }
             default: {
                 return null;
@@ -345,7 +345,7 @@ public class ClientProxy extends CommonProxy
     
     @Override
     public void openDriveableMenu(final EntityPlayer player, final World world, final EntityDriveable driveable) {
-        FMLClientHandler.instance().getClient().func_147108_a((GuiScreen)new GuiDriveableMenu(player.field_71071_by, world, driveable));
+        FMLClientHandler.instance().getClient().displayGuiScreen((GuiScreen)new GuiDriveableMenu(player.inventory, world, driveable));
     }
     
     private static String getModelName(final String in) {
@@ -387,17 +387,17 @@ public class ClientProxy extends CommonProxy
     
     @Override
     public boolean isThePlayer(final EntityPlayer player) {
-        return player == FMLClientHandler.instance().getClient().field_71439_g;
+        return player == FMLClientHandler.instance().getClient().thePlayer;
     }
     
     @Override
     public EntityPlayer getThePlayer() {
-        return (EntityPlayer)FMLClientHandler.instance().getClient().field_71439_g;
+        return (EntityPlayer)FMLClientHandler.instance().getClient().thePlayer;
     }
     
     @Override
     public boolean isOnSameTeamClientPlayer(final EntityLivingBase entity) {
-        return FMLClientHandler.instance().getClient().field_71439_g.func_142014_c(entity);
+        return FMLClientHandler.instance().getClient().thePlayer.isOnSameTeam(entity);
     }
     
     @Override
@@ -417,7 +417,7 @@ public class ClientProxy extends CommonProxy
     @Override
     public void addItem(final EntityPlayer player, final int id) {
         super.addItem(player, id);
-        if (player.field_70170_p.field_72995_K) {
+        if (player.worldObj.isRemote) {
             FlansMod.getPacketHandler().sendToServer(new PacketGiveItem(57));
         }
     }
@@ -425,7 +425,7 @@ public class ClientProxy extends CommonProxy
     @Override
     public void craftDriveable(final EntityPlayer player, final DriveableType type) {
         super.craftDriveable(player, type);
-        if (player.field_70170_p.field_72995_K) {
+        if (player.worldObj.isRemote) {
             FlansMod.getPacketHandler().sendToServer(new PacketCraftDriveable(type.shortName));
         }
     }
@@ -433,33 +433,33 @@ public class ClientProxy extends CommonProxy
     @Override
     public void repairDriveable(final EntityPlayer driver, final EntityDriveable driving, final DriveablePart part) {
         super.repairDriveable(driver, driving, part);
-        if (driver.field_70170_p.field_72995_K) {
+        if (driver.worldObj.isRemote) {
             FlansMod.getPacketHandler().sendToServer(new PacketRepairDriveable(part.type));
         }
     }
     
     @Override
     public boolean isScreenOpen() {
-        return Minecraft.func_71410_x().field_71462_r != null;
+        return Minecraft.getMinecraft().currentScreen != null;
     }
     
     @Override
     public boolean isKeyDown(final int key) {
         switch (key) {
             case 0: {
-                return this.keyDown(Minecraft.func_71410_x().field_71474_y.field_74351_w.func_151463_i());
+                return this.keyDown(Minecraft.getMinecraft().gameSettings.keyBindForward.getKeyCode());
             }
             case 1: {
-                return this.keyDown(Minecraft.func_71410_x().field_71474_y.field_74368_y.func_151463_i());
+                return this.keyDown(Minecraft.getMinecraft().gameSettings.keyBindBack.getKeyCode());
             }
             case 2: {
-                return this.keyDown(Minecraft.func_71410_x().field_71474_y.field_74370_x.func_151463_i());
+                return this.keyDown(Minecraft.getMinecraft().gameSettings.keyBindLeft.getKeyCode());
             }
             case 3: {
-                return this.keyDown(Minecraft.func_71410_x().field_71474_y.field_74366_z.func_151463_i());
+                return this.keyDown(Minecraft.getMinecraft().gameSettings.keyBindRight.getKeyCode());
             }
             case 4: {
-                return this.keyDown(Minecraft.func_71410_x().field_71474_y.field_74314_A.func_151463_i());
+                return this.keyDown(Minecraft.getMinecraft().gameSettings.keyBindJump.getKeyCode());
             }
             default: {
                 return false;
@@ -484,27 +484,27 @@ public class ClientProxy extends CommonProxy
     }
     
     private static EntityFX doSpawnParticle(final String p_72726_1_, final double p_72726_2_, final double p_72726_4_, final double p_72726_6_, final double p_72726_8_, final double p_72726_10_, final double p_72726_12_) {
-        final Minecraft mc = Minecraft.func_71410_x();
-        final World theWorld = (World)mc.field_71441_e;
-        if (mc.field_71451_h == null || mc.field_71452_i == null) {
+        final Minecraft mc = Minecraft.getMinecraft();
+        final World theWorld = (World)mc.theWorld;
+        if (mc.renderViewEntity == null || mc.effectRenderer == null) {
             return null;
         }
-        int i = mc.field_71474_y.field_74362_aa;
-        if (i == 1 && theWorld.field_73012_v.nextInt(3) == 0) {
+        int i = mc.gameSettings.particleSetting;
+        if (i == 1 && theWorld.rand.nextInt(3) == 0) {
             i = 2;
         }
-        final double d6 = mc.field_71451_h.field_70165_t - p_72726_2_;
-        final double d7 = mc.field_71451_h.field_70163_u - p_72726_4_;
-        final double d8 = mc.field_71451_h.field_70161_v - p_72726_6_;
+        final double d6 = mc.renderViewEntity.posX - p_72726_2_;
+        final double d7 = mc.renderViewEntity.posY - p_72726_4_;
+        final double d8 = mc.renderViewEntity.posZ - p_72726_6_;
         EntityFX entityfx = null;
         if (p_72726_1_.equals("hugeexplosion")) {
-            mc.field_71452_i.func_78873_a(entityfx = (EntityFX)new EntityHugeExplodeFX(theWorld, p_72726_2_, p_72726_4_, p_72726_6_, p_72726_8_, p_72726_10_, p_72726_12_));
+            mc.effectRenderer.addEffect(entityfx = (EntityFX)new EntityHugeExplodeFX(theWorld, p_72726_2_, p_72726_4_, p_72726_6_, p_72726_8_, p_72726_10_, p_72726_12_));
         }
         else if (p_72726_1_.equals("largeexplode")) {
-            mc.field_71452_i.func_78873_a(entityfx = (EntityFX)new EntityLargeExplodeFX(mc.field_71446_o, theWorld, p_72726_2_, p_72726_4_, p_72726_6_, p_72726_8_, p_72726_10_, p_72726_12_));
+            mc.effectRenderer.addEffect(entityfx = (EntityFX)new EntityLargeExplodeFX(mc.renderEngine, theWorld, p_72726_2_, p_72726_4_, p_72726_6_, p_72726_8_, p_72726_10_, p_72726_12_));
         }
         else if (p_72726_1_.equals("fireworksSpark")) {
-            mc.field_71452_i.func_78873_a(entityfx = (EntityFX)new EntityFireworkSparkFX(theWorld, p_72726_2_, p_72726_4_, p_72726_6_, p_72726_8_, p_72726_10_, p_72726_12_, mc.field_71452_i));
+            mc.effectRenderer.addEffect(entityfx = (EntityFX)new EntityFireworkSparkFX(theWorld, p_72726_2_, p_72726_4_, p_72726_6_, p_72726_8_, p_72726_10_, p_72726_12_, mc.effectRenderer));
         }
         if (entityfx != null) {
             return entityfx;
@@ -611,33 +611,33 @@ public class ClientProxy extends CommonProxy
         }
         else if (p_72726_1_.equals("magicCrit")) {
             entityfx = (EntityFX)new EntityCritFX(theWorld, p_72726_2_, p_72726_4_, p_72726_6_, p_72726_8_, p_72726_10_, p_72726_12_);
-            entityfx.func_70538_b(entityfx.func_70534_d() * 0.3f, entityfx.func_70542_f() * 0.8f, entityfx.func_70535_g());
-            entityfx.func_94053_h();
+            entityfx.setRBGColorF(entityfx.getRedColorF() * 0.3f, entityfx.getGreenColorF() * 0.8f, entityfx.getBlueColorF());
+            entityfx.nextTextureIndexX();
         }
         else if (p_72726_1_.equals("smoke")) {
             entityfx = (EntityFX)new EntitySmokeFX(theWorld, p_72726_2_, p_72726_4_, p_72726_6_, p_72726_8_, p_72726_10_, p_72726_12_);
         }
         else if (p_72726_1_.equals("mobSpell")) {
             entityfx = (EntityFX)new EntitySpellParticleFX(theWorld, p_72726_2_, p_72726_4_, p_72726_6_, 0.0, 0.0, 0.0);
-            entityfx.func_70538_b((float)p_72726_8_, (float)p_72726_10_, (float)p_72726_12_);
+            entityfx.setRBGColorF((float)p_72726_8_, (float)p_72726_10_, (float)p_72726_12_);
         }
         else if (p_72726_1_.equals("mobSpellAmbient")) {
             entityfx = (EntityFX)new EntitySpellParticleFX(theWorld, p_72726_2_, p_72726_4_, p_72726_6_, 0.0, 0.0, 0.0);
-            entityfx.func_82338_g(0.15f);
-            entityfx.func_70538_b((float)p_72726_8_, (float)p_72726_10_, (float)p_72726_12_);
+            entityfx.setAlphaF(0.15f);
+            entityfx.setRBGColorF((float)p_72726_8_, (float)p_72726_10_, (float)p_72726_12_);
         }
         else if (p_72726_1_.equals("spell")) {
             entityfx = (EntityFX)new EntitySpellParticleFX(theWorld, p_72726_2_, p_72726_4_, p_72726_6_, p_72726_8_, p_72726_10_, p_72726_12_);
         }
         else if (p_72726_1_.equals("instantSpell")) {
             entityfx = (EntityFX)new EntitySpellParticleFX(theWorld, p_72726_2_, p_72726_4_, p_72726_6_, p_72726_8_, p_72726_10_, p_72726_12_);
-            ((EntitySpellParticleFX)entityfx).func_70589_b(144);
+            ((EntitySpellParticleFX)entityfx).setBaseSpellTextureIndex(144);
         }
         else if (p_72726_1_.equals("witchMagic")) {
             entityfx = (EntityFX)new EntitySpellParticleFX(theWorld, p_72726_2_, p_72726_4_, p_72726_6_, p_72726_8_, p_72726_10_, p_72726_12_);
-            ((EntitySpellParticleFX)entityfx).func_70589_b(144);
-            final float f = theWorld.field_73012_v.nextFloat() * 0.5f + 0.35f;
-            entityfx.func_70538_b(1.0f * f, 0.0f * f, 1.0f * f);
+            ((EntitySpellParticleFX)entityfx).setBaseSpellTextureIndex(144);
+            final float f = theWorld.rand.nextFloat() * 0.5f + 0.35f;
+            entityfx.setRBGColorF(1.0f * f, 0.0f * f, 1.0f * f);
         }
         else if (p_72726_1_.equals("note")) {
             entityfx = (EntityFX)new EntityNoteFX(theWorld, p_72726_2_, p_72726_4_, p_72726_6_, p_72726_8_, p_72726_10_, p_72726_12_);
@@ -658,7 +658,7 @@ public class ClientProxy extends CommonProxy
             entityfx = (EntityFX)new EntityLavaFX(theWorld, p_72726_2_, p_72726_4_, p_72726_6_);
         }
         else if (p_72726_1_.equals("footstep")) {
-            entityfx = (EntityFX)new EntityFootStepFX(mc.field_71446_o, theWorld, p_72726_2_, p_72726_4_, p_72726_6_);
+            entityfx = (EntityFX)new EntityFootStepFX(mc.renderEngine, theWorld, p_72726_2_, p_72726_4_, p_72726_6_);
         }
         else if (p_72726_1_.equals("splash")) {
             entityfx = (EntityFX)new EntitySplashFX(theWorld, p_72726_2_, p_72726_4_, p_72726_6_, p_72726_8_, p_72726_10_, p_72726_12_);
@@ -676,65 +676,65 @@ public class ClientProxy extends CommonProxy
             entityfx = (EntityFX)new EntityReddustFX(theWorld, p_72726_2_, p_72726_4_, p_72726_6_, (float)p_72726_8_, (float)p_72726_10_, (float)p_72726_12_);
         }
         else if (p_72726_1_.equals("snowballpoof")) {
-            entityfx = (EntityFX)new EntityBreakingFX(theWorld, p_72726_2_, p_72726_4_, p_72726_6_, Items.field_151126_ay);
+            entityfx = (EntityFX)new EntityBreakingFX(theWorld, p_72726_2_, p_72726_4_, p_72726_6_, Items.snowball);
         }
         else if (p_72726_1_.equals("dripWater")) {
-            entityfx = (EntityFX)new EntityDropParticleFX(theWorld, p_72726_2_, p_72726_4_, p_72726_6_, Material.field_151586_h);
+            entityfx = (EntityFX)new EntityDropParticleFX(theWorld, p_72726_2_, p_72726_4_, p_72726_6_, Material.water);
         }
         else if (p_72726_1_.equals("dripLava")) {
-            entityfx = (EntityFX)new EntityDropParticleFX(theWorld, p_72726_2_, p_72726_4_, p_72726_6_, Material.field_151587_i);
+            entityfx = (EntityFX)new EntityDropParticleFX(theWorld, p_72726_2_, p_72726_4_, p_72726_6_, Material.lava);
         }
         else if (p_72726_1_.equals("snowshovel")) {
             entityfx = (EntityFX)new EntitySnowShovelFX(theWorld, p_72726_2_, p_72726_4_, p_72726_6_, p_72726_8_, p_72726_10_, p_72726_12_);
         }
         else if (p_72726_1_.equals("slime")) {
-            entityfx = (EntityFX)new EntityBreakingFX(theWorld, p_72726_2_, p_72726_4_, p_72726_6_, Items.field_151123_aH);
+            entityfx = (EntityFX)new EntityBreakingFX(theWorld, p_72726_2_, p_72726_4_, p_72726_6_, Items.slime_ball);
         }
         else if (p_72726_1_.equals("heart")) {
             entityfx = (EntityFX)new EntityHeartFX(theWorld, p_72726_2_, p_72726_4_, p_72726_6_, p_72726_8_, p_72726_10_, p_72726_12_);
         }
         else if (p_72726_1_.equals("angryVillager")) {
             entityfx = (EntityFX)new EntityHeartFX(theWorld, p_72726_2_, p_72726_4_ + 0.5, p_72726_6_, p_72726_8_, p_72726_10_, p_72726_12_);
-            entityfx.func_70536_a(81);
-            entityfx.func_70538_b(1.0f, 1.0f, 1.0f);
+            entityfx.setParticleTextureIndex(81);
+            entityfx.setRBGColorF(1.0f, 1.0f, 1.0f);
         }
         else if (p_72726_1_.equals("happyVillager")) {
             entityfx = (EntityFX)new EntityAuraFX(theWorld, p_72726_2_, p_72726_4_, p_72726_6_, p_72726_8_, p_72726_10_, p_72726_12_);
-            entityfx.func_70536_a(82);
-            entityfx.func_70538_b(1.0f, 1.0f, 1.0f);
+            entityfx.setParticleTextureIndex(82);
+            entityfx.setRBGColorF(1.0f, 1.0f, 1.0f);
         }
         else if (p_72726_1_.startsWith("iconcrack_")) {
             final String[] astring = p_72726_1_.split("_", 3);
             final int j = Integer.parseInt(astring[1]);
             if (astring.length > 2) {
                 final int k = Integer.parseInt(astring[2]);
-                entityfx = (EntityFX)new EntityBreakingFX(theWorld, p_72726_2_, p_72726_4_, p_72726_6_, p_72726_8_, p_72726_10_, p_72726_12_, Item.func_150899_d(j), k);
+                entityfx = (EntityFX)new EntityBreakingFX(theWorld, p_72726_2_, p_72726_4_, p_72726_6_, p_72726_8_, p_72726_10_, p_72726_12_, Item.getItemById(j), k);
             }
             else {
-                entityfx = (EntityFX)new EntityBreakingFX(theWorld, p_72726_2_, p_72726_4_, p_72726_6_, p_72726_8_, p_72726_10_, p_72726_12_, Item.func_150899_d(j), 0);
+                entityfx = (EntityFX)new EntityBreakingFX(theWorld, p_72726_2_, p_72726_4_, p_72726_6_, p_72726_8_, p_72726_10_, p_72726_12_, Item.getItemById(j), 0);
             }
         }
         else if (p_72726_1_.startsWith("blockcrack_")) {
             final String[] astring = p_72726_1_.split("_", 3);
-            final Block block = Block.func_149729_e(Integer.parseInt(astring[1]));
+            final Block block = Block.getBlockById(Integer.parseInt(astring[1]));
             final int k = Integer.parseInt(astring[2]);
-            entityfx = (EntityFX)new EntityDiggingFX(theWorld, p_72726_2_, p_72726_4_, p_72726_6_, p_72726_8_, p_72726_10_, p_72726_12_, block, k).func_90019_g(k);
+            entityfx = (EntityFX)new EntityDiggingFX(theWorld, p_72726_2_, p_72726_4_, p_72726_6_, p_72726_8_, p_72726_10_, p_72726_12_, block, k).applyRenderColor(k);
         }
         else if (p_72726_1_.startsWith("blockdust_")) {
             final String[] astring = p_72726_1_.split("_", 3);
-            final Block block = Block.func_149729_e(Integer.parseInt(astring[1]));
+            final Block block = Block.getBlockById(Integer.parseInt(astring[1]));
             final int k = Integer.parseInt(astring[2]);
-            entityfx = (EntityFX)new EntityBlockDustFX(theWorld, p_72726_2_, p_72726_4_, p_72726_6_, p_72726_8_, p_72726_10_, p_72726_12_, block, k).func_90019_g(k);
+            entityfx = (EntityFX)new EntityBlockDustFX(theWorld, p_72726_2_, p_72726_4_, p_72726_6_, p_72726_8_, p_72726_10_, p_72726_12_, block, k).applyRenderColor(k);
         }
         if (entityfx != null) {
-            mc.field_71452_i.func_78873_a(entityfx);
+            mc.effectRenderer.addEffect(entityfx);
         }
         return entityfx;
     }
     
     @Override
     public float getMouseSensitivity() {
-        return Minecraft.func_71410_x().field_71474_y.field_74341_c;
+        return Minecraft.getMinecraft().gameSettings.mouseSensitivity;
     }
     
     static {

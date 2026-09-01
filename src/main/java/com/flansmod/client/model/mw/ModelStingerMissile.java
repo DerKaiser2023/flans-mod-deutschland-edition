@@ -23,9 +23,9 @@ public class ModelStingerMissile extends ModelBullet
     }
     
     @Override
-    public void func_78088_a(final Entity entity, final float f, final float f1, final float f2, final float f3, final float f4, final float f5) {
+    public void render(final Entity entity, final float f, final float f1, final float f2, final float f3, final float f4, final float f5) {
         for (final ModelRendererTurbo mrt : this.bulletModel) {
-            mrt.func_78785_a(f5);
+            mrt.render(f5);
         }
     }
 }

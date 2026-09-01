@@ -26,19 +26,19 @@ public enum EnumMechaToolType
     public boolean effectiveAgainst(final Material material) {
         switch (this) {
             case pickaxe: {
-                return material == Material.field_151573_f || material == Material.field_151574_g || material == Material.field_151576_e || material == Material.field_151588_w;
+                return material == Material.iron || material == Material.anvil || material == Material.rock || material == Material.ice;
             }
             case axe: {
-                return material == Material.field_151575_d || material == Material.field_151585_k || material == Material.field_151582_l;
+                return material == Material.wood || material == Material.plants || material == Material.vine;
             }
             case shovel: {
-                return material == Material.field_151577_b || material == Material.field_151578_c || material == Material.field_151583_m || material == Material.field_151595_p || material == Material.field_151597_y || material == Material.field_151596_z || material == Material.field_151571_B;
+                return material == Material.grass || material == Material.ground || material == Material.sponge || material == Material.sand || material == Material.snow || material == Material.craftedSnow || material == Material.clay;
             }
             case shears: {
-                return material == Material.field_151584_j || material == Material.field_151582_l || material == Material.field_151580_n || material == Material.field_151593_r;
+                return material == Material.leaves || material == Material.vine || material == Material.cloth || material == Material.carpet;
             }
             case sword: {
-                return material == Material.field_151569_G;
+                return material == Material.web;
             }
             default: {
                 return false;

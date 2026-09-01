@@ -55,35 +55,35 @@ public class TexturedPolygon
     
     public void draw(final TmtTessellator tessellator, final float f) {
         if (this.nVertices == 3) {
-            tessellator.func_78371_b(4);
+            tessellator.startDrawing(4);
         }
         else if (this.nVertices == 4) {
-            tessellator.func_78382_b();
+            tessellator.startDrawingQuads();
         }
         else {
-            tessellator.func_78371_b(9);
+            tessellator.startDrawing(9);
         }
         if (this.iNormals.size() == 0) {
             if (this.normals.length == 3) {
                 if (this.invertNormal) {
-                    tessellator.func_78375_b(-this.normals[0], -this.normals[1], -this.normals[2]);
+                    tessellator.setNormal(-this.normals[0], -this.normals[1], -this.normals[2]);
                 }
                 else {
-                    tessellator.func_78375_b(this.normals[0], this.normals[1], this.normals[2]);
+                    tessellator.setNormal(this.normals[0], this.normals[1], this.normals[2]);
                 }
             }
             else {
                 if (this.vertexPositions.length < 3) {
                     return;
                 }
-                final Vec3 Vec3 = this.vertexPositions[1].field_78243_a.func_72444_a(this.vertexPositions[0].field_78243_a);
-                final Vec3 Vec4 = this.vertexPositions[1].field_78243_a.func_72444_a(this.vertexPositions[2].field_78243_a);
-                final Vec3 Vec5 = Vec4.func_72431_c(Vec3).func_72432_b();
+                final Vec3 Vec3 = this.vertexPositions[1].vector3D.subtract(this.vertexPositions[0].vector3D);
+                final Vec3 Vec4 = this.vertexPositions[1].vector3D.subtract(this.vertexPositions[2].vector3D);
+                final Vec3 Vec5 = Vec4.crossProduct(Vec3).normalize();
                 if (this.invertNormal) {
-                    tessellator.func_78375_b(-(float)Vec5.field_72450_a, -(float)Vec5.field_72448_b, -(float)Vec5.field_72449_c);
+                    tessellator.setNormal(-(float)Vec5.xCoord, -(float)Vec5.yCoord, -(float)Vec5.zCoord);
                 }
                 else {
-                    tessellator.func_78375_b((float)Vec5.field_72450_a, (float)Vec5.field_72448_b, (float)Vec5.field_72449_c);
+                    tessellator.setNormal((float)Vec5.xCoord, (float)Vec5.yCoord, (float)Vec5.zCoord);
                 }
             }
         }
@@ -94,14 +94,14 @@ public class TexturedPolygon
             }
             if (i < this.iNormals.size()) {
                 if (this.invertNormal) {
-                    tessellator.func_78375_b(-(float)this.iNormals.get(i).field_72450_a, -(float)this.iNormals.get(i).field_72448_b, -(float)this.iNormals.get(i).field_72449_c);
+                    tessellator.setNormal(-(float)this.iNormals.get(i).xCoord, -(float)this.iNormals.get(i).yCoord, -(float)this.iNormals.get(i).zCoord);
                 }
                 else {
-                    tessellator.func_78375_b((float)this.iNormals.get(i).field_72450_a, (float)this.iNormals.get(i).field_72448_b, (float)this.iNormals.get(i).field_72449_c);
+                    tessellator.setNormal((float)this.iNormals.get(i).xCoord, (float)this.iNormals.get(i).yCoord, (float)this.iNormals.get(i).zCoord);
                 }
             }
-            tessellator.addVertexWithUVW((float)positionTexturevertex.field_78243_a.field_72450_a * f, (float)positionTexturevertex.field_78243_a.field_72448_b * f, (float)positionTexturevertex.field_78243_a.field_72449_c * f, positionTexturevertex.field_78241_b, positionTexturevertex.field_78242_c, positionTexturevertex.texturePositionW);
+            tessellator.addVertexWithUVW((float)positionTexturevertex.vector3D.xCoord * f, (float)positionTexturevertex.vector3D.yCoord * f, (float)positionTexturevertex.vector3D.zCoord * f, positionTexturevertex.texturePositionX, positionTexturevertex.texturePositionY, positionTexturevertex.texturePositionW);
         }
-        tessellator.func_78381_a();
+        tessellator.draw();
     }
 }

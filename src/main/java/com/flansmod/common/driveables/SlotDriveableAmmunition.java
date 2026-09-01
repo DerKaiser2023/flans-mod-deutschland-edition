@@ -26,11 +26,11 @@ public class SlotDriveableAmmunition extends Slot
         this.restrictInput = filterInput;
     }
     
-    public boolean func_75214_a(final ItemStack stack) {
-        if (stack == null || stack.func_77973_b() == null) {
+    public boolean isItemValid(final ItemStack stack) {
+        if (stack == null || stack.getItem() == null) {
             return true;
         }
-        final Item item = stack.func_77973_b();
+        final Item item = stack.getItem();
         if (item instanceof ItemVehicle || item instanceof ItemPlane || item instanceof ItemMecha) {
             return false;
         }
@@ -41,11 +41,11 @@ public class SlotDriveableAmmunition extends Slot
         return item instanceof ItemBullet || item instanceof ItemGrenade;
     }
     
-    public void func_75215_d(final ItemStack stack) {
-        if (!this.func_75214_a(stack)) {
+    public void putStack(final ItemStack stack) {
+        if (!this.isItemValid(stack)) {
             return;
         }
-        this.field_75224_c.func_70299_a(this.slotd, stack);
-        this.func_75218_e();
+        this.inventory.setInventorySlotContents(this.slotd, stack);
+        this.onSlotChanged();
     }
 }

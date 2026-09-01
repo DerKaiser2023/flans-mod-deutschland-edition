@@ -24,8 +24,8 @@ public class RenderFlag extends Render
         this.modelFlagpole = new ModelFlagpole();
     }
     
-    public void func_76986_a(final Entity entity, final double d, final double d1, final double d2, final float f, final float f1) {
-        this.func_110777_b(entity);
+    public void doRender(final Entity entity, final double d, final double d1, final double d2, final float f, final float f1) {
+        this.bindEntityTexture(entity);
         final EntityFlag flag = (EntityFlag)entity;
         final int teamID = flag.getTeamID();
         final Team team = FlansModClient.getTeam(teamID);
@@ -56,7 +56,7 @@ public class RenderFlag extends Render
         GL11.glPushMatrix();
         GL11.glTranslatef((float)d, (float)d1, (float)d2);
         GL11.glRotatef(f, 0.0f, 1.0f, 0.0f);
-        final List ents = flag.field_70170_p.func_72872_a((Class)EntityFlagpole.class, flag.field_70121_D.func_72314_b(1.0, 2.0, 1.0));
+        final List ents = flag.worldObj.getEntitiesWithinAABB((Class)EntityFlagpole.class, flag.boundingBox.expand(1.0, 2.0, 1.0));
         if (ents.size() == 0) {
             GL11.glRotatef(RenderFlag.angle, 0.0f, 1.0f, 0.0f);
             GL11.glTranslatef(0.5f, 0.0f, 0.0f);
@@ -66,7 +66,7 @@ public class RenderFlag extends Render
         GL11.glPopMatrix();
     }
     
-    protected ResourceLocation func_110775_a(final Entity entity) {
+    protected ResourceLocation getEntityTexture(final Entity entity) {
         return RenderFlag.texture;
     }
     

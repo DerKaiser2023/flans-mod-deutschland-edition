@@ -15,14 +15,14 @@ import net.minecraft.client.renderer.entity.Render;
 public class RenderAAGun extends Render
 {
     public RenderAAGun() {
-        this.field_76989_e = 1.0f;
+        this.shadowSize = 1.0f;
     }
     
     public void render(final EntityAAGun aa, final double d, final double d1, final double d2, final float f, final float f1) {
-        if (aa.field_70154_o != null && aa.field_70154_o.getClass().toString().indexOf("mcheli.aircraft.MCH_EntitySeat") > 0) {
+        if (aa.ridingEntity != null && aa.ridingEntity.getClass().toString().indexOf("mcheli.aircraft.MCH_EntitySeat") > 0) {
             return;
         }
-        this.func_110777_b((Entity)aa);
+        this.bindEntityTexture((Entity)aa);
         GL11.glPushMatrix();
         GL11.glTranslatef((float)d, (float)d1, (float)d2);
         GL11.glScalef(1.0f, 1.0f, 1.0f);
@@ -40,11 +40,11 @@ public class RenderAAGun extends Render
         GL11.glPopMatrix();
     }
     
-    public void func_76986_a(final Entity entity, final double d, final double d1, final double d2, final float f, final float f1) {
+    public void doRender(final Entity entity, final double d, final double d1, final double d2, final float f, final float f1) {
         this.render((EntityAAGun)entity, d, d1, d2, f, f1);
     }
     
-    protected ResourceLocation func_110775_a(final Entity entity) {
+    protected ResourceLocation getEntityTexture(final Entity entity) {
         return FlansModResourceHandler.getTexture(((EntityAAGun)entity).type);
     }
 }

@@ -26,26 +26,26 @@ public class Modelto150MM extends ModelBase
         this.to150mmModel[6] = new ModelRendererTurbo(this, 17, 25, this.textureX, this.textureY);
         this.to150mmModel[7] = new ModelRendererTurbo(this, 25, 25, this.textureX, this.textureY);
         this.to150mmModel[0].addShapeBox(0.0f, 0.0f, 0.0f, 1, 18, 1, 0.0f, -0.95f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -0.95f, -0.95f, 0.0f, -0.95f, 0.2f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.2f, -0.1f, 0.0f, -0.1f);
-        this.to150mmModel[0].func_78793_a(-1.05f, -14.05f, 0.05f);
+        this.to150mmModel[0].setRotationPoint(-1.05f, -14.05f, 0.05f);
         this.to150mmModel[1].addShapeBox(0.0f, 0.0f, 0.0f, 1, 5, 1, 0.0f, 0.0f, 0.0f, 0.0f, 0.2f, 0.0f, 0.0f, -0.1f, 0.0f, -0.1f, 0.0f, 0.0f, 0.2f, 0.0f, 0.0f, 0.0f, -0.95f, 0.0f, 0.0f, -0.95f, 0.0f, -0.95f, 0.0f, 0.0f, -0.95f);
-        this.to150mmModel[1].func_78793_a(0.05f, 4.0f, 0.05f);
+        this.to150mmModel[1].setRotationPoint(0.05f, 4.0f, 0.05f);
         this.to150mmModel[2].addShapeBox(0.0f, 0.0f, 0.0f, 1, 18, 1, 0.0f, -0.95f, 0.0f, -0.95f, 0.0f, 0.0f, -0.95f, 0.0f, 0.0f, 0.0f, -0.95f, 0.0f, 0.0f, -0.1f, 0.0f, -0.1f, 0.0f, 0.0f, 0.2f, 0.0f, 0.0f, 0.0f, 0.2f, 0.0f, 0.0f);
-        this.to150mmModel[2].func_78793_a(-1.05f, -14.05f, -1.05f);
+        this.to150mmModel[2].setRotationPoint(-1.05f, -14.05f, -1.05f);
         this.to150mmModel[3].addShapeBox(0.0f, 0.0f, 0.0f, 1, 18, 1, 0.0f, 0.0f, 0.0f, -0.95f, -0.95f, 0.0f, -0.95f, -0.95f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.2f, -0.1f, 0.0f, -0.1f, 0.2f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.to150mmModel[3].func_78793_a(0.05f, -14.05f, -1.05f);
+        this.to150mmModel[3].setRotationPoint(0.05f, -14.05f, -1.05f);
         this.to150mmModel[4].addShapeBox(0.0f, 0.0f, 0.0f, 1, 18, 1, 0.0f, 0.0f, 0.0f, 0.0f, -0.95f, 0.0f, 0.0f, -0.95f, 0.0f, -0.95f, 0.0f, 0.0f, -0.95f, 0.0f, 0.0f, 0.0f, 0.2f, 0.0f, 0.0f, -0.1f, 0.0f, -0.1f, 0.0f, 0.0f, 0.2f);
-        this.to150mmModel[4].func_78793_a(0.05f, -14.05f, 0.05f);
+        this.to150mmModel[4].setRotationPoint(0.05f, -14.05f, 0.05f);
         this.to150mmModel[5].addShapeBox(0.0f, 0.0f, 0.0f, 1, 5, 1, 0.0f, 0.0f, 0.0f, 0.2f, -0.1f, 0.0f, -0.1f, 0.2f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -0.95f, -0.95f, 0.0f, -0.95f, -0.95f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.to150mmModel[5].func_78793_a(0.05f, 4.0f, -1.05f);
+        this.to150mmModel[5].setRotationPoint(0.05f, 4.0f, -1.05f);
         this.to150mmModel[6].addShapeBox(0.0f, 0.0f, 0.0f, 1, 5, 1, 0.0f, -0.1f, 0.0f, -0.1f, 0.0f, 0.0f, 0.2f, 0.0f, 0.0f, 0.0f, 0.2f, 0.0f, 0.0f, -0.95f, 0.0f, -0.95f, 0.0f, 0.0f, -0.95f, 0.0f, 0.0f, 0.0f, -0.95f, 0.0f, 0.0f);
-        this.to150mmModel[6].func_78793_a(-1.05f, 4.0f, -1.05f);
+        this.to150mmModel[6].setRotationPoint(-1.05f, 4.0f, -1.05f);
         this.to150mmModel[7].addShapeBox(0.0f, 0.0f, 0.0f, 1, 5, 1, 0.0f, 0.2f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.2f, -0.1f, 0.0f, -0.1f, -0.95f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -0.95f, -0.95f, 0.0f, -0.95f);
-        this.to150mmModel[7].func_78793_a(-1.05f, 4.0f, 0.05f);
+        this.to150mmModel[7].setRotationPoint(-1.05f, 4.0f, 0.05f);
     }
     
-    public void func_78088_a(final Entity entity, final float f, final float f1, final float f2, final float f3, final float f4, final float f5) {
+    public void render(final Entity entity, final float f, final float f1, final float f2, final float f3, final float f4, final float f5) {
         for (int i = 0; i < 8; ++i) {
-            this.to150mmModel[i].func_78785_a(f5);
+            this.to150mmModel[i].render(f5);
         }
     }
     

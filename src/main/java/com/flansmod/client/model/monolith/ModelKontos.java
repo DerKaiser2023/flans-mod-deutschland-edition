@@ -30,16 +30,16 @@ public class ModelKontos extends ModelGun
         this.gunModel[4] = new ModelRendererTurbo(this, 9, 9, this.textureX, this.textureY);
         this.gunModel[5] = new ModelRendererTurbo(this, 33, 9, this.textureX, this.textureY);
         this.gunModel[0].addShapeBox(15.0f, 0.0f, 1.0f, 10, 1, 1, 0.0f, 40.0f, -0.1f, -0.1f, 40.0f, -0.1f, -0.1f, 40.0f, -0.1f, -0.1f, 40.0f, -0.1f, -0.1f, 40.0f, -0.1f, -0.1f, 40.0f, -0.1f, -0.1f, 40.0f, -0.1f, -0.1f, 40.0f, -0.1f, -0.1f);
-        this.gunModel[0].func_78793_a(-10.0f, 0.0f, 0.0f);
+        this.gunModel[0].setRotationPoint(-10.0f, 0.0f, 0.0f);
         this.gunModel[1].addShapeBox(0.0f, 0.0f, 1.0f, 3, 1, 1, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.gunModel[1].func_78793_a(60.0f, 0.0f, 0.0f);
+        this.gunModel[1].setRotationPoint(60.0f, 0.0f, 0.0f);
         this.gunModel[2].addShapeBox(0.0f, 0.0f, 1.0f, 7, 1, 1, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, -0.25f, -0.25f, 0.0f, -0.25f, -0.25f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, -0.25f, -0.25f, 0.0f, -0.25f, -0.25f, 0.0f, 1.0f, 0.0f);
-        this.gunModel[2].func_78793_a(63.0f, 0.0f, 0.0f);
+        this.gunModel[2].setRotationPoint(63.0f, 0.0f, 0.0f);
         this.gunModel[3].addShapeBox(-1.0f, 0.0f, 1.0f, 2, 1, 1, 0.0f, 0.0f, -0.25f, -0.25f, 0.0f, -0.5f, -0.5f, 0.0f, -0.5f, -0.5f, 0.0f, -0.25f, -0.25f, 0.0f, -0.25f, -0.25f, 0.0f, -0.5f, -0.5f, 0.0f, -0.5f, -0.5f, 0.0f, -0.25f, -0.25f);
-        this.gunModel[3].func_78793_a(71.0f, 0.0f, 0.0f);
+        this.gunModel[3].setRotationPoint(71.0f, 0.0f, 0.0f);
         this.gunModel[4].addShapeBox(0.0f, 0.0f, 1.0f, 7, 1, 1, 0.0f, 0.0f, 0.2f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.2f, 0.0f, 0.0f, 0.2f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.2f, 0.0f);
-        this.gunModel[4].func_78793_a(53.0f, 0.0f, 0.0f);
+        this.gunModel[4].setRotationPoint(53.0f, 0.0f, 0.0f);
         this.gunModel[5].addShapeBox(15.0f, 0.0f, 1.0f, 10, 1, 1, 0.0f, 5.0f, 0.0f, 0.0f, 5.0f, 0.0f, 0.0f, 5.0f, 0.0f, 0.0f, 5.0f, 0.0f, 0.0f, 5.0f, 0.0f, 0.0f, 5.0f, 0.0f, 0.0f, 5.0f, 0.0f, 0.0f, 5.0f, 0.0f, 0.0f);
-        this.gunModel[5].func_78793_a(-17.0f, 0.0f, 0.0f);
+        this.gunModel[5].setRotationPoint(-17.0f, 0.0f, 0.0f);
     }
 }

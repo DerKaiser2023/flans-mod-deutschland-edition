@@ -33,7 +33,7 @@ public class TeamsMap
             FlansMod.log("Failed to add chunk loading ticket as Flan's Mod has run out");
             return;
         }
-        this.chunkLoadingTicket.getModData().func_74778_a("ShortName", this.shortName);
+        this.chunkLoadingTicket.getModData().setString("ShortName", this.shortName);
     }
     
     public ArrayList<ITeamBase> getBasesPerTeam(final int teamID) {
@@ -79,22 +79,22 @@ public class TeamsMap
         this.bases = new ArrayList<ITeamBase>();
         this.minPlayers = 0;
         this.maxPlayers = 1000000;
-        this.shortName = tags.func_74779_i("ShortName");
-        this.name = tags.func_74779_i("Name");
-        this.minPlayers = tags.func_74762_e("MinPlayers");
-        this.maxPlayers = tags.func_74762_e("MaxPlayers");
+        this.shortName = tags.getString("ShortName");
+        this.name = tags.getString("Name");
+        this.minPlayers = tags.getInteger("MinPlayers");
+        this.maxPlayers = tags.getInteger("MaxPlayers");
     }
     
     public void writeToNBT(final NBTTagCompound tags) {
-        tags.func_74778_a("ShortName", this.shortName);
-        tags.func_74778_a("Name", this.name);
-        tags.func_74768_a("MinPlayers", this.minPlayers);
-        tags.func_74768_a("MaxPlayers", this.maxPlayers);
+        tags.setString("ShortName", this.shortName);
+        tags.setString("Name", this.name);
+        tags.setInteger("MinPlayers", this.minPlayers);
+        tags.setInteger("MaxPlayers", this.maxPlayers);
     }
     
     public void forceChunkLoading(final ForgeChunkManager.Ticket ticket) {
         for (final ChunkCoordIntPair coord : ticket.getChunkList()) {
-            FlansMod.log("Loading chunk at " + coord.field_77276_a + ", " + coord.field_77275_b + " for map : " + this.name);
+            FlansMod.log("Loading chunk at " + coord.chunkXPos + ", " + coord.chunkZPos + " for map : " + this.name);
             ForgeChunkManager.forceChunk(ticket, coord);
         }
     }

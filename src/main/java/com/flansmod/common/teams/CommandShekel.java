@@ -21,15 +21,15 @@ import net.minecraft.command.CommandBase;
 
 public class CommandShekel extends CommandBase
 {
-    public boolean func_71519_b(final ICommandSender sender) {
+    public boolean canCommandSenderUseCommand(final ICommandSender sender) {
         return true;
     }
     
-    public String func_71517_b() {
+    public String getCommandName() {
         return "shekel";
     }
     
-    public void func_71515_b(final ICommandSender sender, final String[] split) {
+    public void processCommand(final ICommandSender sender, final String[] split) {
         if (split == null || split.length == 0 || split[0].equals("help") || split[0].equals("?")) {
             if (split != null && split.length == 2) {
                 this.sendHelpInformation(sender, Integer.parseInt(split[1]));
@@ -40,12 +40,12 @@ public class CommandShekel extends CommandBase
             return;
         }
         if (split[0].equals("withdraw")) {
-            final EntityPlayerMP player = this.getPlayer(sender.func_70005_c_());
+            final EntityPlayerMP player = this.getPlayer(sender.getCommandSenderName());
             if (player != null) {
                 if (PlayerHandler.getPlayerData((EntityPlayer)player).shekels > 9) {
-                    player.field_71071_by.func_70441_a(new ItemStack((Item)FlansMod.opStick, 1, 4));
-                    sender.func_145747_a((IChatComponent)new ChatComponentText("§2Use this to buy shit from NPCs."));
-                    sender.func_145747_a((IChatComponent)new ChatComponentText("§7Each Physical Shekel Represents 10 Shekels"));
+                    player.inventory.addItemStackToInventory(new ItemStack((Item)FlansMod.opStick, 1, 4));
+                    sender.addChatMessage((IChatComponent)new ChatComponentText("§2Use this to buy shit from NPCs."));
+                    sender.addChatMessage((IChatComponent)new ChatComponentText("§7Each Physical Shekel Represents 10 Shekels"));
                     final PlayerData playerData = PlayerHandler.getPlayerData((EntityPlayer)player);
                     --playerData.shekels;
                     final PlayerData playerData2 = PlayerHandler.getPlayerData((EntityPlayer)player);
@@ -68,45 +68,45 @@ public class CommandShekel extends CommandBase
                     --playerData10.shekels;
                 }
                 else if (PlayerHandler.getPlayerData((EntityPlayer)player).shekels < 10) {
-                    sender.func_145747_a((IChatComponent)new ChatComponentText("§7You need 10 Shekels to withdraw a physical Shekel"));
+                    sender.addChatMessage((IChatComponent)new ChatComponentText("§7You need 10 Shekels to withdraw a physical Shekel"));
                 }
             }
             return;
         }
         if (split[0].equals("balance")) {
-            final EntityPlayerMP player = this.getPlayer(sender.func_70005_c_());
+            final EntityPlayerMP player = this.getPlayer(sender.getCommandSenderName());
             if (player != null) {
-                sender.func_145747_a((IChatComponent)new ChatComponentText("§2You have " + PlayerHandler.getPlayerData((EntityPlayer)player).shekels + " shekels"));
+                sender.addChatMessage((IChatComponent)new ChatComponentText("§2You have " + PlayerHandler.getPlayerData((EntityPlayer)player).shekels + " shekels"));
             }
             return;
         }
         if (split[0].equals("bloodletting")) {
-            final EntityPlayerMP player = this.getPlayer(sender.func_70005_c_());
+            final EntityPlayerMP player = this.getPlayer(sender.getCommandSenderName());
             if (player != null) {
                 PlayerHandler.getPlayerData((EntityPlayer)player).minorBleed = 10;
-                sender.func_145747_a((IChatComponent)new ChatComponentText("§2You are bleeding out now!"));
+                sender.addChatMessage((IChatComponent)new ChatComponentText("§2You are bleeding out now!"));
             }
             return;
         }
         if (split[0].equals("Seppuku")) {
-            final EntityPlayerMP player = this.getPlayer(sender.func_70005_c_());
+            final EntityPlayerMP player = this.getPlayer(sender.getCommandSenderName());
             if (player != null) {
                 PlayerHandler.getPlayerData((EntityPlayer)player).minorBleed = 50;
-                sender.func_145747_a((IChatComponent)new ChatComponentText("§2You are seriously bleeding out now!"));
+                sender.addChatMessage((IChatComponent)new ChatComponentText("§2You are seriously bleeding out now!"));
             }
             return;
         }
         if (split[0].equals("withdraw5")) {
-            final EntityPlayerMP player = this.getPlayer(sender.func_70005_c_());
+            final EntityPlayerMP player = this.getPlayer(sender.getCommandSenderName());
             if (player != null) {
                 if (PlayerHandler.getPlayerData((EntityPlayer)player).shekels > 49) {
-                    player.field_71071_by.func_70441_a(new ItemStack((Item)FlansMod.opStick, 1, 4));
-                    player.field_71071_by.func_70441_a(new ItemStack((Item)FlansMod.opStick, 1, 4));
-                    player.field_71071_by.func_70441_a(new ItemStack((Item)FlansMod.opStick, 1, 4));
-                    player.field_71071_by.func_70441_a(new ItemStack((Item)FlansMod.opStick, 1, 4));
-                    player.field_71071_by.func_70441_a(new ItemStack((Item)FlansMod.opStick, 1, 4));
-                    sender.func_145747_a((IChatComponent)new ChatComponentText("§2Use this to buy shit from NPCs"));
-                    sender.func_145747_a((IChatComponent)new ChatComponentText("§7Each Physical Shekel Represents 10 Shekels"));
+                    player.inventory.addItemStackToInventory(new ItemStack((Item)FlansMod.opStick, 1, 4));
+                    player.inventory.addItemStackToInventory(new ItemStack((Item)FlansMod.opStick, 1, 4));
+                    player.inventory.addItemStackToInventory(new ItemStack((Item)FlansMod.opStick, 1, 4));
+                    player.inventory.addItemStackToInventory(new ItemStack((Item)FlansMod.opStick, 1, 4));
+                    player.inventory.addItemStackToInventory(new ItemStack((Item)FlansMod.opStick, 1, 4));
+                    sender.addChatMessage((IChatComponent)new ChatComponentText("§2Use this to buy shit from NPCs"));
+                    sender.addChatMessage((IChatComponent)new ChatComponentText("§7Each Physical Shekel Represents 10 Shekels"));
                     final PlayerData playerData11 = PlayerHandler.getPlayerData((EntityPlayer)player);
                     --playerData11.shekels;
                     final PlayerData playerData12 = PlayerHandler.getPlayerData((EntityPlayer)player);
@@ -209,17 +209,17 @@ public class CommandShekel extends CommandBase
                     --playerData60.shekels;
                 }
                 else if (PlayerHandler.getPlayerData((EntityPlayer)player).shekels < 50) {
-                    sender.func_145747_a((IChatComponent)new ChatComponentText("§7You need 50 Shekels to withdraw 5 at once"));
+                    sender.addChatMessage((IChatComponent)new ChatComponentText("§7You need 50 Shekels to withdraw 5 at once"));
                 }
             }
             return;
         }
-        sender.func_145747_a((IChatComponent)new ChatComponentText(split[0] + " is not a valid teams command. Try /shekel help"));
+        sender.addChatMessage((IChatComponent)new ChatComponentText(split[0] + " is not a valid teams command. Try /shekel help"));
     }
     
-    public List func_71516_a(final ICommandSender sender, final String[] prm) {
+    public List addTabCompletionOptions(final ICommandSender sender, final String[] prm) {
         if (prm.length <= 1) {
-            return func_71530_a(prm, new String[] { "help", "vehiclesCanZoom" });
+            return getListOfStringsMatchingLastWord(prm, new String[] { "help", "vehiclesCanZoom" });
         }
         return null;
     }
@@ -227,35 +227,35 @@ public class CommandShekel extends CommandBase
     public void sendHelpInformation(final ICommandSender sender, final int page) {
         if (page > 2 || page < 1) {
             final ChatComponentText text = new ChatComponentText("Invalid help page, should be in the range (1-2)");
-            text.func_150256_b().func_150238_a(EnumChatFormatting.RED);
-            sender.func_145747_a((IChatComponent)text);
+            text.getChatStyle().setColor(EnumChatFormatting.RED);
+            sender.addChatMessage((IChatComponent)text);
             return;
         }
-        sender.func_145747_a((IChatComponent)new ChatComponentText("§2Listing teams non op commands §f[Page " + page + " of 2]"));
+        sender.addChatMessage((IChatComponent)new ChatComponentText("§2Listing teams non op commands §f[Page " + page + " of 2]"));
         switch (page) {
             case 1: {
-                sender.func_145747_a((IChatComponent)new ChatComponentText("/shekel help"));
-                sender.func_145747_a((IChatComponent)new ChatComponentText("/shekel withdraw to withdraw 10 points as a physical item"));
-                sender.func_145747_a((IChatComponent)new ChatComponentText("/shekel withdraw5 to withdraw 50 points as 5 physical items"));
-                sender.func_145747_a((IChatComponent)new ChatComponentText("/shekel balance to see your shekel count"));
-                sender.func_145747_a((IChatComponent)new ChatComponentText("Check if there are unlockable features for this map at Spectator Spawn"));
+                sender.addChatMessage((IChatComponent)new ChatComponentText("/shekel help"));
+                sender.addChatMessage((IChatComponent)new ChatComponentText("/shekel withdraw to withdraw 10 points as a physical item"));
+                sender.addChatMessage((IChatComponent)new ChatComponentText("/shekel withdraw5 to withdraw 50 points as 5 physical items"));
+                sender.addChatMessage((IChatComponent)new ChatComponentText("/shekel balance to see your shekel count"));
+                sender.addChatMessage((IChatComponent)new ChatComponentText("Check if there are unlockable features for this map at Spectator Spawn"));
                 break;
             }
             case 2: {
-                sender.func_145747_a((IChatComponent)new ChatComponentText("No extra commands here"));
-                sender.func_145747_a((IChatComponent)new ChatComponentText("Ahem, despite being only 13% of the population, African Americans are responsible for over 50% of violent crimes"));
-                sender.func_145747_a((IChatComponent)new ChatComponentText("yet they are only 40 something% of the prison population. If you calculate tax income vs government program spending,"));
-                sender.func_145747_a((IChatComponent)new ChatComponentText("in the year 2014, black people created a deficit of at least 300 billion dollars, while Whites created a surplus."));
+                sender.addChatMessage((IChatComponent)new ChatComponentText("No extra commands here"));
+                sender.addChatMessage((IChatComponent)new ChatComponentText("Ahem, despite being only 13% of the population, African Americans are responsible for over 50% of violent crimes"));
+                sender.addChatMessage((IChatComponent)new ChatComponentText("yet they are only 40 something% of the prison population. If you calculate tax income vs government program spending,"));
+                sender.addChatMessage((IChatComponent)new ChatComponentText("in the year 2014, black people created a deficit of at least 300 billion dollars, while Whites created a surplus."));
                 break;
             }
         }
     }
     
     public EntityPlayerMP getPlayer(final String name) {
-        return MinecraftServer.func_71276_C().func_71203_ab().func_152612_a(name);
+        return MinecraftServer.getServer().getConfigurationManager().getPlayerByUsername(name);
     }
     
-    public String func_71518_a(final ICommandSender icommandsender) {
+    public String getCommandUsage(final ICommandSender icommandsender) {
         return "/shekel <help/withdraw/withdraw5>";
     }
 }

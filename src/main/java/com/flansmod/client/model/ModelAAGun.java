@@ -33,36 +33,36 @@ public class ModelAAGun extends ModelBase
     
     public void renderBase(final float f, final float f1, final float f2, final float f3, final float f4, final float f5, final EntityAAGun aa) {
         for (final ModelRendererTurbo aBaseModel : this.baseModel) {
-            aBaseModel.func_78785_a(f5);
+            aBaseModel.render(f5);
         }
     }
     
     public void renderGun(final float f, final float f1, final float f2, final float f3, final float f4, final float f5, final EntityAAGun aa) {
         for (final ModelRendererTurbo aSeatModel : this.seatModel) {
-            aSeatModel.func_78785_a(f5);
+            aSeatModel.render(f5);
         }
         for (final ModelRendererTurbo aGunModel : this.gunModel) {
             aGunModel.setPosition((float)this.barrelX, (float)this.barrelY, (float)this.barrelZ);
-            aGunModel.field_78808_h = -aa.gunPitch / 180.0f * 3.1415927f;
-            aGunModel.func_78785_a(f5);
+            aGunModel.rotateAngleZ = -aa.gunPitch / 180.0f * 3.1415927f;
+            aGunModel.render(f5);
         }
         for (final ModelRendererTurbo aGunsightModel : this.gunsightModel) {
-            aGunsightModel.field_78808_h = -aa.gunPitch / 180.0f * 3.1415927f;
-            aGunsightModel.func_78785_a(f5);
+            aGunsightModel.rotateAngleZ = -aa.gunPitch / 180.0f * 3.1415927f;
+            aGunsightModel.render(f5);
         }
         for (int i = 0; i < this.barrelModel.length; ++i) {
             for (int j = 0; j < this.barrelModel[i].length; ++j) {
                 this.barrelModel[i][j].setPosition(-aa.barrelRecoil[i] * (float)Math.cos(-aa.gunPitch * 3.1415927f / 180.0f) + this.barrelX, -aa.barrelRecoil[i] * (float)Math.sin(-aa.gunPitch * 3.1415927f / 180.0f) + this.barrelY, (float)this.barrelZ);
-                this.barrelModel[i][j].field_78808_h = -aa.gunPitch / 180.0f * 3.1415927f;
-                this.barrelModel[i][j].func_78785_a(f5);
+                this.barrelModel[i][j].rotateAngleZ = -aa.gunPitch / 180.0f * 3.1415927f;
+                this.barrelModel[i][j].render(f5);
             }
         }
         for (int i = 0; i < this.ammoModel.length; ++i) {
             if (aa.ammo[i] != null) {
                 for (int j = 0; j < this.ammoModel[i].length; ++j) {
                     this.ammoModel[i][j].setPosition((float)this.barrelX, (float)this.barrelY, (float)this.barrelZ);
-                    this.ammoModel[i][j].field_78808_h = -aa.gunPitch / 180.0f * 3.1415927f;
-                    this.ammoModel[i][j].func_78785_a(f5);
+                    this.ammoModel[i][j].rotateAngleZ = -aa.gunPitch / 180.0f * 3.1415927f;
+                    this.ammoModel[i][j].render(f5);
                 }
             }
         }
@@ -74,30 +74,30 @@ public class ModelAAGun extends ModelBase
     public void flipAll() {
         for (final ModelRendererTurbo aBaseModel : this.baseModel) {
             aBaseModel.doMirror(false, true, true);
-            aBaseModel.func_78793_a(aBaseModel.field_78800_c, -aBaseModel.field_78797_d, -aBaseModel.field_78798_e);
+            aBaseModel.setRotationPoint(aBaseModel.rotationPointX, -aBaseModel.rotationPointY, -aBaseModel.rotationPointZ);
         }
         for (final ModelRendererTurbo aSeatModel : this.seatModel) {
             aSeatModel.doMirror(false, true, true);
-            aSeatModel.func_78793_a(aSeatModel.field_78800_c, -aSeatModel.field_78797_d, -aSeatModel.field_78798_e);
+            aSeatModel.setRotationPoint(aSeatModel.rotationPointX, -aSeatModel.rotationPointY, -aSeatModel.rotationPointZ);
         }
         for (final ModelRendererTurbo aGunModel : this.gunModel) {
             aGunModel.doMirror(false, true, true);
-            aGunModel.func_78793_a(aGunModel.field_78800_c, -aGunModel.field_78797_d, -aGunModel.field_78798_e);
+            aGunModel.setRotationPoint(aGunModel.rotationPointX, -aGunModel.rotationPointY, -aGunModel.rotationPointZ);
         }
         for (final ModelRendererTurbo aGunsightModel : this.gunsightModel) {
             aGunsightModel.doMirror(false, true, true);
-            aGunsightModel.func_78793_a(aGunsightModel.field_78800_c, -aGunsightModel.field_78797_d, -aGunsightModel.field_78798_e);
+            aGunsightModel.setRotationPoint(aGunsightModel.rotationPointX, -aGunsightModel.rotationPointY, -aGunsightModel.rotationPointZ);
         }
         for (final ModelRendererTurbo[] aBarrelModel : this.barrelModel) {
             for (int j = 0; j < aBarrelModel.length; ++j) {
                 aBarrelModel[j].doMirror(false, true, true);
-                aBarrelModel[j].func_78793_a(aBarrelModel[j].field_78800_c, -aBarrelModel[j].field_78797_d, -aBarrelModel[j].field_78798_e);
+                aBarrelModel[j].setRotationPoint(aBarrelModel[j].rotationPointX, -aBarrelModel[j].rotationPointY, -aBarrelModel[j].rotationPointZ);
             }
         }
         for (final ModelRendererTurbo[] anAmmoModel : this.ammoModel) {
             for (int j = 0; j < anAmmoModel.length; ++j) {
                 anAmmoModel[j].doMirror(false, true, true);
-                anAmmoModel[j].func_78793_a(anAmmoModel[j].field_78800_c, -anAmmoModel[j].field_78797_d, -anAmmoModel[j].field_78798_e);
+                anAmmoModel[j].setRotationPoint(anAmmoModel[j].rotationPointX, -anAmmoModel[j].rotationPointY, -anAmmoModel[j].rotationPointZ);
             }
         }
     }

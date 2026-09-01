@@ -31,7 +31,7 @@ public class Bone
         this.neutralAngles = new Angle3D(x, y, z);
         this.relativeAngles = new Angle3D(0.0f, 0.0f, 0.0f);
         this.absoluteAngles = new Angle3D(0.0f, 0.0f, 0.0f);
-        this.positionVector = Vec3.func_72443_a(0.0, 0.0, 0.0);
+        this.positionVector = Vec3.createVectorHelper(0.0, 0.0, 0.0);
         this.length = l;
         this.childNodes = new ArrayList<Bone>();
         this.models = new ArrayList<ModelRenderer>();
@@ -40,7 +40,7 @@ public class Bone
         this.offsetX = 0.0f;
         this.offsetY = 0.0f;
         this.offsetZ = 0.0f;
-        this.positionVector = Vec3.func_72443_a(0.0, 0.0, 0.0);
+        this.positionVector = Vec3.createVectorHelper(0.0, 0.0, 0.0);
     }
     
     public Bone(final float xOrig, final float yOrig, final float zOrig, final float xRot, final float yRot, final float zRot, final float l) {
@@ -72,16 +72,16 @@ public class Bone
     public Vec3 setOffset(final float x, final float y, final float z) {
         if (this.parentNode != null) {
             final Vec3 vector = this.parentNode.setOffset(x, y, z);
-            this.offsetX = (float)vector.field_72450_a;
-            this.offsetY = (float)vector.field_72448_b;
-            this.offsetZ = (float)vector.field_72449_c;
+            this.offsetX = (float)vector.xCoord;
+            this.offsetY = (float)vector.yCoord;
+            this.offsetZ = (float)vector.zCoord;
             return vector;
         }
         this.offsetX = x;
         this.offsetY = y;
         this.offsetZ = z;
         this.resetOffset(true);
-        return Vec3.func_72443_a((double)x, (double)y, (double)z);
+        return Vec3.createVectorHelper((double)x, (double)y, (double)z);
     }
     
     public void resetOffset() {
@@ -90,14 +90,14 @@ public class Bone
     
     public void resetOffset(final boolean doRecursive) {
         if (this.parentNode != null) {
-            this.positionVector = Vec3.func_72443_a(0.0, 0.0, (double)this.parentNode.length);
+            this.positionVector = Vec3.createVectorHelper(0.0, 0.0, (double)this.parentNode.length);
             this.parentNode.setVectorRotations(this.positionVector);
             final Vec3 positionVector = this.positionVector;
-            positionVector.field_72450_a += this.parentNode.positionVector.field_72450_a;
+            positionVector.xCoord += this.parentNode.positionVector.xCoord;
             final Vec3 positionVector2 = this.positionVector;
-            positionVector2.field_72448_b += this.parentNode.positionVector.field_72448_b;
+            positionVector2.yCoord += this.parentNode.positionVector.yCoord;
             final Vec3 positionVector3 = this.positionVector;
-            positionVector3.field_72449_c += this.parentNode.positionVector.field_72449_c;
+            positionVector3.zCoord += this.parentNode.positionVector.zCoord;
         }
         if (doRecursive && !this.childNodes.isEmpty()) {
             for (final Bone childNode : this.childNodes) {
@@ -159,7 +159,7 @@ public class Bone
     }
     
     public Vec3 getPosition() {
-        return Vec3.func_72443_a(this.positionVector.field_72450_a, this.positionVector.field_72448_b, this.positionVector.field_72449_c);
+        return Vec3.createVectorHelper(this.positionVector.xCoord, this.positionVector.yCoord, this.positionVector.zCoord);
     }
     
     protected void addChildBone(final Bone bone) {
@@ -211,15 +211,15 @@ public class Bone
         final float x = xRot;
         final float y = yRot;
         final float z = zRot;
-        final float xC = MathHelper.func_76134_b(x);
-        final float xS = MathHelper.func_76126_a(x);
-        final float yC = MathHelper.func_76134_b(y);
-        final float yS = MathHelper.func_76126_a(y);
-        final float zC = MathHelper.func_76134_b(z);
-        final float zS = MathHelper.func_76126_a(z);
-        double xVec = vector.field_72450_a;
-        double yVec = vector.field_72448_b;
-        double zVec = vector.field_72449_c;
+        final float xC = MathHelper.cos(x);
+        final float xS = MathHelper.sin(x);
+        final float yC = MathHelper.cos(y);
+        final float yS = MathHelper.sin(y);
+        final float zC = MathHelper.cos(z);
+        final float zS = MathHelper.sin(z);
+        double xVec = vector.xCoord;
+        double yVec = vector.yCoord;
+        double zVec = vector.zCoord;
         final double xy = xC * yVec - xS * zVec;
         final double xz = xC * zVec + xS * yVec;
         final double yz = yC * xz - yS * xVec;
@@ -229,9 +229,9 @@ public class Bone
         xVec = zx;
         yVec = zy;
         zVec = yz;
-        vector.field_72450_a = xVec;
-        vector.field_72448_b = yVec;
-        vector.field_72449_c = zVec;
+        vector.xCoord = xVec;
+        vector.yCoord = yVec;
+        vector.zCoord = zVec;
     }
     
     public void setParent(final Bone parent) {
@@ -239,14 +239,14 @@ public class Bone
     }
     
     protected void addVector(final Vec3 destVec, final Vec3 srcVec) {
-        destVec.field_72450_a += srcVec.field_72450_a;
-        destVec.field_72448_b += srcVec.field_72448_b;
-        destVec.field_72449_c += srcVec.field_72449_c;
+        destVec.xCoord += srcVec.xCoord;
+        destVec.yCoord += srcVec.yCoord;
+        destVec.zCoord += srcVec.zCoord;
     }
     
     protected void setVectors() {
-        final Vec3 tempVec = Vec3.func_72443_a(0.0, 0.0, (double)this.length);
-        this.addVector(tempVec, this.positionVector = Vec3.func_72443_a((double)this.offsetX, (double)this.offsetY, (double)this.offsetZ));
+        final Vec3 tempVec = Vec3.createVectorHelper(0.0, 0.0, (double)this.length);
+        this.addVector(tempVec, this.positionVector = Vec3.createVectorHelper((double)this.offsetX, (double)this.offsetY, (double)this.offsetZ));
         this.setVectorRotations(tempVec);
         for (final Bone childNode : this.childNodes) {
             childNode.setVectors(tempVec);
@@ -255,7 +255,7 @@ public class Bone
     
     protected void setVectors(final Vec3 vector) {
         this.positionVector = vector;
-        final Vec3 tempVec = Vec3.func_72443_a(0.0, 0.0, (double)this.length);
+        final Vec3 tempVec = Vec3.createVectorHelper(0.0, 0.0, (double)this.length);
         this.setVectorRotations(tempVec);
         this.addVector(tempVec, vector);
         for (final Bone childNode : this.childNodes) {
@@ -266,12 +266,12 @@ public class Bone
     public void setAnglesToModels() {
         for (final ModelRenderer currentModel : this.models) {
             final Angle3D baseAngles = this.modelBaseRot.get(currentModel);
-            currentModel.field_78795_f = baseAngles.angleX + this.absoluteAngles.angleX;
-            currentModel.field_78796_g = baseAngles.angleY + this.absoluteAngles.angleY;
-            currentModel.field_78808_h = baseAngles.angleZ + this.absoluteAngles.angleZ;
-            currentModel.field_78800_c = (float)this.positionVector.field_72450_a;
-            currentModel.field_78797_d = (float)this.positionVector.field_72448_b;
-            currentModel.field_78798_e = (float)this.positionVector.field_72449_c;
+            currentModel.rotateAngleX = baseAngles.angleX + this.absoluteAngles.angleX;
+            currentModel.rotateAngleY = baseAngles.angleY + this.absoluteAngles.angleY;
+            currentModel.rotateAngleZ = baseAngles.angleZ + this.absoluteAngles.angleZ;
+            currentModel.rotationPointX = (float)this.positionVector.xCoord;
+            currentModel.rotationPointY = (float)this.positionVector.yCoord;
+            currentModel.rotationPointZ = (float)this.positionVector.zCoord;
         }
         for (final Bone childNode : this.childNodes) {
             childNode.setAnglesToModels();

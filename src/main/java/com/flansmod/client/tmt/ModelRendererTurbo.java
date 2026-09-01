@@ -40,15 +40,15 @@ public class ModelRendererTurbo extends ModelRenderer
     private Map<String, TextureGroup> textureGroup;
     private TransformGroup currentGroup;
     private TextureGroup currentTextureGroup;
-    public boolean field_78809_i;
+    public boolean mirror;
     public boolean flip;
-    public boolean field_78806_j;
+    public boolean showModel;
     public boolean field_1402_i;
     public boolean forcedRecompile;
     public boolean useLegacyCompiler;
-    public List field_78804_l;
-    public List field_78805_m;
-    public final String field_78802_n;
+    public List cubeList;
+    public List childModels;
+    public final String boxName;
     private String defaultTexture;
     public static final int MR_FRONT = 0;
     public static final int MR_BACK = 1;
@@ -64,8 +64,8 @@ public class ModelRendererTurbo extends ModelRenderer
         this.flip = false;
         this.compiled = false;
         this.displayList = 0;
-        this.field_78809_i = false;
-        this.field_78806_j = true;
+        this.mirror = false;
+        this.showModel = true;
         this.field_1402_i = false;
         this.vertices = new PositionTextureVertex[0];
         this.faces = new TexturedPolygon[0];
@@ -73,7 +73,7 @@ public class ModelRendererTurbo extends ModelRenderer
         (this.transformGroup = new HashMap<String, TransformGroup>()).put("0", new TransformGroupBone(new Bone(0.0f, 0.0f, 0.0f, 0.0f), 1.0));
         (this.textureGroup = new HashMap<String, TextureGroup>()).put("0", new TextureGroup());
         this.currentTextureGroup = this.textureGroup.get("0");
-        this.field_78802_n = s;
+        this.boxName = s;
         this.defaultTexture = "";
         this.useLegacyCompiler = false;
     }
@@ -90,8 +90,8 @@ public class ModelRendererTurbo extends ModelRenderer
         this(modelbase);
         this.textureOffsetX = textureX;
         this.textureOffsetY = textureY;
-        this.field_78801_a = (float)textureU;
-        this.field_78799_b = (float)textureV;
+        this.textureWidth = (float)textureU;
+        this.textureHeight = (float)textureV;
     }
     
     public void addPolygon(final PositionTextureVertex[] verts) {
@@ -101,7 +101,7 @@ public class ModelRendererTurbo extends ModelRenderer
     public void addPolygon(final PositionTextureVertex[] verts, final int[][] uv) {
         try {
             for (int i = 0; i < verts.length; ++i) {
-                verts[i] = verts[i].setTexturePosition(uv[i][0] / this.field_78801_a, uv[i][1] / this.field_78799_b);
+                verts[i] = verts[i].setTexturePosition(uv[i][0] / this.textureWidth, uv[i][1] / this.textureHeight);
             }
         }
         finally {
@@ -117,40 +117,40 @@ public class ModelRendererTurbo extends ModelRenderer
         if (verts.length < 3) {
             return null;
         }
-        final float uOffs = 1.0f / (this.field_78801_a * 10.0f);
-        final float vOffs = 1.0f / (this.field_78799_b * 10.0f);
+        final float uOffs = 1.0f / (this.textureWidth * 10.0f);
+        final float vOffs = 1.0f / (this.textureHeight * 10.0f);
         if (verts.length < 4) {
             float xMin = -1.0f;
             float yMin = -1.0f;
             float xMax = 0.0f;
             float yMax = 0.0f;
             for (final PositionTextureVertex vert : verts) {
-                final float xPos = vert.field_78241_b;
-                final float yPos = vert.field_78242_c;
+                final float xPos = vert.texturePositionX;
+                final float yPos = vert.texturePositionY;
                 xMax = Math.max(xMax, xPos);
                 xMin = ((xMin < -1.0f) ? xPos : Math.min(xMin, xPos));
                 yMax = Math.max(yMax, yPos);
                 yMin = ((yMin < -1.0f) ? yPos : Math.min(yMin, yPos));
             }
-            final float uMin = u1 / this.field_78801_a + uOffs;
-            final float vMin = v1 / this.field_78799_b + vOffs;
-            final float uSize = (u2 - u1) / this.field_78801_a - uOffs * 2.0f;
-            final float vSize = (v2 - v1) / this.field_78799_b - vOffs * 2.0f;
+            final float uMin = u1 / this.textureWidth + uOffs;
+            final float vMin = v1 / this.textureHeight + vOffs;
+            final float uSize = (u2 - u1) / this.textureWidth - uOffs * 2.0f;
+            final float vSize = (v2 - v1) / this.textureHeight - vOffs * 2.0f;
             final float xSize = xMax - xMin;
             final float ySize = yMax - yMin;
             for (int i = 0; i < verts.length; ++i) {
-                float xPos2 = verts[i].field_78241_b;
-                float yPos2 = verts[i].field_78242_c;
+                float xPos2 = verts[i].texturePositionX;
+                float yPos2 = verts[i].texturePositionY;
                 xPos2 = (xPos2 - xMin) / xSize;
                 yPos2 = (yPos2 - yMin) / ySize;
                 verts[i] = verts[i].setTexturePosition(uMin + xPos2 * uSize, vMin + yPos2 * vSize);
             }
         }
         else {
-            verts[0] = verts[0].setTexturePosition((u2 / this.field_78801_a - uOffs) * q1, (v1 / this.field_78799_b + vOffs) * q1, q1);
-            verts[1] = verts[1].setTexturePosition((u1 / this.field_78801_a + uOffs) * q2, (v1 / this.field_78799_b + vOffs) * q2, q2);
-            verts[2] = verts[2].setTexturePosition((u1 / this.field_78801_a + uOffs) * q3, (v2 / this.field_78799_b - vOffs) * q3, q3);
-            verts[3] = verts[3].setTexturePosition((u2 / this.field_78801_a - uOffs) * q4, (v2 / this.field_78799_b - vOffs) * q4, q4);
+            verts[0] = verts[0].setTexturePosition((u2 / this.textureWidth - uOffs) * q1, (v1 / this.textureHeight + vOffs) * q1, q1);
+            verts[1] = verts[1].setTexturePosition((u1 / this.textureWidth + uOffs) * q2, (v1 / this.textureHeight + vOffs) * q2, q2);
+            verts[2] = verts[2].setTexturePosition((u1 / this.textureWidth + uOffs) * q3, (v2 / this.textureHeight - vOffs) * q3, q3);
+            verts[3] = verts[3].setTexturePosition((u2 / this.textureWidth - uOffs) * q4, (v2 / this.textureHeight - vOffs) * q4, q4);
         }
         return new TexturedPolygon(verts);
     }
@@ -159,40 +159,40 @@ public class ModelRendererTurbo extends ModelRenderer
         if (verts.length < 3) {
             return null;
         }
-        final float uOffs = 1.0f / (this.field_78801_a * 10.0f);
-        final float vOffs = 1.0f / (this.field_78799_b * 10.0f);
+        final float uOffs = 1.0f / (this.textureWidth * 10.0f);
+        final float vOffs = 1.0f / (this.textureHeight * 10.0f);
         if (verts.length < 4) {
             float xMin = -1.0f;
             float yMin = -1.0f;
             float xMax = 0.0f;
             float yMax = 0.0f;
             for (final PositionTextureVertex vert : verts) {
-                final float xPos = vert.field_78241_b;
-                final float yPos = vert.field_78242_c;
+                final float xPos = vert.texturePositionX;
+                final float yPos = vert.texturePositionY;
                 xMax = Math.max(xMax, xPos);
                 xMin = ((xMin < -1.0f) ? xPos : Math.min(xMin, xPos));
                 yMax = Math.max(yMax, yPos);
                 yMin = ((yMin < -1.0f) ? yPos : Math.min(yMin, yPos));
             }
-            final float uMin = u1 / this.field_78801_a + uOffs;
-            final float vMin = v1 / this.field_78799_b + vOffs;
-            final float uSize = (u2 - u1) / this.field_78801_a - uOffs * 2.0f;
-            final float vSize = (v2 - v1) / this.field_78799_b - vOffs * 2.0f;
+            final float uMin = u1 / this.textureWidth + uOffs;
+            final float vMin = v1 / this.textureHeight + vOffs;
+            final float uSize = (u2 - u1) / this.textureWidth - uOffs * 2.0f;
+            final float vSize = (v2 - v1) / this.textureHeight - vOffs * 2.0f;
             final float xSize = xMax - xMin;
             final float ySize = yMax - yMin;
             for (int i = 0; i < verts.length; ++i) {
-                float xPos2 = verts[i].field_78241_b;
-                float yPos2 = verts[i].field_78242_c;
+                float xPos2 = verts[i].texturePositionX;
+                float yPos2 = verts[i].texturePositionY;
                 xPos2 = (xPos2 - xMin) / xSize;
                 yPos2 = (yPos2 - yMin) / ySize;
                 verts[i] = verts[i].setTexturePosition(uMin + xPos2 * uSize, vMin + yPos2 * vSize);
             }
         }
         else {
-            verts[0] = verts[0].setTexturePosition(u2 / this.field_78801_a - uOffs, v1 / this.field_78799_b + vOffs);
-            verts[1] = verts[1].setTexturePosition(u1 / this.field_78801_a + uOffs, v1 / this.field_78799_b + vOffs);
-            verts[2] = verts[2].setTexturePosition(u1 / this.field_78801_a + uOffs, v2 / this.field_78799_b - vOffs);
-            verts[3] = verts[3].setTexturePosition(u2 / this.field_78801_a - uOffs, v2 / this.field_78799_b - vOffs);
+            verts[0] = verts[0].setTexturePosition(u2 / this.textureWidth - uOffs, v1 / this.textureHeight + vOffs);
+            verts[1] = verts[1].setTexturePosition(u1 / this.textureWidth + uOffs, v1 / this.textureHeight + vOffs);
+            verts[2] = verts[2].setTexturePosition(u1 / this.textureWidth + uOffs, v2 / this.textureHeight - vOffs);
+            verts[3] = verts[3].setTexturePosition(u2 / this.textureWidth - uOffs, v2 / this.textureHeight - vOffs);
         }
         return new TexturedPolygon(verts);
     }
@@ -227,7 +227,7 @@ public class ModelRendererTurbo extends ModelRenderer
         poly[3] = this.addPolygonReturn(new PositionTextureVertex[] { positionTexturevertex3, positionTexturevertex4, positionTexturevertex8, positionTexturevertex7 }, this.textureOffsetX + d + w, this.textureOffsetY, this.textureOffsetX + d + w + w, this.textureOffsetY + d, qParam[3], qParam[3] * qParam[11], qParam[11], 1.0f);
         poly[4] = this.addPolygonReturn(new PositionTextureVertex[] { positionTexturevertex2, positionTexturevertex, positionTexturevertex4, positionTexturevertex3 }, this.textureOffsetX + d, this.textureOffsetY + d, this.textureOffsetX + d + w, this.textureOffsetY + d + h, qParam[0], qParam[0] * qParam[4], qParam[4], 1.0f);
         poly[5] = this.addPolygonReturn(new PositionTextureVertex[] { positionTexturevertex5, positionTexturevertex6, positionTexturevertex7, positionTexturevertex8 }, this.textureOffsetX + d + w + d, this.textureOffsetY + d, this.textureOffsetX + d + w + d + w, this.textureOffsetY + d + h, qParam[2] * qParam[5], qParam[2], 1.0f, qParam[5]);
-        if (this.field_78809_i ^ this.flip) {
+        if (this.mirror ^ this.flip) {
             for (final TexturedPolygon aPoly : poly) {
                 aPoly.flipFace();
             }
@@ -236,11 +236,11 @@ public class ModelRendererTurbo extends ModelRenderer
     }
     
     public ModelRendererTurbo addBox(final float x, final float y, final float z, final int w, final int h, final int d) {
-        this.func_78790_a(x, y, z, w, h, d, 0.0f);
+        this.addBox(x, y, z, w, h, d, 0.0f);
         return this;
     }
     
-    public void func_78790_a(final float x, final float y, final float z, final int w, final int h, final int d, final float expansion) {
+    public void addBox(final float x, final float y, final float z, final int w, final int h, final int d, final float expansion) {
         this.addBox(x, y, z, w, h, d, expansion, 1.0f);
     }
     
@@ -260,7 +260,7 @@ public class ModelRendererTurbo extends ModelRenderer
         x2 += expansion;
         y2 += expansion;
         z2 += expansion;
-        if (this.field_78809_i) {
+        if (this.mirror) {
             final float xTemp = x2;
             x2 = x;
             x = xTemp;
@@ -286,8 +286,8 @@ public class ModelRendererTurbo extends ModelRenderer
         f4 += scale;
         f5 += scale;
         f6 += scale;
-        final int m = this.field_78809_i ? -1 : 1;
-        if (this.field_78809_i) {
+        final int m = this.mirror ? -1 : 1;
+        if (this.mirror) {
             final float f7 = f4;
             f4 = x;
             x = f7;
@@ -478,8 +478,8 @@ public class ModelRendererTurbo extends ModelRenderer
         f4 += scale;
         f5 += scale;
         f6 += scale;
-        final int m = this.field_78809_i ? -1 : 1;
-        if (this.field_78809_i) {
+        final int m = this.mirror ? -1 : 1;
+        if (this.mirror) {
             final float f7 = f4;
             f4 = x;
             x = f7;
@@ -670,8 +670,8 @@ public class ModelRendererTurbo extends ModelRenderer
         f4 += scale;
         f5 += scale;
         f6 += scale;
-        final int m = this.field_78809_i ? -1 : 1;
-        if (this.field_78809_i) {
+        final int m = this.mirror ? -1 : 1;
+        if (this.mirror) {
             final float f7 = f4;
             f4 = x;
             x = f7;
@@ -925,9 +925,9 @@ public class ModelRendererTurbo extends ModelRenderer
     }
     
     public void addBox(final float x, final float y, final float z, float w, float h, float d) {
-        final int rw = MathHelper.func_76123_f(w);
-        final int rh = MathHelper.func_76123_f(h);
-        final int rd = MathHelper.func_76123_f(d);
+        final int rw = MathHelper.ceiling_float_int(w);
+        final int rh = MathHelper.ceiling_float_int(h);
+        final int rd = MathHelper.ceiling_float_int(d);
         w -= rw;
         h -= rh;
         d -= rd;
@@ -944,8 +944,8 @@ public class ModelRendererTurbo extends ModelRenderer
         f4 += scale;
         f5 += scale;
         f6 += scale;
-        final int m = this.field_78809_i ? -1 : 1;
-        if (this.field_78809_i) {
+        final int m = this.mirror ? -1 : 1;
+        if (this.mirror) {
             final float f7 = f4;
             f4 = x;
             x = f7;
@@ -1016,7 +1016,7 @@ public class ModelRendererTurbo extends ModelRenderer
     }
     
     public void addShape3D(final float x, final float y, final float z, final Shape2D shape, final float depth, final int shapeTextureWidth, final int shapeTextureHeight, final int sideTextureWidth, final int sideTextureHeight, final float rotX, final float rotY, final float rotZ, final float[] faceLengths) {
-        final Shape3D shape3D = shape.extrude(x, y, z, rotX, rotY, rotZ, depth, this.textureOffsetX, this.textureOffsetY, this.field_78801_a, this.field_78799_b, shapeTextureWidth, shapeTextureHeight, sideTextureWidth, sideTextureHeight, faceLengths);
+        final Shape3D shape3D = shape.extrude(x, y, z, rotX, rotY, rotZ, depth, this.textureOffsetX, this.textureOffsetY, this.textureWidth, this.textureHeight, shapeTextureWidth, shapeTextureHeight, sideTextureWidth, sideTextureHeight, faceLengths);
         if (this.flip) {
             for (int idx = 0; idx < shape3D.faces.length; ++idx) {
                 shape3D.faces[idx].flipFace();
@@ -1174,21 +1174,21 @@ public class ModelRendererTurbo extends ModelRenderer
         final TexturedPolygon[] poly = new TexturedPolygon[segs * rings];
         tempVerts[0] = new PositionTextureVertex(x, y - r, z, 0.0f, 0.0f);
         tempVerts[tempVerts.length - 1] = new PositionTextureVertex(x, y + r, z, 0.0f, 0.0f);
-        final float uOffs = 1.0f / (this.field_78801_a * 10.0f);
-        final float vOffs = 1.0f / (this.field_78799_b * 10.0f);
-        final float texW = textureW / this.field_78801_a - 2.0f * uOffs;
-        final float texH = textureH / this.field_78799_b - 2.0f * vOffs;
+        final float uOffs = 1.0f / (this.textureWidth * 10.0f);
+        final float vOffs = 1.0f / (this.textureHeight * 10.0f);
+        final float texW = textureW / this.textureWidth - 2.0f * uOffs;
+        final float texH = textureH / this.textureHeight - 2.0f * vOffs;
         final float segW = texW / segs;
         final float segH = texH / rings;
-        final float startU = this.textureOffsetX / this.field_78801_a;
-        final float startV = this.textureOffsetY / this.field_78799_b;
+        final float startU = this.textureOffsetX / this.textureWidth;
+        final float startV = this.textureOffsetY / this.textureHeight;
         int currentFace = 0;
         for (int j = 1; j < rings; ++j) {
             for (int i = 0; i < segs; ++i) {
-                final float yWidth = MathHelper.func_76134_b(-1.5707964f + 3.1415927f / rings * j);
-                final float yHeight = MathHelper.func_76126_a(-1.5707964f + 3.1415927f / rings * j);
-                final float xSize = MathHelper.func_76126_a(3.1415927f / segs * i * 2.0f + 3.1415927f) * yWidth;
-                final float zSize = -MathHelper.func_76134_b(3.1415927f / segs * i * 2.0f + 3.1415927f) * yWidth;
+                final float yWidth = MathHelper.cos(-1.5707964f + 3.1415927f / rings * j);
+                final float yHeight = MathHelper.sin(-1.5707964f + 3.1415927f / rings * j);
+                final float xSize = MathHelper.sin(3.1415927f / segs * i * 2.0f + 3.1415927f) * yWidth;
+                final float zSize = -MathHelper.cos(3.1415927f / segs * i * 2.0f + 3.1415927f) * yWidth;
                 final int curVert = 1 + i + segs * (j - 1);
                 tempVerts[curVert] = new PositionTextureVertex(x + xSize * r, y + yHeight * r, z + zSize * r, 0.0f, 0.0f);
                 if (i > 0) {
@@ -1283,8 +1283,8 @@ public class ModelRendererTurbo extends ModelRenderer
         float sCur = coneBase ? topScale : baseScale;
         for (int repeat = 0; repeat < ((coneBase || coneTop) ? 1 : 2); ++repeat) {
             for (int index = 0; index < segments; ++index) {
-                final float xSize = ((this.field_78809_i ^ dirMirror) ? -1 : 1) * MathHelper.func_76126_a(3.1415927f / segments * index * 2.0f + 3.1415927f) * radius * sCur;
-                final float zSize = -MathHelper.func_76134_b(3.1415927f / segments * index * 2.0f + 3.1415927f) * radius * sCur;
+                final float xSize = ((this.mirror ^ dirMirror) ? -1 : 1) * MathHelper.sin(3.1415927f / segments * index * 2.0f + 3.1415927f) * radius * sCur;
+                final float zSize = -MathHelper.cos(3.1415927f / segments * index * 2.0f + 3.1415927f) * radius * sCur;
                 final float xPlace = xCur + (dirSide ? 0.0f : xSize);
                 final float yPlace = yCur + (dirTop ? 0.0f : zSize);
                 final float zPlace = zCur + (dirSide ? xSize : (dirTop ? zSize : 0.0f));
@@ -1295,8 +1295,8 @@ public class ModelRendererTurbo extends ModelRenderer
             zCur = zEnd;
             sCur = topScale;
         }
-        final float uScale = 1.0f / this.field_78801_a;
-        final float vScale = 1.0f / this.field_78799_b;
+        final float uScale = 1.0f / this.textureWidth;
+        final float vScale = 1.0f / this.textureHeight;
         final float uOffset = uScale / 20.0f;
         final float vOffset = vScale / 20.0f;
         final float uCircle = textureCircleDiameterW * uScale;
@@ -1307,25 +1307,25 @@ public class ModelRendererTurbo extends ModelRenderer
         final float vStart = this.textureOffsetY * vScale;
         for (int index2 = 0; index2 < segments; ++index2) {
             final int index3 = (index2 + 1) % segments;
-            final float uSize = MathHelper.func_76126_a(3.1415927f / segments * index2 * 2.0f + (dirTop ? 3.1415927f : 0.0f)) * (0.5f * uCircle - 2.0f * uOffset);
-            final float vSize = MathHelper.func_76134_b(3.1415927f / segments * index2 * 2.0f + (dirTop ? 3.1415927f : 0.0f)) * (0.5f * vCircle - 2.0f * vOffset);
-            final float uSize2 = MathHelper.func_76126_a(3.1415927f / segments * index3 * 2.0f + (dirTop ? 3.1415927f : 0.0f)) * (0.5f * uCircle - 2.0f * uOffset);
-            final float vSize2 = MathHelper.func_76134_b(3.1415927f / segments * index3 * 2.0f + (dirTop ? 3.1415927f : 0.0f)) * (0.5f * vCircle - 2.0f * vOffset);
+            final float uSize = MathHelper.sin(3.1415927f / segments * index2 * 2.0f + (dirTop ? 3.1415927f : 0.0f)) * (0.5f * uCircle - 2.0f * uOffset);
+            final float vSize = MathHelper.cos(3.1415927f / segments * index2 * 2.0f + (dirTop ? 3.1415927f : 0.0f)) * (0.5f * vCircle - 2.0f * vOffset);
+            final float uSize2 = MathHelper.sin(3.1415927f / segments * index3 * 2.0f + (dirTop ? 3.1415927f : 0.0f)) * (0.5f * uCircle - 2.0f * uOffset);
+            final float vSize2 = MathHelper.cos(3.1415927f / segments * index3 * 2.0f + (dirTop ? 3.1415927f : 0.0f)) * (0.5f * vCircle - 2.0f * vOffset);
             PositionTextureVertex[] vert = { tempVerts[0].setTexturePosition(uStart + 0.5f * uCircle, vStart + 0.5f * vCircle), tempVerts[1 + index3].setTexturePosition(uStart + 0.5f * uCircle + uSize2, vStart + 0.5f * vCircle + vSize2), tempVerts[1 + index2].setTexturePosition(uStart + 0.5f * uCircle + uSize, vStart + 0.5f * vCircle + vSize) };
             poly[index2] = new TexturedPolygon(vert);
-            if (this.field_78809_i ^ this.flip) {
+            if (this.mirror ^ this.flip) {
                 poly[index2].flipFace();
             }
             if (!coneBase && !coneTop) {
                 vert = new PositionTextureVertex[] { tempVerts[1 + index2].setTexturePosition(uStart + uOffset + uWidth * index2, vStart + vOffset + vCircle), tempVerts[1 + index3].setTexturePosition(uStart + uOffset + uWidth * (index2 + 1), vStart + vOffset + vCircle), tempVerts[1 + segments + index3].setTexturePosition(uStart + uOffset + uWidth * (index2 + 1), vStart + vOffset + vCircle + vHeight), tempVerts[1 + segments + index2].setTexturePosition(uStart + uOffset + uWidth * index2, vStart + vOffset + vCircle + vHeight) };
                 poly[index2 + segments] = new TexturedPolygon(vert);
-                if (this.field_78809_i ^ this.flip) {
+                if (this.mirror ^ this.flip) {
                     poly[index2 + segments].flipFace();
                 }
             }
             vert = new PositionTextureVertex[] { tempVerts[tempVerts.length - 1].setTexturePosition(uStart + 1.5f * uCircle, vStart + 0.5f * vCircle), tempVerts[tempVerts.length - 2 - index2].setTexturePosition(uStart + 1.5f * uCircle + uSize2, vStart + 0.5f * vCircle + vSize2), tempVerts[tempVerts.length - (1 + segments) + (segments - index2) % segments].setTexturePosition(uStart + 1.5f * uCircle + uSize, vStart + 0.5f * vCircle + vSize) };
             poly[poly.length - segments + index2] = new TexturedPolygon(vert);
-            if (this.field_78809_i ^ this.flip) {
+            if (this.mirror ^ this.flip) {
                 poly[poly.length - segments + index2].flipFace();
             }
         }
@@ -1358,21 +1358,21 @@ public class ModelRendererTurbo extends ModelRenderer
     }
     
     public void setPosition(final float x, final float y, final float z) {
-        this.field_78800_c = x;
-        this.field_78797_d = y;
-        this.field_78798_e = z;
+        this.rotationPointX = x;
+        this.rotationPointY = y;
+        this.rotationPointZ = z;
     }
     
     public void doMirror(final boolean x, final boolean y, final boolean z) {
         for (final TexturedPolygon face : this.faces) {
             final PositionTextureVertex[] verts = face.vertexPositions;
             for (int j = 0; j < verts.length; ++j) {
-                final Vec3 field_78243_a = verts[j].field_78243_a;
-                field_78243_a.field_72450_a *= (x ? -1 : 1);
-                final Vec3 field_78243_a2 = verts[j].field_78243_a;
-                field_78243_a2.field_72448_b *= (y ? -1 : 1);
-                final Vec3 field_78243_a3 = verts[j].field_78243_a;
-                field_78243_a3.field_72449_c *= (z ? -1 : 1);
+                final Vec3 vector3D = verts[j].vector3D;
+                vector3D.xCoord *= (x ? -1 : 1);
+                final Vec3 field_78243_a2 = verts[j].vector3D;
+                field_78243_a2.yCoord *= (y ? -1 : 1);
+                final Vec3 field_78243_a3 = verts[j].vector3D;
+                field_78243_a3.zCoord *= (z ? -1 : 1);
             }
             if (x ^ y ^ z) {
                 face.flipFace();
@@ -1381,7 +1381,7 @@ public class ModelRendererTurbo extends ModelRenderer
     }
     
     public void setMirrored(final boolean isMirrored) {
-        this.field_78809_i = isMirrored;
+        this.mirror = isMirrored;
     }
     
     public void setFlipped(final boolean isFlipped) {
@@ -1420,7 +1420,7 @@ public class ModelRendererTurbo extends ModelRenderer
     public void copyTo(final PositionTextureVertex[] verts, final TexturedQuad[] quad) {
         final TexturedPolygon[] poly = new TexturedPolygon[quad.length];
         for (int idx = 0; idx < quad.length; ++idx) {
-            poly[idx] = new TexturedPolygon((PositionTextureVertex[])quad[idx].field_78239_a);
+            poly[idx] = new TexturedPolygon((PositionTextureVertex[])quad[idx].vertexPositions);
         }
         this.copyTo(verts, poly);
     }
@@ -1473,7 +1473,7 @@ public class ModelRendererTurbo extends ModelRenderer
         this.defaultTexture = s;
     }
     
-    public void func_78785_a(final float worldScale) {
+    public void render(final float worldScale) {
         this.render(worldScale, false);
     }
     
@@ -1490,50 +1490,50 @@ public class ModelRendererTurbo extends ModelRenderer
         if (this.field_1402_i) {
             return;
         }
-        if (!this.field_78806_j) {
+        if (!this.showModel) {
             return;
         }
         if (!this.compiled || this.forcedRecompile) {
             this.compileDisplayList(worldScale);
         }
-        if (this.field_78795_f != 0.0f || this.field_78796_g != 0.0f || this.field_78808_h != 0.0f) {
+        if (this.rotateAngleX != 0.0f || this.rotateAngleY != 0.0f || this.rotateAngleZ != 0.0f) {
             GL11.glPushMatrix();
-            GL11.glTranslatef(this.field_78800_c * worldScale, this.field_78797_d * worldScale, this.field_78798_e * worldScale);
-            if (!oldRotateOrder && this.field_78796_g != 0.0f) {
-                GL11.glRotatef(this.field_78796_g * 57.29578f, 0.0f, 1.0f, 0.0f);
+            GL11.glTranslatef(this.rotationPointX * worldScale, this.rotationPointY * worldScale, this.rotationPointZ * worldScale);
+            if (!oldRotateOrder && this.rotateAngleY != 0.0f) {
+                GL11.glRotatef(this.rotateAngleY * 57.29578f, 0.0f, 1.0f, 0.0f);
             }
-            if (this.field_78808_h != 0.0f) {
-                GL11.glRotatef((oldRotateOrder ? -1 : 1) * this.field_78808_h * 57.29578f, 0.0f, 0.0f, 1.0f);
+            if (this.rotateAngleZ != 0.0f) {
+                GL11.glRotatef((oldRotateOrder ? -1 : 1) * this.rotateAngleZ * 57.29578f, 0.0f, 0.0f, 1.0f);
             }
-            if (oldRotateOrder && this.field_78796_g != 0.0f) {
-                GL11.glRotatef(-this.field_78796_g * 57.29578f, 0.0f, 1.0f, 0.0f);
+            if (oldRotateOrder && this.rotateAngleY != 0.0f) {
+                GL11.glRotatef(-this.rotateAngleY * 57.29578f, 0.0f, 1.0f, 0.0f);
             }
-            if (this.field_78795_f != 0.0f) {
-                GL11.glRotatef(this.field_78795_f * 57.29578f, 1.0f, 0.0f, 0.0f);
+            if (this.rotateAngleX != 0.0f) {
+                GL11.glRotatef(this.rotateAngleX * 57.29578f, 1.0f, 0.0f, 0.0f);
             }
             this.callDisplayList();
-            if (this.field_78805_m != null) {
-                for (final Object childModel : this.field_78805_m) {
-                    ((ModelRenderer)childModel).func_78785_a(worldScale);
+            if (this.childModels != null) {
+                for (final Object childModel : this.childModels) {
+                    ((ModelRenderer)childModel).render(worldScale);
                 }
             }
             GL11.glPopMatrix();
         }
-        else if (this.field_78800_c != 0.0f || this.field_78797_d != 0.0f || this.field_78798_e != 0.0f) {
-            GL11.glTranslatef(this.field_78800_c * worldScale, this.field_78797_d * worldScale, this.field_78798_e * worldScale);
+        else if (this.rotationPointX != 0.0f || this.rotationPointY != 0.0f || this.rotationPointZ != 0.0f) {
+            GL11.glTranslatef(this.rotationPointX * worldScale, this.rotationPointY * worldScale, this.rotationPointZ * worldScale);
             this.callDisplayList();
-            if (this.field_78805_m != null) {
-                for (final Object childModel : this.field_78805_m) {
-                    ((ModelRenderer)childModel).func_78785_a(worldScale);
+            if (this.childModels != null) {
+                for (final Object childModel : this.childModels) {
+                    ((ModelRenderer)childModel).render(worldScale);
                 }
             }
-            GL11.glTranslatef(-this.field_78800_c * worldScale, -this.field_78797_d * worldScale, -this.field_78798_e * worldScale);
+            GL11.glTranslatef(-this.rotationPointX * worldScale, -this.rotationPointY * worldScale, -this.rotationPointZ * worldScale);
         }
         else {
             this.callDisplayList();
-            if (this.field_78805_m != null) {
-                for (final Object childModel : this.field_78805_m) {
-                    ((ModelRenderer)childModel).func_78785_a(worldScale);
+            if (this.childModels != null) {
+                for (final Object childModel : this.childModels) {
+                    ((ModelRenderer)childModel).render(worldScale);
                 }
             }
         }
@@ -1545,55 +1545,55 @@ public class ModelRendererTurbo extends ModelRenderer
         GL11.glPopMatrix();
     }
     
-    public void func_78791_b(final float f) {
+    public void renderWithRotation(final float f) {
         if (this.field_1402_i) {
             return;
         }
-        if (!this.field_78806_j) {
+        if (!this.showModel) {
             return;
         }
         if (!this.compiled) {
             this.compileDisplayList(f);
         }
         GL11.glPushMatrix();
-        GL11.glTranslatef(this.field_78800_c * f, this.field_78797_d * f, this.field_78798_e * f);
-        if (this.field_78796_g != 0.0f) {
-            GL11.glRotatef(this.field_78796_g * 57.29578f, 0.0f, 1.0f, 0.0f);
+        GL11.glTranslatef(this.rotationPointX * f, this.rotationPointY * f, this.rotationPointZ * f);
+        if (this.rotateAngleY != 0.0f) {
+            GL11.glRotatef(this.rotateAngleY * 57.29578f, 0.0f, 1.0f, 0.0f);
         }
-        if (this.field_78795_f != 0.0f) {
-            GL11.glRotatef(this.field_78795_f * 57.29578f, 1.0f, 0.0f, 0.0f);
+        if (this.rotateAngleX != 0.0f) {
+            GL11.glRotatef(this.rotateAngleX * 57.29578f, 1.0f, 0.0f, 0.0f);
         }
-        if (this.field_78808_h != 0.0f) {
-            GL11.glRotatef(this.field_78808_h * 57.29578f, 0.0f, 0.0f, 1.0f);
+        if (this.rotateAngleZ != 0.0f) {
+            GL11.glRotatef(this.rotateAngleZ * 57.29578f, 0.0f, 0.0f, 1.0f);
         }
         this.callDisplayList();
         GL11.glPopMatrix();
     }
     
-    public void func_78794_c(final float f) {
+    public void postRender(final float f) {
         if (this.field_1402_i) {
             return;
         }
-        if (!this.field_78806_j) {
+        if (!this.showModel) {
             return;
         }
         if (!this.compiled || this.forcedRecompile) {
             this.compileDisplayList(f);
         }
-        if (this.field_78795_f != 0.0f || this.field_78796_g != 0.0f || this.field_78808_h != 0.0f) {
-            GL11.glTranslatef(this.field_78800_c * f, this.field_78797_d * f, this.field_78798_e * f);
-            if (this.field_78808_h != 0.0f) {
-                GL11.glRotatef(this.field_78808_h * 57.29578f, 0.0f, 0.0f, 1.0f);
+        if (this.rotateAngleX != 0.0f || this.rotateAngleY != 0.0f || this.rotateAngleZ != 0.0f) {
+            GL11.glTranslatef(this.rotationPointX * f, this.rotationPointY * f, this.rotationPointZ * f);
+            if (this.rotateAngleZ != 0.0f) {
+                GL11.glRotatef(this.rotateAngleZ * 57.29578f, 0.0f, 0.0f, 1.0f);
             }
-            if (this.field_78796_g != 0.0f) {
-                GL11.glRotatef(this.field_78796_g * 57.29578f, 0.0f, 1.0f, 0.0f);
+            if (this.rotateAngleY != 0.0f) {
+                GL11.glRotatef(this.rotateAngleY * 57.29578f, 0.0f, 1.0f, 0.0f);
             }
-            if (this.field_78795_f != 0.0f) {
-                GL11.glRotatef(this.field_78795_f * 57.29578f, 1.0f, 0.0f, 0.0f);
+            if (this.rotateAngleX != 0.0f) {
+                GL11.glRotatef(this.rotateAngleX * 57.29578f, 1.0f, 0.0f, 0.0f);
             }
         }
-        else if (this.field_78800_c != 0.0f || this.field_78797_d != 0.0f || this.field_78798_e != 0.0f) {
-            GL11.glTranslatef(this.field_78800_c * f, this.field_78797_d * f, this.field_78798_e * f);
+        else if (this.rotationPointX != 0.0f || this.rotationPointY != 0.0f || this.rotationPointZ != 0.0f) {
+            GL11.glTranslatef(this.rotationPointX * f, this.rotationPointY * f, this.rotationPointZ * f);
         }
     }
     
@@ -1602,7 +1602,7 @@ public class ModelRendererTurbo extends ModelRenderer
             GL11.glCallList(this.displayList);
         }
         else {
-            final TextureManager renderEngine = RenderManager.field_78727_a.field_78724_e;
+            final TextureManager renderEngine = RenderManager.instance.renderEngine;
             final Collection<TextureGroup> textures = this.textureGroup.values();
             final Iterator<TextureGroup> itr = textures.iterator();
             int i = 0;
@@ -1611,7 +1611,7 @@ public class ModelRendererTurbo extends ModelRenderer
                 curTexGroup.loadTexture();
                 GL11.glCallList(this.displayListArray[i]);
                 if (!this.defaultTexture.equals("")) {
-                    renderEngine.func_110577_a(new ResourceLocation("", this.defaultTexture));
+                    renderEngine.bindTexture(new ResourceLocation("", this.defaultTexture));
                 }
                 ++i;
             }
@@ -1628,7 +1628,7 @@ public class ModelRendererTurbo extends ModelRenderer
             this.displayListArray = new int[this.textureGroup.size()];
             int i = 0;
             while (itr.hasNext()) {
-                GL11.glNewList(this.displayListArray[i] = GLAllocation.func_74526_a(1), 4864);
+                GL11.glNewList(this.displayListArray[i] = GLAllocation.generateDisplayLists(1), 4864);
                 final TmtTessellator tessellator = TmtTessellator.instance;
                 final TextureGroup usedGroup = itr.next();
                 for (int j = 0; j < usedGroup.poly.size(); ++j) {
@@ -1642,7 +1642,7 @@ public class ModelRendererTurbo extends ModelRenderer
     }
     
     private void compileLegacyDisplayList(final float worldScale) {
-        GL11.glNewList(this.displayList = GLAllocation.func_74526_a(1), 4864);
+        GL11.glNewList(this.displayList = GLAllocation.generateDisplayLists(1), 4864);
         final TmtTessellator tessellator = TmtTessellator.instance;
         for (final TexturedPolygon face : this.faces) {
             face.draw(tessellator, worldScale);
@@ -1666,13 +1666,13 @@ public class ModelRendererTurbo extends ModelRenderer
         final float glowRatioX = Math.min(glow / 15.0f * 240.0f + ModelRendererTurbo.lightmapLastX, 240.0f);
         final float glowRatioY = Math.min(glow / 15.0f * 240.0f + ModelRendererTurbo.lightmapLastY, 240.0f);
         if (!ModelRendererTurbo.optifineBreak) {
-            OpenGlHelper.func_77475_a(OpenGlHelper.field_77476_b, glowRatioX, glowRatioY);
+            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, glowRatioX, glowRatioY);
         }
     }
     
     public static void glowOff() {
         if (!ModelRendererTurbo.optifineBreak) {
-            OpenGlHelper.func_77475_a(OpenGlHelper.field_77476_b, ModelRendererTurbo.lightmapLastX, ModelRendererTurbo.lightmapLastY);
+            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, ModelRendererTurbo.lightmapLastX, ModelRendererTurbo.lightmapLastY);
         }
         GL11.glPopAttrib();
     }

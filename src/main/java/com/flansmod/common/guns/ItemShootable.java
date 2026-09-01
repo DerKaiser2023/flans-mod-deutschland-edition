@@ -18,8 +18,8 @@ public abstract class ItemShootable extends Item
     
     public ItemShootable(final ShootableType t) {
         this.type = t;
-        this.field_77777_bU = this.type.maxStackSize;
-        this.func_77656_e(this.type.roundsPerItem);
+        this.maxStackSize = this.type.maxStackSize;
+        this.setMaxDurability(this.type.roundsPerItem);
         GameRegistry.registerItem((Item)this, this.type.shortName, "flansmod");
     }
     

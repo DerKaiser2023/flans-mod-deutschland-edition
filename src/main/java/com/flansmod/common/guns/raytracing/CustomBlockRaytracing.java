@@ -17,25 +17,25 @@ import net.minecraft.world.World;
 
 public class CustomBlockRaytracing
 {
-    public static MovingObjectPosition func_147447_a(final World w, final Vec3 p_147447_1_, final Vec3 p_147447_2_, final boolean p_147447_3_, final boolean p_147447_4_, final boolean p_147447_5_) {
-        if (Double.isNaN(p_147447_1_.field_72450_a) || Double.isNaN(p_147447_1_.field_72448_b) || Double.isNaN(p_147447_1_.field_72449_c)) {
+    public static MovingObjectPosition rayTraceBlocks(final World w, final Vec3 p_147447_1_, final Vec3 p_147447_2_, final boolean p_147447_3_, final boolean p_147447_4_, final boolean p_147447_5_) {
+        if (Double.isNaN(p_147447_1_.xCoord) || Double.isNaN(p_147447_1_.yCoord) || Double.isNaN(p_147447_1_.zCoord)) {
             return null;
         }
-        if (!Double.isNaN(p_147447_2_.field_72450_a) && !Double.isNaN(p_147447_2_.field_72448_b) && !Double.isNaN(p_147447_2_.field_72449_c)) {
-            final int i = MathHelper.func_76128_c(p_147447_2_.field_72450_a);
-            final int j = MathHelper.func_76128_c(p_147447_2_.field_72448_b);
-            final int k = MathHelper.func_76128_c(p_147447_2_.field_72449_c);
-            int l = MathHelper.func_76128_c(p_147447_1_.field_72450_a);
-            int i2 = MathHelper.func_76128_c(p_147447_1_.field_72448_b);
-            int j2 = MathHelper.func_76128_c(p_147447_1_.field_72449_c);
-            final Block block = w.func_147439_a(l, i2, j2);
-            int k2 = w.func_72805_g(l, i2, j2);
+        if (!Double.isNaN(p_147447_2_.xCoord) && !Double.isNaN(p_147447_2_.yCoord) && !Double.isNaN(p_147447_2_.zCoord)) {
+            final int i = MathHelper.floor_double(p_147447_2_.xCoord);
+            final int j = MathHelper.floor_double(p_147447_2_.yCoord);
+            final int k = MathHelper.floor_double(p_147447_2_.zCoord);
+            int l = MathHelper.floor_double(p_147447_1_.xCoord);
+            int i2 = MathHelper.floor_double(p_147447_1_.yCoord);
+            int j2 = MathHelper.floor_double(p_147447_1_.zCoord);
+            final Block block = w.getBlock(l, i2, j2);
+            int k2 = w.getBlockMetadata(l, i2, j2);
             boolean doWeIgnoreThisBlock = false;
             if (block instanceof BlockLeaves || block instanceof BlockGlass || block instanceof BlockStainedGlass || block instanceof BlockStainedGlassPane || block instanceof BlockPane) {
                 doWeIgnoreThisBlock = true;
             }
-            if (!doWeIgnoreThisBlock && (!p_147447_4_ || block.func_149668_a(w, l, i2, j2) != null) && block.func_149678_a(k2, p_147447_3_)) {
-                final MovingObjectPosition movingobjectposition = block.func_149731_a(w, l, i2, j2, p_147447_1_, p_147447_2_);
+            if (!doWeIgnoreThisBlock && (!p_147447_4_ || block.getCollisionBoundingBoxFromPool(w, l, i2, j2) != null) && block.canStopRayTrace(k2, p_147447_3_)) {
+                final MovingObjectPosition movingobjectposition = block.collisionRayTrace(w, l, i2, j2, p_147447_1_, p_147447_2_);
                 if (movingobjectposition != null) {
                     return movingobjectposition;
                 }
@@ -43,7 +43,7 @@ public class CustomBlockRaytracing
             MovingObjectPosition movingobjectposition2 = null;
             k2 = 200;
             while (k2-- >= 0) {
-                if (Double.isNaN(p_147447_1_.field_72450_a) || Double.isNaN(p_147447_1_.field_72448_b) || Double.isNaN(p_147447_1_.field_72449_c)) {
+                if (Double.isNaN(p_147447_1_.xCoord) || Double.isNaN(p_147447_1_.yCoord) || Double.isNaN(p_147447_1_.zCoord)) {
                     return null;
                 }
                 if (l == i && i2 == j && j2 == k) {
@@ -85,17 +85,17 @@ public class CustomBlockRaytracing
                 double d4 = 999.0;
                 double d5 = 999.0;
                 double d6 = 999.0;
-                final double d7 = p_147447_2_.field_72450_a - p_147447_1_.field_72450_a;
-                final double d8 = p_147447_2_.field_72448_b - p_147447_1_.field_72448_b;
-                final double d9 = p_147447_2_.field_72449_c - p_147447_1_.field_72449_c;
+                final double d7 = p_147447_2_.xCoord - p_147447_1_.xCoord;
+                final double d8 = p_147447_2_.yCoord - p_147447_1_.yCoord;
+                final double d9 = p_147447_2_.zCoord - p_147447_1_.zCoord;
                 if (flag6) {
-                    d4 = (d0 - p_147447_1_.field_72450_a) / d7;
+                    d4 = (d0 - p_147447_1_.xCoord) / d7;
                 }
                 if (flag7) {
-                    d5 = (d2 - p_147447_1_.field_72448_b) / d8;
+                    d5 = (d2 - p_147447_1_.yCoord) / d8;
                 }
                 if (flag8) {
-                    d6 = (d3 - p_147447_1_.field_72449_c) / d9;
+                    d6 = (d3 - p_147447_1_.zCoord) / d9;
                 }
                 final boolean flag9 = false;
                 byte b0;
@@ -106,9 +106,9 @@ public class CustomBlockRaytracing
                     else {
                         b0 = 5;
                     }
-                    p_147447_1_.field_72450_a = d0;
-                    p_147447_1_.field_72448_b += d8 * d4;
-                    p_147447_1_.field_72449_c += d9 * d4;
+                    p_147447_1_.xCoord = d0;
+                    p_147447_1_.yCoord += d8 * d4;
+                    p_147447_1_.zCoord += d9 * d4;
                 }
                 else if (d5 < d6) {
                     if (j > i2) {
@@ -117,9 +117,9 @@ public class CustomBlockRaytracing
                     else {
                         b0 = 1;
                     }
-                    p_147447_1_.field_72450_a += d7 * d5;
-                    p_147447_1_.field_72448_b = d2;
-                    p_147447_1_.field_72449_c += d9 * d5;
+                    p_147447_1_.xCoord += d7 * d5;
+                    p_147447_1_.yCoord = d2;
+                    p_147447_1_.zCoord += d9 * d5;
                 }
                 else {
                     if (k > j2) {
@@ -128,49 +128,49 @@ public class CustomBlockRaytracing
                     else {
                         b0 = 3;
                     }
-                    p_147447_1_.field_72450_a += d7 * d6;
-                    p_147447_1_.field_72448_b += d8 * d6;
-                    p_147447_1_.field_72449_c = d3;
+                    p_147447_1_.xCoord += d7 * d6;
+                    p_147447_1_.yCoord += d8 * d6;
+                    p_147447_1_.zCoord = d3;
                 }
-                final Vec3 func_72443_a;
-                final Vec3 vec32 = func_72443_a = Vec3.func_72443_a(p_147447_1_.field_72450_a, p_147447_1_.field_72448_b, p_147447_1_.field_72449_c);
-                final double field_72450_a = MathHelper.func_76128_c(p_147447_1_.field_72450_a);
-                func_72443_a.field_72450_a = field_72450_a;
-                l = (int)field_72450_a;
+                final Vec3 createVectorHelper;
+                final Vec3 vec32 = createVectorHelper = Vec3.createVectorHelper(p_147447_1_.xCoord, p_147447_1_.yCoord, p_147447_1_.zCoord);
+                final double xCoord = MathHelper.floor_double(p_147447_1_.xCoord);
+                createVectorHelper.xCoord = xCoord;
+                l = (int)xCoord;
                 if (b0 == 5) {
                     --l;
                     final Vec3 vec33 = vec32;
-                    ++vec33.field_72450_a;
+                    ++vec33.xCoord;
                 }
                 final Vec3 vec34 = vec32;
-                final double field_72448_b = MathHelper.func_76128_c(p_147447_1_.field_72448_b);
-                vec34.field_72448_b = field_72448_b;
-                i2 = (int)field_72448_b;
+                final double yCoord = MathHelper.floor_double(p_147447_1_.yCoord);
+                vec34.yCoord = yCoord;
+                i2 = (int)yCoord;
                 if (b0 == 1) {
                     --i2;
                     final Vec3 vec35 = vec32;
-                    ++vec35.field_72448_b;
+                    ++vec35.yCoord;
                 }
                 final Vec3 vec36 = vec32;
-                final double field_72449_c = MathHelper.func_76128_c(p_147447_1_.field_72449_c);
-                vec36.field_72449_c = field_72449_c;
-                j2 = (int)field_72449_c;
+                final double zCoord = MathHelper.floor_double(p_147447_1_.zCoord);
+                vec36.zCoord = zCoord;
+                j2 = (int)zCoord;
                 if (b0 == 3) {
                     --j2;
                     final Vec3 vec37 = vec32;
-                    ++vec37.field_72449_c;
+                    ++vec37.zCoord;
                 }
-                final Block block2 = w.func_147439_a(l, i2, j2);
-                final int l2 = w.func_72805_g(l, i2, j2);
+                final Block block2 = w.getBlock(l, i2, j2);
+                final int l2 = w.getBlockMetadata(l, i2, j2);
                 doWeIgnoreThisBlock = false;
                 if (block2 instanceof BlockLeaves || block2 instanceof BlockGlass || block2 instanceof BlockStainedGlass || block2 instanceof BlockStainedGlassPane || block2 instanceof BlockPane) {
                     doWeIgnoreThisBlock = true;
                 }
-                if (doWeIgnoreThisBlock || (p_147447_4_ && block2.func_149668_a(w, l, i2, j2) == null)) {
+                if (doWeIgnoreThisBlock || (p_147447_4_ && block2.getCollisionBoundingBoxFromPool(w, l, i2, j2) == null)) {
                     continue;
                 }
-                if (block2.func_149678_a(l2, p_147447_3_)) {
-                    final MovingObjectPosition movingobjectposition3 = block2.func_149731_a(w, l, i2, j2, p_147447_1_, p_147447_2_);
+                if (block2.canStopRayTrace(l2, p_147447_3_)) {
+                    final MovingObjectPosition movingobjectposition3 = block2.collisionRayTrace(w, l, i2, j2, p_147447_1_, p_147447_2_);
                     if (movingobjectposition3 != null) {
                         return movingobjectposition3;
                     }

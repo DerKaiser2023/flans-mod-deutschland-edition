@@ -56,7 +56,7 @@ public class ModelDriveable extends ModelBase
     protected void flip(final ModelRendererTurbo[] model) {
         for (final ModelRendererTurbo part : model) {
             part.doMirror(false, true, true);
-            part.func_78793_a(part.field_78800_c, -part.field_78797_d, -part.field_78798_e);
+            part.setRotationPoint(part.rotationPointX, -part.rotationPointY, -part.rotationPointZ);
         }
     }
     
@@ -75,11 +75,11 @@ public class ModelDriveable extends ModelBase
     protected void translate(final ModelRendererTurbo[] model, final float x, final float y, final float z) {
         for (final ModelRendererTurbo modelRendererTurbo : model) {
             final ModelRendererTurbo mod = modelRendererTurbo;
-            modelRendererTurbo.field_78800_c += x;
+            modelRendererTurbo.rotationPointX += x;
             final ModelRendererTurbo modelRendererTurbo2 = mod;
-            modelRendererTurbo2.field_78797_d += y;
+            modelRendererTurbo2.rotationPointY += y;
             final ModelRendererTurbo modelRendererTurbo3 = mod;
-            modelRendererTurbo3.field_78798_e += z;
+            modelRendererTurbo3.rotationPointZ += z;
         }
     }
     

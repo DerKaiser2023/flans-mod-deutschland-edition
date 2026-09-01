@@ -23,14 +23,14 @@ public class ModelMIM23Rocket extends ModelBullet
         (this.bulletModel[2] = new ModelRendererTurbo(this, 102, 226, textureX, textureY)).addShapeBox(-20.0f, -7.0f, 0.0f, 20, 14, 0, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -4.0f, 0.0f, 0.0f, -4.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -4.0f, 0.0f, 0.0f, -4.0f, 0.0f, 0.0f, 0.0f, 0.0f);
         (this.bulletModel[3] = new ModelRendererTurbo(this, 88, 242, textureX, textureY)).addShapeBox(-20.0f, 0.0f, -7.0f, 20, 0, 14, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -4.0f, 0.0f, 0.0f, -4.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -4.0f, 0.0f, 0.0f, -4.0f, 0.0f, 0.0f, 0.0f);
         for (int i = 0; i < 4; ++i) {
-            this.bulletModel[i].field_78808_h = 1.5707964f;
+            this.bulletModel[i].rotateAngleZ = 1.5707964f;
         }
     }
     
     @Override
-    public void func_78088_a(final Entity entity, final float f, final float f1, final float f2, final float f3, final float f4, final float f5) {
+    public void render(final Entity entity, final float f, final float f1, final float f2, final float f3, final float f4, final float f5) {
         for (final ModelRendererTurbo mrt : this.bulletModel) {
-            mrt.func_78785_a(f5);
+            mrt.render(f5);
         }
     }
 }

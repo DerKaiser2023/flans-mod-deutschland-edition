@@ -29,47 +29,47 @@ public class ContainerDriveableMenu extends Container
         this.plane = planey;
         this.isFuel = fuel;
         if (this.isFuel) {
-            this.func_75146_a(new Slot((IInventory)this.plane.driveableData, this.plane.driveableData.getFuelSlot(), 35, 44));
+            this.addSlotToContainer(new Slot((IInventory)this.plane.driveableData, this.plane.driveableData.getFuelSlot(), 35, 44));
         }
         for (int row = 0; row < 3; ++row) {
             for (int col = 0; col < 9; ++col) {
-                this.func_75146_a(new Slot((IInventory)inventoryplayer, col + row * 9 + 9, 8 + col * 18, 79 + (this.isFuel ? 0 : 19) + row * 18));
+                this.addSlotToContainer(new Slot((IInventory)inventoryplayer, col + row * 9 + 9, 8 + col * 18, 79 + (this.isFuel ? 0 : 19) + row * 18));
             }
         }
         for (int col2 = 0; col2 < 9; ++col2) {
-            this.func_75146_a(new Slot((IInventory)inventoryplayer, col2, 8 + col2 * 18, 137 + (this.isFuel ? 0 : 19)));
+            this.addSlotToContainer(new Slot((IInventory)inventoryplayer, col2, 8 + col2 * 18, 137 + (this.isFuel ? 0 : 19)));
         }
     }
     
-    public ItemStack func_82846_b(final EntityPlayer player, final int slotID) {
+    public ItemStack transferStackInSlot(final EntityPlayer player, final int slotID) {
         ItemStack stack = null;
-        final Slot currentSlot = this.field_75151_b.get(slotID);
-        if (currentSlot != null && currentSlot.func_75216_d()) {
-            final ItemStack slotStack = currentSlot.func_75211_c();
-            stack = slotStack.func_77946_l();
+        final Slot currentSlot = (Slot) this.inventorySlots.get(slotID);
+        if (currentSlot != null && currentSlot.getHasStack()) {
+            final ItemStack slotStack = currentSlot.getStack();
+            stack = slotStack.copy();
             if (slotID != 0) {
-                if (!this.func_75135_a(slotStack, 0, 1, false)) {
+                if (!this.mergeItemStack(slotStack, 0, 1, false)) {
                     return null;
                 }
             }
-            else if (!this.func_75135_a(slotStack, 1, this.field_75151_b.size(), true)) {
+            else if (!this.mergeItemStack(slotStack, 1, this.inventorySlots.size(), true)) {
                 return null;
             }
-            if (slotStack.field_77994_a == 0) {
-                currentSlot.func_75215_d((ItemStack)null);
+            if (slotStack.stackSize == 0) {
+                currentSlot.putStack((ItemStack)null);
             }
             else {
-                currentSlot.func_75218_e();
+                currentSlot.onSlotChanged();
             }
-            if (slotStack.field_77994_a == stack.field_77994_a) {
+            if (slotStack.stackSize == stack.stackSize) {
                 return null;
             }
-            currentSlot.func_82870_a(player, slotStack);
+            currentSlot.onPickupFromSlot(player, slotStack);
         }
         return stack;
     }
     
-    public boolean func_75145_c(final EntityPlayer entityplayer) {
+    public boolean canInteractWith(final EntityPlayer entityplayer) {
         return true;
     }
 }

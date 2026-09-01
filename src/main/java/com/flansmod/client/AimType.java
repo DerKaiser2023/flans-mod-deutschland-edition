@@ -12,7 +12,7 @@ public enum AimType
     TOGGLE;
     
     public String getName() {
-        return StatCollector.func_74838_a(String.format("aimtype.%s.name", this.name().toLowerCase()));
+        return StatCollector.translateToLocal(String.format("aimtype.%s.name", this.name().toLowerCase()));
     }
     
     public static AimType fromString(final String input) {

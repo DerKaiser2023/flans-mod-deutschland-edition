@@ -165,25 +165,25 @@ public class FlansModClient extends FlansMod
             gunStack = data.offHandGunStack;
         }
         else {
-            final ItemStack currentStack = player.func_71045_bC();
-            if (currentStack == null || !(currentStack.func_77973_b() instanceof ItemGun) || !((ItemGun)currentStack.func_77973_b()).type.oneHanded || data.offHandGunSlot == 0) {
+            final ItemStack currentStack = player.getCurrentEquippedItem();
+            if (currentStack == null || !(currentStack.getItem() instanceof ItemGun) || !((ItemGun)currentStack.getItem()).type.oneHanded || data.offHandGunSlot == 0) {
                 return;
             }
-            gunStack = player.field_71071_by.func_70301_a(data.offHandGunSlot - 1);
+            gunStack = player.inventory.getStackInSlot(data.offHandGunSlot - 1);
         }
-        if (gunStack == null || !(gunStack.func_77973_b() instanceof ItemGun)) {
+        if (gunStack == null || !(gunStack.getItem() instanceof ItemGun)) {
             return;
         }
-        final GunType gunType = ((ItemGun)gunStack.func_77973_b()).type;
+        final GunType gunType = ((ItemGun)gunStack.getItem()).type;
         GL11.glPushMatrix();
-        renderer.field_77109_a.field_78113_g.func_78794_c(0.0625f);
+        renderer.modelBipedMain.bipedLeftArm.postRender(0.0625f);
         GL11.glTranslatef(-0.0625f, 0.4375f, 0.0625f);
         final float f2 = 1.0f;
         GL11.glTranslatef(0.0f, 0.1875f, -0.3125f);
         GL11.glRotatef(20.0f, 1.0f, 0.0f, 0.0f);
         GL11.glRotatef(45.0f, 0.0f, 1.0f, 0.0f);
         GL11.glScalef(-1.0f, -1.0f, 1.0f);
-        final int k = gunStack.func_77973_b().func_82790_a(gunStack, 0);
+        final int k = gunStack.getItem().getColorFromItemStack(gunStack, 0);
         final float f3 = (k >> 16 & 0xFF) / 255.0f;
         final float f4 = (k >> 8 & 0xFF) / 255.0f;
         final float f5 = (k & 0xFF) / 255.0f;
@@ -216,17 +216,17 @@ public class FlansModClient extends FlansMod
                 final PacketTeamInfo teamInfo2 = FlansModClient.teamInfo;
                 if (!"No Gametype".equals(PacketTeamInfo.gametype)) {
                     final PacketTeamInfo teamInfo3 = FlansModClient.teamInfo;
-                    final PacketTeamInfo.PlayerScoreData rendering = PacketTeamInfo.getPlayerScoreData(event.entity.func_70005_c_());
+                    final PacketTeamInfo.PlayerScoreData rendering = PacketTeamInfo.getPlayerScoreData(event.entity.getCommandSenderName());
                     final PacketTeamInfo teamInfo4 = FlansModClient.teamInfo;
-                    final PacketTeamInfo.PlayerScoreData thePlayer = PacketTeamInfo.getPlayerScoreData(FlansModClient.minecraft.field_71439_g.func_70005_c_());
+                    final PacketTeamInfo.PlayerScoreData thePlayer = PacketTeamInfo.getPlayerScoreData(FlansModClient.minecraft.thePlayer.getCommandSenderName());
                     final Team renderingTeam = (rendering == null) ? Team.spectators : rendering.team.team;
                     final Team thePlayerTeam = (thePlayer == null) ? Team.spectators : thePlayer.team.team;
                     if (data != null && data.skin == null) {
-                        data.skin = ((AbstractClientPlayer)event.entityPlayer).func_110306_p();
+                        data.skin = ((AbstractClientPlayer)event.entityPlayer).getLocationSkin();
                     }
                     else if (data != null) {
                         final ResourceLocation skin = (rendering == null || rendering.playerClass == null) ? null : FlansModResourceHandler.getTexture(rendering.playerClass);
-                        ((AbstractClientPlayer)event.entityPlayer).func_152121_a(MinecraftProfileTexture.Type.SKIN, (skin == null) ? data.skin : skin);
+                        ((AbstractClientPlayer)event.entityPlayer).onSkinAvailable(MinecraftProfileTexture.Type.SKIN, (skin == null) ? data.skin : skin);
                     }
                     if (thePlayerTeam == Team.spectators) {
                         return;
@@ -259,11 +259,11 @@ public class FlansModClient extends FlansMod
     }
     
     public static void tick() {
-        if (FlansModClient.minecraft.field_71439_g == null || FlansModClient.minecraft.field_71441_e == null) {
+        if (FlansModClient.minecraft.thePlayer == null || FlansModClient.minecraft.theWorld == null) {
             return;
         }
-        if (PlayerHandler.getPlayerData((EntityPlayer)FlansModClient.minecraft.field_71439_g) != null && PlayerHandler.getPlayerData((EntityPlayer)FlansModClient.minecraft.field_71439_g).shieldHit > 0) {
-            FlansModClient.shieldHit = PlayerHandler.getPlayerData((EntityPlayer)FlansModClient.minecraft.field_71439_g).shieldHit;
+        if (PlayerHandler.getPlayerData((EntityPlayer)FlansModClient.minecraft.thePlayer) != null && PlayerHandler.getPlayerData((EntityPlayer)FlansModClient.minecraft.thePlayer).shieldHit > 0) {
+            FlansModClient.shieldHit = PlayerHandler.getPlayerData((EntityPlayer)FlansModClient.minecraft.thePlayer).shieldHit;
         }
         else {
             FlansModClient.shieldHit = 0;
@@ -279,9 +279,9 @@ public class FlansModClient extends FlansMod
         }
         if (FlansModClient.lamperino > 1) {
             FlansModClient.starStruck = true;
-            FlansModClient.minecraft.field_71474_y.field_74333_Y = 0.4f + FlansModClient.lamperino / 18.0f;
+            FlansModClient.minecraft.gameSettings.gammaSetting = 0.4f + FlansModClient.lamperino / 18.0f;
         }
-        final List<Entity> foxes = FlansModClient.minecraft.field_71439_g.field_70170_p.func_72839_b((Entity)FlansModClient.minecraft.field_71439_g, AxisAlignedBB.func_72330_a(FlansModClient.minecraft.field_71439_g.field_70165_t - 200.0, FlansModClient.minecraft.field_71439_g.field_70163_u - 500.0, FlansModClient.minecraft.field_71439_g.field_70161_v - 200.0, FlansModClient.minecraft.field_71439_g.field_70165_t + 200.0, FlansModClient.minecraft.field_71439_g.field_70163_u + 500.0, FlansModClient.minecraft.field_71439_g.field_70161_v + 200.0));
+        final List<Entity> foxes = FlansModClient.minecraft.thePlayer.worldObj.getEntitiesWithinAABBExcludingEntity((Entity)FlansModClient.minecraft.thePlayer, AxisAlignedBB.getBoundingBox(FlansModClient.minecraft.thePlayer.posX - 200.0, FlansModClient.minecraft.thePlayer.posY - 500.0, FlansModClient.minecraft.thePlayer.posZ - 200.0, FlansModClient.minecraft.thePlayer.posX + 200.0, FlansModClient.minecraft.thePlayer.posY + 500.0, FlansModClient.minecraft.thePlayer.posZ + 200.0));
         for (final Entity stuff : foxes) {
             if (!(stuff instanceof EntityBullet)) {
                 continue;
@@ -295,8 +295,8 @@ public class FlansModClient extends FlansMod
             }
             FlansModClient.lamperino += 2;
         }
-        if (FlansModClient.minecraft.field_71439_g.func_70115_ae() && FlansModClient.minecraft.field_71439_g.field_70154_o instanceof IControllable && FlansModClient.minecraft.field_71462_r == null) {
-            FlansModClient.minecraft.func_147108_a((GuiScreen)new GuiDriveableController((IControllable)FlansModClient.minecraft.field_71439_g.field_70154_o));
+        if (FlansModClient.minecraft.thePlayer.isRiding() && FlansModClient.minecraft.thePlayer.ridingEntity instanceof IControllable && FlansModClient.minecraft.currentScreen == null) {
+            FlansModClient.minecraft.displayGuiScreen((GuiScreen)new GuiDriveableController((IControllable)FlansModClient.minecraft.thePlayer.ridingEntity));
         }
         if (FlansModClient.teamInfo != null) {
             final PacketTeamInfo teamInfo = FlansModClient.teamInfo;
@@ -307,8 +307,8 @@ public class FlansModClient extends FlansMod
         }
         if (FlansModClient.teamsScoreGUILock > 0) {
             --FlansModClient.teamsScoreGUILock;
-            if (FlansModClient.minecraft.field_71462_r == null) {
-                FlansModClient.minecraft.func_147108_a((GuiScreen)new GuiTeamScores());
+            if (FlansModClient.minecraft.currentScreen == null) {
+                FlansModClient.minecraft.displayGuiScreen((GuiScreen)new GuiTeamScores());
             }
         }
         if (FlansModClient.shootTimeLeft > 0.0f) {
@@ -344,10 +344,10 @@ public class FlansModClient extends FlansMod
             FlansModClient.peepee = 100.0f;
         }
         if (FlansModClient.screenShake == 0) {
-            FlansModClient.previousFOV = FlansModClient.minecraft.field_71474_y.field_74334_X;
+            FlansModClient.previousFOV = FlansModClient.minecraft.gameSettings.fovSetting;
         }
         else {
-            FlansModClient.minecraft.field_71474_y.field_74334_X = FlansModClient.previousFOV + 0.1f * FlansModClient.screenShake * (1.0f + FlansModClient.peepee / 70.0f);
+            FlansModClient.minecraft.gameSettings.fovSetting = FlansModClient.previousFOV + 0.1f * FlansModClient.screenShake * (1.0f + FlansModClient.peepee / 70.0f);
         }
         if (FlansModClient.screenShake > 0) {
             FlansModClient.screenShake = 0;
@@ -391,15 +391,15 @@ public class FlansModClient extends FlansMod
             }
         }
         if (FlansModClient.playerRecoilPitch > 0.0f) {
-            final EntityClientPlayerMP field_71439_g = FlansModClient.minecraft.field_71439_g;
-            field_71439_g.field_70125_A -= FlansModClient.playerRecoilPitch;
+            final EntityClientPlayerMP thePlayer = FlansModClient.minecraft.thePlayer;
+            thePlayer.rotationPitch -= FlansModClient.playerRecoilPitch;
             FlansModClient.netRecoil -= FlansModClient.playerRecoilPitch;
-            final EntityClientPlayerMP field_71439_g2 = FlansModClient.minecraft.field_71439_g;
-            field_71439_g2.field_70177_z -= FlansModClient.playerRecoilYaw;
+            final EntityClientPlayerMP field_71439_g2 = FlansModClient.minecraft.thePlayer;
+            field_71439_g2.rotationYaw -= FlansModClient.playerRecoilYaw;
         }
         if (FlansModClient.antiRecoilPitch > 0.01 && FlansModClient.peepee < 20.0f) {
-            final EntityClientPlayerMP field_71439_g3 = FlansModClient.minecraft.field_71439_g;
-            field_71439_g3.field_70125_A += (FlansModClient.peepee + 10.0f) / 30.0f * (FlansModClient.antiRecoilPitch * 0.3f);
+            final EntityClientPlayerMP field_71439_g3 = FlansModClient.minecraft.thePlayer;
+            field_71439_g3.rotationPitch += (FlansModClient.peepee + 10.0f) / 30.0f * (FlansModClient.antiRecoilPitch * 0.3f);
             FlansModClient.netRecoil += FlansModClient.antiRecoilPitch * 0.2f;
             FlansModClient.antiRecoilPitch *= 0.8f;
         }
@@ -410,8 +410,8 @@ public class FlansModClient extends FlansMod
                 recoilRatio = 0.95f;
             }
             FlansModClient.antiRecoilPitch -= 0.3f * FlansModClient.antiRecoilPitch - peepeeRatio * (0.3f * FlansModClient.antiRecoilPitch) + FlansModClient.playerRecoilPitch * recoilRatio * peepeeRatio;
-            final EntityClientPlayerMP field_71439_g4 = FlansModClient.minecraft.field_71439_g;
-            field_71439_g4.field_70125_A += (float)(FlansModClient.playerRecoilPitch * recoilRatio * peepeeRatio + 0.3 * FlansModClient.antiRecoilPitch - peepeeRatio * (0.3 * FlansModClient.antiRecoilPitch));
+            final EntityClientPlayerMP field_71439_g4 = FlansModClient.minecraft.thePlayer;
+            field_71439_g4.rotationPitch += (float)(FlansModClient.playerRecoilPitch * recoilRatio * peepeeRatio + 0.3 * FlansModClient.antiRecoilPitch - peepeeRatio * (0.3 * FlansModClient.antiRecoilPitch));
             FlansModClient.netRecoil += (float)(FlansModClient.playerRecoilPitch * recoilRatio * peepeeRatio + 0.3 * FlansModClient.antiRecoilPitch - peepeeRatio * (0.3 * FlansModClient.antiRecoilPitch));
         }
         if (FlansModClient.peepee < 0.01) {
@@ -419,80 +419,80 @@ public class FlansModClient extends FlansMod
         }
         if (FlansModClient.antiRecoilYaw > 0.0f) {
             if (FlansModClient.peepee < 7.0f) {
-                final EntityClientPlayerMP field_71439_g5 = FlansModClient.minecraft.field_71439_g;
-                field_71439_g5.field_70177_z += FlansModClient.antiRecoilYaw * 0.1f;
+                final EntityClientPlayerMP field_71439_g5 = FlansModClient.minecraft.thePlayer;
+                field_71439_g5.rotationYaw += FlansModClient.antiRecoilYaw * 0.1f;
                 FlansModClient.antiRecoilYaw *= 0.9f;
                 if (FlansModClient.antiRecoilPitch < 2.0f) {
                     FlansModClient.antiRecoilPitch = 0.0f;
                 }
             }
             else if (FlansModClient.peepee < 20.0f && FlansModClient.peepee >= 7.0f) {
-                final EntityClientPlayerMP field_71439_g6 = FlansModClient.minecraft.field_71439_g;
-                field_71439_g6.field_70177_z += FlansModClient.antiRecoilYaw * 0.05f;
+                final EntityClientPlayerMP field_71439_g6 = FlansModClient.minecraft.thePlayer;
+                field_71439_g6.rotationYaw += FlansModClient.antiRecoilYaw * 0.05f;
                 FlansModClient.antiRecoilYaw *= 0.95f;
             }
             else if (FlansModClient.peepee < 40.0f && FlansModClient.peepee >= 20.0f) {
-                final EntityClientPlayerMP field_71439_g7 = FlansModClient.minecraft.field_71439_g;
-                field_71439_g7.field_70177_z += FlansModClient.antiRecoilYaw * 0.03f;
+                final EntityClientPlayerMP field_71439_g7 = FlansModClient.minecraft.thePlayer;
+                field_71439_g7.rotationYaw += FlansModClient.antiRecoilYaw * 0.03f;
                 FlansModClient.antiRecoilYaw *= 0.97f;
             }
             else if (FlansModClient.peepee < 60.0f && FlansModClient.peepee >= 40.0f) {
-                final EntityClientPlayerMP field_71439_g8 = FlansModClient.minecraft.field_71439_g;
-                field_71439_g8.field_70177_z += FlansModClient.antiRecoilYaw * 0.01f;
+                final EntityClientPlayerMP field_71439_g8 = FlansModClient.minecraft.thePlayer;
+                field_71439_g8.rotationYaw += FlansModClient.antiRecoilYaw * 0.01f;
                 FlansModClient.antiRecoilYaw *= 0.99f;
             }
             else if (FlansModClient.peepee < 80.0f && FlansModClient.peepee >= 60.0f) {
-                final EntityClientPlayerMP field_71439_g9 = FlansModClient.minecraft.field_71439_g;
-                field_71439_g9.field_70177_z += FlansModClient.antiRecoilYaw * 0.005f;
+                final EntityClientPlayerMP field_71439_g9 = FlansModClient.minecraft.thePlayer;
+                field_71439_g9.rotationYaw += FlansModClient.antiRecoilYaw * 0.005f;
                 FlansModClient.antiRecoilYaw *= 0.995f;
             }
             else {
-                final EntityClientPlayerMP field_71439_g10 = FlansModClient.minecraft.field_71439_g;
-                field_71439_g10.field_70177_z += FlansModClient.playerRecoilYaw * 0.1f;
+                final EntityClientPlayerMP field_71439_g10 = FlansModClient.minecraft.thePlayer;
+                field_71439_g10.rotationYaw += FlansModClient.playerRecoilYaw * 0.1f;
                 FlansModClient.antiRecoilYaw -= FlansModClient.playerRecoilYaw * 0.1f;
             }
         }
         if (FlansModClient.currentScope == null) {
-            FlansModClient.minecraft.field_71474_y.field_74336_f = true;
+            FlansModClient.minecraft.gameSettings.viewBobbing = true;
         }
-        FlansModClient.minecraft.field_71474_y.field_74362_aa = 0;
-        RenderManager.field_85095_o = false;
-        if (FlansModClient.minecraft.field_71439_g != null) {
-            if (FlansModClient.minecraft.field_71439_g.func_70115_ae()) {
-                final ShaderGroup test = Minecraft.func_71410_x().field_71460_t.func_147706_e();
-                if (FlansModClient.minecraft.field_71439_g.field_70154_o != null && FlansModClient.minecraft.field_71439_g.field_70154_o instanceof EntitySeat) {
-                    final EntitySeat seat = (EntitySeat)FlansModClient.minecraft.field_71439_g.field_70154_o;
+        FlansModClient.minecraft.gameSettings.particleSetting = 0;
+        RenderManager.debugBoundingBox = false;
+        if (FlansModClient.minecraft.thePlayer != null) {
+            if (FlansModClient.minecraft.thePlayer.isRiding()) {
+                final ShaderGroup test = Minecraft.getMinecraft().entityRenderer.getShaderGroup();
+                if (FlansModClient.minecraft.thePlayer.ridingEntity != null && FlansModClient.minecraft.thePlayer.ridingEntity instanceof EntitySeat) {
+                    final EntitySeat seat = (EntitySeat)FlansModClient.minecraft.thePlayer.ridingEntity;
                     final EntityDriveable entityCringe = seat.driveable;
                     if (entityCringe != null && entityCringe.artilleryMode) {
-                        FlansModClient.minecraft.field_71474_y.field_74320_O = 1;
+                        FlansModClient.minecraft.gameSettings.thirdPersonView = 1;
                     }
                     if (entityCringe != null && entityCringe.thermalScoping) {
-                        if (!Minecraft.func_71410_x().field_71460_t.func_147702_a()) {
-                            Minecraft.func_71410_x().field_71460_t.func_147705_c();
-                            Minecraft.func_71410_x().field_71460_t.func_147705_c();
-                            Minecraft.func_71410_x().field_71460_t.func_147705_c();
-                            Minecraft.func_71410_x().field_71460_t.func_147705_c();
-                            Minecraft.func_71410_x().field_71460_t.func_147705_c();
-                            Minecraft.func_71410_x().field_71460_t.func_147705_c();
+                        if (!Minecraft.getMinecraft().entityRenderer.isShaderActive()) {
+                            Minecraft.getMinecraft().entityRenderer.activateNextShader();
+                            Minecraft.getMinecraft().entityRenderer.activateNextShader();
+                            Minecraft.getMinecraft().entityRenderer.activateNextShader();
+                            Minecraft.getMinecraft().entityRenderer.activateNextShader();
+                            Minecraft.getMinecraft().entityRenderer.activateNextShader();
+                            Minecraft.getMinecraft().entityRenderer.activateNextShader();
                         }
-                        FlansModClient.minecraft.field_71474_y.field_74320_O = 0;
-                        FlansModClient.minecraft.field_71474_y.field_74333_Y = 0.55f;
+                        FlansModClient.minecraft.gameSettings.thirdPersonView = 0;
+                        FlansModClient.minecraft.gameSettings.gammaSetting = 0.55f;
                     }
                     else {
-                        Minecraft.func_71410_x().field_71460_t.func_147703_b();
+                        Minecraft.getMinecraft().entityRenderer.deactivateShader();
                         if (!FlansModClient.starStruck) {
-                            FlansModClient.minecraft.field_71474_y.field_74333_Y = 0.4f;
+                            FlansModClient.minecraft.gameSettings.gammaSetting = 0.4f;
                         }
                     }
                     if (seat.seatInfo.passengerZoom != 1.0f || (entityCringe != null && entityCringe.aiming)) {
-                        FlansModClient.minecraft.field_71474_y.field_74320_O = 0;
+                        FlansModClient.minecraft.gameSettings.thirdPersonView = 0;
                     }
                 }
             }
             else {
-                Minecraft.func_71410_x().field_71460_t.func_147703_b();
+                Minecraft.getMinecraft().entityRenderer.deactivateShader();
                 if (!FlansModClient.starStruck) {
-                    FlansModClient.minecraft.field_71474_y.field_74333_Y = 0.4f;
+                    FlansModClient.minecraft.gameSettings.gammaSetting = 0.4f;
                 }
             }
         }
@@ -502,32 +502,32 @@ public class FlansModClient extends FlansMod
         for (final GunAnimations g : FlansModClient.gunAnimationsLeft.values()) {
             g.update();
         }
-        for (final Object obj : FlansModClient.minecraft.field_71441_e.field_73010_i) {
+        for (final Object obj : FlansModClient.minecraft.theWorld.playerEntities) {
             final EntityPlayer player = (EntityPlayer)obj;
-            final ItemStack currentItem = player.func_71045_bC();
-            if (currentItem != null && currentItem.func_77973_b() instanceof ItemGun) {
-                if (player == FlansModClient.minecraft.field_71439_g && FlansModClient.minecraft.field_71474_y.field_74320_O == 0) {
-                    player.func_71041_bz();
+            final ItemStack currentItem = player.getCurrentEquippedItem();
+            if (currentItem != null && currentItem.getItem() instanceof ItemGun) {
+                if (player == FlansModClient.minecraft.thePlayer && FlansModClient.minecraft.gameSettings.thirdPersonView == 0) {
+                    player.clearItemInUse();
                 }
                 else {
-                    if (currentItem.func_77975_n() != EnumAction.bow && currentItem.func_77975_n() != EnumAction.block) {
+                    if (currentItem.getItemUseAction() != EnumAction.bow && currentItem.getItemUseAction() != EnumAction.block) {
                         continue;
                     }
-                    player.func_71008_a(currentItem, 100);
+                    player.setItemInUse(currentItem, 100);
                 }
             }
         }
         Item itemInHand = null;
-        final ItemStack itemstackInHand = FlansModClient.minecraft.field_71439_g.field_71071_by.func_70448_g();
+        final ItemStack itemstackInHand = FlansModClient.minecraft.thePlayer.inventory.getCurrentItem();
         if (itemstackInHand != null) {
-            itemInHand = itemstackInHand.func_77973_b();
+            itemInHand = itemstackInHand.getItem();
         }
         if (FlansModClient.currentScope != null && (itemInHand == null || !(itemInHand instanceof ItemGun) || ((ItemGun)itemInHand).type.getCurrentScope(itemstackInHand) != FlansModClient.currentScope)) {
             FlansModClient.currentScope = null;
-            FlansModClient.minecraft.field_71474_y.field_74341_c = FlansModClient.originalMouseSensitivity;
-            FlansModClient.minecraft.field_71474_y.field_74320_O = FlansModClient.originalThirdPerson;
-            if (FlansModClient.minecraft.field_71439_g.field_71071_by.field_70460_b[3] == null) {
-                FlansModClient.minecraft.field_71474_y.field_74334_X = FlansModClient.originalFOV;
+            FlansModClient.minecraft.gameSettings.mouseSensitivity = FlansModClient.originalMouseSensitivity;
+            FlansModClient.minecraft.gameSettings.thirdPersonView = FlansModClient.originalThirdPerson;
+            if (FlansModClient.minecraft.thePlayer.inventory.armorInventory[3] == null) {
+                FlansModClient.minecraft.gameSettings.fovSetting = FlansModClient.originalFOV;
             }
         }
         FlansModClient.lastZoomProgress = FlansModClient.zoomProgress;
@@ -536,7 +536,7 @@ public class FlansModClient extends FlansMod
         }
         else {
             FlansModClient.zoomProgress = 1.0f - (1.0f - FlansModClient.zoomProgress) * 0.66f;
-            FlansModClient.minecraft.field_71474_y.field_74336_f = false;
+            FlansModClient.minecraft.gameSettings.viewBobbing = false;
         }
         FlansModClient.lastStanceProgress = FlansModClient.stanceProgress;
         if (!FlansModClient.inPlane) {
@@ -546,20 +546,20 @@ public class FlansModClient extends FlansMod
             FlansModClient.stanceProgress = 1.0f - (1.0f - FlansModClient.stanceProgress) * 0.66f;
         }
         Label_2642: {
-            if (FlansModClient.minecraft.field_71439_g.field_70154_o instanceof IControllable) {
+            if (FlansModClient.minecraft.thePlayer.ridingEntity instanceof IControllable) {
                 FlansModClient.inPlane = true;
                 try {
-                    ObfuscationReflectionHelper.setPrivateValue((Class)EntityRenderer.class, (Object)FlansModClient.minecraft.field_71460_t, (Object)((IControllable)FlansModClient.minecraft.field_71439_g.field_70154_o).getPlayerRoll(), new String[] { "camRoll", "R", "field_78495_O" });
+                    ObfuscationReflectionHelper.setPrivateValue((Class)EntityRenderer.class, (Object)FlansModClient.minecraft.entityRenderer, (Object)((IControllable)FlansModClient.minecraft.thePlayer.ridingEntity).getPlayerRoll(), new String[] { "camRoll", "R", "camRoll" });
                 }
                 catch (final Exception e) {
                     FlansMod.log("I forgot to update obfuscated reflection D:");
                     throw new RuntimeException(e);
                 }
-                if (!(FlansModClient.minecraft.field_71439_g.field_70154_o instanceof IControllable)) {
+                if (!(FlansModClient.minecraft.thePlayer.ridingEntity instanceof IControllable)) {
                     break Label_2642;
                 }
                 try {
-                    ObfuscationReflectionHelper.setPrivateValue((Class)EntityRenderer.class, (Object)FlansModClient.minecraft.field_71460_t, (Object)((IControllable)FlansModClient.minecraft.field_71439_g.field_70154_o).getCameraDistance(), new String[] { "thirdPersonDistance", "E", "field_78490_B" });
+                    ObfuscationReflectionHelper.setPrivateValue((Class)EntityRenderer.class, (Object)FlansModClient.minecraft.entityRenderer, (Object)((IControllable)FlansModClient.minecraft.thePlayer.ridingEntity).getCameraDistance(), new String[] { "thirdPersonDistance", "E", "thirdPersonDistance" });
                     break Label_2642;
                 }
                 catch (final Exception e) {
@@ -569,14 +569,14 @@ public class FlansModClient extends FlansMod
             }
             if (FlansModClient.inPlane) {
                 try {
-                    ObfuscationReflectionHelper.setPrivateValue((Class)EntityRenderer.class, (Object)FlansModClient.minecraft.field_71460_t, (Object)0.0f, new String[] { "camRoll", "R", "field_78495_O" });
+                    ObfuscationReflectionHelper.setPrivateValue((Class)EntityRenderer.class, (Object)FlansModClient.minecraft.entityRenderer, (Object)0.0f, new String[] { "camRoll", "R", "camRoll" });
                 }
                 catch (final Exception e) {
                     FlansMod.log("I forgot to update obfuscated reflection D:");
                     throw new RuntimeException(e);
                 }
                 try {
-                    ObfuscationReflectionHelper.setPrivateValue((Class)EntityRenderer.class, (Object)FlansModClient.minecraft.field_71460_t, (Object)4.0f, new String[] { "thirdPersonDistance", "E", "field_78490_B" });
+                    ObfuscationReflectionHelper.setPrivateValue((Class)EntityRenderer.class, (Object)FlansModClient.minecraft.entityRenderer, (Object)4.0f, new String[] { "thirdPersonDistance", "E", "thirdPersonDistance" });
                 }
                 catch (final Exception e) {
                     FlansMod.log("I forgot to update obfuscated reflection D:");
@@ -599,36 +599,36 @@ public class FlansModClient extends FlansMod
             if (Math.abs(zoomLevel - 1.0) < 0.009999999776482582) {
                 zoomLevel = 1.0;
             }
-            ObfuscationReflectionHelper.setPrivateValue((Class)EntityRenderer.class, (Object)FlansModClient.minecraft.field_71460_t, (Object)zoomLevel, new String[] { "cameraZoom", "af", "field_78503_V" });
+            ObfuscationReflectionHelper.setPrivateValue((Class)EntityRenderer.class, (Object)FlansModClient.minecraft.entityRenderer, (Object)zoomLevel, new String[] { "cameraZoom", "af", "cameraZoom" });
         }
-        if (FlansModClient.minecraft.field_71439_g != null && FlansModClient.cringe < 1.01) {
-            final ItemStack stack = FlansModClient.minecraft.field_71439_g.field_71071_by.field_70460_b[3];
-            if (stack != null && stack.func_77973_b() instanceof ItemTeamArmour) {
-                final ArmourType cringe = ((ItemTeamArmour)stack.func_77973_b()).type;
+        if (FlansModClient.minecraft.thePlayer != null && FlansModClient.cringe < 1.01) {
+            final ItemStack stack = FlansModClient.minecraft.thePlayer.inventory.armorInventory[3];
+            if (stack != null && stack.getItem() instanceof ItemTeamArmour) {
+                final ArmourType cringe = ((ItemTeamArmour)stack.getItem()).type;
                 if (cringe.faceArmor / cringe.headArmor <= 0.1 || cringe.faceArmor == 1.0f || cringe.faceArmor == 0.0f) {
-                    if (FlansModClient.minecraft.field_71474_y.field_74334_X > 100.0f) {
-                        FlansModClient.minecraft.field_71474_y.field_74334_X = 110.0f;
+                    if (FlansModClient.minecraft.gameSettings.fovSetting > 100.0f) {
+                        FlansModClient.minecraft.gameSettings.fovSetting = 110.0f;
                         FlansModClient.pupperino = 110.0f;
                     }
                 }
                 else if (cringe.faceArmor / cringe.headArmor > 0.1 && cringe.faceArmor / cringe.headArmor <= 0.3) {
-                    if (FlansModClient.minecraft.field_71474_y.field_74334_X > 95.0f) {
-                        FlansModClient.minecraft.field_71474_y.field_74334_X = 95.0f;
+                    if (FlansModClient.minecraft.gameSettings.fovSetting > 95.0f) {
+                        FlansModClient.minecraft.gameSettings.fovSetting = 95.0f;
                         FlansModClient.pupperino = 95.0f;
                     }
                 }
                 else if (cringe.faceArmor / cringe.headArmor > 0.3 && cringe.faceArmor / cringe.headArmor <= 0.6) {
-                    if (FlansModClient.minecraft.field_71474_y.field_74334_X > 80.0f) {
-                        FlansModClient.minecraft.field_71474_y.field_74334_X = 80.0f;
+                    if (FlansModClient.minecraft.gameSettings.fovSetting > 80.0f) {
+                        FlansModClient.minecraft.gameSettings.fovSetting = 80.0f;
                         FlansModClient.pupperino = 80.0f;
                     }
                 }
                 else if (cringe.faceArmor / cringe.headArmor > 0.6 && cringe.faceArmor / cringe.headArmor <= 0.8) {
-                    FlansModClient.minecraft.field_71474_y.field_74334_X = 65.0f;
+                    FlansModClient.minecraft.gameSettings.fovSetting = 65.0f;
                     FlansModClient.pupperino = 65.0f;
                 }
                 else if (cringe.faceArmor / cringe.headArmor > 0.8 && cringe.faceArmor / cringe.headArmor <= 100.0f) {
-                    FlansModClient.minecraft.field_71474_y.field_74334_X = 55.0f;
+                    FlansModClient.minecraft.gameSettings.fovSetting = 55.0f;
                     FlansModClient.pupperino = 55.0f;
                 }
                 else {
@@ -640,7 +640,7 @@ public class FlansModClient extends FlansMod
     
     @SubscribeEvent
     public void chatMessage(final ClientChatReceivedEvent event) {
-        if (event.message.func_150260_c().equals("#flansmod")) {
+        if (event.message.getUnformattedText().equals("#flansmod")) {
             event.setCanceled(true);
         }
     }
@@ -664,8 +664,8 @@ public class FlansModClient extends FlansMod
             return false;
         }
         FlansModClient.controlModeMouse = !FlansModClient.controlModeMouse;
-        if (FlansModClient.minecraft.field_71439_g.func_70115_ae()) {
-            FMLClientHandler.instance().getClient().func_147108_a((GuiScreen)(FlansModClient.controlModeMouse ? new GuiDriveableController((IControllable)FMLClientHandler.instance().getClient().field_71439_g.field_70154_o) : null));
+        if (FlansModClient.minecraft.thePlayer.isRiding()) {
+            FMLClientHandler.instance().getClient().displayGuiScreen((GuiScreen)(FlansModClient.controlModeMouse ? new GuiDriveableController((IControllable)FMLClientHandler.instance().getClient().thePlayer.ridingEntity) : null));
         }
         FlansModClient.controlModeSwitchTimer = 40;
         return true;
@@ -702,16 +702,16 @@ public class FlansModClient extends FlansMod
     
     @SideOnly(Side.CLIENT)
     public static EntityFX getParticle(final String s, final World w, final double x, final double y, final double z) {
-        final Minecraft mc = Minecraft.func_71410_x();
+        final Minecraft mc = Minecraft.getMinecraft();
         EntityFX fx = null;
         if (s.equals("hugeexplosion")) {
             fx = (EntityFX)new EntityHugeExplodeFX(w, x, y, z, 0.0, 0.0, 0.0);
         }
         else if (s.equals("largeexplode")) {
-            fx = (EntityFX)new EntityLargeExplodeFX(mc.field_71446_o, w, x, y, z, 0.0, 0.0, 0.0);
+            fx = (EntityFX)new EntityLargeExplodeFX(mc.renderEngine, w, x, y, z, 0.0, 0.0, 0.0);
         }
         else if (s.equals("fireworksSpark")) {
-            fx = (EntityFX)new EntityFireworkSparkFX(w, x, y, z, 0.0, 0.0, 0.0, mc.field_71452_i);
+            fx = (EntityFX)new EntityFireworkSparkFX(w, x, y, z, 0.0, 0.0, 0.0, mc.effectRenderer);
         }
         else if (s.equals("bubble")) {
             fx = (EntityFX)new EntityBubbleFX(w, x, y, z, 0.0, 0.0, 0.0);
@@ -778,33 +778,33 @@ public class FlansModClient extends FlansMod
         }
         else if (s.equals("magicCrit")) {
             fx = (EntityFX)new EntityCritFX(w, x, y, z, 0.0, 0.0, 0.0);
-            fx.func_70538_b(fx.func_70534_d() * 0.3f, fx.func_70542_f() * 0.8f, fx.func_70535_g());
-            fx.func_94053_h();
+            fx.setRBGColorF(fx.getRedColorF() * 0.3f, fx.getGreenColorF() * 0.8f, fx.getBlueColorF());
+            fx.nextTextureIndexX();
         }
         else if (s.equals("smoke")) {
             fx = (EntityFX)new EntitySmokeFX(w, x, y, z, 0.0, 0.0, 0.0);
         }
         else if (s.equals("mobSpell")) {
             fx = (EntityFX)new EntitySpellParticleFX(w, x, y, z, 0.0, 0.0, 0.0);
-            fx.func_70538_b(0.0f, 0.0f, 0.0f);
+            fx.setRBGColorF(0.0f, 0.0f, 0.0f);
         }
         else if (s.equals("mobSpellAmbient")) {
             fx = (EntityFX)new EntitySpellParticleFX(w, x, y, z, 0.0, 0.0, 0.0);
-            fx.func_82338_g(0.15f);
-            fx.func_70538_b(0.0f, 0.0f, 0.0f);
+            fx.setAlphaF(0.15f);
+            fx.setRBGColorF(0.0f, 0.0f, 0.0f);
         }
         else if (s.equals("spell")) {
             fx = (EntityFX)new EntitySpellParticleFX(w, x, y, z, 0.0, 0.0, 0.0);
         }
         else if (s.equals("instantSpell")) {
             fx = (EntityFX)new EntitySpellParticleFX(w, x, y, z, 0.0, 0.0, 0.0);
-            ((EntitySpellParticleFX)fx).func_70589_b(144);
+            ((EntitySpellParticleFX)fx).setBaseSpellTextureIndex(144);
         }
         else if (s.equals("witchMagic")) {
             fx = (EntityFX)new EntitySmokeFX(w, x, y, z, 0.0, 0.0, 0.0);
-            ((EntitySpellParticleFX)fx).func_70589_b(144);
-            final float f = w.field_73012_v.nextFloat() * 0.5f + 0.35f;
-            fx.func_70538_b(1.0f * f, 0.0f * f, 1.0f * f);
+            ((EntitySpellParticleFX)fx).setBaseSpellTextureIndex(144);
+            final float f = w.rand.nextFloat() * 0.5f + 0.35f;
+            fx.setRBGColorF(1.0f * f, 0.0f * f, 1.0f * f);
         }
         else if (s.equals("note")) {
             fx = (EntityFX)new EntityNoteFX(w, x, y, z, 0.0, 0.0, 0.0);
@@ -825,7 +825,7 @@ public class FlansModClient extends FlansMod
             fx = (EntityFX)new EntityLavaFX(w, x, y, z);
         }
         else if (s.equals("footstep")) {
-            fx = (EntityFX)new EntityFootStepFX(mc.field_71446_o, w, x, y, z);
+            fx = (EntityFX)new EntityFootStepFX(mc.renderEngine, w, x, y, z);
         }
         else if (s.equals("splash")) {
             fx = (EntityFX)new EntitySplashFX(w, x, y, z, 0.0, 0.0, 0.0);
@@ -843,32 +843,32 @@ public class FlansModClient extends FlansMod
             fx = (EntityFX)new EntityReddustFX(w, x, y, z, 0.0f, 0.0f, 0.0f);
         }
         else if (s.equals("snowballpoof")) {
-            fx = (EntityFX)new EntityBreakingFX(w, x, y, z, Items.field_151126_ay);
+            fx = (EntityFX)new EntityBreakingFX(w, x, y, z, Items.snowball);
         }
         else if (s.equals("dripWater")) {
-            fx = (EntityFX)new EntityDropParticleFX(w, x, y, z, Material.field_151586_h);
+            fx = (EntityFX)new EntityDropParticleFX(w, x, y, z, Material.water);
         }
         else if (s.equals("dripLava")) {
-            fx = (EntityFX)new EntityDropParticleFX(w, x, y, z, Material.field_151587_i);
+            fx = (EntityFX)new EntityDropParticleFX(w, x, y, z, Material.lava);
         }
         else if (s.equals("snowshovel")) {
             fx = (EntityFX)new EntitySnowShovelFX(w, x, y, z, 0.0, 0.0, 0.0);
         }
         else if (s.equals("slime")) {
-            fx = (EntityFX)new EntityBreakingFX(w, x, y, z, Items.field_151123_aH);
+            fx = (EntityFX)new EntityBreakingFX(w, x, y, z, Items.slime_ball);
         }
         else if (s.equals("heart")) {
             fx = (EntityFX)new EntityHeartFX(w, x, y, z, 0.0, 0.0, 0.0);
         }
         else if (s.equals("angryVillager")) {
             fx = (EntityFX)new EntityHeartFX(w, x, y, z, 0.0, 0.0, 0.0);
-            fx.func_70536_a(81);
-            fx.func_70538_b(1.0f, 1.0f, 1.0f);
+            fx.setParticleTextureIndex(81);
+            fx.setRBGColorF(1.0f, 1.0f, 1.0f);
         }
         else if (s.equals("happyVillager")) {
             fx = (EntityFX)new EntityAuraFX(w, x, y, z, 0.0, 0.0, 0.0);
-            fx.func_70536_a(82);
-            fx.func_70538_b(1.0f, 1.0f, 1.0f);
+            fx.setParticleTextureIndex(82);
+            fx.setRBGColorF(1.0f, 1.0f, 1.0f);
         }
         else if (s.equals("snowshovel")) {
             fx = (EntityFX)new EntitySnowShovelFX(w, x, y, z, 0.0, 0.0, 0.0);
@@ -884,29 +884,29 @@ public class FlansModClient extends FlansMod
             final int j = Integer.parseInt(astring[1]);
             if (astring.length > 2) {
                 final int k = Integer.parseInt(astring[2]);
-                fx = (EntityFX)new EntityBreakingFX(w, x, y, z, 0.0, 0.0, 0.0, Item.func_150899_d(j), k);
+                fx = (EntityFX)new EntityBreakingFX(w, x, y, z, 0.0, 0.0, 0.0, Item.getItemById(j), k);
             }
             else {
-                fx = (EntityFX)new EntityBreakingFX(w, x, y, z, 0.0, 0.0, 0.0, Item.func_150899_d(j), 0);
+                fx = (EntityFX)new EntityBreakingFX(w, x, y, z, 0.0, 0.0, 0.0, Item.getItemById(j), 0);
             }
         }
         else if (s.startsWith("blockcrack_")) {
             final String[] astring = s.split("_", 3);
-            final Block block = Block.func_149729_e(Integer.parseInt(astring[1]));
+            final Block block = Block.getBlockById(Integer.parseInt(astring[1]));
             final int k = Integer.parseInt(astring[2]);
-            fx = (EntityFX)new EntityDiggingFX(w, x, y, z, 0.0, 0.0, 0.0, block, k).func_90019_g(k);
+            fx = (EntityFX)new EntityDiggingFX(w, x, y, z, 0.0, 0.0, 0.0, block, k).applyRenderColor(k);
         }
         else if (s.startsWith("blockdust_")) {
             final String[] astring = s.split("_", 3);
-            final Block block = Block.func_149729_e(Integer.parseInt(astring[1]));
+            final Block block = Block.getBlockById(Integer.parseInt(astring[1]));
             final int k = Integer.parseInt(astring[2]);
-            fx = (EntityFX)new EntityBlockDustFX(w, x, y, z, 0.0, 0.0, 0.0, block, k).func_90019_g(k);
+            fx = (EntityFX)new EntityBlockDustFX(w, x, y, z, 0.0, 0.0, 0.0, block, k).applyRenderColor(k);
         }
-        if (mc.field_71474_y.field_74347_j && fx != null) {
-            fx.field_70155_l = 200.0;
+        if (mc.gameSettings.fancyGraphics && fx != null) {
+            fx.renderDistanceWeight = 200.0;
         }
         if (fx != null) {
-            mc.field_71452_i.func_78873_a(fx);
+            mc.effectRenderer.addEffect(fx);
         }
         return fx;
     }

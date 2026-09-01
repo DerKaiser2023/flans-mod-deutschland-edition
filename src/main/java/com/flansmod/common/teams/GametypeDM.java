@@ -153,7 +153,7 @@ public class GametypeDM extends Gametype
         }
         if (validSpawnPoints.size() > 0) {
             final ITeamObject spawnPoint = validSpawnPoints.get(GametypeDM.rand.nextInt(validSpawnPoints.size()));
-            return Vec3.func_72443_a(spawnPoint.getPosX(), spawnPoint.getPosY(), spawnPoint.getPosZ());
+            return Vec3.createVectorHelper(spawnPoint.getPosX(), spawnPoint.getPosY(), spawnPoint.getPosZ());
         }
         return null;
     }
@@ -173,12 +173,12 @@ public class GametypeDM extends Gametype
     
     @Override
     public void readFromNBT(final NBTTagCompound tags) {
-        this.scoreLimit = tags.func_74762_e("DMScoreLimit");
+        this.scoreLimit = tags.getInteger("DMScoreLimit");
     }
     
     @Override
     public void saveToNBT(final NBTTagCompound tags) {
-        tags.func_74768_a("DMScoreLimit", this.scoreLimit);
+        tags.setInteger("DMScoreLimit", this.scoreLimit);
     }
     
     @Override

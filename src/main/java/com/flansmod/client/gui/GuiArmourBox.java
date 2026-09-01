@@ -30,24 +30,24 @@ public class GuiArmourBox extends GuiScreen
     
     public GuiArmourBox(final InventoryPlayer playerinventory, final ArmourBoxType type) {
         this.inventory = playerinventory;
-        this.field_146297_k = FMLClientHandler.instance().getClient();
+        this.mc = FMLClientHandler.instance().getClient();
         this.type = type;
         this.page = 0;
     }
     
-    public void func_73876_c() {
-        super.func_73876_c();
+    public void updateScreen() {
+        super.updateScreen();
         ++this.scroll;
     }
     
-    public void func_73863_a(final int i, final int j, final float f) {
-        final ScaledResolution scaledresolution = new ScaledResolution(this.field_146297_k, this.field_146297_k.field_71443_c, this.field_146297_k.field_71440_d);
-        final int k = scaledresolution.func_78326_a();
-        final int l = scaledresolution.func_78328_b();
-        final FontRenderer fontrenderer = this.field_146297_k.field_71466_p;
-        this.func_146276_q_();
+    public void drawScreen(final int i, final int j, final float f) {
+        final ScaledResolution scaledresolution = new ScaledResolution(this.mc, this.mc.displayWidth, this.mc.displayHeight);
+        final int k = scaledresolution.getScaledWidth();
+        final int l = scaledresolution.getScaledHeight();
+        final FontRenderer fontrenderer = this.mc.fontRendererObj;
+        this.drawDefaultBackground();
         GL11.glEnable(3042);
-        this.field_146297_k.field_71446_o.func_110577_a(GuiArmourBox.texture);
+        this.mc.renderEngine.bindTexture(GuiArmourBox.texture);
         GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
         final int guiOriginX = k / 2 - 88;
         this.guiOriginX = guiOriginX;
@@ -55,27 +55,27 @@ public class GuiArmourBox extends GuiScreen
         final int guiOriginY = l / 2 - 91;
         this.guiOriginY = guiOriginY;
         final int n = guiOriginY;
-        this.func_73729_b(m, n, 0, 0, 176, 182);
-        this.func_73732_a(this.field_146289_q, this.type.name, k / 2, n + 5, 16777215);
-        this.field_146297_k.field_71446_o.func_110577_a(GuiArmourBox.texture);
+        this.drawTexturedModalRect(m, n, 0, 0, 176, 182);
+        this.drawCenteredString(this.fontRendererObj, this.type.name, k / 2, n + 5, 16777215);
+        this.mc.renderEngine.bindTexture(GuiArmourBox.texture);
         if (this.page == 0) {
-            this.func_73729_b(m + 77, n + 87, 176, 0, 10, 10);
+            this.drawTexturedModalRect(m + 77, n + 87, 176, 0, 10, 10);
         }
         if (this.page >= this.type.pages.size() - 1) {
-            this.func_73729_b(m + 89, n + 87, 186, 0, 10, 10);
+            this.drawTexturedModalRect(m + 89, n + 87, 186, 0, 10, 10);
         }
-        RenderHelper.func_74520_c();
+        RenderHelper.enableGUIStandardItemLighting();
         GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
         GL11.glEnable(32826);
-        OpenGlHelper.func_77475_a(OpenGlHelper.field_77476_b, 240.0f, 240.0f);
+        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240.0f, 240.0f);
         this.drawRecipe(fontrenderer, m, n, this.page);
         for (int row = 0; row < 3; ++row) {
             for (int col = 0; col < 9; ++col) {
-                this.drawSlotInventory(this.inventory.func_70301_a(col + (row + 1) * 9), m + 8 + col * 18, n + 100 + row * 18);
+                this.drawSlotInventory(this.inventory.getStackInSlot(col + (row + 1) * 9), m + 8 + col * 18, n + 100 + row * 18);
             }
         }
         for (int col2 = 0; col2 < 9; ++col2) {
-            this.drawSlotInventory(this.inventory.func_70301_a(col2), m + 8 + col2 * 18, n + 158);
+            this.drawSlotInventory(this.inventory.getStackInSlot(col2), m + 8 + col2 * 18, n + 158);
         }
         GL11.glDisable(3042);
     }
@@ -97,25 +97,25 @@ public class GuiArmourBox extends GuiScreen
                     }
                 }
             }
-            RenderHelper.func_74518_a();
-            this.func_73732_a(fontrenderer, page.name, m + 87, n + 25, 16777215);
-            RenderHelper.func_74520_c();
+            RenderHelper.disableStandardItemLighting();
+            this.drawCenteredString(fontrenderer, page.name, m + 87, n + 25, 16777215);
+            RenderHelper.enableGUIStandardItemLighting();
         }
     }
     
     private void drawSlotInventory(final ItemStack itemstack, final int i, final int j) {
-        if (itemstack == null || itemstack.func_77973_b() == null) {
+        if (itemstack == null || itemstack.getItem() == null) {
             return;
         }
-        RenderHelper.func_74520_c();
-        GuiArmourBox.itemRenderer.func_77015_a(this.field_146289_q, this.field_146297_k.field_71446_o, itemstack, i, j);
-        GuiArmourBox.itemRenderer.func_77021_b(this.field_146289_q, this.field_146297_k.field_71446_o, itemstack, i, j);
+        RenderHelper.enableGUIStandardItemLighting();
+        GuiArmourBox.itemRenderer.renderItemIntoGUI(this.fontRendererObj, this.mc.renderEngine, itemstack, i, j);
+        GuiArmourBox.itemRenderer.renderItemOverlayIntoGUI(this.fontRendererObj, this.mc.renderEngine, itemstack, i, j);
         GL11.glDisable(2896);
         GL11.glDisable(2929);
     }
     
-    protected void func_73864_a(final int i, final int j, final int k) {
-        super.func_73864_a(i, j, k);
+    protected void mouseClicked(final int i, final int j, final int k) {
+        super.mouseClicked(i, j, k);
         final int m = i - this.guiOriginX;
         final int n = j - this.guiOriginY;
         if (k == 0 || k == 1) {
@@ -135,13 +135,13 @@ public class GuiArmourBox extends GuiScreen
         }
     }
     
-    protected void func_73869_a(final char c, final int i) {
-        if (i == 1 || i == this.field_146297_k.field_71474_y.field_151445_Q.func_151463_i()) {
-            this.field_146297_k.field_71439_g.func_71053_j();
+    protected void keyTyped(final char c, final int i) {
+        if (i == 1 || i == this.mc.gameSettings.keyBindInventory.getKeyCode()) {
+            this.mc.thePlayer.closeScreen();
         }
     }
     
-    public boolean func_73868_f() {
+    public boolean doesGuiPauseGame() {
         return false;
     }
     

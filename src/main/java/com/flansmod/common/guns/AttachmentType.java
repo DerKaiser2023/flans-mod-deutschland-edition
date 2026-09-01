@@ -256,8 +256,8 @@ public class AttachmentType extends PaintableType implements IScope
     public static AttachmentType getFromNBT(final NBTTagCompound tags) {
         try {
             final ItemStack stack = ItemStack.loadItemStackFromNBT(tags);
-            if (stack != null && stack.func_77973_b() instanceof ItemAttachment) {
-                return ((ItemAttachment)stack.func_77973_b()).type;
+            if (stack != null && stack.getItem() instanceof ItemAttachment) {
+                return ((ItemAttachment)stack.getItem()).type;
             }
         }
         catch (final Exception e) {

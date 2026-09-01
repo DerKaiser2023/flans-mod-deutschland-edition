@@ -907,34 +907,34 @@ public class DriveableType extends PaintableType
             }
             else if (split[0].equals("HarvestToolType")) {
                 if (split[1].equals("Axe")) {
-                    this.materialsHarvested.add(Material.field_151575_d);
-                    this.materialsHarvested.add(Material.field_151585_k);
-                    this.materialsHarvested.add(Material.field_151582_l);
+                    this.materialsHarvested.add(Material.wood);
+                    this.materialsHarvested.add(Material.plants);
+                    this.materialsHarvested.add(Material.vine);
                 }
                 else if (split[1].equals("Pickaxe") || split[1].equals("Drill")) {
-                    this.materialsHarvested.add(Material.field_151573_f);
-                    this.materialsHarvested.add(Material.field_151574_g);
-                    this.materialsHarvested.add(Material.field_151576_e);
+                    this.materialsHarvested.add(Material.iron);
+                    this.materialsHarvested.add(Material.anvil);
+                    this.materialsHarvested.add(Material.rock);
                 }
                 else if (split[1].equals("Spade") || split[1].equals("Shovel") || split[1].equals("Excavator")) {
-                    this.materialsHarvested.add(Material.field_151578_c);
-                    this.materialsHarvested.add(Material.field_151577_b);
-                    this.materialsHarvested.add(Material.field_151595_p);
-                    this.materialsHarvested.add(Material.field_151597_y);
-                    this.materialsHarvested.add(Material.field_151571_B);
+                    this.materialsHarvested.add(Material.ground);
+                    this.materialsHarvested.add(Material.grass);
+                    this.materialsHarvested.add(Material.sand);
+                    this.materialsHarvested.add(Material.snow);
+                    this.materialsHarvested.add(Material.clay);
                 }
                 else if (split[1].equals("Hoe") || split[1].equals("Combine")) {
-                    this.materialsHarvested.add(Material.field_151585_k);
-                    this.materialsHarvested.add(Material.field_151584_j);
-                    this.materialsHarvested.add(Material.field_151582_l);
-                    this.materialsHarvested.add(Material.field_151570_A);
-                    this.materialsHarvested.add(Material.field_151572_C);
+                    this.materialsHarvested.add(Material.plants);
+                    this.materialsHarvested.add(Material.leaves);
+                    this.materialsHarvested.add(Material.vine);
+                    this.materialsHarvested.add(Material.cactus);
+                    this.materialsHarvested.add(Material.gourd);
                 }
                 else if (split[1].equals("Tank")) {
-                    this.materialsHarvested.add(Material.field_151584_j);
-                    this.materialsHarvested.add(Material.field_151570_A);
-                    this.materialsHarvested.add(Material.field_151575_d);
-                    this.materialsHarvested.add(Material.field_151585_k);
+                    this.materialsHarvested.add(Material.leaves);
+                    this.materialsHarvested.add(Material.cactus);
+                    this.materialsHarvested.add(Material.wood);
+                    this.materialsHarvested.add(Material.plants);
                 }
             }
             else if (split[0].equals("CargoSlots")) {
@@ -1170,8 +1170,8 @@ public class DriveableType extends PaintableType
             else if (split[0].equals("AddDye")) {
                 final int amount2 = Integer.parseInt(split[1]);
                 int damage2 = -1;
-                for (int i = 0; i < ItemDye.field_150923_a.length; ++i) {
-                    if (ItemDye.field_150923_a[i].equals(split[2])) {
+                for (int i = 0; i < ItemDye.dyeColorNames.length; ++i) {
+                    if (ItemDye.dyeColorNames[i].equals(split[2])) {
                         damage2 = i;
                     }
                 }
@@ -1179,7 +1179,7 @@ public class DriveableType extends PaintableType
                     FlansMod.log("Failed to find dye colour : " + split[2] + " while adding " + file.name);
                     return;
                 }
-                this.driveableRecipe.add(new ItemStack(Items.field_151100_aR, amount2, damage2));
+                this.driveableRecipe.add(new ItemStack(Items.dye, amount2, damage2));
             }
             else if (split[0].equals("SetupPart")) {
                 final EnumDriveablePart part = EnumDriveablePart.getPart(split[1]);
@@ -1640,7 +1640,7 @@ public class DriveableType extends PaintableType
         final ArrayList<ItemStack> stacks = new ArrayList<ItemStack>();
         if (this.partwiseRecipe.get(part.type) != null) {
             for (final ItemStack stack : this.partwiseRecipe.get(part.type)) {
-                stacks.add(stack.func_77946_l());
+                stacks.add(stack.copy());
             }
         }
         for (final PilotGun gun : this.pilotGuns) {

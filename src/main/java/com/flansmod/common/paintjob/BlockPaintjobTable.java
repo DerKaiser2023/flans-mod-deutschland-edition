@@ -28,30 +28,30 @@ public class BlockPaintjobTable extends BlockContainer
     private IIcon top;
     
     public BlockPaintjobTable() {
-        super(Material.field_151576_e);
-        this.func_149711_c(2.0f);
-        this.func_149752_b(4.0f);
-        this.func_149663_c("paintjobTable");
-        this.func_149647_a((CreativeTabs)FlansMod.tabFlanGuns);
+        super(Material.rock);
+        this.setHardness(2.0f);
+        this.setResistance(4.0f);
+        this.setUnlocalizedName("paintjobTable");
+        this.setCreativeTab((CreativeTabs)FlansMod.tabFlanGuns);
     }
     
-    public boolean func_149742_c(final World world, final int x, final int y, final int z) {
-        return World.func_147466_a((IBlockAccess)world, x, y - 1, z);
+    public boolean canPlaceBlockAt(final World world, final int x, final int y, final int z) {
+        return World.doesBlockHaveSolidTopSurface((IBlockAccess)world, x, y - 1, z);
     }
     
-    public TileEntity func_149915_a(final World world, final int i) {
+    public TileEntity createNewTileEntity(final World world, final int i) {
         return new TileEntityPaintjobTable();
     }
     
-    public IIcon func_149691_a(final int i, final int j) {
+    public IIcon getIcon(final int i, final int j) {
         if (i == 1) {
             return this.top;
         }
         return this.side;
     }
     
-    public boolean func_149727_a(final World world, final int x, final int y, final int z, final EntityPlayer player, final int facing, final float par7, final float par8, final float par9) {
-        if (world.field_72995_K) {
+    public boolean onBlockActivated(final World world, final int x, final int y, final int z, final EntityPlayer player, final int facing, final float par7, final float par8, final float par9) {
+        if (world.isRemote) {
             final PlayerHandler playerHandler = FlansMod.playerHandler;
             final PlayerData playerData = PlayerHandler.getPlayerData(player, Side.CLIENT);
             final PlayerHandler playerHandler2 = FlansMod.playerHandler;
@@ -61,24 +61,24 @@ public class BlockPaintjobTable extends BlockContainer
             playerData.shootTimeLeft = n;
             return true;
         }
-        final TileEntityPaintjobTable table = (TileEntityPaintjobTable)world.func_147438_o(x, y, z);
-        if (!world.field_72995_K) {
+        final TileEntityPaintjobTable table = (TileEntityPaintjobTable)world.getTileEntity(x, y, z);
+        if (!world.isRemote) {
             player.openGui((Object)FlansMod.INSTANCE, 13, world, x, y, z);
         }
         return true;
     }
     
-    public void func_149749_a(final World worldIn, final int x, final int y, final int z, final Block block, final int meta) {
-        final TileEntity tileentity = worldIn.func_147438_o(x, y, z);
+    public void breakBlock(final World worldIn, final int x, final int y, final int z, final Block block, final int meta) {
+        final TileEntity tileentity = worldIn.getTileEntity(x, y, z);
         if (tileentity instanceof IInventory) {
             InventoryHelper.dropInventoryItems(worldIn, x, y, z, (IInventory)tileentity);
         }
-        super.func_149749_a(worldIn, x, y, z, block, meta);
+        super.breakBlock(worldIn, x, y, z, block, meta);
     }
     
     @SideOnly(Side.CLIENT)
-    public void func_149651_a(final IIconRegister register) {
-        this.top = register.func_94245_a("FlansMod:paintjobTableTop");
-        this.side = register.func_94245_a("FlansMod:planeCraftingTableSide");
+    public void registerIcons(final IIconRegister register) {
+        this.top = register.registerIcon("FlansMod:paintjobTableTop");
+        this.side = register.registerIcon("FlansMod:planeCraftingTableSide");
     }
 }

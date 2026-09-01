@@ -89,9 +89,9 @@ public class ItemTeamArmour extends ItemArmor implements ISpecialArmor, IFlanIte
         this.topMountZ = 1.0f;
         this.topMountRotation = 1.0f;
         this.type = t;
-        ((ItemTeamArmour)(this.type.item = (Item)this)).func_77637_a((CreativeTabs)FlansMod.tabFlanTeams);
+        ((ItemTeamArmour)(this.type.item = (Item)this)).setCreativeTab((CreativeTabs)FlansMod.tabFlanTeams);
         if (t.durability > 0) {
-            this.func_77656_e(t.durability);
+            this.setMaxDurability(t.durability);
         }
         GameRegistry.registerItem((Item)this, this.type.shortName, "flansmod");
     }
@@ -142,10 +142,10 @@ public class ItemTeamArmour extends ItemArmor implements ISpecialArmor, IFlanIte
         this.topMountY = this.type.topMountY;
         this.topMountZ = this.type.topMountZ;
         this.topMountRotation = this.type.topMountRotation;
-        if (armor.func_77960_j() >= this.type.durability && this.type.energyShield) {
+        if (armor.getMetadata() >= this.type.durability && this.type.energyShield) {
             return new ISpecialArmor.ArmorProperties(1, this.type.backupDefence, 900);
         }
-        if (armor.func_77960_j() < this.type.durability && this.type.energyShield) {
+        if (armor.getMetadata() < this.type.durability && this.type.energyShield) {
             return new ISpecialArmor.ArmorProperties(1, this.type.defence, 900);
         }
         return new ISpecialArmor.ArmorProperties(1, this.type.defence, 900);
@@ -156,25 +156,25 @@ public class ItemTeamArmour extends ItemArmor implements ISpecialArmor, IFlanIte
     }
     
     public void damageArmor(final EntityLivingBase entity, final ItemStack stack, final DamageSource source, final int damage, final int slot) {
-        super.setDamage(stack, (int)(stack.func_77960_j() + 1 + (int)(float)damage / 2.0f));
+        super.setDamage(stack, (int)(stack.getMetadata() + 1 + (int)(float)damage / 2.0f));
         if (this.type.energyShield && entity instanceof EntityPlayer) {
             final EntityPlayer player = (EntityPlayer)entity;
             PlayerHandler.getPlayerData(player).shieldTimer = this.type.rechargeTimer;
         }
-        if (this.type.energyShield && stack.func_77960_j() < this.type.durability) {
-            PacketPlaySound.sendSoundPacket(entity.field_70165_t, entity.field_70163_u, entity.field_70161_v, 5.0, entity.field_71093_bK, this.type.ShieldHit, true);
-            FlansMod.getPacketHandler().sendToAllAround(new PacketFlak(entity.field_70165_t, entity.field_70163_u, entity.field_70161_v, 25, "crit"), entity.field_70165_t, entity.field_70163_u, entity.field_70161_v, 100.0f, entity.field_71093_bK);
+        if (this.type.energyShield && stack.getMetadata() < this.type.durability) {
+            PacketPlaySound.sendSoundPacket(entity.posX, entity.posY, entity.posZ, 5.0, entity.dimension, this.type.ShieldHit, true);
+            FlansMod.getPacketHandler().sendToAllAround(new PacketFlak(entity.posX, entity.posY, entity.posZ, 25, "crit"), entity.posX, entity.posY, entity.posZ, 100.0f, entity.dimension);
             if (entity instanceof EntityPlayer) {
                 final EntityPlayer player = (EntityPlayer)entity;
                 PlayerHandler.getPlayerData(player).shieldHit = 10;
             }
         }
-        if (this.type.energyShield && stack.func_77960_j() == this.type.durability) {
-            PacketPlaySound.sendSoundPacket(entity.field_70165_t, entity.field_70163_u, entity.field_70161_v, 5.0, entity.field_71093_bK, this.type.ShieldKill, true);
-            FlansMod.getPacketHandler().sendToAllAround(new PacketFlak(entity.field_70165_t, entity.field_70163_u, entity.field_70161_v, 75, "fireworksSpark"), entity.field_70165_t, entity.field_70163_u, entity.field_70161_v, 150.0f, entity.field_71093_bK);
+        if (this.type.energyShield && stack.getMetadata() == this.type.durability) {
+            PacketPlaySound.sendSoundPacket(entity.posX, entity.posY, entity.posZ, 5.0, entity.dimension, this.type.ShieldKill, true);
+            FlansMod.getPacketHandler().sendToAllAround(new PacketFlak(entity.posX, entity.posY, entity.posZ, 75, "fireworksSpark"), entity.posX, entity.posY, entity.posZ, 150.0f, entity.dimension);
         }
-        if (stack.func_77960_j() >= this.type.durability && !this.type.energyShield) {
-            --stack.field_77994_a;
+        if (stack.getMetadata() >= this.type.durability && !this.type.energyShield) {
+            --stack.stackSize;
         }
     }
     
@@ -182,7 +182,7 @@ public class ItemTeamArmour extends ItemArmor implements ISpecialArmor, IFlanIte
         return "flansmod:armor/" + this.type.armourTextureName + "_" + ((this.type.type == 2) ? "2" : "1") + ".png";
     }
     
-    public void func_77624_a(final ItemStack stack, final EntityPlayer player, final List lines, final boolean b) {
+    public void addInformation(final ItemStack stack, final EntityPlayer player, final List lines, final boolean b) {
         if (!this.type.packName.isEmpty()) {
             lines.add(this.type.packName);
         }
@@ -295,25 +295,25 @@ public class ItemTeamArmour extends ItemArmor implements ISpecialArmor, IFlanIte
     }
     
     @SideOnly(Side.CLIENT)
-    public int func_82790_a(final ItemStack par1ItemStack, final int par2) {
+    public int getColorFromItemStack(final ItemStack par1ItemStack, final int par2) {
         return this.type.colour;
     }
     
     @SideOnly(Side.CLIENT)
-    public boolean func_77623_v() {
+    public boolean requiresMultipleRenderPasses() {
         return false;
     }
     
     @SideOnly(Side.CLIENT)
-    public void func_94581_a(final IIconRegister icon) {
-        this.field_77791_bV = icon.func_94245_a("FlansMod:" + this.type.iconPath);
+    public void registerIcons(final IIconRegister icon) {
+        this.itemIcon = icon.registerIcon("FlansMod:" + this.type.iconPath);
     }
     
     public Multimap getAttributeModifiers(final ItemStack stack) {
         final Multimap map = super.getAttributeModifiers(stack);
-        map.put((Object)SharedMonsterAttributes.field_111266_c.func_111108_a(), (Object)new AttributeModifier(ItemTeamArmour.uuid[this.type.type], "KnockbackResist", (double)this.type.knockbackModifier, 0));
-        map.put((Object)SharedMonsterAttributes.field_111263_d.func_111108_a(), (Object)new AttributeModifier(ItemTeamArmour.uuid[this.type.type], "MovementSpeed", (double)(this.type.moveSpeedModifier - 1.0f), 2));
-        map.put((Object)SharedMonsterAttributes.field_111263_d.func_111108_a(), (Object)new AttributeModifier(ItemTeamArmour.uuid[this.type.type], "hunger", (double)(this.type.moveSpeedModifier - 1.0f), 2));
+        map.put((Object)SharedMonsterAttributes.knockbackResistance.getAttributeUnlocalizedName(), (Object)new AttributeModifier(ItemTeamArmour.uuid[this.type.type], "KnockbackResist", (double)this.type.knockbackModifier, 0));
+        map.put((Object)SharedMonsterAttributes.movementSpeed.getAttributeUnlocalizedName(), (Object)new AttributeModifier(ItemTeamArmour.uuid[this.type.type], "MovementSpeed", (double)(this.type.moveSpeedModifier - 1.0f), 2));
+        map.put((Object)SharedMonsterAttributes.movementSpeed.getAttributeUnlocalizedName(), (Object)new AttributeModifier(ItemTeamArmour.uuid[this.type.type], "hunger", (double)(this.type.moveSpeedModifier - 1.0f), 2));
         return map;
     }
     
@@ -327,34 +327,34 @@ public class ItemTeamArmour extends ItemArmor implements ISpecialArmor, IFlanIte
     }
     
     public void onArmorTick(final World world, final EntityPlayer player, final ItemStack itemStack) {
-        if (this.type.energyShield && itemStack.func_77960_j() > this.type.durability + 2) {
-            super.setDamage(itemStack, itemStack.func_77960_j() - 1);
+        if (this.type.energyShield && itemStack.getMetadata() > this.type.durability + 2) {
+            super.setDamage(itemStack, itemStack.getMetadata() - 1);
         }
-        if (itemStack.func_77960_j() == 0) {
+        if (itemStack.getMetadata() == 0) {
             PlayerHandler.getPlayerData(player).shieldTimer = this.type.rechargeTimer;
         }
-        if (itemStack.func_77960_j() >= 0 && PlayerHandler.getPlayerData(player).shieldTimer > 0) {
+        if (itemStack.getMetadata() >= 0 && PlayerHandler.getPlayerData(player).shieldTimer > 0) {
             final PlayerData playerData = PlayerHandler.getPlayerData(player);
             --playerData.shieldTimer;
         }
-        if (itemStack.func_77960_j() >= 0 && PlayerHandler.getPlayerData(player).shieldTimer == 0 && this.type.energyShield) {
+        if (itemStack.getMetadata() >= 0 && PlayerHandler.getPlayerData(player).shieldTimer == 0 && this.type.energyShield) {
             final PlayerData playerData2 = PlayerHandler.getPlayerData(player);
             ++playerData2.rechargeTimer;
             if (PlayerHandler.getPlayerData(player).rechargeTimer == this.type.rechargeDelay) {
                 PlayerHandler.getPlayerData(player).rechargeTimer = 0;
             }
             if (PlayerHandler.getPlayerData(player).rechargeTimer == 1) {
-                super.setDamage(itemStack, itemStack.func_77960_j() - 1);
+                super.setDamage(itemStack, itemStack.getMetadata() - 1);
             }
         }
-        if (itemStack.func_77960_j() >= 0 && PlayerHandler.getPlayerData(player).shieldTimer == 1 && this.type.energyShield) {
-            PacketPlaySound.sendSoundPacket(player.field_70165_t, player.field_70163_u, player.field_70161_v, 5.0, player.field_71093_bK, this.type.rechargeSound, true);
-            FlansMod.getPacketHandler().sendToAllAround(new PacketFlak(player.field_70165_t, player.field_70163_u, player.field_70161_v, 100, "instantSpell"), player.field_70165_t, player.field_70163_u, player.field_70161_v, 100.0f, player.field_71093_bK);
+        if (itemStack.getMetadata() >= 0 && PlayerHandler.getPlayerData(player).shieldTimer == 1 && this.type.energyShield) {
+            PacketPlaySound.sendSoundPacket(player.posX, player.posY, player.posZ, 5.0, player.dimension, this.type.rechargeSound, true);
+            FlansMod.getPacketHandler().sendToAllAround(new PacketFlak(player.posX, player.posY, player.posZ, 100, "instantSpell"), player.posX, player.posY, player.posZ, 100.0f, player.dimension);
         }
-        if (itemStack.func_77960_j() < this.type.durability && this.type.energyShield) {
+        if (itemStack.getMetadata() < this.type.durability && this.type.energyShield) {
             PlayerHandler.getPlayerData(player).SoundTimer = 0;
         }
-        if (itemStack.func_77960_j() >= this.type.durability) {
+        if (itemStack.getMetadata() >= this.type.durability) {
             this.secretBody = this.type.ReserveBodyArmor;
             final PlayerData playerData3 = PlayerHandler.getPlayerData(player);
             ++playerData3.SoundTimer;
@@ -362,82 +362,82 @@ public class ItemTeamArmour extends ItemArmor implements ISpecialArmor, IFlanIte
                 PlayerHandler.getPlayerData(player).SoundTimer = 0;
             }
             if (PlayerHandler.getPlayerData(player).SoundTimer == 1 && PlayerHandler.getPlayerData(player).shieldTimer > 1) {
-                PacketPlaySound.sendSoundPacket(player.field_70165_t, player.field_70163_u, player.field_70161_v, 5.0, player.field_71093_bK, this.type.warningSound, false);
+                PacketPlaySound.sendSoundPacket(player.posX, player.posY, player.posZ, 5.0, player.dimension, this.type.warningSound, false);
             }
         }
-        else if (itemStack.func_77960_j() < this.type.durability) {
+        else if (itemStack.getMetadata() < this.type.durability) {
             this.secretBody = this.type.bodyArmor;
         }
-        if (itemStack.func_77960_j() >= this.type.durability) {
+        if (itemStack.getMetadata() >= this.type.durability) {
             this.secretBack = this.type.ReserveBackArmor;
         }
-        else if (itemStack.func_77960_j() < this.type.durability) {
+        else if (itemStack.getMetadata() < this.type.durability) {
             this.secretBack = this.type.backArmor;
         }
-        if (itemStack.func_77960_j() >= this.type.durability) {
+        if (itemStack.getMetadata() >= this.type.durability) {
             this.secretHead = this.type.ReserveHeadArmor;
         }
-        else if (itemStack.func_77960_j() < this.type.durability) {
+        else if (itemStack.getMetadata() < this.type.durability) {
             this.secretHead = this.type.headArmor;
         }
-        if (itemStack.func_77960_j() >= this.type.durability) {
+        if (itemStack.getMetadata() >= this.type.durability) {
             this.secretNape = this.type.ReserveNapeArmor;
         }
-        else if (itemStack.func_77960_j() < this.type.durability) {
+        else if (itemStack.getMetadata() < this.type.durability) {
             this.secretNape = this.type.napeArmor;
         }
-        if (itemStack.func_77960_j() >= this.type.durability) {
+        if (itemStack.getMetadata() >= this.type.durability) {
             this.secretFace = this.type.ReserveFaceArmor;
         }
-        else if (itemStack.func_77960_j() < this.type.durability) {
+        else if (itemStack.getMetadata() < this.type.durability) {
             this.secretFace = this.type.faceArmor;
         }
-        if (itemStack.func_77960_j() >= this.type.durability) {
+        if (itemStack.getMetadata() >= this.type.durability) {
             this.secretArm = this.type.ReserveArmArmor;
         }
-        else if (itemStack.func_77960_j() < this.type.durability) {
+        else if (itemStack.getMetadata() < this.type.durability) {
             this.secretArm = this.type.armArmor;
         }
-        if (itemStack.func_77960_j() >= this.type.durability) {
+        if (itemStack.getMetadata() >= this.type.durability) {
             this.secretLeg = this.type.ReserveLegArmor;
         }
-        else if (itemStack.func_77960_j() < this.type.durability) {
+        else if (itemStack.getMetadata() < this.type.durability) {
             this.secretLeg = this.type.legArmor;
         }
         if (this.type.nightVision && FlansMod.ticker % 25 == 0) {
-            player.func_70690_d(new PotionEffect(Potion.field_76439_r.field_76415_H, 250));
+            player.addPotionEffect(new PotionEffect(Potion.nightVision.id, 250));
         }
         if (this.type.invisible && FlansMod.ticker % 25 == 0) {
-            player.func_70690_d(new PotionEffect(Potion.field_76441_p.field_76415_H, 250));
+            player.addPotionEffect(new PotionEffect(Potion.invisibility.id, 250));
             PlayerHandler.getPlayerData(player).invisArmor = true;
         }
         if (!this.type.invisible) {
             PlayerHandler.getPlayerData(player).invisArmor = false;
         }
         if (this.type.jumpModifier > 1.01f && FlansMod.ticker % 25 == 0) {
-            player.func_70690_d(new PotionEffect(Potion.field_76430_j.field_76415_H, 250, (int)((this.type.jumpModifier - 1.0f) * 2.0f), true));
+            player.addPotionEffect(new PotionEffect(Potion.jump.id, 250, (int)((this.type.jumpModifier - 1.0f) * 2.0f), true));
         }
         if (this.type.submarine && FlansMod.ticker % 25 == 0) {
-            player.func_70690_d(new PotionEffect(Potion.field_76427_o.field_76415_H, 250));
+            player.addPotionEffect(new PotionEffect(Potion.waterBreathing.id, 250));
         }
         if (this.type.playermodel && FlansMod.ticker % 25 == 0) {
-            player.func_70690_d(new PotionEffect(Potion.field_76441_p.field_76415_H, 100));
+            player.addPotionEffect(new PotionEffect(Potion.invisibility.id, 100));
         }
         if (this.type.hunger && FlansMod.ticker % 25 == 0) {
-            player.func_70690_d(new PotionEffect(Potion.field_76438_s.field_76415_H, 250));
+            player.addPotionEffect(new PotionEffect(Potion.hunger.id, 250));
         }
         if (this.type.regenerate && FlansMod.ticker % 25 == 0) {
-            player.func_70690_d(new PotionEffect(Potion.field_76428_l.field_76415_H, 250));
+            player.addPotionEffect(new PotionEffect(Potion.regeneration.id, 250));
         }
         if (this.type.negateFallDamage) {
-            player.field_70143_R = 0.0f;
+            player.fallDistance = 0.0f;
         }
         if (this.type.onWaterWalking) {
-            if (player.func_70090_H()) {
-                player.field_71075_bZ.field_75101_c = true;
+            if (player.isInWater()) {
+                player.capabilities.allowFlying = true;
             }
             else {
-                player.field_71075_bZ.field_75100_b = false;
+                player.capabilities.isFlying = false;
             }
         }
     }

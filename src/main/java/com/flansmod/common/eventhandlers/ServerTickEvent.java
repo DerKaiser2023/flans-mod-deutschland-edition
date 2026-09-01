@@ -45,19 +45,19 @@ public class ServerTickEvent
                 if (this.tickCount >= 20) {
                     final ArrayList<EntityPlayerMP> playersToRemove = new ArrayList<EntityPlayerMP>();
                     for (final EntityPlayerMP player : ServerTickEvent.nightVisionPlayers) {
-                        if (player.func_71045_bC() != null && player.func_71045_bC().func_77973_b() instanceof ItemGun) {
-                            final ItemGun itemGun = (ItemGun)player.func_71045_bC().func_77973_b();
-                            final ItemStack itemstack = player.func_71045_bC();
+                        if (player.getCurrentEquippedItem() != null && player.getCurrentEquippedItem().getItem() instanceof ItemGun) {
+                            final ItemGun itemGun = (ItemGun)player.getCurrentEquippedItem().getItem();
+                            final ItemStack itemstack = player.getCurrentEquippedItem();
                             final AttachmentType scope = itemGun.type.getScope(itemstack);
                             System.out.println("est");
                             if (scope != null && scope.hasNightVision) {
                                 continue;
                             }
-                            player.func_82170_o(Potion.field_76439_r.field_76415_H);
+                            player.removePotionEffect(Potion.nightVision.id);
                             playersToRemove.add(player);
                         }
                         else {
-                            player.func_82170_o(Potion.field_76439_r.field_76415_H);
+                            player.removePotionEffect(Potion.nightVision.id);
                             playersToRemove.add(player);
                         }
                     }
@@ -75,30 +75,30 @@ public class ServerTickEvent
     @SubscribeEvent
     public void onPlayerTick(final TickEvent.PlayerTickEvent event) {
         final EntityPlayer player = event.player;
-        if (!player.field_70170_p.field_72995_K) {
+        if (!player.worldObj.isRemote) {
             FlansMod.getPacketHandler().sendTo(new PacketBlood(PlayerHandler.getPlayerData(player).blood, (float)PlayerHandler.getPlayerData(player).hemorrhaging, PlayerHandler.getPlayerData(player).killStreak), (EntityPlayerMP)player);
             for (final Object[] o : ServerTickEvent.remount) {
                 final EntityPlayerMP mp = (EntityPlayerMP)o[0];
                 if (o[1] instanceof EntitySeat) {
                     final EntitySeat seato = (EntitySeat)o[1];
                     if (mp != null) {
-                        mp.func_145747_a((IChatComponent)new ChatComponentText("An eternal glitch tried to kick " + mp.getDisplayName() + " out of his vehicle!"));
-                        mp.func_145747_a((IChatComponent)new ChatComponentText("Seatkick reset TM will try to refund the vehicle and bring you back to where you first placed it!"));
+                        mp.addChatMessage((IChatComponent)new ChatComponentText("An eternal glitch tried to kick " + mp.getDisplayName() + " out of his vehicle!"));
+                        mp.addChatMessage((IChatComponent)new ChatComponentText("Seatkick reset TM will try to refund the vehicle and bring you back to where you first placed it!"));
                         final EntitySeat seat = (EntitySeat)o[1];
                         final EntityDriveable plane = seat.driveable;
                         if (plane instanceof EntityPlane) {
                             ((EntityPlane)plane).reset((EntityPlayer)mp);
-                            mp.func_145747_a((IChatComponent)new ChatComponentText("Potion Effects will help you survive if teleport drops you from too high!"));
-                            mp.func_145747_a((IChatComponent)new ChatComponentText("However, you are also blinded and slowed so you cant abuse this in combat!"));
+                            mp.addChatMessage((IChatComponent)new ChatComponentText("Potion Effects will help you survive if teleport drops you from too high!"));
+                            mp.addChatMessage((IChatComponent)new ChatComponentText("However, you are also blinded and slowed so you cant abuse this in combat!"));
                         }
                         if (plane instanceof EntityVehicle) {
                             ((EntityVehicle)plane).reset((EntityPlayer)mp);
-                            mp.func_145747_a((IChatComponent)new ChatComponentText("Potion Effects will help you survive if teleport drops you from too high!"));
-                            mp.func_145747_a((IChatComponent)new ChatComponentText("However, you are also blinded and slowed so you cant abuse this in combat!"));
+                            mp.addChatMessage((IChatComponent)new ChatComponentText("Potion Effects will help you survive if teleport drops you from too high!"));
+                            mp.addChatMessage((IChatComponent)new ChatComponentText("However, you are also blinded and slowed so you cant abuse this in combat!"));
                         }
                     }
                 }
-                ((EntityPlayer)o[0]).func_70078_a((Entity)o[1]);
+                ((EntityPlayer)o[0]).mountEntity((Entity)o[1]);
                 System.out.println("remount attempted to remount");
             }
             ServerTickEvent.remount.clear();

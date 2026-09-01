@@ -48,44 +48,44 @@ public class GuiDriveableCrafting extends GuiScreen
         this.spinner = 0.0f;
         this.canCraft = false;
         this.inventory = playerinventory;
-        this.field_146297_k = FMLClientHandler.instance().getClient();
+        this.mc = FMLClientHandler.instance().getClient();
         this.world = w;
         this.x = i;
         this.y = j;
         this.z = k;
     }
     
-    public void func_73866_w_() {
-        super.func_73866_w_();
-        this.field_146292_n.add(new GuiButton(0, this.field_146294_l / 2 + 22, this.field_146295_m / 2 + 63, 40, 20, "Craft"));
+    public void initGui() {
+        super.initGui();
+        this.buttonList.add(new GuiButton(0, this.width / 2 + 22, this.height / 2 + 63, 40, 20, "Craft"));
     }
     
-    protected void func_146284_a(final GuiButton button) {
-        if (button.field_146127_k == 0) {
-            FlansMod.proxy.craftDriveable(this.inventory.field_70458_d, DriveableType.types.get(GuiDriveableCrafting.selectedBlueprint));
+    protected void actionPerformed(final GuiButton button) {
+        if (button.id == 0) {
+            FlansMod.proxy.craftDriveable(this.inventory.player, DriveableType.types.get(GuiDriveableCrafting.selectedBlueprint));
         }
     }
     
-    public void func_73863_a(final int i, final int j, final float f) {
-        final ScaledResolution scaledresolution = new ScaledResolution(this.field_146297_k, this.field_146297_k.field_71443_c, this.field_146297_k.field_71440_d);
-        final int w = scaledresolution.func_78326_a();
-        final int h = scaledresolution.func_78328_b();
-        this.func_146276_q_();
+    public void drawScreen(final int i, final int j, final float f) {
+        final ScaledResolution scaledresolution = new ScaledResolution(this.mc, this.mc.displayWidth, this.mc.displayHeight);
+        final int w = scaledresolution.getScaledWidth();
+        final int h = scaledresolution.getScaledHeight();
+        this.drawDefaultBackground();
         GL11.glEnable(3042);
-        this.field_146297_k.field_71446_o.func_110577_a(GuiDriveableCrafting.texture);
+        this.mc.renderEngine.bindTexture(GuiDriveableCrafting.texture);
         GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
         this.guiOriginX = w / 2 - 88;
         this.guiOriginY = h / 2 - 99;
-        this.func_73729_b(this.guiOriginX, this.guiOriginY, 0, 0, 176, 198);
-        this.func_73731_b(this.field_146289_q, "Vehicle Crafting", this.guiOriginX + 6, this.guiOriginY + 6, 16777215);
-        this.func_73731_b(this.field_146289_q, "Requires", this.guiOriginX + 6, this.guiOriginY + 125, 16777215);
-        this.func_73731_b(this.field_146289_q, "Engine", this.guiOriginX + 114, this.guiOriginY + 141, 16777215);
+        this.drawTexturedModalRect(this.guiOriginX, this.guiOriginY, 0, 0, 176, 198);
+        this.drawString(this.fontRendererObj, "Vehicle Crafting", this.guiOriginX + 6, this.guiOriginY + 6, 16777215);
+        this.drawString(this.fontRendererObj, "Requires", this.guiOriginX + 6, this.guiOriginY + 125, 16777215);
+        this.drawString(this.fontRendererObj, "Engine", this.guiOriginX + 114, this.guiOriginY + 141, 16777215);
         for (int m = 0; m < 2; ++m) {
             for (int n = 0; n < 8; ++n) {
                 final int blueprintNumber = GuiDriveableCrafting.blueprintsScroll * 8 + 8 * m + n;
                 if (blueprintNumber == GuiDriveableCrafting.selectedBlueprint) {
-                    this.field_146297_k.field_71446_o.func_110577_a(GuiDriveableCrafting.texture);
-                    this.func_73729_b(this.guiOriginX + 8 + n * 18, this.guiOriginY + 18 + m * 18, 213, 11, 16, 16);
+                    this.mc.renderEngine.bindTexture(GuiDriveableCrafting.texture);
+                    this.drawTexturedModalRect(this.guiOriginX + 8 + n * 18, this.guiOriginY + 18 + m * 18, 213, 11, 16, 16);
                 }
                 if (blueprintNumber < DriveableType.types.size()) {
                     final DriveableType type = DriveableType.types.get(blueprintNumber);
@@ -111,7 +111,7 @@ public class GuiDriveableCrafting extends GuiScreen
             GL11.glRotatef(180.0f, 0.0f, 0.0f, 1.0f);
             GL11.glRotatef(30.0f, 1.0f, 0.0f, 0.0f);
             GL11.glRotatef(this.spinner / 5.0f, 0.0f, 1.0f, 0.0f);
-            this.field_146297_k.field_71446_o.func_110577_a(FlansModResourceHandler.getTexture(selectedType));
+            this.mc.renderEngine.bindTexture(FlansModResourceHandler.getTexture(selectedType));
             if (selectedType.model != null) {
                 selectedType.model.render(selectedType);
             }
@@ -119,45 +119,45 @@ public class GuiDriveableCrafting extends GuiScreen
             GL11.glDisable(3008);
             GL11.glPopMatrix();
             if (selectedType.model == null) {
-                this.func_73731_b(this.field_146289_q, "Model not found.", this.guiOriginX + 12, this.guiOriginY + 84, 16777215);
+                this.drawString(this.fontRendererObj, "Model not found.", this.guiOriginX + 12, this.guiOriginY + 84, 16777215);
             }
             String recipeName = selectedType.name;
             if (recipeName.length() > 16) {
                 recipeName = recipeName.substring(0, 15) + "...";
             }
-            this.func_73731_b(this.field_146289_q, recipeName, this.guiOriginX + 82, this.guiOriginY + 64, 16777215);
-            this.func_73731_b(this.field_146289_q, "Cargo Slots : " + selectedType.numCargoSlots, this.guiOriginX + 82, this.guiOriginY + 74, 16777215);
-            this.func_73731_b(this.field_146289_q, "Bomb Slots : " + selectedType.numBombSlots, this.guiOriginX + 82, this.guiOriginY + 84, 16777215);
-            this.func_73731_b(this.field_146289_q, "Passengers : " + selectedType.numPassengers, this.guiOriginX + 82, this.guiOriginY + 94, 16777215);
-            this.func_73731_b(this.field_146289_q, "Guns : " + selectedType.ammoSlots(), this.guiOriginX + 82, this.guiOriginY + 104, 16777215);
-            this.func_73731_b(this.field_146289_q, selectedType.numEngines() + "x", this.guiOriginX + 100, this.guiOriginY + 141, 16777215);
+            this.drawString(this.fontRendererObj, recipeName, this.guiOriginX + 82, this.guiOriginY + 64, 16777215);
+            this.drawString(this.fontRendererObj, "Cargo Slots : " + selectedType.numCargoSlots, this.guiOriginX + 82, this.guiOriginY + 74, 16777215);
+            this.drawString(this.fontRendererObj, "Bomb Slots : " + selectedType.numBombSlots, this.guiOriginX + 82, this.guiOriginY + 84, 16777215);
+            this.drawString(this.fontRendererObj, "Passengers : " + selectedType.numPassengers, this.guiOriginX + 82, this.guiOriginY + 94, 16777215);
+            this.drawString(this.fontRendererObj, "Guns : " + selectedType.ammoSlots(), this.guiOriginX + 82, this.guiOriginY + 104, 16777215);
+            this.drawString(this.fontRendererObj, selectedType.numEngines() + "x", this.guiOriginX + 100, this.guiOriginY + 141, 16777215);
             final InventoryPlayer temporaryInventory = new InventoryPlayer((EntityPlayer)null);
-            temporaryInventory.func_70455_b(this.inventory);
+            temporaryInventory.copyInventory(this.inventory);
             for (int r = 0; r < 3; ++r) {
                 for (int c = 0; c < 4; ++c) {
                     final int recipeItemNumber = this.recipeScroll * 4 + r * 4 + c;
                     if (recipeItemNumber < selectedType.driveableRecipe.size()) {
                         final ItemStack recipeStack = selectedType.driveableRecipe.get(recipeItemNumber);
                         int totalAmountFound = 0;
-                        for (int n2 = 0; n2 < temporaryInventory.func_70302_i_(); ++n2) {
-                            ItemStack stackInSlot = temporaryInventory.func_70301_a(n2);
-                            if (stackInSlot != null && recipeStack != null && stackInSlot.func_77973_b() == recipeStack.func_77973_b() && stackInSlot.func_77960_j() == recipeStack.func_77960_j()) {
-                                final int amountFound = Math.min(stackInSlot.field_77994_a, recipeStack.field_77994_a - totalAmountFound);
+                        for (int n2 = 0; n2 < temporaryInventory.getSizeInventory(); ++n2) {
+                            ItemStack stackInSlot = temporaryInventory.getStackInSlot(n2);
+                            if (stackInSlot != null && recipeStack != null && stackInSlot.getItem() == recipeStack.getItem() && stackInSlot.getMetadata() == recipeStack.getMetadata()) {
+                                final int amountFound = Math.min(stackInSlot.stackSize, recipeStack.stackSize - totalAmountFound);
                                 final ItemStack itemStack = stackInSlot;
-                                itemStack.field_77994_a -= amountFound;
-                                if (stackInSlot.field_77994_a <= 0) {
+                                itemStack.stackSize -= amountFound;
+                                if (stackInSlot.stackSize <= 0) {
                                     stackInSlot = null;
                                 }
-                                temporaryInventory.func_70299_a(n2, stackInSlot);
+                                temporaryInventory.setInventorySlotContents(n2, stackInSlot);
                                 totalAmountFound += amountFound;
-                                if (totalAmountFound == recipeStack.field_77994_a) {
+                                if (totalAmountFound == recipeStack.stackSize) {
                                     break;
                                 }
                             }
                         }
-                        if (totalAmountFound < recipeStack.field_77994_a) {
-                            this.field_146297_k.field_71446_o.func_110577_a(GuiDriveableCrafting.texture);
-                            this.func_73729_b(this.guiOriginX + 8 + c * 18, this.guiOriginY + 138 + r * 18, 195, 11, 16, 16);
+                        if (totalAmountFound < recipeStack.stackSize) {
+                            this.mc.renderEngine.bindTexture(GuiDriveableCrafting.texture);
+                            this.drawTexturedModalRect(this.guiOriginX + 8 + c * 18, this.guiOriginY + 138 + r * 18, 195, 11, 16, 16);
                             this.canCraft = false;
                         }
                         this.drawSlotInventory(recipeStack, this.guiOriginX + 8 + c * 18, this.guiOriginY + 138 + r * 18);
@@ -165,14 +165,14 @@ public class GuiDriveableCrafting extends GuiScreen
                 }
             }
             final HashMap<PartType, ItemStack> engines = new HashMap<PartType, ItemStack>();
-            for (int n3 = 0; n3 < temporaryInventory.func_70302_i_(); ++n3) {
-                final ItemStack stackInSlot2 = temporaryInventory.func_70301_a(n3);
-                if (stackInSlot2 != null && stackInSlot2.func_77973_b() instanceof ItemPart) {
-                    final PartType partType = ((ItemPart)stackInSlot2.func_77973_b()).type;
+            for (int n3 = 0; n3 < temporaryInventory.getSizeInventory(); ++n3) {
+                final ItemStack stackInSlot2 = temporaryInventory.getStackInSlot(n3);
+                if (stackInSlot2 != null && stackInSlot2.getItem() instanceof ItemPart) {
+                    final PartType partType = ((ItemPart)stackInSlot2.getItem()).type;
                     if (partType.category == 2 && partType.worksWith.contains(EnumType.getFromObject(selectedType))) {
                         if (engines.containsKey(partType)) {
                             final ItemStack itemStack2 = engines.get(partType);
-                            itemStack2.field_77994_a += stackInSlot2.field_77994_a;
+                            itemStack2.stackSize += stackInSlot2.stackSize;
                         }
                         else {
                             engines.put(partType, stackInSlot2);
@@ -183,14 +183,14 @@ public class GuiDriveableCrafting extends GuiScreen
             float bestEngineSpeed = -1.0f;
             ItemStack bestEngineStack = null;
             for (final PartType part : engines.keySet()) {
-                if (part.engineSpeed > bestEngineSpeed && engines.get(part).field_77994_a >= selectedType.numEngines()) {
+                if (part.engineSpeed > bestEngineSpeed && engines.get(part).stackSize >= selectedType.numEngines()) {
                     bestEngineSpeed = part.engineSpeed;
                     bestEngineStack = engines.get(part);
                 }
             }
-            this.field_146297_k.field_71446_o.func_110577_a(GuiDriveableCrafting.texture);
+            this.mc.renderEngine.bindTexture(GuiDriveableCrafting.texture);
             if (bestEngineStack == null) {
-                this.func_73729_b(this.guiOriginX + 152, this.guiOriginY + 138, 195, 11, 16, 16);
+                this.drawTexturedModalRect(this.guiOriginX + 152, this.guiOriginY + 138, 195, 11, 16, 16);
                 this.canCraft = false;
             }
             else {
@@ -198,33 +198,33 @@ public class GuiDriveableCrafting extends GuiScreen
             }
         }
         if (!this.canCraft) {
-            this.field_146297_k.field_71446_o.func_110577_a(GuiDriveableCrafting.texture);
-            this.func_73729_b(this.guiOriginX + 108, this.guiOriginY + 160, 176, 28, 44, 24);
-            this.func_73731_b(this.field_146289_q, "Craft", this.guiOriginX + 116, this.guiOriginY + 168, 10526880);
+            this.mc.renderEngine.bindTexture(GuiDriveableCrafting.texture);
+            this.drawTexturedModalRect(this.guiOriginX + 108, this.guiOriginY + 160, 176, 28, 44, 24);
+            this.drawString(this.fontRendererObj, "Craft", this.guiOriginX + 116, this.guiOriginY + 168, 10526880);
         }
         else {
-            super.func_73863_a(i, j, f);
+            super.drawScreen(i, j, f);
         }
     }
     
     private void drawSlotInventory(final ItemStack itemstack, final int i, final int j) {
-        if (itemstack == null || itemstack.func_77973_b() == null) {
+        if (itemstack == null || itemstack.getItem() == null) {
             return;
         }
-        GuiDriveableCrafting.itemRenderer.func_77015_a(this.field_146289_q, this.field_146297_k.field_71446_o, itemstack, i, j);
-        GuiDriveableCrafting.itemRenderer.func_77021_b(this.field_146289_q, this.field_146297_k.field_71446_o, itemstack, i, j);
+        GuiDriveableCrafting.itemRenderer.renderItemIntoGUI(this.fontRendererObj, this.mc.renderEngine, itemstack, i, j);
+        GuiDriveableCrafting.itemRenderer.renderItemOverlayIntoGUI(this.fontRendererObj, this.mc.renderEngine, itemstack, i, j);
         GL11.glDisable(2896);
         GL11.glDisable(2929);
     }
     
-    protected void func_73869_a(final char c, final int i) {
-        if (i == 1 || i == this.field_146297_k.field_71474_y.field_151445_Q.func_151463_i()) {
-            this.field_146297_k.field_71439_g.func_71053_j();
+    protected void keyTyped(final char c, final int i) {
+        if (i == 1 || i == this.mc.gameSettings.keyBindInventory.getKeyCode()) {
+            this.mc.thePlayer.closeScreen();
         }
     }
     
-    protected void func_73864_a(final int i, final int j, final int k) {
-        super.func_73864_a(i, j, k);
+    protected void mouseClicked(final int i, final int j, final int k) {
+        super.mouseClicked(i, j, k);
         final int x = i - this.guiOriginX;
         final int y = j - this.guiOriginY;
         if (k == 0 || k == 1) {
@@ -256,7 +256,7 @@ public class GuiDriveableCrafting extends GuiScreen
         }
     }
     
-    public boolean func_73868_f() {
+    public boolean doesGuiPauseGame() {
         return false;
     }
     

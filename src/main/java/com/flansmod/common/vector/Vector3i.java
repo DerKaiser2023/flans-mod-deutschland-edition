@@ -22,7 +22,7 @@ public class Vector3i extends Vector
     }
     
     public Vector3i(final Vec3 vec) {
-        this((int)vec.field_72450_a, (int)vec.field_72448_b, (int)vec.field_72449_c);
+        this((int)vec.xCoord, (int)vec.yCoord, (int)vec.zCoord);
     }
     
     public Vector3i(final double x, final double y, final double z) {
@@ -34,7 +34,7 @@ public class Vector3i extends Vector
     }
     
     public Vec3 toVec3() {
-        return Vec3.func_72443_a((double)this.x, (double)this.y, (double)this.z);
+        return Vec3.createVectorHelper((double)this.x, (double)this.y, (double)this.z);
     }
     
     public void set(final int x, final int y, final int z) {

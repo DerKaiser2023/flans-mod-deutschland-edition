@@ -36,10 +36,10 @@ public class PlaneHUD extends Gui
         if (event.isCancelable()) {
             event.setCanceled(true);
         }
-        if (event.type == RenderGameOverlayEvent.ElementType.HELMET && Minecraft.func_71410_x().field_71474_y.field_74320_O == 0) {
-            final EntityPlayer p = (EntityPlayer)Minecraft.func_71410_x().field_71439_g;
-            if (p.field_70154_o != null && p.field_70154_o instanceof EntitySeat) {
-                final EntitySeat seat = (EntitySeat)p.field_70154_o;
+        if (event.type == RenderGameOverlayEvent.ElementType.HELMET && Minecraft.getMinecraft().gameSettings.thirdPersonView == 0) {
+            final EntityPlayer p = (EntityPlayer)Minecraft.getMinecraft().thePlayer;
+            if (p.ridingEntity != null && p.ridingEntity instanceof EntitySeat) {
+                final EntitySeat seat = (EntitySeat)p.ridingEntity;
                 if (seat.driveable instanceof EntityPlane) {
                     final EntityPlane plane = (EntityPlane)seat.driveable;
                     final double croll = plane.axes.getRoll();
@@ -51,30 +51,30 @@ public class PlaneHUD extends Gui
                     PlaneHUD.roll = proll + (croll - proll) * event.partialTicks;
                     PlaneHUD.pitch = -(ppitch + (cpitch - ppitch) * event.partialTicks);
                     PlaneHUD.yaw = -(pyaw + (cyaw - pyaw) * event.partialTicks);
-                    PlaneHUD.w = event.resolution.func_78327_c();
-                    PlaneHUD.h = event.resolution.func_78324_d();
-                    PlaneHUD.y = plane.field_70163_u;
-                    final float dx = (float)(plane.field_70165_t - plane.field_70142_S);
-                    final float dy = (float)(plane.field_70163_u - plane.field_70137_T);
-                    final float dz = (float)(plane.field_70161_v - plane.field_70136_U);
+                    PlaneHUD.w = event.resolution.getScaledWidth_double();
+                    PlaneHUD.h = event.resolution.getScaledHeight_double();
+                    PlaneHUD.y = plane.posY;
+                    final float dx = (float)(plane.posX - plane.lastTickPosX);
+                    final float dy = (float)(plane.posY - plane.lastTickPosY);
+                    final float dz = (float)(plane.posZ - plane.lastTickPosZ);
                     final Vector3f forwards = (Vector3f)plane.axes.getXAxis().normalise();
-                    final float speed = forwards.x * (float)plane.field_70159_w * (forwards.x * (float)plane.field_70159_w) + forwards.y * (float)plane.field_70181_x * (forwards.y * (float)plane.field_70181_x) + forwards.z * (float)plane.field_70179_y * (forwards.z * (float)plane.field_70179_y);
+                    final float speed = forwards.x * (float)plane.motionX * (forwards.x * (float)plane.motionX) + forwards.y * (float)plane.motionY * (forwards.y * (float)plane.motionY) + forwards.z * (float)plane.motionZ * (forwards.z * (float)plane.motionZ);
                     final float advancedSpeed = (float)Math.sqrt(speed);
                     final float cringedUniversalBuff = 1.0f;
                     final float hiz;
                     final float Mach = hiz = (float)(plane.control.V * 2.23694);
-                    final double cizgiicinyatay = MathHelper.func_76128_c(PlaneHUD.yaw);
-                    final double cizgiicindikey = MathHelper.func_76128_c(PlaneHUD.pitch);
-                    final FontRenderer fr = Minecraft.func_71410_x().field_71466_p;
+                    final double cizgiicinyatay = MathHelper.floor_double(PlaneHUD.yaw);
+                    final double cizgiicindikey = MathHelper.floor_double(PlaneHUD.pitch);
+                    final FontRenderer fr = Minecraft.getMinecraft().fontRendererObj;
                     final double oran = PlaneHUD.h / 353.0;
                     GL11.glPushMatrix();
                     GL11.glEnable(3042);
                     GL11.glColor4d(1.0, 1.0, 1.0, 1.0);
-                    Minecraft.func_71410_x().func_110434_K().func_110577_a(new ResourceLocation("flansmod:gui/renk.png"));
+                    Minecraft.getMinecraft().getTextureManager().bindTexture(new ResourceLocation("flansmod:gui/renk.png"));
                     GL11.glTranslated(PlaneHUD.w / 2.0, PlaneHUD.h / 2.0, 0.0);
                     GL11.glScaled(oran * 0.8, oran * 0.8, 1.0);
-                    double playerpitch = p.field_70127_C + (p.field_70125_A - p.field_70127_C) * event.partialTicks;
-                    double playeryaw = p.field_70126_B + (p.field_70177_z - p.field_70126_B) * event.partialTicks;
+                    double playerpitch = p.prevRotationPitch + (p.rotationPitch - p.prevRotationPitch) * event.partialTicks;
+                    double playeryaw = p.prevRotationYaw + (p.rotationYaw - p.prevRotationYaw) * event.partialTicks;
                     playerpitch = -playerpitch;
                     playeryaw = -playeryaw + 90.0;
                     final double planepitch = PlaneHUD.pitch;
@@ -112,13 +112,13 @@ public class PlaneHUD extends Gui
                         GL11.glPushMatrix();
                         GL11.glEnable(3042);
                         GL11.glColor4d(PlaneHUD.kirmizi / 255.0 * 1.0, PlaneHUD.yesil / 255.0 * 1.0, PlaneHUD.mavi / 255.0 * 1.0, 0.8);
-                        Minecraft.func_71410_x().func_110434_K().func_110577_a(new ResourceLocation("flansmod:gui/renk.png"));
+                        Minecraft.getMinecraft().getTextureManager().bindTexture(new ResourceLocation("flansmod:gui/renk.png"));
                         GL11.glTranslated(PlaneHUD.w / 2.0, PlaneHUD.h / 2.0, 0.0);
                         GL11.glScaled(oran * 0.8, oran * 0.8, 1.0);
                         nisangah(0);
                         yukseklik(0);
                         GL11.glColor4d(PlaneHUD.kirmizi / 255.0 * 0.85, PlaneHUD.yesil / 255.0 * 0.85, PlaneHUD.mavi / 255.0 * 0.85, 0.8);
-                        Minecraft.func_71410_x().func_110434_K().func_110577_a(new ResourceLocation("flansmod:gui/renk.png"));
+                        Minecraft.getMinecraft().getTextureManager().bindTexture(new ResourceLocation("flansmod:gui/renk.png"));
                         while (PlaneHUD.yaw < 0.0) {
                             PlaneHUD.yaw += 360.0;
                         }
@@ -127,7 +127,7 @@ public class PlaneHUD extends Gui
                         }
                         GL11.glPushMatrix();
                         GL11.glColor4d(PlaneHUD.kirmizi / 255.0 * 0.85, PlaneHUD.yesil / 255.0 * 0.85, PlaneHUD.mavi / 255.0 * 0.85, 0.8);
-                        Minecraft.func_71410_x().func_110434_K().func_110577_a(new ResourceLocation("flansmod:gui/renk.png"));
+                        Minecraft.getMinecraft().getTextureManager().bindTexture(new ResourceLocation("flansmod:gui/renk.png"));
                         GL11.glTranslated(0.0, -135.0, 0.0);
                         GL11.glRotated(60.0, 0.0, 0.0, 1.0);
                         dortgen(15.0, 2.0, -1, 0);
@@ -140,11 +140,11 @@ public class PlaneHUD extends Gui
                             final double fark = i + PlaneHUD.yaw % 5.0;
                             GL11.glTranslated(fark * 6.0, 0.0, 0.0);
                             GL11.glColor4d(PlaneHUD.kirmizi / 255.0 * 0.85, PlaneHUD.yesil / 255.0 * 0.85, PlaneHUD.mavi / 255.0 * 0.85, 0.8);
-                            Minecraft.func_71410_x().func_110434_K().func_110577_a(new ResourceLocation("flansmod:gui/renk.png"));
-                            final int pi = MathHelper.func_76128_c(PlaneHUD.yaw - PlaneHUD.yaw % 5.0 - i);
+                            Minecraft.getMinecraft().getTextureManager().bindTexture(new ResourceLocation("flansmod:gui/renk.png"));
+                            final int pi = MathHelper.floor_double(PlaneHUD.yaw - PlaneHUD.yaw % 5.0 - i);
                             dortgen(1.0, 10.0, 0, 1);
                             int yatay;
-                            for (yatay = MathHelper.func_76128_c(PlaneHUD.yaw - PlaneHUD.yaw % 5.0 - i); yatay < 360; yatay += 360) {}
+                            for (yatay = MathHelper.floor_double(PlaneHUD.yaw - PlaneHUD.yaw % 5.0 - i); yatay < 360; yatay += 360) {}
                             while (yatay > 360) {
                                 yatay -= 360;
                             }
@@ -170,12 +170,12 @@ public class PlaneHUD extends Gui
                                 GL11.glTranslated(0.0, -12.0, 0.0);
                                 GL11.glScaled(2.0, 2.0, 0.0);
                             }
-                            GL11.glTranslated(-fr.func_78256_a(s) / 2.0, 12.0, 0.0);
-                            fr.func_78276_b(s, 0, 0, PlaneHUD.renk);
+                            GL11.glTranslated(-fr.getStringWidth(s) / 2.0, 12.0, 0.0);
+                            fr.drawString(s, 0, 0, PlaneHUD.renk);
                             GL11.glPopMatrix();
                         }
                         GL11.glColor4d(PlaneHUD.kirmizi / 255.0 * 0.85, PlaneHUD.yesil / 255.0 * 0.85, PlaneHUD.mavi / 255.0 * 0.85, 0.8);
-                        Minecraft.func_71410_x().func_110434_K().func_110577_a(new ResourceLocation("flansmod:gui/renk.png"));
+                        Minecraft.getMinecraft().getTextureManager().bindTexture(new ResourceLocation("flansmod:gui/renk.png"));
                         GL11.glPushMatrix();
                         GL11.glRotated(-PlaneHUD.roll, 0.0, 0.0, 1.0);
                         GL11.glPushMatrix();
@@ -201,16 +201,16 @@ public class PlaneHUD extends Gui
                         GL11.glTranslated(42.5, -1.0, 0.0);
                         dortgen(1.0, 12.0, 1, 0);
                         GL11.glPushMatrix();
-                        GL11.glTranslated((double)(1 + fr.func_78256_a(String.format("%.2f", PlaneHUD.y)) + 2), 0.0, 0.0);
+                        GL11.glTranslated((double)(1 + fr.getStringWidth(String.format("%.2f", PlaneHUD.y)) + 2), 0.0, 0.0);
                         dortgen(1.0, 12.0, 1, 0);
                         GL11.glPopMatrix();
                         GL11.glTranslated(0.0, -6.5, 0.0);
-                        dortgen(2 + fr.func_78256_a(String.format("%.2f", PlaneHUD.y)) + 2, 1.0, 1, 0);
+                        dortgen(2 + fr.getStringWidth(String.format("%.2f", PlaneHUD.y)) + 2, 1.0, 1, 0);
                         GL11.glTranslated(0.0, 12.5, 0.0);
-                        dortgen(2 + fr.func_78256_a(String.format("%.2f", PlaneHUD.y)) + 2, 1.0, 1, 0);
+                        dortgen(2 + fr.getStringWidth(String.format("%.2f", PlaneHUD.y)) + 2, 1.0, 1, 0);
                         GL11.glPopMatrix();
                         GL11.glPushMatrix();
-                        GL11.glTranslated(fr.func_78256_a(String.format("%.2f", PlaneHUD.y)) / 2.0, 0.0, 0.0);
+                        GL11.glTranslated(fr.getStringWidth(String.format("%.2f", PlaneHUD.y)) / 2.0, 0.0, 0.0);
                         yazi(String.format("%.2f", PlaneHUD.y), PlaneHUD.renk, 140.0, 0.0, 1.0);
                         GL11.glPopMatrix();
                         for (double i = -80.0; i <= 80.0; i += 10.0) {
@@ -221,16 +221,16 @@ public class PlaneHUD extends Gui
                             if (-50.0 < fark && fark < 50.0) {
                                 GL11.glTranslated(0.0, fark * 2.0, 0.0);
                                 GL11.glColor4d(PlaneHUD.kirmizi / 255.0 * 0.85, PlaneHUD.yesil / 255.0 * 0.85, PlaneHUD.mavi / 255.0 * 0.85, 0.8);
-                                Minecraft.func_71410_x().func_110434_K().func_110577_a(new ResourceLocation("flansmod:gui/renk.png"));
+                                Minecraft.getMinecraft().getTextureManager().bindTexture(new ResourceLocation("flansmod:gui/renk.png"));
                                 dortgen(10.0, 1.0, 0, 0);
-                                final String s2 = MathHelper.func_76128_c(PlaneHUD.y - PlaneHUD.y % 10.0 - i) + "";
-                                GL11.glTranslated((double)(fr.func_78256_a(s2) + 2), 0.0, 0.0);
+                                final String s2 = MathHelper.floor_double(PlaneHUD.y - PlaneHUD.y % 10.0 - i) + "";
+                                GL11.glTranslated((double)(fr.getStringWidth(s2) + 2), 0.0, 0.0);
                                 yazi(s2, PlaneHUD.renk, 0.0, 0.0, 1.0);
                             }
                             GL11.glPopMatrix();
                         }
                         GL11.glColor4d(PlaneHUD.kirmizi / 255.0 * 0.85, PlaneHUD.yesil / 255.0 * 0.85, PlaneHUD.mavi / 255.0 * 0.85, 0.8);
-                        Minecraft.func_71410_x().func_110434_K().func_110577_a(new ResourceLocation("flansmod:gui/renk.png"));
+                        Minecraft.getMinecraft().getTextureManager().bindTexture(new ResourceLocation("flansmod:gui/renk.png"));
                         GL11.glPushMatrix();
                         GL11.glTranslated(-30.0, 0.0, 0.0);
                         GL11.glTranslated(-65.0, 0.0, 0.0);
@@ -238,7 +238,7 @@ public class PlaneHUD extends Gui
                         GL11.glTranslated(-42.5, -1.0, 0.0);
                         dortgen(1.0, 12.0, -1, 0);
                         GL11.glPushMatrix();
-                        final double genislik = fr.func_78256_a(String.format("%.2f", hiz));
+                        final double genislik = fr.getStringWidth(String.format("%.2f", hiz));
                         GL11.glTranslated(-genislik - 4.0, 0.0, 0.0);
                         dortgen(1.0, 12.0, -1, 0);
                         GL11.glPopMatrix();
@@ -252,7 +252,7 @@ public class PlaneHUD extends Gui
                         yazi(String.format("%.2f", hiz), PlaneHUD.renk, -140.0, 0.0, 1.0);
                         GL11.glPopMatrix();
                         GL11.glPushMatrix();
-                        GL11.glTranslated(-fr.func_78256_a((int)(plane.throttle * 100.0 / 1.0) + "%") / 2.0, 0.0, 0.0);
+                        GL11.glTranslated(-fr.getStringWidth((int)(plane.throttle * 100.0 / 1.0) + "%") / 2.0, 0.0, 0.0);
                         yazi((int)(plane.throttle * 100.0 / 1.0) + "%", PlaneHUD.renk, -140.0, 12.0, 1.0);
                         GL11.glPopMatrix();
                         for (double k = -50.0; k < 50.0; k += 10.0) {
@@ -262,10 +262,10 @@ public class PlaneHUD extends Gui
                             GL11.glTranslated(-70.0, fark2 * 2.0, 0.0);
                             if (hiz - k >= 0.0 && -50.0 < fark2 && fark2 < 50.0) {
                                 GL11.glColor4d(PlaneHUD.kirmizi / 255.0 * 0.85, PlaneHUD.yesil / 255.0 * 0.85, PlaneHUD.mavi / 255.0 * 0.85, 0.8);
-                                Minecraft.func_71410_x().func_110434_K().func_110577_a(new ResourceLocation("flansmod:gui/renk.png"));
+                                Minecraft.getMinecraft().getTextureManager().bindTexture(new ResourceLocation("flansmod:gui/renk.png"));
                                 dortgen(10.0, 1.0, 0, 0);
-                                final String shiz = MathHelper.func_76128_c(hiz - hiz % 10.0f - k) + "";
-                                fr.func_78276_b(shiz, -10 - fr.func_78256_a(shiz) + 4, -4, PlaneHUD.renk);
+                                final String shiz = MathHelper.floor_double(hiz - hiz % 10.0f - k) + "";
+                                fr.drawString(shiz, -10 - fr.getStringWidth(shiz) + 4, -4, PlaneHUD.renk);
                             }
                             GL11.glPopMatrix();
                         }
@@ -277,37 +277,37 @@ public class PlaneHUD extends Gui
     }
     
     public static void dortgen(final double x, final double y, final int xhiza, final int yhiza) {
-        final Tessellator t = Tessellator.field_78398_a;
-        t.func_78382_b();
+        final Tessellator t = Tessellator.instance;
+        t.startDrawingQuads();
         final double solx = -x / 2.0 + xhiza * x / 2.0;
         final double sagx = x / 2.0 + xhiza * x / 2.0;
         final double usty = -y / 2.0 + yhiza * y / 2.0;
         final double alty = y / 2.0 + yhiza * y / 2.0;
-        t.func_78377_a(solx, alty, 0.0);
-        t.func_78377_a(sagx, alty, 0.0);
-        t.func_78377_a(sagx, usty, 0.0);
-        t.func_78377_a(solx, usty, 0.0);
-        t.func_78381_a();
+        t.addVertex(solx, alty, 0.0);
+        t.addVertex(sagx, alty, 0.0);
+        t.addVertex(sagx, usty, 0.0);
+        t.addVertex(solx, usty, 0.0);
+        t.draw();
     }
     
     public static void yuvarlak(int i, final double yaricap) {
-        final Tessellator t = Tessellator.field_78398_a;
-        t.func_78371_b(9);
+        final Tessellator t = Tessellator.instance;
+        t.startDrawing(9);
         while (i > 0) {
             final double c = Math.cos(Math.toRadians(i));
             final double s = Math.sin(Math.toRadians(i));
-            t.func_78374_a(c * yaricap, s * yaricap, 0.0, (c + 1.0) / 2.0, (s + 1.0) / 2.0);
+            t.addVertexWithUV(c * yaricap, s * yaricap, 0.0, (c + 1.0) / 2.0, (s + 1.0) / 2.0);
             --i;
         }
-        t.func_78381_a();
+        t.draw();
     }
     
     public static void yazi(final String s, final int renk, final double x, final double y, final double b) {
-        final FontRenderer fr = Minecraft.func_71410_x().field_71466_p;
+        final FontRenderer fr = Minecraft.getMinecraft().fontRendererObj;
         GL11.glPushMatrix();
         GL11.glTranslated(x, y, 0.0);
         GL11.glScaled(b, b, 1.0);
-        fr.func_78276_b(s, -fr.func_78256_a(s) / 2, -fr.field_78288_b / 2, renk);
+        fr.drawString(s, -fr.getStringWidth(s) / 2, -fr.FONT_HEIGHT / 2, renk);
         GL11.glPopMatrix();
     }
     
@@ -353,11 +353,11 @@ public class PlaneHUD extends Gui
                     final double fark = i + PlaneHUD.pitch % 5.0;
                     GL11.glTranslated(0.0, fark * 5.0, 0.0);
                     GL11.glColor4d(PlaneHUD.kirmizi / 255.0, PlaneHUD.yesil / 255.0, PlaneHUD.mavi / 255.0, 0.8);
-                    Minecraft.func_71410_x().func_110434_K().func_110577_a(new ResourceLocation("flansmod:gui/renk.png"));
+                    Minecraft.getMinecraft().getTextureManager().bindTexture(new ResourceLocation("flansmod:gui/renk.png"));
                     final boolean kisa = false;
                     boolean sifir = false;
-                    final int pi = MathHelper.func_76128_c(PlaneHUD.pitch - PlaneHUD.pitch % 5.0 - i);
-                    final FontRenderer fr = Minecraft.func_71410_x().field_71466_p;
+                    final int pi = MathHelper.floor_double(PlaneHUD.pitch - PlaneHUD.pitch % 5.0 - i);
+                    final FontRenderer fr = Minecraft.getMinecraft().fontRendererObj;
                     if (pi == 0) {
                         sifir = true;
                         GL11.glPushMatrix();
@@ -371,7 +371,7 @@ public class PlaneHUD extends Gui
                     }
                     else if (pi % 10 == 0) {
                         dortgen(80.0, 1.0, 0, 0);
-                        yazi(pi + "", PlaneHUD.renk, fr.func_78256_a(pi + "") + 40, 0.0, 1.0);
+                        yazi(pi + "", PlaneHUD.renk, fr.getStringWidth(pi + "") + 40, 0.0, 1.0);
                     }
                     GL11.glPopMatrix();
                 }

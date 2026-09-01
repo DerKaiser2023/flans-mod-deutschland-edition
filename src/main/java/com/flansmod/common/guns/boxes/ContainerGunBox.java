@@ -22,42 +22,42 @@ public class ContainerGunBox extends Container
         this.world = w;
         for (int row = 0; row < 3; ++row) {
             for (int col = 0; col < 9; ++col) {
-                this.func_75146_a(new Slot((IInventory)i, col + row * 9 + 9, 57 + col * 18, 151 + row * 18));
+                this.addSlotToContainer(new Slot((IInventory)i, col + row * 9 + 9, 57 + col * 18, 151 + row * 18));
             }
         }
         for (int col2 = 0; col2 < 9; ++col2) {
-            this.func_75146_a(new Slot((IInventory)i, col2, 57 + col2 * 18, 209));
+            this.addSlotToContainer(new Slot((IInventory)i, col2, 57 + col2 * 18, 209));
         }
     }
     
-    public boolean func_75145_c(final EntityPlayer entityplayer) {
+    public boolean canInteractWith(final EntityPlayer entityplayer) {
         return true;
     }
     
-    public ItemStack func_82846_b(final EntityPlayer player, final int slotID) {
+    public ItemStack transferStackInSlot(final EntityPlayer player, final int slotID) {
         ItemStack stack = null;
-        final Slot currentSlot = this.field_75151_b.get(slotID);
-        if (currentSlot != null && currentSlot.func_75216_d()) {
-            final ItemStack slotStack = currentSlot.func_75211_c();
-            stack = slotStack.func_77946_l();
+        final Slot currentSlot = (Slot) this.inventorySlots.get(slotID);
+        if (currentSlot != null && currentSlot.getHasStack()) {
+            final ItemStack slotStack = currentSlot.getStack();
+            stack = slotStack.copy();
             if (slotID != 0) {
-                if (!this.func_75135_a(slotStack, 0, 1, false)) {
+                if (!this.mergeItemStack(slotStack, 0, 1, false)) {
                     return null;
                 }
             }
-            else if (!this.func_75135_a(slotStack, 1, this.field_75151_b.size(), true)) {
+            else if (!this.mergeItemStack(slotStack, 1, this.inventorySlots.size(), true)) {
                 return null;
             }
-            if (slotStack.field_77994_a == 0) {
-                currentSlot.func_75215_d((ItemStack)null);
+            if (slotStack.stackSize == 0) {
+                currentSlot.putStack((ItemStack)null);
             }
             else {
-                currentSlot.func_75218_e();
+                currentSlot.onSlotChanged();
             }
-            if (slotStack.field_77994_a == stack.field_77994_a) {
+            if (slotStack.stackSize == stack.stackSize) {
                 return null;
             }
-            currentSlot.func_82870_a(player, slotStack);
+            currentSlot.onPickupFromSlot(player, slotStack);
         }
         return stack;
     }

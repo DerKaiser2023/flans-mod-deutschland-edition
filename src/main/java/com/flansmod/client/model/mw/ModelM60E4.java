@@ -21,8 +21,8 @@ public class ModelM60E4 extends ModelGun
         (this.gunModel[2] = new ModelRendererTurbo(this, 0, 9, textureX, textureY)).addBox(-3.0f, 4.0f, -1.0f, 7, 1, 2);
         (this.gunModel[3] = new ModelRendererTurbo(this, 0, 12, textureX, textureY)).addBox(-1.0f, 1.0f, -1.0f, 3, 1, 2);
         (this.gunModel[4] = new ModelRendererTurbo(this, 30, 0, textureX, textureY)).addBox(-0.75f, -3.0f, -0.75f, 1.5f, 4.0f, 1.5f);
-        this.gunModel[4].func_78793_a(0.0f, 1.0f, 0.0f);
-        this.gunModel[4].field_78808_h = -0.5f;
+        this.gunModel[4].setRotationPoint(0.0f, 1.0f, 0.0f);
+        this.gunModel[4].rotateAngleZ = -0.5f;
         (this.gunModel[5] = new ModelRendererTurbo(this, 10, 4, textureX, textureY)).addBox(5.0f, 1.5f, -1.25f, 5.0f, 1.5f, 2.5f);
         (this.gunModel[6] = new ModelRendererTurbo(this, 10, 14, textureX, textureY)).addBox(8.0f, 2.1f, -0.4f, 7.0f, 0.8f, 0.8f);
         (this.gunModel[7] = new ModelRendererTurbo(this, 8, 12, textureX, textureY)).addBox(8.0f, 3.2f, -0.3f, 8.0f, 0.6f, 0.6f);

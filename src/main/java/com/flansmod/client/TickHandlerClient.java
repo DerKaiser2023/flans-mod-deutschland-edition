@@ -97,59 +97,59 @@ public class TickHandlerClient
     
     @SubscribeEvent
     public void eventHandler(final MouseEvent event) {
-        final EntityPlayer player = (EntityPlayer)Minecraft.func_71410_x().field_71439_g;
-        if (player.func_71045_bC() != null && player.func_71045_bC().func_77973_b() instanceof ItemGun && ((ItemGun)player.func_71045_bC().func_77973_b()).type.oneHanded && Keyboard.isKeyDown(Minecraft.func_71410_x().field_71474_y.field_74311_E.func_151463_i()) && Math.abs(event.dwheel) > 0) {
+        final EntityPlayer player = (EntityPlayer)Minecraft.getMinecraft().thePlayer;
+        if (player.getCurrentEquippedItem() != null && player.getCurrentEquippedItem().getItem() instanceof ItemGun && ((ItemGun)player.getCurrentEquippedItem().getItem()).type.oneHanded && Keyboard.isKeyDown(Minecraft.getMinecraft().gameSettings.keyBindSneak.getKeyCode()) && Math.abs(event.dwheel) > 0) {
             event.setCanceled(true);
         }
     }
     
     @SubscribeEvent
     public void eventHandler(final RenderGameOverlayEvent event) {
-        final Minecraft mc = Minecraft.func_71410_x();
-        final String playerUsername = FlansModClient.minecraft.field_71439_g.func_70005_c_();
-        if (Keyboard.isKeyDown(Minecraft.func_71410_x().field_71474_y.field_74314_A.func_151463_i()) && !mc.field_71439_g.func_70115_ae()) {
-            ObfuscationReflectionHelper.setPrivateValue((Class)EntityRenderer.class, (Object)FMLClientHandler.instance().getClient().field_71460_t, (Object)1, new String[] { "cameraZoom", "af", "field_78503_V" });
+        final Minecraft mc = Minecraft.getMinecraft();
+        final String playerUsername = FlansModClient.minecraft.thePlayer.getCommandSenderName();
+        if (Keyboard.isKeyDown(Minecraft.getMinecraft().gameSettings.keyBindJump.getKeyCode()) && !mc.thePlayer.isRiding()) {
+            ObfuscationReflectionHelper.setPrivateValue((Class)EntityRenderer.class, (Object)FMLClientHandler.instance().getClient().entityRenderer, (Object)1, new String[] { "cameraZoom", "af", "cameraZoom" });
         }
-        if (mc.field_71439_g.field_70154_o instanceof EntitySeat) {
-            final EntityDriveable enterino = ((EntitySeat)mc.field_71439_g.field_70154_o).driveable;
+        if (mc.thePlayer.ridingEntity instanceof EntitySeat) {
+            final EntityDriveable enterino = ((EntitySeat)mc.thePlayer.ridingEntity).driveable;
             if (enterino instanceof EntityVehicle) {
                 final EntityVehicle enterinoTank = (EntityVehicle)enterino;
-                if (event.type == RenderGameOverlayEvent.ElementType.CROSSHAIRS && mc.field_71439_g != null && enterino.getDriveableType().hasScope && !enterinoTank.hasRadar) {
+                if (event.type == RenderGameOverlayEvent.ElementType.CROSSHAIRS && mc.thePlayer != null && enterino.getDriveableType().hasScope && !enterinoTank.hasRadar) {
                     event.setCanceled(true);
                     return;
                 }
             }
         }
-        if (event.type == RenderGameOverlayEvent.ElementType.CROSSHAIRS && mc.field_71439_g != null && mc.field_71439_g.func_70694_bm() != null && mc.field_71439_g.func_70694_bm().func_77973_b() instanceof ItemGun && !mc.field_71439_g.func_70115_ae() && (!((ItemGun)mc.field_71439_g.func_70694_bm().func_77973_b()).type.showCrosshair || FlansModClient.currentScope != null || FlansModClient.lastZoomProgress < -0.8)) {
+        if (event.type == RenderGameOverlayEvent.ElementType.CROSSHAIRS && mc.thePlayer != null && mc.thePlayer.getHeldItem() != null && mc.thePlayer.getHeldItem().getItem() instanceof ItemGun && !mc.thePlayer.isRiding() && (!((ItemGun)mc.thePlayer.getHeldItem().getItem()).type.showCrosshair || FlansModClient.currentScope != null || FlansModClient.lastZoomProgress < -0.8)) {
             event.setCanceled(true);
             return;
         }
-        final ScaledResolution scaledresolution = new ScaledResolution(FlansModClient.minecraft, FlansModClient.minecraft.field_71443_c, FlansModClient.minecraft.field_71440_d);
-        final int i = scaledresolution.func_78326_a();
-        final int j = scaledresolution.func_78328_b();
-        final Tessellator tessellator = Tessellator.field_78398_a;
+        final ScaledResolution scaledresolution = new ScaledResolution(FlansModClient.minecraft, FlansModClient.minecraft.displayWidth, FlansModClient.minecraft.displayHeight);
+        final int i = scaledresolution.getScaledWidth();
+        final int j = scaledresolution.getScaledHeight();
+        final Tessellator tessellator = Tessellator.instance;
         if (!event.isCancelable() && event.type == RenderGameOverlayEvent.ElementType.HELMET) {
             String overlayTexture = null;
-            if (FlansModClient.currentScope != null && FlansModClient.currentScope.hasZoomOverlay() && FMLClientHandler.instance().getClient().field_71462_r == null && FlansModClient.zoomProgress > 0.8f) {
+            if (FlansModClient.currentScope != null && FlansModClient.currentScope.hasZoomOverlay() && FMLClientHandler.instance().getClient().currentScreen == null && FlansModClient.zoomProgress > 0.8f) {
                 overlayTexture = FlansModClient.currentScope.getZoomOverlay();
             }
-            else if (mc.field_71439_g != null) {
-                final ItemStack stack = mc.field_71439_g.field_71071_by.field_70460_b[3];
-                if (stack != null && stack.func_77973_b() instanceof ItemTeamArmour) {
-                    if (((ItemTeamArmour)stack.func_77973_b()).type.faceArmor / (((ItemTeamArmour)stack.func_77973_b()).type.headArmor + 1.0f) > 0.7f && ((ItemTeamArmour)stack.func_77973_b()).type.faceArmor != 1.0f) {
+            else if (mc.thePlayer != null) {
+                final ItemStack stack = mc.thePlayer.inventory.armorInventory[3];
+                if (stack != null && stack.getItem() instanceof ItemTeamArmour) {
+                    if (((ItemTeamArmour)stack.getItem()).type.faceArmor / (((ItemTeamArmour)stack.getItem()).type.headArmor + 1.0f) > 0.7f && ((ItemTeamArmour)stack.getItem()).type.faceArmor != 1.0f) {
                         overlayTexture = "faceHelmet";
                     }
-                    else if (((ItemTeamArmour)stack.func_77973_b()).type.faceArmor / (((ItemTeamArmour)stack.func_77973_b()).type.headArmor + 1.0f) > 0.2f && ((ItemTeamArmour)stack.func_77973_b()).type.faceArmor / (((ItemTeamArmour)stack.func_77973_b()).type.headArmor + 1.0f) <= 0.7f && ((ItemTeamArmour)stack.func_77973_b()).type.faceArmor != 1.0f) {
+                    else if (((ItemTeamArmour)stack.getItem()).type.faceArmor / (((ItemTeamArmour)stack.getItem()).type.headArmor + 1.0f) > 0.2f && ((ItemTeamArmour)stack.getItem()).type.faceArmor / (((ItemTeamArmour)stack.getItem()).type.headArmor + 1.0f) <= 0.7f && ((ItemTeamArmour)stack.getItem()).type.faceArmor != 1.0f) {
                         overlayTexture = "cheekHelmet";
                     }
                     else {
-                        overlayTexture = ((ItemTeamArmour)stack.func_77973_b()).type.overlay;
+                        overlayTexture = ((ItemTeamArmour)stack.getItem()).type.overlay;
                     }
                 }
                 final PacketTeamInfo teamInfo = FlansModClient.teamInfo;
                 if (TickHandlerClient.cringeHemorrhaging > 1.0f) {
-                    mc.field_71466_p.func_78276_b("ORGAN FAILURE IMMINENT", 2, 72, 14329120);
-                    mc.field_71466_p.func_78276_b("SURGERY NEEDED", 2, 82, 16711680);
+                    mc.fontRendererObj.drawString("ORGAN FAILURE IMMINENT", 2, 72, 14329120);
+                    mc.fontRendererObj.drawString("SURGERY NEEDED", 2, 82, 16711680);
                 }
                 if (TickHandlerClient.killsTotal > 0 && TickHandlerClient.killsTotal < 10) {
                     overlayTexture = "multikill" + TickHandlerClient.killsTotal;
@@ -186,20 +186,20 @@ public class TickHandlerClient
                 }
             }
             if (overlayTexture != null) {
-                FlansModClient.minecraft.field_71460_t.func_78478_c();
+                FlansModClient.minecraft.entityRenderer.setupOverlayRendering();
                 GL11.glEnable(3042);
                 GL11.glDisable(2929);
                 GL11.glDepthMask(false);
                 GL11.glBlendFunc(770, 771);
                 GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
                 GL11.glDisable(3008);
-                mc.field_71446_o.func_110577_a(FlansModResourceHandler.getScope(overlayTexture));
-                tessellator.func_78382_b();
-                tessellator.func_78374_a((double)(i / 2 - 2 * j), (double)j, -90.0, 0.0, 1.0);
-                tessellator.func_78374_a((double)(i / 2 + 2 * j), (double)j, -90.0, 1.0, 1.0);
-                tessellator.func_78374_a((double)(i / 2 + 2 * j), 0.0, -90.0, 1.0, 0.0);
-                tessellator.func_78374_a((double)(i / 2 - 2 * j), 0.0, -90.0, 0.0, 0.0);
-                tessellator.func_78381_a();
+                mc.renderEngine.bindTexture(FlansModResourceHandler.getScope(overlayTexture));
+                tessellator.startDrawingQuads();
+                tessellator.addVertexWithUV((double)(i / 2 - 2 * j), (double)j, -90.0, 0.0, 1.0);
+                tessellator.addVertexWithUV((double)(i / 2 + 2 * j), (double)j, -90.0, 1.0, 1.0);
+                tessellator.addVertexWithUV((double)(i / 2 + 2 * j), 0.0, -90.0, 1.0, 0.0);
+                tessellator.addVertexWithUV((double)(i / 2 - 2 * j), 0.0, -90.0, 0.0, 0.0);
+                tessellator.draw();
                 GL11.glDepthMask(true);
                 GL11.glEnable(2929);
                 GL11.glEnable(3008);
@@ -207,65 +207,65 @@ public class TickHandlerClient
             }
         }
         if (!event.isCancelable() && event.type == RenderGameOverlayEvent.ElementType.HOTBAR && FlansMod.bulletGuiEnable) {
-            if (mc.field_71439_g != null) {
+            if (mc.thePlayer != null) {
                 if (TickHandlerClient.cringeBlood < 100.0f) {
-                    mc.field_71466_p.func_78276_b("Blood: " + TickHandlerClient.cringeBlood, 172, 30, 14329120);
+                    mc.fontRendererObj.drawString("Blood: " + TickHandlerClient.cringeBlood, 172, 30, 14329120);
                 }
                 if (TickHandlerClient.cringeHemorrhaging > 0.0f) {
-                    mc.field_71466_p.func_78276_b("FATAL BEEDING", 172, 42, 16711680);
+                    mc.fontRendererObj.drawString("FATAL BEEDING", 172, 42, 16711680);
                 }
-                final ItemStack stack2 = mc.field_71439_g.field_71071_by.func_70448_g();
-                if (stack2 != null && stack2.func_77973_b() instanceof ItemGun) {
-                    final ItemGun gunItem = (ItemGun)stack2.func_77973_b();
+                final ItemStack stack2 = mc.thePlayer.inventory.getCurrentItem();
+                if (stack2 != null && stack2.getItem() instanceof ItemGun) {
+                    final ItemGun gunItem = (ItemGun)stack2.getItem();
                     final GunType gunType = gunItem.type;
                     int x = 0;
                     for (int n = 0; n < gunType.getNumAmmoItemsInGun(stack2); ++n) {
-                        final ItemStack bulletStack = ((ItemGun)stack2.func_77973_b()).getBulletItemStack(stack2, n);
-                        if (bulletStack != null && bulletStack.func_77973_b() != null && bulletStack.func_77960_j() < bulletStack.func_77958_k()) {
-                            RenderHelper.func_74520_c();
+                        final ItemStack bulletStack = ((ItemGun)stack2.getItem()).getBulletItemStack(stack2, n);
+                        if (bulletStack != null && bulletStack.getItem() != null && bulletStack.getMetadata() < bulletStack.getMaxDurability()) {
+                            RenderHelper.enableGUIStandardItemLighting();
                             GL11.glEnable(32826);
-                            OpenGlHelper.func_77475_a(OpenGlHelper.field_77476_b, 240.0f, 240.0f);
-                            drawSlotInventory(mc.field_71466_p, bulletStack, i / 2 + 16 + x, j - 65);
+                            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240.0f, 240.0f);
+                            drawSlotInventory(mc.fontRendererObj, bulletStack, i / 2 + 16 + x, j - 65);
                             GL11.glDisable(32826);
-                            RenderHelper.func_74518_a();
-                            String s = bulletStack.func_77958_k() - bulletStack.func_77960_j() + "/" + bulletStack.func_77958_k();
+                            RenderHelper.disableStandardItemLighting();
+                            String s = bulletStack.getMaxDurability() - bulletStack.getMetadata() + "/" + bulletStack.getMaxDurability();
                             if (gunType.submode.length >= 2) {
                                 s = s + "[" + gunType.getFireMode(stack2) + "]";
                             }
-                            if (bulletStack.func_77958_k() == 1) {
+                            if (bulletStack.getMaxDurability() == 1) {
                                 s = "";
                             }
-                            mc.field_71466_p.func_78276_b(s, i / 2 + 32 + x, j - 59, 0);
-                            mc.field_71466_p.func_78276_b(s, i / 2 + 33 + x, j - 60, 16777215);
-                            x += 16 + mc.field_71466_p.func_78256_a(s);
+                            mc.fontRendererObj.drawString(s, i / 2 + 32 + x, j - 59, 0);
+                            mc.fontRendererObj.drawString(s, i / 2 + 33 + x, j - 60, 16777215);
+                            x += 16 + mc.fontRendererObj.getStringWidth(s);
                         }
                     }
-                    final PlayerData data = PlayerHandler.getPlayerData((EntityPlayer)mc.field_71439_g, Side.CLIENT);
+                    final PlayerData data = PlayerHandler.getPlayerData((EntityPlayer)mc.thePlayer, Side.CLIENT);
                     if (gunType.oneHanded && data.offHandGunSlot != 0) {
-                        final ItemStack offHandStack = mc.field_71439_g.field_71071_by.func_70301_a(data.offHandGunSlot - 1);
-                        if (offHandStack != null && offHandStack.func_77973_b() instanceof ItemGun) {
-                            final GunType offHandGunType = ((ItemGun)offHandStack.func_77973_b()).type;
+                        final ItemStack offHandStack = mc.thePlayer.inventory.getStackInSlot(data.offHandGunSlot - 1);
+                        if (offHandStack != null && offHandStack.getItem() instanceof ItemGun) {
+                            final GunType offHandGunType = ((ItemGun)offHandStack.getItem()).type;
                             x = 0;
                             for (int n2 = 0; n2 < offHandGunType.getNumAmmoItemsInGun(offHandStack); ++n2) {
-                                final ItemStack bulletStack2 = ((ItemGun)offHandStack.func_77973_b()).getBulletItemStack(offHandStack, n2);
-                                if (bulletStack2 != null && bulletStack2.func_77973_b() != null && bulletStack2.func_77960_j() < bulletStack2.func_77958_k()) {
-                                    String s2 = bulletStack2.func_77958_k() - bulletStack2.func_77960_j() + "/" + bulletStack2.func_77958_k();
+                                final ItemStack bulletStack2 = ((ItemGun)offHandStack.getItem()).getBulletItemStack(offHandStack, n2);
+                                if (bulletStack2 != null && bulletStack2.getItem() != null && bulletStack2.getMetadata() < bulletStack2.getMaxDurability()) {
+                                    String s2 = bulletStack2.getMaxDurability() - bulletStack2.getMetadata() + "/" + bulletStack2.getMaxDurability();
                                     if (gunType.submode.length >= 2) {
                                         s2 = s2 + "[" + gunType.getFireMode(offHandStack) + "]";
                                     }
-                                    if (bulletStack2.func_77958_k() == 1) {
+                                    if (bulletStack2.getMaxDurability() == 1) {
                                         s2 = "";
                                     }
-                                    RenderHelper.func_74520_c();
+                                    RenderHelper.enableGUIStandardItemLighting();
                                     GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
                                     GL11.glEnable(32826);
-                                    OpenGlHelper.func_77475_a(OpenGlHelper.field_77476_b, 240.0f, 240.0f);
-                                    drawSlotInventory(mc.field_71466_p, bulletStack2, i / 2 - 32 - x, j - 65);
-                                    x += 16 + mc.field_71466_p.func_78256_a(s2);
+                                    OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240.0f, 240.0f);
+                                    drawSlotInventory(mc.fontRendererObj, bulletStack2, i / 2 - 32 - x, j - 65);
+                                    x += 16 + mc.fontRendererObj.getStringWidth(s2);
                                     GL11.glDisable(32826);
-                                    RenderHelper.func_74518_a();
-                                    mc.field_71466_p.func_78276_b(s2, i / 2 - 16 - x, j - 59, 0);
-                                    mc.field_71466_p.func_78276_b(s2, i / 2 - 17 - x, j - 60, 16777215);
+                                    RenderHelper.disableStandardItemLighting();
+                                    mc.fontRendererObj.drawString(s2, i / 2 - 16 - x, j - 59, 0);
+                                    mc.fontRendererObj.drawString(s2, i / 2 - 17 - x, j - 60, 16777215);
                                 }
                             }
                         }
@@ -273,144 +273,144 @@ public class TickHandlerClient
                 }
             }
             final PacketTeamInfo teamInfo2 = FlansModClient.teamInfo;
-            if (teamInfo2 != null && FlansModClient.minecraft.field_71439_g != null && (PacketTeamInfo.numTeams > 0 || !PacketTeamInfo.sortedByTeam) && PacketTeamInfo.getPlayerScoreData(FlansModClient.minecraft.field_71439_g.func_70005_c_()) != null) {
+            if (teamInfo2 != null && FlansModClient.minecraft.thePlayer != null && (PacketTeamInfo.numTeams > 0 || !PacketTeamInfo.sortedByTeam) && PacketTeamInfo.getPlayerScoreData(FlansModClient.minecraft.thePlayer.getCommandSenderName()) != null) {
                 GL11.glEnable(3042);
                 GL11.glDisable(2929);
                 GL11.glDepthMask(false);
                 GL11.glBlendFunc(770, 771);
                 GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
                 GL11.glDisable(3008);
-                mc.field_71446_o.func_110577_a(GuiTeamScores.texture);
-                tessellator.func_78382_b();
-                tessellator.func_78374_a((double)(i / 2 - 43), 35.0, -90.0, 0.33203125, 0.13671875);
-                tessellator.func_78374_a((double)(i / 2 + 43), 35.0, -90.0, 0.66796875, 0.13671875);
-                tessellator.func_78374_a((double)(i / 2 + 43), 0.0, -90.0, 0.66796875, 0.0);
-                tessellator.func_78374_a((double)(i / 2 - 43), 0.0, -90.0, 0.33203125, 0.0);
-                tessellator.func_78381_a();
+                mc.renderEngine.bindTexture(GuiTeamScores.texture);
+                tessellator.startDrawingQuads();
+                tessellator.addVertexWithUV((double)(i / 2 - 43), 35.0, -90.0, 0.33203125, 0.13671875);
+                tessellator.addVertexWithUV((double)(i / 2 + 43), 35.0, -90.0, 0.66796875, 0.13671875);
+                tessellator.addVertexWithUV((double)(i / 2 + 43), 0.0, -90.0, 0.66796875, 0.0);
+                tessellator.addVertexWithUV((double)(i / 2 - 43), 0.0, -90.0, 0.33203125, 0.0);
+                tessellator.draw();
                 if (PacketTeamInfo.numTeams == 2 && PacketTeamInfo.sortedByTeam) {
                     int colour = PacketTeamInfo.teamData[0].team.teamColour;
                     GL11.glColor4f((colour >> 16 & 0xFF) / 256.0f, (colour >> 8 & 0xFF) / 256.0f, (colour & 0xFF) / 256.0f, 1.0f);
-                    tessellator.func_78382_b();
-                    tessellator.func_78374_a((double)(i / 2 - 43), 27.0, -90.0, 0.0, 0.48828125);
-                    tessellator.func_78374_a((double)(i / 2 - 19), 27.0, -90.0, 0.09375, 0.48828125);
-                    tessellator.func_78374_a((double)(i / 2 - 19), 0.0, -90.0, 0.09375, 0.3828125);
-                    tessellator.func_78374_a((double)(i / 2 - 43), 0.0, -90.0, 0.0, 0.3828125);
-                    tessellator.func_78381_a();
+                    tessellator.startDrawingQuads();
+                    tessellator.addVertexWithUV((double)(i / 2 - 43), 27.0, -90.0, 0.0, 0.48828125);
+                    tessellator.addVertexWithUV((double)(i / 2 - 19), 27.0, -90.0, 0.09375, 0.48828125);
+                    tessellator.addVertexWithUV((double)(i / 2 - 19), 0.0, -90.0, 0.09375, 0.3828125);
+                    tessellator.addVertexWithUV((double)(i / 2 - 43), 0.0, -90.0, 0.0, 0.3828125);
+                    tessellator.draw();
                     colour = PacketTeamInfo.teamData[1].team.teamColour;
                     GL11.glColor4f((colour >> 16 & 0xFF) / 256.0f, (colour >> 8 & 0xFF) / 256.0f, (colour & 0xFF) / 256.0f, 1.0f);
-                    tessellator.func_78382_b();
-                    tessellator.func_78374_a((double)(i / 2 + 19), 27.0, -90.0, 0.2421875, 0.48828125);
-                    tessellator.func_78374_a((double)(i / 2 + 43), 27.0, -90.0, 0.3359375, 0.48828125);
-                    tessellator.func_78374_a((double)(i / 2 + 43), 0.0, -90.0, 0.3359375, 0.3828125);
-                    tessellator.func_78374_a((double)(i / 2 + 19), 0.0, -90.0, 0.2421875, 0.3828125);
-                    tessellator.func_78381_a();
+                    tessellator.startDrawingQuads();
+                    tessellator.addVertexWithUV((double)(i / 2 + 19), 27.0, -90.0, 0.2421875, 0.48828125);
+                    tessellator.addVertexWithUV((double)(i / 2 + 43), 27.0, -90.0, 0.3359375, 0.48828125);
+                    tessellator.addVertexWithUV((double)(i / 2 + 43), 0.0, -90.0, 0.3359375, 0.3828125);
+                    tessellator.addVertexWithUV((double)(i / 2 + 19), 0.0, -90.0, 0.2421875, 0.3828125);
+                    tessellator.draw();
                     GL11.glDepthMask(true);
                     GL11.glEnable(2929);
                     GL11.glEnable(3008);
                     GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-                    mc.field_71466_p.func_78276_b(PacketTeamInfo.teamData[0].score + "", i / 2 - 35, 9, 0);
-                    mc.field_71466_p.func_78276_b(PacketTeamInfo.teamData[0].score + "", i / 2 - 36, 8, 16777215);
-                    mc.field_71466_p.func_78276_b(PacketTeamInfo.teamData[1].score + "", i / 2 + 35 - mc.field_71466_p.func_78256_a(PacketTeamInfo.teamData[1].score + ""), 9, 0);
-                    mc.field_71466_p.func_78276_b(PacketTeamInfo.teamData[1].score + "", i / 2 + 34 - mc.field_71466_p.func_78256_a(PacketTeamInfo.teamData[1].score + ""), 8, 16777215);
+                    mc.fontRendererObj.drawString(PacketTeamInfo.teamData[0].score + "", i / 2 - 35, 9, 0);
+                    mc.fontRendererObj.drawString(PacketTeamInfo.teamData[0].score + "", i / 2 - 36, 8, 16777215);
+                    mc.fontRendererObj.drawString(PacketTeamInfo.teamData[1].score + "", i / 2 + 35 - mc.fontRendererObj.getStringWidth(PacketTeamInfo.teamData[1].score + ""), 9, 0);
+                    mc.fontRendererObj.drawString(PacketTeamInfo.teamData[1].score + "", i / 2 + 34 - mc.fontRendererObj.getStringWidth(PacketTeamInfo.teamData[1].score + ""), 8, 16777215);
                 }
-                mc.field_71466_p.func_78276_b(PacketTeamInfo.gametype + "", i / 2 + 48, 9, 0);
-                mc.field_71466_p.func_78276_b(PacketTeamInfo.gametype + "", i / 2 + 47, 8, 16777215);
-                mc.field_71466_p.func_78276_b(PacketTeamInfo.map + "", i / 2 - 47 - mc.field_71466_p.func_78256_a(PacketTeamInfo.map + ""), 9, 0);
-                mc.field_71466_p.func_78276_b(PacketTeamInfo.map + "", i / 2 - 48 - mc.field_71466_p.func_78256_a(PacketTeamInfo.map + ""), 8, 16777215);
+                mc.fontRendererObj.drawString(PacketTeamInfo.gametype + "", i / 2 + 48, 9, 0);
+                mc.fontRendererObj.drawString(PacketTeamInfo.gametype + "", i / 2 + 47, 8, 16777215);
+                mc.fontRendererObj.drawString(PacketTeamInfo.map + "", i / 2 - 47 - mc.fontRendererObj.getStringWidth(PacketTeamInfo.map + ""), 9, 0);
+                mc.fontRendererObj.drawString(PacketTeamInfo.map + "", i / 2 - 48 - mc.fontRendererObj.getStringWidth(PacketTeamInfo.map + ""), 8, 16777215);
                 int secondsLeft = PacketTeamInfo.timeLeft / 20;
                 final int minutesLeft = secondsLeft / 60;
                 secondsLeft %= 60;
                 final String timeLeft = minutesLeft + ":" + ((secondsLeft < 10) ? ("0" + secondsLeft) : Integer.valueOf(secondsLeft));
-                mc.field_71466_p.func_78276_b(timeLeft, i / 2 - mc.field_71466_p.func_78256_a(timeLeft) / 2 - 1, 37, 0);
-                mc.field_71466_p.func_78276_b(timeLeft, i / 2 - mc.field_71466_p.func_78256_a(timeLeft) / 2, 38, 16777215);
+                mc.fontRendererObj.drawString(timeLeft, i / 2 - mc.fontRendererObj.getStringWidth(timeLeft) / 2 - 1, 37, 0);
+                mc.fontRendererObj.drawString(timeLeft, i / 2 - mc.fontRendererObj.getStringWidth(timeLeft) / 2, 38, 16777215);
                 GL11.glDepthMask(true);
                 GL11.glEnable(2929);
                 GL11.glEnable(3008);
                 GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-                mc.field_71466_p.func_78276_b(PacketTeamInfo.getPlayerScoreData(playerUsername).score + "", i / 2 - 7, 1, 0);
-                mc.field_71466_p.func_78276_b(PacketTeamInfo.getPlayerScoreData(playerUsername).kills + "", i / 2 - 7, 9, 0);
-                mc.field_71466_p.func_78276_b(PacketTeamInfo.getPlayerScoreData(playerUsername).deaths + "", i / 2 - 7, 17, 0);
-                mc.field_71466_p.func_78276_b(PacketTeamInfo.getPlayerScoreData(playerUsername).shekels + "", i / 2 - 7, 25, 0);
+                mc.fontRendererObj.drawString(PacketTeamInfo.getPlayerScoreData(playerUsername).score + "", i / 2 - 7, 1, 0);
+                mc.fontRendererObj.drawString(PacketTeamInfo.getPlayerScoreData(playerUsername).kills + "", i / 2 - 7, 9, 0);
+                mc.fontRendererObj.drawString(PacketTeamInfo.getPlayerScoreData(playerUsername).deaths + "", i / 2 - 7, 17, 0);
+                mc.fontRendererObj.drawString(PacketTeamInfo.getPlayerScoreData(playerUsername).shekels + "", i / 2 - 7, 25, 0);
             }
             for (final KillMessage killMessage : TickHandlerClient.killMessages) {
-                mc.field_71466_p.func_78276_b("§" + killMessage.killerName + "     §" + killMessage.killedName, i - mc.field_71466_p.func_78256_a(killMessage.killerName + "     " + killMessage.killedName) - 6, j - 32 - killMessage.line * 16, 16777215);
+                mc.fontRendererObj.drawString("§" + killMessage.killerName + "     §" + killMessage.killedName, i - mc.fontRendererObj.getStringWidth(killMessage.killerName + "     " + killMessage.killedName) - 6, j - 32 - killMessage.line * 16, 16777215);
             }
             for (final KillMessageDumb killMessage2 : TickHandlerClient.killMessagesDumb) {
-                mc.field_71466_p.func_78276_b("§" + killMessage2.killerName + "  somehow  killed  §" + killMessage2.killedName, i - mc.field_71466_p.func_78256_a(killMessage2.killerName + "  somehow  killed  " + killMessage2.killedName) - 6, j - 32 - killMessage2.line * 16, 16777215);
+                mc.fontRendererObj.drawString("§" + killMessage2.killerName + "  somehow  killed  §" + killMessage2.killedName, i - mc.fontRendererObj.getStringWidth(killMessage2.killerName + "  somehow  killed  " + killMessage2.killedName) - 6, j - 32 - killMessage2.line * 16, 16777215);
             }
-            RenderHelper.func_74520_c();
+            RenderHelper.enableGUIStandardItemLighting();
             GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
             GL11.glEnable(32826);
-            OpenGlHelper.func_77475_a(OpenGlHelper.field_77476_b, 240.0f, 240.0f);
+            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240.0f, 240.0f);
             for (final KillMessage killMessage : TickHandlerClient.killMessages) {
-                drawSlotInventory(mc.field_71466_p, new ItemStack(killMessage.weapon.item), i - mc.field_71466_p.func_78256_a("     " + killMessage.killedName) - 12, j - 36 - killMessage.line * 16);
+                drawSlotInventory(mc.fontRendererObj, new ItemStack(killMessage.weapon.item), i - mc.fontRendererObj.getStringWidth("     " + killMessage.killedName) - 12, j - 36 - killMessage.line * 16);
             }
             GL11.glDisable(3042);
-            RenderHelper.func_74518_a();
-            mc.field_71446_o.func_110577_a(TickHandlerClient.offHand);
-            final ItemStack currentStack = mc.field_71439_g.field_71071_by.func_70448_g();
-            final PlayerData data2 = PlayerHandler.getPlayerData((EntityPlayer)mc.field_71439_g, Side.CLIENT);
-            if (currentStack != null && currentStack.func_77973_b() instanceof ItemGun && ((ItemGun)currentStack.func_77973_b()).type.oneHanded) {
+            RenderHelper.disableStandardItemLighting();
+            mc.renderEngine.bindTexture(TickHandlerClient.offHand);
+            final ItemStack currentStack = mc.thePlayer.inventory.getCurrentItem();
+            final PlayerData data2 = PlayerHandler.getPlayerData((EntityPlayer)mc.thePlayer, Side.CLIENT);
+            if (currentStack != null && currentStack.getItem() instanceof ItemGun && ((ItemGun)currentStack.getItem()).type.oneHanded) {
                 for (int n3 = 0; n3 < 9; ++n3) {
                     if (data2.offHandGunSlot == n3 + 1) {
-                        tessellator.func_78382_b();
-                        tessellator.func_78374_a((double)(i / 2 - 88 + 20 * n3), (double)(j - 3), -90.0, 0.25, 0.5);
-                        tessellator.func_78374_a((double)(i / 2 - 72 + 20 * n3), (double)(j - 3), -90.0, 0.5, 0.5);
-                        tessellator.func_78374_a((double)(i / 2 - 72 + 20 * n3), (double)(j - 19), -90.0, 0.5, 0.0);
-                        tessellator.func_78374_a((double)(i / 2 - 88 + 20 * n3), (double)(j - 19), -90.0, 0.25, 0.0);
-                        tessellator.func_78381_a();
+                        tessellator.startDrawingQuads();
+                        tessellator.addVertexWithUV((double)(i / 2 - 88 + 20 * n3), (double)(j - 3), -90.0, 0.25, 0.5);
+                        tessellator.addVertexWithUV((double)(i / 2 - 72 + 20 * n3), (double)(j - 3), -90.0, 0.5, 0.5);
+                        tessellator.addVertexWithUV((double)(i / 2 - 72 + 20 * n3), (double)(j - 19), -90.0, 0.5, 0.0);
+                        tessellator.addVertexWithUV((double)(i / 2 - 88 + 20 * n3), (double)(j - 19), -90.0, 0.25, 0.0);
+                        tessellator.draw();
                     }
-                    else if (data2.isValidOffHandWeapon((EntityPlayer)mc.field_71439_g, n3 + 1)) {
-                        tessellator.func_78382_b();
-                        tessellator.func_78374_a((double)(i / 2 - 88 + 20 * n3), (double)(j - 3), -90.0, 0.0, 0.5);
-                        tessellator.func_78374_a((double)(i / 2 - 72 + 20 * n3), (double)(j - 3), -90.0, 0.25, 0.5);
-                        tessellator.func_78374_a((double)(i / 2 - 72 + 20 * n3), (double)(j - 19), -90.0, 0.25, 0.0);
-                        tessellator.func_78374_a((double)(i / 2 - 88 + 20 * n3), (double)(j - 19), -90.0, 0.0, 0.0);
-                        tessellator.func_78381_a();
+                    else if (data2.isValidOffHandWeapon((EntityPlayer)mc.thePlayer, n3 + 1)) {
+                        tessellator.startDrawingQuads();
+                        tessellator.addVertexWithUV((double)(i / 2 - 88 + 20 * n3), (double)(j - 3), -90.0, 0.0, 0.5);
+                        tessellator.addVertexWithUV((double)(i / 2 - 72 + 20 * n3), (double)(j - 3), -90.0, 0.25, 0.5);
+                        tessellator.addVertexWithUV((double)(i / 2 - 72 + 20 * n3), (double)(j - 19), -90.0, 0.25, 0.0);
+                        tessellator.addVertexWithUV((double)(i / 2 - 88 + 20 * n3), (double)(j - 19), -90.0, 0.0, 0.0);
+                        tessellator.draw();
                     }
                 }
             }
-            final EntityPlayer player = (EntityPlayer)Minecraft.func_71410_x().field_71439_g;
-            final ItemStack currentHeldItem = player.func_71045_bC();
-            if (mc.field_71439_g.field_70154_o instanceof EntitySeat && ((EntitySeat)mc.field_71439_g.field_70154_o).seatInfo.heliGuiSeat) {
-                final String gunnerOverlay = ((EntitySeat)mc.field_71439_g.field_70154_o).driveable.getDriveableType().heliGUI;
+            final EntityPlayer player = (EntityPlayer)Minecraft.getMinecraft().thePlayer;
+            final ItemStack currentHeldItem = player.getCurrentEquippedItem();
+            if (mc.thePlayer.ridingEntity instanceof EntitySeat && ((EntitySeat)mc.thePlayer.ridingEntity).seatInfo.heliGuiSeat) {
+                final String gunnerOverlay = ((EntitySeat)mc.thePlayer.ridingEntity).driveable.getDriveableType().heliGUI;
                 if (gunnerOverlay != null) {
-                    FlansModClient.minecraft.field_71460_t.func_78478_c();
+                    FlansModClient.minecraft.entityRenderer.setupOverlayRendering();
                     GL11.glEnable(3042);
                     GL11.glDisable(2929);
                     GL11.glDepthMask(false);
                     GL11.glBlendFunc(770, 771);
                     GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
                     GL11.glDisable(3008);
-                    mc.field_71446_o.func_110577_a(FlansModResourceHandler.getScope(gunnerOverlay));
-                    tessellator.func_78382_b();
-                    tessellator.func_78374_a((double)(i / 2 - 2 * j), (double)j, -90.0, 0.0, 1.0);
-                    tessellator.func_78374_a((double)(i / 2 + 2 * j), (double)j, -90.0, 1.0, 1.0);
-                    tessellator.func_78374_a((double)(i / 2 + 2 * j), 0.0, -90.0, 1.0, 0.0);
-                    tessellator.func_78374_a((double)(i / 2 - 2 * j), 0.0, -90.0, 0.0, 0.0);
-                    tessellator.func_78381_a();
+                    mc.renderEngine.bindTexture(FlansModResourceHandler.getScope(gunnerOverlay));
+                    tessellator.startDrawingQuads();
+                    tessellator.addVertexWithUV((double)(i / 2 - 2 * j), (double)j, -90.0, 0.0, 1.0);
+                    tessellator.addVertexWithUV((double)(i / 2 + 2 * j), (double)j, -90.0, 1.0, 1.0);
+                    tessellator.addVertexWithUV((double)(i / 2 + 2 * j), 0.0, -90.0, 1.0, 0.0);
+                    tessellator.addVertexWithUV((double)(i / 2 - 2 * j), 0.0, -90.0, 0.0, 0.0);
+                    tessellator.draw();
                     GL11.glDepthMask(true);
                     GL11.glEnable(2929);
                     GL11.glEnable(3008);
                     GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-                    ObfuscationReflectionHelper.setPrivateValue((Class)EntityRenderer.class, (Object)FMLClientHandler.instance().getClient().field_71460_t, (Object)((EntitySeat)mc.field_71439_g.field_70154_o).seatInfo.passengerZoom, new String[] { "cameraZoom", "af", "field_78503_V" });
+                    ObfuscationReflectionHelper.setPrivateValue((Class)EntityRenderer.class, (Object)FMLClientHandler.instance().getClient().entityRenderer, (Object)((EntitySeat)mc.thePlayer.ridingEntity).seatInfo.passengerZoom, new String[] { "cameraZoom", "af", "cameraZoom" });
                 }
             }
-            else if (mc.field_71439_g.field_70154_o instanceof EntitySeat && !((EntitySeat)mc.field_71439_g.field_70154_o).seatInfo.heliGuiSeat) {
-                ObfuscationReflectionHelper.setPrivateValue((Class)EntityRenderer.class, (Object)FMLClientHandler.instance().getClient().field_71460_t, (Object)1, new String[] { "cameraZoom", "af", "field_78503_V" });
+            else if (mc.thePlayer.ridingEntity instanceof EntitySeat && !((EntitySeat)mc.thePlayer.ridingEntity).seatInfo.heliGuiSeat) {
+                ObfuscationReflectionHelper.setPrivateValue((Class)EntityRenderer.class, (Object)FMLClientHandler.instance().getClient().entityRenderer, (Object)1, new String[] { "cameraZoom", "af", "cameraZoom" });
             }
-            if (mc.field_71439_g.field_70154_o instanceof EntitySeat) {
-                final EntityDriveable ent = ((EntitySeat)mc.field_71439_g.field_70154_o).driveable;
+            if (mc.thePlayer.ridingEntity instanceof EntitySeat) {
+                final EntityDriveable ent = ((EntitySeat)mc.thePlayer.ridingEntity).driveable;
                 final Vector3f forwards = (Vector3f)ent.axes.getXAxis().normalise();
-                final float speed = forwards.x * (float)ent.field_70159_w * (forwards.x * (float)ent.field_70159_w) + forwards.y * (float)ent.field_70181_x * (forwards.y * (float)ent.field_70181_x) + forwards.z * (float)ent.field_70179_y * (forwards.z * (float)ent.field_70179_y);
+                final float speed = forwards.x * (float)ent.motionX * (forwards.x * (float)ent.motionX) + forwards.y * (float)ent.motionY * (forwards.y * (float)ent.motionY) + forwards.z * (float)ent.motionZ * (forwards.z * (float)ent.motionZ);
                 final float advancedSpeed = (float)Math.sqrt(speed);
                 final float cringedUniversalBuff = 1.0f;
                 float Mach = 0.0f;
                 int MaxSpeed = 0;
-                if (advancedSpeed * cringedUniversalBuff >= 1.05 && (Math.abs(ent.field_70159_w) > 0.2 || Math.abs(ent.field_70179_y) > 0.2)) {
+                if (advancedSpeed * cringedUniversalBuff >= 1.05 && (Math.abs(ent.motionX) > 0.2 || Math.abs(ent.motionZ) > 0.2)) {
                     Mach = 1572.6646f * (float)Math.log(advancedSpeed * cringedUniversalBuff);
                 }
-                else if (Math.abs(ent.field_70159_w) > 0.2 || Math.abs(ent.field_70179_y) > 0.2) {
+                else if (Math.abs(ent.motionX) > 0.2 || Math.abs(ent.motionZ) > 0.2) {
                     Mach = (float)(0.0 + Math.sqrt(speed) * cringedUniversalBuff * 74.0);
                 }
                 else {
@@ -422,10 +422,10 @@ public class TickHandlerClient
                         Mach = (float)(Planerino.control.V * 2.23694);
                         MaxSpeed = (int)Planerino.getPlaneType().maxSpeed;
                         if (Planerino.control.Gfactor > 4.0f && Planerino.control.Gfactor < 6.0f) {
-                            mc.field_71466_p.func_78276_b(String.format("OVERLOAD %.0f", Planerino.control.Gfactor) + "G", 198, 72, 11875123);
+                            mc.fontRendererObj.drawString(String.format("OVERLOAD %.0f", Planerino.control.Gfactor) + "G", 198, 72, 11875123);
                         }
                         else if (Planerino.control.Gfactor >= 6.0f) {
-                            mc.field_71466_p.func_78276_b(String.format("EXTREME OVERLOAD %.0f", Planerino.control.Gfactor) + "G", 182, 72, 16711680);
+                            mc.fontRendererObj.drawString(String.format("EXTREME OVERLOAD %.0f", Planerino.control.Gfactor) + "G", 182, 72, 16711680);
                         }
                     }
                     else {
@@ -474,50 +474,50 @@ public class TickHandlerClient
                 }
                 if (!(ent instanceof EntityMecha) && !ent.aiming) {
                     if (!(ent instanceof EntityPlane)) {
-                        mc.field_71466_p.func_78276_b(String.format("Throttle : %.0f%%", fakeThrottle * 100.0f), 2, 2, colourThrottle);
+                        mc.fontRendererObj.drawString(String.format("Throttle : %.0f%%", fakeThrottle * 100.0f), 2, 2, colourThrottle);
                     }
                     else if (ent instanceof EntityPlane) {
                         final EntityPlane Plane = (EntityPlane)ent;
                         if (Plane.driveableData.landBrake > 5 && !Plane.varFlap) {
-                            mc.field_71466_p.func_78276_b("Throttle : BRK", 2, 2, colourThrottle);
+                            mc.fontRendererObj.drawString("Throttle : BRK", 2, 2, colourThrottle);
                         }
                         if ((Mach > 0.1 || Mach < -0.1) && MaxSpeed < 1) {
-                            mc.field_71466_p.func_78276_b(String.format("Speed : %.0f", Mach) + "mph", 2, 22, 16777215);
+                            mc.fontRendererObj.drawString(String.format("Speed : %.0f", Mach) + "mph", 2, 22, 16777215);
                         }
                         else if ((Mach > 0.1 || Mach < -0.1) && MaxSpeed >= 1 && Mach <= MaxSpeed) {
-                            mc.field_71466_p.func_78276_b(String.format("Speed : %.0f", Mach) + "mph / " + MaxSpeed + "mph", 2, 22, 16777215);
+                            mc.fontRendererObj.drawString(String.format("Speed : %.0f", Mach) + "mph / " + MaxSpeed + "mph", 2, 22, 16777215);
                         }
                         else if ((Mach > 0.1 || Mach < -0.1) && MaxSpeed >= 1 && Mach > MaxSpeed) {
-                            mc.field_71466_p.func_78276_b(String.format("Speed : %.0f", Mach) + "mph / " + MaxSpeed + "mph", 2, 22, 16711680);
+                            mc.fontRendererObj.drawString(String.format("Speed : %.0f", Mach) + "mph / " + MaxSpeed + "mph", 2, 22, 16711680);
                         }
                         if (Mach / 767.0f > 1.0f) {
-                            mc.field_71466_p.func_78276_b(String.format("Mach %.1f", Mach / 767.0f), 2, 32, 16777215);
+                            mc.fontRendererObj.drawString(String.format("Mach %.1f", Mach / 767.0f), 2, 32, 16777215);
                         }
                         else if (Plane.driveableData.landBrake > 5 && Plane.varFlap) {
-                            mc.field_71466_p.func_78276_b("Throttle : BRK - flaps", 2, 2, colourThrottle);
+                            mc.fontRendererObj.drawString("Throttle : BRK - flaps", 2, 2, colourThrottle);
                         }
                         else if (Plane.varFlap) {
-                            mc.field_71466_p.func_78276_b(String.format("Throttle : %.0f%% - flaps", fakeThrottle * 100.0f), 2, 2, colourThrottle);
+                            mc.fontRendererObj.drawString(String.format("Throttle : %.0f%% - flaps", fakeThrottle * 100.0f), 2, 2, colourThrottle);
                         }
                         else {
-                            mc.field_71466_p.func_78276_b(String.format("Throttle : %.0f%%", fakeThrottle * 100.0f), 2, 2, colourThrottle);
+                            mc.fontRendererObj.drawString(String.format("Throttle : %.0f%%", fakeThrottle * 100.0f), 2, 2, colourThrottle);
                         }
                         if (Plane.driveableData.carrierTip > 0 && !ent.mounted) {
-                            mc.field_71466_p.func_78276_b("Press " + Keyboard.getKeyName(KeyInputHandler.bombKey.func_151463_i()) + " to dock", 172, 62, 65280);
+                            mc.fontRendererObj.drawString("Press " + Keyboard.getKeyName(KeyInputHandler.bombKey.getKeyCode()) + " to dock", 172, 62, 65280);
                         }
                     }
                 }
                 if (ent instanceof EntityMecha && ent.getDriveableData().panicTimer <= 0 && ent.getDriveableData().morale > 1) {
-                    mc.field_71466_p.func_78276_b("Morale : " + ent.getDriveableData().morale, 2, 2, 16777215);
+                    mc.fontRendererObj.drawString("Morale : " + ent.getDriveableData().morale, 2, 2, 16777215);
                 }
                 if (ent instanceof EntityMecha && ent.getDriveableData().panicTimer > 0) {
-                    mc.field_71466_p.func_78276_b(String.format("CONTROL LOST", new Object[0]), 2, 2, 16711680);
+                    mc.fontRendererObj.drawString(String.format("CONTROL LOST", new Object[0]), 2, 2, 16711680);
                 }
                 if (!ent.epicShip && !ent.aiming) {
-                    mc.field_71466_p.func_78276_b("Health : " + healthP + "%", 2, 12, colour2);
+                    mc.fontRendererObj.drawString("Health : " + healthP + "%", 2, 12, colour2);
                 }
-                if (Keyboard.isKeyDown(Minecraft.func_71410_x().field_71474_y.field_74311_E.func_151463_i())) {
-                    mc.field_71466_p.func_78276_b(String.format("EXITING VEHICLE", new Object[0]), 2, 56, 16777215);
+                if (Keyboard.isKeyDown(Minecraft.getMinecraft().gameSettings.keyBindSneak.getKeyCode())) {
+                    mc.fontRendererObj.drawString(String.format("EXITING VEHICLE", new Object[0]), 2, 56, 16777215);
                 }
                 if (ent.epicShip) {
                     final int healthB = (int)(ent.getDriveableData().parts.get(EnumDriveablePart.buoyancy).health / (float)ent.getDriveableData().parts.get(EnumDriveablePart.buoyancy).maxHealth * 100.0f);
@@ -548,30 +548,30 @@ public class TickHandlerClient
                     else {
                         kostaColor = 16711680;
                     }
-                    mc.field_71466_p.func_78276_b("Crew : " + ent.getDriveableData().totalCrew + "/" + ent.getDriveableData().maximumCrew, 2, 12, 16777215);
+                    mc.fontRendererObj.drawString("Crew : " + ent.getDriveableData().totalCrew + "/" + ent.getDriveableData().maximumCrew, 2, 12, 16777215);
                     if (notFlooding == 100.0f) {
-                        mc.field_71466_p.func_78276_b(String.format("Flooding : None", new Object[0]), 2, 22, 16777215);
+                        mc.fontRendererObj.drawString(String.format("Flooding : None", new Object[0]), 2, 22, 16777215);
                     }
                     if (notFlooding <= 99.0f && notFlooding > 75.0f) {
-                        mc.field_71466_p.func_78276_b(String.format("Flooding : Minor", new Object[0]), 2, 22, 65280);
+                        mc.fontRendererObj.drawString(String.format("Flooding : Minor", new Object[0]), 2, 22, 65280);
                     }
                     if (notFlooding <= 75.0f && notFlooding > 40.0f) {
-                        mc.field_71466_p.func_78276_b(String.format("Flooding : Heavy", new Object[0]), 2, 22, 65280);
+                        mc.fontRendererObj.drawString(String.format("Flooding : Heavy", new Object[0]), 2, 22, 65280);
                     }
                     if (notFlooding <= 40.0f && notFlooding > 10.0f) {
-                        mc.field_71466_p.func_78276_b(String.format("Flooding : Severe", new Object[0]), 2, 22, 16711680);
+                        mc.fontRendererObj.drawString(String.format("Flooding : Severe", new Object[0]), 2, 22, 16711680);
                     }
                     if (notFlooding <= 10.0f) {
-                        mc.field_71466_p.func_78276_b(String.format("Abandon Ship", new Object[0]), 2, 22, 16711680);
+                        mc.fontRendererObj.drawString(String.format("Abandon Ship", new Object[0]), 2, 22, 16711680);
                     }
-                    mc.field_71466_p.func_78276_b(String.format("Buoyancy : " + ent.getDriveableData().parts.get(EnumDriveablePart.buoyancy).health, new Object[0]), 2, 32, kostaColor);
+                    mc.fontRendererObj.drawString(String.format("Buoyancy : " + ent.getDriveableData().parts.get(EnumDriveablePart.buoyancy).health, new Object[0]), 2, 32, kostaColor);
                 }
                 if (!(ent instanceof EntityPlane)) {
                     if (!ent.aiming) {
-                        mc.field_71466_p.func_78276_b(String.format("Gun Pitch : %.0f%%", ((EntitySeat)mc.field_71439_g.field_70154_o).looking.getPitch() * -1.0f), 172, 12, 16777215);
-                        mc.field_71466_p.func_78276_b(String.format("Yaw : %.0f%%", ((EntitySeat)mc.field_71439_g.field_70154_o).looking.getYaw()), 172, 2, 16777215);
+                        mc.fontRendererObj.drawString(String.format("Gun Pitch : %.0f%%", ((EntitySeat)mc.thePlayer.ridingEntity).looking.getPitch() * -1.0f), 172, 12, 16777215);
+                        mc.fontRendererObj.drawString(String.format("Yaw : %.0f%%", ((EntitySeat)mc.thePlayer.ridingEntity).looking.getYaw()), 172, 2, 16777215);
                     }
-                    final float tankYaw = ((EntitySeat)mc.field_71439_g.field_70154_o).looking.getYaw();
+                    final float tankYaw = ((EntitySeat)mc.thePlayer.ridingEntity).looking.getYaw();
                     String tankBarrelerino = "gui/tankerino.png";
                     if (tankYaw < 23.0f && tankYaw >= -22.0f) {
                         tankBarrelerino = "gui/0.png";
@@ -601,30 +601,30 @@ public class TickHandlerClient
                         tankBarrelerino = "gui/0.png";
                     }
                     if (ent.getDriveableType().showTurretIndicator) {
-                        FlansModClient.minecraft.field_71460_t.func_78478_c();
+                        FlansModClient.minecraft.entityRenderer.setupOverlayRendering();
                         GL11.glEnable(3042);
                         GL11.glDisable(2929);
                         GL11.glDepthMask(false);
                         GL11.glBlendFunc(770, 771);
                         GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
                         GL11.glDisable(3008);
-                        mc.field_71446_o.func_110577_a(new ResourceLocation("flansmod", tankBarrelerino));
-                        tessellator.func_78382_b();
-                        tessellator.func_78374_a(i / 1.35 - 0.05 * j, 1.07 * j, -90.0, 0.0, 1.0);
-                        tessellator.func_78374_a(i / 2.3 + 1.0 * j, 1.07 * j, -90.0, 1.0, 1.0);
-                        tessellator.func_78374_a(i / 2.3 + 1.0 * j, 0.7 * j, -90.0, 1.0, 0.0);
-                        tessellator.func_78374_a(i / 1.35 - 0.05 * j, 0.7 * j, -90.0, 0.0, 0.0);
-                        tessellator.func_78381_a();
+                        mc.renderEngine.bindTexture(new ResourceLocation("flansmod", tankBarrelerino));
+                        tessellator.startDrawingQuads();
+                        tessellator.addVertexWithUV(i / 1.35 - 0.05 * j, 1.07 * j, -90.0, 0.0, 1.0);
+                        tessellator.addVertexWithUV(i / 2.3 + 1.0 * j, 1.07 * j, -90.0, 1.0, 1.0);
+                        tessellator.addVertexWithUV(i / 2.3 + 1.0 * j, 0.7 * j, -90.0, 1.0, 0.0);
+                        tessellator.addVertexWithUV(i / 1.35 - 0.05 * j, 0.7 * j, -90.0, 0.0, 0.0);
+                        tessellator.draw();
                         GL11.glDepthMask(true);
                         GL11.glEnable(2929);
                         GL11.glEnable(3008);
                         GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
                     }
-                    if (ent.getDriveableType().gunRange || ((EntitySeat)mc.field_71439_g.field_70154_o).calculator || ent.getDriveableType().walterMortar || ent.getDriveableType().walterGunRange || ((EntitySeat)mc.field_71439_g.field_70154_o).walterCalculator) {
-                        final float pitch = -1.0f * ((EntitySeat)mc.field_71439_g.field_70154_o).looking.getPitch();
+                    if (ent.getDriveableType().gunRange || ((EntitySeat)mc.thePlayer.ridingEntity).calculator || ent.getDriveableType().walterMortar || ent.getDriveableType().walterGunRange || ((EntitySeat)mc.thePlayer.ridingEntity).walterCalculator) {
+                        final float pitch = -1.0f * ((EntitySeat)mc.thePlayer.ridingEntity).looking.getPitch();
                         float bulletSpeed = ent.getDriveableType().bulletSpeed;
-                        if (mc.field_71439_g.field_70154_o instanceof EntitySeat && ((EntitySeat)mc.field_71439_g.field_70154_o).seatInfo.gunType != null) {
-                            bulletSpeed = ((EntitySeat)mc.field_71439_g.field_70154_o).seatInfo.gunType.bulletSpeed;
+                        if (mc.thePlayer.ridingEntity instanceof EntitySeat && ((EntitySeat)mc.thePlayer.ridingEntity).seatInfo.gunType != null) {
+                            bulletSpeed = ((EntitySeat)mc.thePlayer.ridingEntity).seatInfo.gunType.bulletSpeed;
                         }
                         final float A = -0.0200431f * (bulletSpeed * bulletSpeed) + -0.0190021f * bulletSpeed + 0.0121473f;
                         final float B = 1.80951f * (bulletSpeed * bulletSpeed) + 1.28548f * bulletSpeed - 0.717027f;
@@ -651,13 +651,13 @@ public class TickHandlerClient
                         }
                         displayRange = WalterRange;
                         if (pitch > 0.0f) {
-                            mc.field_71466_p.func_78276_b(String.format("Estimated Gun Range : %.0f", displayRange), 172, 62, 16777215);
+                            mc.fontRendererObj.drawString(String.format("Estimated Gun Range : %.0f", displayRange), 172, 62, 16777215);
                         }
                         if (displayRange > 350.0f) {
-                            mc.field_71466_p.func_78276_b(String.format("Warning: Bullet May Freeze Outside of Render Range", new Object[0]), 172, 72, 16711680);
+                            mc.fontRendererObj.drawString(String.format("Warning: Bullet May Freeze Outside of Render Range", new Object[0]), 172, 72, 16711680);
                         }
                         if (pitch < 15.0f) {
-                            mc.field_71466_p.func_78276_b(String.format("Warning: Predicion Less Accurate at Low Angles", new Object[0]), 172, 82, 14329120);
+                            mc.fontRendererObj.drawString(String.format("Warning: Predicion Less Accurate at Low Angles", new Object[0]), 172, 82, 14329120);
                         }
                     }
                 }
@@ -665,77 +665,77 @@ public class TickHandlerClient
                     final EntityDriveable entP = ent;
                     if (entP.getDriveableType().hasFlare) {
                         if (entP.ticksFlareUsing <= 0 && entP.flareDelay <= 0) {
-                            mc.field_71466_p.func_78276_b("Flare : READY", 2, 42, 65280);
+                            mc.fontRendererObj.drawString("Flare : READY", 2, 42, 65280);
                         }
                         if (entP.ticksFlareUsing > 0) {
-                            mc.field_71466_p.func_78276_b("Flare : Deploying", 2, 52, 16711680);
+                            mc.fontRendererObj.drawString("Flare : Deploying", 2, 52, 16711680);
                         }
                         if (entP.flareDelay > 0) {
-                            mc.field_71466_p.func_78276_b("Flare : Reloading", 2, 62, 14329120);
+                            mc.fontRendererObj.drawString("Flare : Reloading", 2, 62, 14329120);
                         }
                     }
                     final Vector3f up2 = (Vector3f)entP.axes.getYAxis().normalise();
-                    mc.field_71466_p.func_78276_b(String.format("Plane Pitch : %.1f", -1.0f * entP.axes.getPitch()) + "°", 172, 22, 16777215);
-                    mc.field_71466_p.func_78276_b(String.format("Plane Roll : %.1f", -1.0f * entP.axes.getRoll()) + "°", 172, 12, 16777215);
+                    mc.fontRendererObj.drawString(String.format("Plane Pitch : %.1f", -1.0f * entP.axes.getPitch()) + "°", 172, 22, 16777215);
+                    mc.fontRendererObj.drawString(String.format("Plane Roll : %.1f", -1.0f * entP.axes.getRoll()) + "°", 172, 12, 16777215);
                     if (entP.axes.getYaw() < 22.5 && entP.axes.getYaw() >= -22.5) {
-                        mc.field_71466_p.func_78276_b("Compass : East", 172, 2, 16777215);
+                        mc.fontRendererObj.drawString("Compass : East", 172, 2, 16777215);
                     }
                     if (entP.axes.getYaw() < 67.5 && entP.axes.getYaw() >= 22.5) {
-                        mc.field_71466_p.func_78276_b("Compass: South-East", 172, 2, 16777215);
+                        mc.fontRendererObj.drawString("Compass: South-East", 172, 2, 16777215);
                     }
                     if (entP.axes.getYaw() >= 67.5 && entP.axes.getYaw() < 112.5) {
-                        mc.field_71466_p.func_78276_b("Compass : South", 172, 2, 16777215);
+                        mc.fontRendererObj.drawString("Compass : South", 172, 2, 16777215);
                     }
                     if (entP.axes.getYaw() >= 112.5 && entP.axes.getYaw() < 157.5) {
-                        mc.field_71466_p.func_78276_b("Compass : South-West", 172, 2, 16777215);
+                        mc.fontRendererObj.drawString("Compass : South-West", 172, 2, 16777215);
                     }
                     if (entP.axes.getYaw() < -157.5 || entP.axes.getYaw() >= 157.5) {
-                        mc.field_71466_p.func_78276_b("Compass : West", 172, 2, 16777215);
+                        mc.fontRendererObj.drawString("Compass : West", 172, 2, 16777215);
                     }
                     if (entP.axes.getYaw() < -112.5 && entP.axes.getYaw() >= -157.5) {
-                        mc.field_71466_p.func_78276_b("Compass: North-West", 172, 2, 16777215);
+                        mc.fontRendererObj.drawString("Compass: North-West", 172, 2, 16777215);
                     }
                     if (entP.axes.getYaw() > -112.5 && entP.axes.getYaw() <= -67.5) {
-                        mc.field_71466_p.func_78276_b("Compass : North", 172, 2, 16777215);
+                        mc.fontRendererObj.drawString("Compass : North", 172, 2, 16777215);
                     }
                     if (entP.axes.getYaw() > -67.5 && entP.axes.getYaw() <= -22.5) {
-                        mc.field_71466_p.func_78276_b("Compass : North-East", 172, 2, 16777215);
+                        mc.fontRendererObj.drawString("Compass : North-East", 172, 2, 16777215);
                     }
                     final int ceiling = 0;
                     final EntityPlane entPl = (EntityPlane)entP;
-                    mc.field_71466_p.func_78276_b(String.format("Altitude : %.0f", ((EntitySeat)mc.field_71439_g.field_70154_o).field_70163_u) + "m / " + entPl.getPlaneType().ceiling + "m", 172, 32, 16777215);
+                    mc.fontRendererObj.drawString(String.format("Altitude : %.0f", ((EntitySeat)mc.thePlayer.ridingEntity).posY) + "m / " + entPl.getPlaneType().ceiling + "m", 172, 32, 16777215);
                     if (entP.getDriveableType().rocketThrottle) {
-                        mc.field_71466_p.func_78276_b("Fuel : " + entP.fuelTimer, 172, 42, 16777215);
+                        mc.fontRendererObj.drawString("Fuel : " + entP.fuelTimer, 172, 42, 16777215);
                     }
                     if (entP.getDriveableType().labjacFuel > 10.0f) {
-                        mc.field_71466_p.func_78276_b(String.format("Fuel : %.2f", entP.labjacFuel / 12000.0f) + " Minutes", 288, 2, 16777215);
+                        mc.fontRendererObj.drawString(String.format("Fuel : %.2f", entP.labjacFuel / 12000.0f) + " Minutes", 288, 2, 16777215);
                     }
                     if (entP.mounted) {
-                        mc.field_71466_p.func_78276_b("Press " + Keyboard.getKeyName(KeyInputHandler.gunKey.func_151463_i()) + " to undock", 172, 62, 16711680);
+                        mc.fontRendererObj.drawString("Press " + Keyboard.getKeyName(KeyInputHandler.gunKey.getKeyCode()) + " to undock", 172, 62, 16711680);
                     }
                     if (!entP.getDriveableType().epicShip) {
-                        if (entP.ticksRepairing <= 0 && entP.flareDelay <= 0 && ent.throttle < 0.01 && ent.throttle > -0.01 && !entP.field_70170_p.func_147437_c((int)entP.field_70165_t, (int)(entP.field_70163_u - 5.0), (int)entP.field_70161_v)) {
-                            mc.field_71466_p.func_78276_b("Repair Ready - Press " + Keyboard.getKeyName(KeyInputHandler.repairKey.func_151463_i()), 288, 12, 65280);
+                        if (entP.ticksRepairing <= 0 && entP.flareDelay <= 0 && ent.throttle < 0.01 && ent.throttle > -0.01 && !entP.worldObj.isAirBlock((int)entP.posX, (int)(entP.posY - 5.0), (int)entP.posZ)) {
+                            mc.fontRendererObj.drawString("Repair Ready - Press " + Keyboard.getKeyName(KeyInputHandler.repairKey.getKeyCode()), 288, 12, 65280);
                         }
                         if ((entP.ticksRepairing <= 0 && entP.flareDelay <= 0 && ent.throttle > 0.01) || (entP.ticksRepairing <= 0 && ent.throttle < -0.01)) {
-                            mc.field_71466_p.func_78276_b("You must land to repair", 288, 12, 14329120);
+                            mc.fontRendererObj.drawString("You must land to repair", 288, 12, 14329120);
                         }
                     }
                     if (entP.ticksRepairing > 0) {
-                        mc.field_71466_p.func_78276_b("Repairing ticks: " + entP.ticksRepairing, 288, 12, 65280);
+                        mc.fontRendererObj.drawString("Repairing ticks: " + entP.ticksRepairing, 288, 12, 65280);
                     }
                     if (entP.currentAmmo != null && !entP.currentAmmo.isEmpty()) {
-                        mc.field_71466_p.func_78276_b("Current Ammo ", 172, 52, 16777215);
-                        mc.field_71466_p.func_78276_b(entP.currentAmmo, 172, 62, 2424674);
+                        mc.fontRendererObj.drawString("Current Ammo ", 172, 52, 16777215);
+                        mc.fontRendererObj.drawString(entP.currentAmmo, 172, 62, 2424674);
                     }
                     if (entP.getDriveableType().hasPlaneRadar && entP.activeRadar) {
-                        mc.field_71466_p.func_78276_b("Radar Mode: ACTIVE", 288, 22, 2424674);
+                        mc.fontRendererObj.drawString("Radar Mode: ACTIVE", 288, 22, 2424674);
                     }
                     if (entP.getDriveableType().hasPlaneRadar && !entP.activeRadar) {
-                        mc.field_71466_p.func_78276_b("Radar Mode: PASSIVE", 288, 22, 14363648);
+                        mc.fontRendererObj.drawString("Radar Mode: PASSIVE", 288, 22, 14363648);
                     }
                     if (entP.getDriveableType().hasPlaneRadar) {
-                        mc.field_71466_p.func_78276_b("Press " + Keyboard.getKeyName(KeyInputHandler.activeRadar.func_151463_i()) + " to toggle", 288, 32, 16748580);
+                        mc.fontRendererObj.drawString("Press " + Keyboard.getKeyName(KeyInputHandler.activeRadar.getKeyCode()) + " to toggle", 288, 32, 16748580);
                     }
                 }
                 if (ent instanceof EntityMecha) {
@@ -743,13 +743,13 @@ public class TickHandlerClient
                     final EntityDriveable entP2 = ent;
                     if (entP2.getDriveableType().hasFlare) {
                         if (entP2.ticksFlareUsing <= 0 && entP2.flareDelay <= 0 && ent.getDriveableData().panicTimer <= 0) {
-                            mc.field_71466_p.func_78276_b("Trample : READY", 2, 32, 65280);
+                            mc.fontRendererObj.drawString("Trample : READY", 2, 32, 65280);
                         }
                         if (entP2.ticksFlareUsing > 0 && ent.getDriveableData().panicTimer <= 0) {
-                            mc.field_71466_p.func_78276_b("Trampling", 2, 32, 16711680);
+                            mc.fontRendererObj.drawString("Trampling", 2, 32, 16711680);
                         }
                         if (entP2.flareDelay > 0 && entP2.ticksFlareUsing <= 0 && ent.getDriveableData().panicTimer <= 0) {
-                            mc.field_71466_p.func_78276_b("Trample : Exhausted", 2, 32, 14329120);
+                            mc.fontRendererObj.drawString("Trample : Exhausted", 2, 32, 14329120);
                         }
                     }
                     final EntityMecha entityMecha = (EntityMecha)ent;
@@ -759,97 +759,97 @@ public class TickHandlerClient
                     final EntityDriveable entP2 = ent;
                     if (entP2.getDriveableType().hasFlare && !entP2.getDriveableType().epicShip) {
                         if (entP2.ticksFlareUsing <= 0 && entP2.flareDelay <= 0) {
-                            mc.field_71466_p.func_78276_b("Smoke : READY", 2, 62, 65280);
+                            mc.fontRendererObj.drawString("Smoke : READY", 2, 62, 65280);
                         }
                         if (entP2.ticksFlareUsing > 0) {
-                            mc.field_71466_p.func_78276_b("Smoke : Deploying", 2, 62, 16711680);
+                            mc.fontRendererObj.drawString("Smoke : Deploying", 2, 62, 16711680);
                         }
                         if (entP2.flareDelay > 0) {
-                            mc.field_71466_p.func_78276_b("Smoke : Reloading", 2, 72, 14329120);
+                            mc.fontRendererObj.drawString("Smoke : Reloading", 2, 72, 14329120);
                         }
                     }
                     if (((EntityVehicle)entP2).getVehicleType().canRepair && !entP2.getDriveableType().epicShip) {
                         if (entP2.ticksRepairing <= 0 && entP2.flareDelay <= 0 && ent.throttle < 0.01 && ent.throttle > -0.01) {
-                            mc.field_71466_p.func_78276_b("Repair Ready - Press " + Keyboard.getKeyName(KeyInputHandler.repairKey.func_151463_i()), 2, 42, 65280);
+                            mc.fontRendererObj.drawString("Repair Ready - Press " + Keyboard.getKeyName(KeyInputHandler.repairKey.getKeyCode()), 2, 42, 65280);
                         }
                         if ((entP2.ticksRepairing <= 0 && entP2.flareDelay <= 0 && ent.throttle > 0.01) || (entP2.ticksRepairing <= 0 && ent.throttle < -0.01)) {
-                            mc.field_71466_p.func_78276_b("You must be at", 2, 36, 14329120);
-                            mc.field_71466_p.func_78276_b("0 throttle to repair!", 2, 46, 14329120);
+                            mc.fontRendererObj.drawString("You must be at", 2, 36, 14329120);
+                            mc.fontRendererObj.drawString("0 throttle to repair!", 2, 46, 14329120);
                         }
                     }
                     if (entP2.getDriveableType().hasRadar && entP2.activeRadar) {
-                        mc.field_71466_p.func_78276_b("Radar Mode: ACTIVE", 292, 2, 2424674);
+                        mc.fontRendererObj.drawString("Radar Mode: ACTIVE", 292, 2, 2424674);
                     }
                     if (entP2.getDriveableType().hasRadar && !entP2.activeRadar) {
-                        mc.field_71466_p.func_78276_b("Radar Mode: PASSIVE", 292, 2, 14363648);
+                        mc.fontRendererObj.drawString("Radar Mode: PASSIVE", 292, 2, 14363648);
                     }
                     if (entP2.getDriveableType().hasRadar) {
-                        mc.field_71466_p.func_78276_b("Press " + Keyboard.getKeyName(KeyInputHandler.activeRadar.func_151463_i()) + " to toggle", 292, 12, 16748580);
+                        mc.fontRendererObj.drawString("Press " + Keyboard.getKeyName(KeyInputHandler.activeRadar.getKeyCode()) + " to toggle", 292, 12, 16748580);
                     }
                     if (entP2.getDriveableType().shootDelayPrimary > 30) {
                         if (entP2.ticksRepairing > 0) {
-                            mc.field_71466_p.func_78276_b("Repairing ticks: " + entP2.ticksRepairing, 2, 42, 65280);
+                            mc.fontRendererObj.drawString("Repairing ticks: " + entP2.ticksRepairing, 2, 42, 65280);
                         }
                         if (entP2.recoilTimer > 1) {
-                            mc.field_71466_p.func_78276_b(String.format("Reload Time: %.1f", entP2.recoilTimer / 20.0f) + " seconds", 172, 22, 16711680);
+                            mc.fontRendererObj.drawString(String.format("Reload Time: %.1f", entP2.recoilTimer / 20.0f) + " seconds", 172, 22, 16711680);
                         }
                         else if (entP2.recoilTimer <= 0) {
-                            mc.field_71466_p.func_78276_b("Shell : Ready", 172, 22, 65280);
+                            mc.fontRendererObj.drawString("Shell : Ready", 172, 22, 65280);
                         }
                     }
                     if (entP2.currentAmmo != null && !entP2.currentAmmo.equals("")) {
-                        mc.field_71466_p.func_78276_b("Current Ammo ", 172, 32, 16777215);
-                        mc.field_71466_p.func_78276_b(entP2.currentAmmo, 172, 42, 2424674);
+                        mc.fontRendererObj.drawString("Current Ammo ", 172, 32, 16777215);
+                        mc.fontRendererObj.drawString(entP2.currentAmmo, 172, 42, 2424674);
                     }
                     if (entP2.getDriveableType().hasFlare && entP2.getDriveableType().epicShip) {
                         if (entP2.ticksFlareUsing <= 0 && entP2.flareDelay <= 0 && ent.throttle < 0.01 && ent.throttle > -0.01) {
-                            mc.field_71466_p.func_78276_b("Damage Control : READY", 2, 42, 65280);
+                            mc.fontRendererObj.drawString("Damage Control : READY", 2, 42, 65280);
                         }
                         if ((entP2.ticksFlareUsing <= 0 && entP2.flareDelay <= 0 && ent.throttle > 0.01) || (entP2.ticksFlareUsing <= 0 && entP2.flareDelay <= 0 && ent.throttle < -0.01)) {
-                            mc.field_71466_p.func_78276_b("You must be at 0 throttle to Repair!", 2, 42, 14329120);
+                            mc.fontRendererObj.drawString("You must be at 0 throttle to Repair!", 2, 42, 14329120);
                         }
                         if (entP2.ticksFlareUsing > 0) {
-                            mc.field_71466_p.func_78276_b("Damage Control : Repairing", 2, 42, 16711680);
+                            mc.fontRendererObj.drawString("Damage Control : Repairing", 2, 42, 16711680);
                         }
                         if (entP2.flareDelay > 0 && entP2.ticksFlareUsing <= 0) {
-                            mc.field_71466_p.func_78276_b("Damage Control : Resting", 2, 42, 14329120);
+                            mc.fontRendererObj.drawString("Damage Control : Resting", 2, 42, 14329120);
                         }
                     }
                     if (entP2.getDriveableType().hasAPS) {
                         if (entP2.APSdelay <= 5) {
-                            mc.field_71466_p.func_78276_b("APS : READY", 2, 52, 65280);
+                            mc.fontRendererObj.drawString("APS : READY", 2, 52, 65280);
                         }
                         if (entP2.APSdelay > 5) {
-                            mc.field_71466_p.func_78276_b("APS : Reloading", 2, 52, 14329120);
+                            mc.fontRendererObj.drawString("APS : Reloading", 2, 52, 14329120);
                         }
                     }
                     final DriveableType allah = ((EntityVehicle)ent).getVehicleType();
-                    if (mc.field_71439_g != null) {
-                        final ItemStack stack3 = mc.field_71439_g.field_71071_by.field_70460_b[3];
+                    if (mc.thePlayer != null) {
+                        final ItemStack stack3 = mc.thePlayer.inventory.armorInventory[3];
                         String overlayTexture2 = null;
                         if (allah.hasScope && ent.aiming) {
                             overlayTexture2 = allah.overlay;
-                            ObfuscationReflectionHelper.setPrivateValue((Class)EntityRenderer.class, (Object)FMLClientHandler.instance().getClient().field_71460_t, (Object)allah.gunsightZoom, new String[] { "cameraZoom", "af", "field_78503_V" });
+                            ObfuscationReflectionHelper.setPrivateValue((Class)EntityRenderer.class, (Object)FMLClientHandler.instance().getClient().entityRenderer, (Object)allah.gunsightZoom, new String[] { "cameraZoom", "af", "cameraZoom" });
                         }
                         if (allah.hasScope && !ent.aiming) {
                             overlayTexture2 = null;
-                            ObfuscationReflectionHelper.setPrivateValue((Class)EntityRenderer.class, (Object)FMLClientHandler.instance().getClient().field_71460_t, (Object)1, new String[] { "cameraZoom", "af", "field_78503_V" });
+                            ObfuscationReflectionHelper.setPrivateValue((Class)EntityRenderer.class, (Object)FMLClientHandler.instance().getClient().entityRenderer, (Object)1, new String[] { "cameraZoom", "af", "cameraZoom" });
                         }
                         if (overlayTexture2 != null) {
-                            FlansModClient.minecraft.field_71460_t.func_78478_c();
+                            FlansModClient.minecraft.entityRenderer.setupOverlayRendering();
                             GL11.glEnable(3042);
                             GL11.glDisable(2929);
                             GL11.glDepthMask(false);
                             GL11.glBlendFunc(770, 771);
                             GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
                             GL11.glDisable(3008);
-                            mc.field_71446_o.func_110577_a(FlansModResourceHandler.getScope(overlayTexture2));
-                            tessellator.func_78382_b();
-                            tessellator.func_78374_a((double)(i / 2 - 2 * j), (double)j, -90.0, 0.0, 1.0);
-                            tessellator.func_78374_a((double)(i / 2 + 2 * j), (double)j, -90.0, 1.0, 1.0);
-                            tessellator.func_78374_a((double)(i / 2 + 2 * j), 0.0, -90.0, 1.0, 0.0);
-                            tessellator.func_78374_a((double)(i / 2 - 2 * j), 0.0, -90.0, 0.0, 0.0);
-                            tessellator.func_78381_a();
+                            mc.renderEngine.bindTexture(FlansModResourceHandler.getScope(overlayTexture2));
+                            tessellator.startDrawingQuads();
+                            tessellator.addVertexWithUV((double)(i / 2 - 2 * j), (double)j, -90.0, 0.0, 1.0);
+                            tessellator.addVertexWithUV((double)(i / 2 + 2 * j), (double)j, -90.0, 1.0, 1.0);
+                            tessellator.addVertexWithUV((double)(i / 2 + 2 * j), 0.0, -90.0, 1.0, 0.0);
+                            tessellator.addVertexWithUV((double)(i / 2 - 2 * j), 0.0, -90.0, 0.0, 0.0);
+                            tessellator.draw();
                             GL11.glDepthMask(true);
                             GL11.glEnable(2929);
                             GL11.glEnable(3008);
@@ -857,51 +857,51 @@ public class TickHandlerClient
                         }
                     }
                     if (((EntityVehicle)ent).getVehicleType().airship) {
-                        mc.field_71466_p.func_78276_b(String.format("Diving Throttle : %.0f%%", ent.divingFactor * 100.0f), 172, 32, 16777215);
+                        mc.fontRendererObj.drawString(String.format("Diving Throttle : %.0f%%", ent.divingFactor * 100.0f), 172, 32, 16777215);
                     }
                     if (((EntityVehicle)ent).getVehicleType().canDive) {
-                        mc.field_71466_p.func_78276_b(String.format("Diving Throttle : %.0f%%", ent.divingFactor * 100.0f), 172, 52, 16777215);
+                        mc.fontRendererObj.drawString(String.format("Diving Throttle : %.0f%%", ent.divingFactor * 100.0f), 172, 52, 16777215);
                         if (!((EntityVehicle)entP2).getVehicleType().unlimitedOxygen) {
-                            mc.field_71466_p.func_78276_b("Oxygen (Seconds) : " + ent.oxygenMeter / 160.0f, 172, 62, colour2);
+                            mc.fontRendererObj.drawString("Oxygen (Seconds) : " + ent.oxygenMeter / 160.0f, 172, 62, colour2);
                         }
                         if (((EntityVehicle)entP2).getVehicleType().unlimitedOxygen) {
-                            mc.field_71466_p.func_78276_b("Unlimited Oxygen", 172, 62, colour2);
+                            mc.fontRendererObj.drawString("Unlimited Oxygen", 172, 62, colour2);
                         }
-                        final int poopooDepth = (int)(TeamsManager.seaLevel - entP2.field_70163_u);
+                        final int poopooDepth = (int)(TeamsManager.seaLevel - entP2.posY);
                         if (poopooDepth > 0) {
-                            mc.field_71466_p.func_78276_b("Depth : " + poopooDepth, 2, 72, colour2);
+                            mc.fontRendererObj.drawString("Depth : " + poopooDepth, 2, 72, colour2);
                             if (poopooDepth / allah.maxDepth > 0.7) {
-                                mc.field_71466_p.func_78276_b("WARNING : Aproaching Max Depth", 172, 82, 14329120);
+                                mc.fontRendererObj.drawString("WARNING : Aproaching Max Depth", 172, 82, 14329120);
                             }
                             if (poopooDepth / allah.maxDepth > 0.9) {
-                                mc.field_71466_p.func_78276_b("DANGER : COLLAPSE IMMINENT", 172, 92, 16711680);
+                                mc.fontRendererObj.drawString("DANGER : COLLAPSE IMMINENT", 172, 92, 16711680);
                             }
                         }
                     }
                     if (ent.getDriveableType().showReload) {
                         if (datavehicle.fakeReloadShell > 40.0f) {
-                            mc.field_71466_p.func_78276_b("First Shot Delay (Seconds) : " + (datavehicle.fakeReloadShell - 20.0f) / 20.0f, 2, 62, 14329120);
+                            mc.fontRendererObj.drawString("First Shot Delay (Seconds) : " + (datavehicle.fakeReloadShell - 20.0f) / 20.0f, 2, 62, 14329120);
                         }
                         if (datavehicle.fakeReloadMissile > 40.0f) {
-                            mc.field_71466_p.func_78276_b("First Shot Delay (Seconds) : " + (datavehicle.fakeReloadMissile - 20.0f) / 20.0f, 2, 72, 14329120);
+                            mc.fontRendererObj.drawString("First Shot Delay (Seconds) : " + (datavehicle.fakeReloadMissile - 20.0f) / 20.0f, 2, 72, 14329120);
                         }
                     }
                     if (((EntityVehicle)ent).getVehicleType().shootWithOpenDoor) {
                         if (((EntityVehicle)ent).varDoor) {
-                            mc.field_71466_p.func_78276_b("Weapon : READY", 2, 62, 65280);
-                            mc.field_71466_p.func_78276_b("[" + Keyboard.getKeyName(KeyInputHandler.doorKey.func_151463_i()) + " to disable]", 100, 62, 65280);
+                            mc.fontRendererObj.drawString("Weapon : READY", 2, 62, 65280);
+                            mc.fontRendererObj.drawString("[" + Keyboard.getKeyName(KeyInputHandler.doorKey.getKeyCode()) + " to disable]", 100, 62, 65280);
                         }
                         if (!((EntityVehicle)ent).varDoor) {
-                            mc.field_71466_p.func_78276_b("Weapon : DISABLED", 2, 62, 16711680);
-                            mc.field_71466_p.func_78276_b("[" + Keyboard.getKeyName(KeyInputHandler.doorKey.func_151463_i()) + " to activate]", 100, 62, 16711680);
+                            mc.fontRendererObj.drawString("Weapon : DISABLED", 2, 62, 16711680);
+                            mc.fontRendererObj.drawString("[" + Keyboard.getKeyName(KeyInputHandler.doorKey.getKeyCode()) + " to activate]", 100, 62, 16711680);
                         }
                     }
                 }
                 if (FlansMod.DEBUG && !ent.epicShip) {
-                    mc.field_71466_p.func_78276_b("MotionX : " + ent.field_70159_w, 2, 32, 16777215);
-                    mc.field_71466_p.func_78276_b("MotionY : " + ent.field_70181_x, 2, 42, 16777215);
-                    mc.field_71466_p.func_78276_b("MotionZ : " + ent.field_70179_y, 2, 52, 16777215);
-                    mc.field_71466_p.func_78276_b("Break Blocks : " + TeamsManager.driveablesBreakBlocks, 2, 62, 16777215);
+                    mc.fontRendererObj.drawString("MotionX : " + ent.motionX, 2, 32, 16777215);
+                    mc.fontRendererObj.drawString("MotionY : " + ent.motionY, 2, 42, 16777215);
+                    mc.fontRendererObj.drawString("MotionZ : " + ent.motionZ, 2, 52, 16777215);
+                    mc.fontRendererObj.drawString("Break Blocks : " + TeamsManager.driveablesBreakBlocks, 2, 62, 16777215);
                 }
             }
         }
@@ -912,11 +912,11 @@ public class TickHandlerClient
         switch (event.phase) {
             case START: {
                 RenderGun.smoothing = event.renderTickTime;
-                this.renderTickStart(Minecraft.func_71410_x(), event.renderTickTime);
+                this.renderTickStart(Minecraft.getMinecraft(), event.renderTickTime);
                 break;
             }
             case END: {
-                this.renderTickEnd(Minecraft.func_71410_x());
+                this.renderTickEnd(Minecraft.getMinecraft());
                 break;
             }
         }
@@ -926,19 +926,19 @@ public class TickHandlerClient
     public void clientTick(final TickEvent.ClientTickEvent event) {
         switch (event.phase) {
             case START: {
-                this.clientTickStart(Minecraft.func_71410_x());
+                this.clientTickStart(Minecraft.getMinecraft());
                 break;
             }
             case END: {
-                this.clientTickEnd(Minecraft.func_71410_x());
+                this.clientTickEnd(Minecraft.getMinecraft());
                 break;
             }
         }
     }
     
     public void clientTickStart(final Minecraft mc) {
-        if (Minecraft.func_71410_x() != null && Minecraft.func_71410_x().field_71439_g != null) {
-            final Entity ridden = Minecraft.func_71410_x().field_71439_g.field_70154_o;
+        if (Minecraft.getMinecraft() != null && Minecraft.getMinecraft().thePlayer != null) {
+            final Entity ridden = Minecraft.getMinecraft().thePlayer.ridingEntity;
             if (TickHandlerClient.lastMount != null && ridden == null) {
                 FlansMod.getPacketHandler().sendToServer(new PacketChecker());
             }
@@ -952,26 +952,26 @@ public class TickHandlerClient
         if (this.tickcountWounded > 0) {
             --this.tickcountWounded;
         }
-        if (FlansMod.ticker % TickHandlerClient.lightOverrideRefreshRate == 0 && mc.field_71441_e != null) {
-            TickHandlerClient.lightOverrideRefreshRate = (mc.field_71474_y.field_74347_j ? 10 : 20);
+        if (FlansMod.ticker % TickHandlerClient.lightOverrideRefreshRate == 0 && mc.theWorld != null) {
+            TickHandlerClient.lightOverrideRefreshRate = (mc.gameSettings.fancyGraphics ? 10 : 20);
             for (final Vector3i v : TickHandlerClient.blockLightOverrides) {
-                mc.field_71441_e.func_147463_c(EnumSkyBlock.Block, v.x, v.y, v.z);
+                mc.theWorld.updateLightByType(EnumSkyBlock.Block, v.x, v.y, v.z);
             }
             TickHandlerClient.blockLightOverrides.clear();
-            for (final Object obj : mc.field_71441_e.field_73010_i) {
+            for (final Object obj : mc.theWorld.playerEntities) {
                 final EntityPlayer player = (EntityPlayer)obj;
-                final ItemStack currentHeldItem = player.func_71045_bC();
-                if (currentHeldItem != null && currentHeldItem.func_77973_b() instanceof ItemGun) {
-                    final GunType type = ((ItemGun)currentHeldItem.func_77973_b()).type;
+                final ItemStack currentHeldItem = player.getCurrentEquippedItem();
+                if (currentHeldItem != null && currentHeldItem.getItem() instanceof ItemGun) {
+                    final GunType type = ((ItemGun)currentHeldItem.getItem()).type;
                     final AttachmentType grip = type.getGrip(currentHeldItem);
                     if (grip != null && grip.flashlight) {
                         for (int i = 0; i < 2; ++i) {
-                            final MovingObjectPosition ray = player.func_70614_a((double)(grip.flashlightRange / 2.0f * (i + 1)), 1.0f);
+                            final MovingObjectPosition ray = player.rayTrace((double)(grip.flashlightRange / 2.0f * (i + 1)), 1.0f);
                             if (ray != null) {
-                                int x = ray.field_72311_b;
-                                int y = ray.field_72312_c;
-                                int z = ray.field_72309_d;
-                                final int side = ray.field_72310_e;
+                                int x = ray.blockX;
+                                int y = ray.blockY;
+                                int z = ray.blockZ;
+                                final int side = ray.sideHit;
                                 switch (side) {
                                     case 0: {
                                         --y;
@@ -999,13 +999,13 @@ public class TickHandlerClient
                                     }
                                 }
                                 TickHandlerClient.blockLightOverrides.add(new Vector3i(x, y, z));
-                                mc.field_71441_e.func_72915_b(EnumSkyBlock.Block, x, y, z, 12);
-                                mc.field_71441_e.func_147463_c(EnumSkyBlock.Block, x, y + 1, z);
-                                mc.field_71441_e.func_147463_c(EnumSkyBlock.Block, x, y - 1, z);
-                                mc.field_71441_e.func_147463_c(EnumSkyBlock.Block, x + 1, y, z);
-                                mc.field_71441_e.func_147463_c(EnumSkyBlock.Block, x - 1, y, z);
-                                mc.field_71441_e.func_147463_c(EnumSkyBlock.Block, x, y, z + 1);
-                                mc.field_71441_e.func_147463_c(EnumSkyBlock.Block, x, y, z - 1);
+                                mc.theWorld.setLightValue(EnumSkyBlock.Block, x, y, z, 12);
+                                mc.theWorld.updateLightByType(EnumSkyBlock.Block, x, y + 1, z);
+                                mc.theWorld.updateLightByType(EnumSkyBlock.Block, x, y - 1, z);
+                                mc.theWorld.updateLightByType(EnumSkyBlock.Block, x + 1, y, z);
+                                mc.theWorld.updateLightByType(EnumSkyBlock.Block, x - 1, y, z);
+                                mc.theWorld.updateLightByType(EnumSkyBlock.Block, x, y, z + 1);
+                                mc.theWorld.updateLightByType(EnumSkyBlock.Block, x, y, z - 1);
                             }
                         }
                     }
@@ -1013,12 +1013,12 @@ public class TickHandlerClient
                         continue;
                     }
                     for (int i = 0; i < 2; ++i) {
-                        final MovingObjectPosition ray = player.func_70614_a((double)(2.0f * (i + 1)), 1.0f);
+                        final MovingObjectPosition ray = player.rayTrace((double)(2.0f * (i + 1)), 1.0f);
                         if (ray != null) {
-                            int x = ray.field_72311_b;
-                            int y = ray.field_72312_c;
-                            int z = ray.field_72309_d;
-                            final int side = ray.field_72310_e;
+                            int x = ray.blockX;
+                            int y = ray.blockY;
+                            int z = ray.blockZ;
+                            final int side = ray.sideHit;
                             switch (side) {
                                 case 0: {
                                     --y;
@@ -1046,61 +1046,61 @@ public class TickHandlerClient
                                 }
                             }
                             TickHandlerClient.blockLightOverrides.add(new Vector3i(x, y, z));
-                            mc.field_71441_e.func_72915_b(EnumSkyBlock.Block, x, y, z, 15);
-                            mc.field_71441_e.func_147463_c(EnumSkyBlock.Block, x, y + 1, z);
-                            mc.field_71441_e.func_147463_c(EnumSkyBlock.Block, x, y - 1, z);
-                            mc.field_71441_e.func_147463_c(EnumSkyBlock.Block, x + 1, y, z);
-                            mc.field_71441_e.func_147463_c(EnumSkyBlock.Block, x - 1, y, z);
-                            mc.field_71441_e.func_147463_c(EnumSkyBlock.Block, x, y, z + 1);
-                            mc.field_71441_e.func_147463_c(EnumSkyBlock.Block, x, y, z - 1);
+                            mc.theWorld.setLightValue(EnumSkyBlock.Block, x, y, z, 15);
+                            mc.theWorld.updateLightByType(EnumSkyBlock.Block, x, y + 1, z);
+                            mc.theWorld.updateLightByType(EnumSkyBlock.Block, x, y - 1, z);
+                            mc.theWorld.updateLightByType(EnumSkyBlock.Block, x + 1, y, z);
+                            mc.theWorld.updateLightByType(EnumSkyBlock.Block, x - 1, y, z);
+                            mc.theWorld.updateLightByType(EnumSkyBlock.Block, x, y, z + 1);
+                            mc.theWorld.updateLightByType(EnumSkyBlock.Block, x, y, z - 1);
                         }
                     }
                 }
             }
-            for (final Object obj : mc.field_71441_e.field_72996_f) {
-                if (obj instanceof EntityLiving && Minecraft.func_71410_x().field_71460_t.func_147702_a()) {
+            for (final Object obj : mc.theWorld.loadedEntityList) {
+                if (obj instanceof EntityLiving && Minecraft.getMinecraft().entityRenderer.isShaderActive()) {
                     final EntityLiving bullet = (EntityLiving)obj;
-                    bullet.func_70070_b(1.572888E7f);
+                    bullet.getBrightnessForRender(1.572888E7f);
                     if (obj instanceof EntityPlayer) {
                         final EntityPlayer human = (EntityPlayer)obj;
-                        human.func_70070_b(1.572888E7f);
-                        final int x2 = MathHelper.func_76128_c(human.field_70165_t);
-                        final int y2 = MathHelper.func_76128_c(human.field_70163_u);
-                        final int z2 = MathHelper.func_76128_c(human.field_70161_v);
+                        human.getBrightnessForRender(1.572888E7f);
+                        final int x2 = MathHelper.floor_double(human.posX);
+                        final int y2 = MathHelper.floor_double(human.posY);
+                        final int z2 = MathHelper.floor_double(human.posZ);
                         TickHandlerClient.blockLightOverrides.add(new Vector3i(x2, y2, z2));
-                        mc.field_71441_e.func_72915_b(EnumSkyBlock.Block, x2, y2, z2, 10);
-                        mc.field_71441_e.func_147463_c(EnumSkyBlock.Block, x2, y2 + 1, z2);
-                        mc.field_71441_e.func_147463_c(EnumSkyBlock.Block, x2, y2 - 1, z2);
-                        mc.field_71441_e.func_147463_c(EnumSkyBlock.Block, x2 + 1, y2, z2);
-                        mc.field_71441_e.func_147463_c(EnumSkyBlock.Block, x2 - 1, y2, z2);
-                        mc.field_71441_e.func_147463_c(EnumSkyBlock.Block, x2, y2, z2 + 1);
-                        mc.field_71441_e.func_147463_c(EnumSkyBlock.Block, x2, y2, z2 - 1);
+                        mc.theWorld.setLightValue(EnumSkyBlock.Block, x2, y2, z2, 10);
+                        mc.theWorld.updateLightByType(EnumSkyBlock.Block, x2, y2 + 1, z2);
+                        mc.theWorld.updateLightByType(EnumSkyBlock.Block, x2, y2 - 1, z2);
+                        mc.theWorld.updateLightByType(EnumSkyBlock.Block, x2 + 1, y2, z2);
+                        mc.theWorld.updateLightByType(EnumSkyBlock.Block, x2 - 1, y2, z2);
+                        mc.theWorld.updateLightByType(EnumSkyBlock.Block, x2, y2, z2 + 1);
+                        mc.theWorld.updateLightByType(EnumSkyBlock.Block, x2, y2, z2 - 1);
                     }
                 }
                 if (obj instanceof EntityBullet) {
                     final EntityBullet bullet2 = (EntityBullet)obj;
-                    if (!bullet2.field_70128_L && bullet2.type.hasLight) {
+                    if (!bullet2.isDead && bullet2.type.hasLight) {
                         continue;
                     }
-                    if (!bullet2.field_70128_L || bullet2.type.hasLight) {}
+                    if (!bullet2.isDead || bullet2.type.hasLight) {}
                 }
                 else {
                     if (!(obj instanceof EntityMecha)) {
                         continue;
                     }
                     final EntityMecha mecha = (EntityMecha)obj;
-                    final int x3 = MathHelper.func_76128_c(mecha.field_70165_t);
-                    final int y3 = MathHelper.func_76128_c(mecha.field_70163_u);
-                    final int z3 = MathHelper.func_76128_c(mecha.field_70161_v);
+                    final int x3 = MathHelper.floor_double(mecha.posX);
+                    final int y3 = MathHelper.floor_double(mecha.posY);
+                    final int z3 = MathHelper.floor_double(mecha.posZ);
                     if (mecha.lightLevel() > 0) {
                         TickHandlerClient.blockLightOverrides.add(new Vector3i(x3, y3, z3));
-                        mc.field_71441_e.func_72915_b(EnumSkyBlock.Block, x3, y3, z3, Math.max(mc.field_71441_e.func_72957_l(x3, y3, z3), mecha.lightLevel()));
-                        mc.field_71441_e.func_147463_c(EnumSkyBlock.Block, x3 + 1, y3, z3);
-                        mc.field_71441_e.func_147463_c(EnumSkyBlock.Block, x3 - 1, y3 + 1, z3);
-                        mc.field_71441_e.func_147463_c(EnumSkyBlock.Block, x3, y3 + 1, z3);
-                        mc.field_71441_e.func_147463_c(EnumSkyBlock.Block, x3, y3 - 1, z3);
-                        mc.field_71441_e.func_147463_c(EnumSkyBlock.Block, x3, y3, z3 + 1);
-                        mc.field_71441_e.func_147463_c(EnumSkyBlock.Block, x3, y3, z3 - 1);
+                        mc.theWorld.setLightValue(EnumSkyBlock.Block, x3, y3, z3, Math.max(mc.theWorld.getBlockLightValue(x3, y3, z3), mecha.lightLevel()));
+                        mc.theWorld.updateLightByType(EnumSkyBlock.Block, x3 + 1, y3, z3);
+                        mc.theWorld.updateLightByType(EnumSkyBlock.Block, x3 - 1, y3 + 1, z3);
+                        mc.theWorld.updateLightByType(EnumSkyBlock.Block, x3, y3 + 1, z3);
+                        mc.theWorld.updateLightByType(EnumSkyBlock.Block, x3, y3 - 1, z3);
+                        mc.theWorld.updateLightByType(EnumSkyBlock.Block, x3, y3, z3 + 1);
+                        mc.theWorld.updateLightByType(EnumSkyBlock.Block, x3, y3, z3 - 1);
                     }
                     if (!mecha.forceDark()) {
                         continue;
@@ -1112,17 +1112,17 @@ public class TickHandlerClient
                                 final int yd = j + y3;
                                 final int zd = k + z3;
                                 TickHandlerClient.blockLightOverrides.add(new Vector3i(xd, yd, zd));
-                                mc.field_71441_e.func_72915_b(EnumSkyBlock.Sky, xd, yd, zd, Math.abs(i) + Math.abs(j) + Math.abs(k));
+                                mc.theWorld.setLightValue(EnumSkyBlock.Sky, xd, yd, zd, Math.abs(i) + Math.abs(j) + Math.abs(k));
                             }
                         }
                     }
                 }
             }
         }
-        if (FlansMod.ticker % TickHandlerClient.vehicleLightOverrideRefreshRate == 0 && mc.field_71441_e != null) {
-            TickHandlerClient.vehicleLightOverrideRefreshRate = (mc.field_71474_y.field_74347_j ? 1 : 2);
+        if (FlansMod.ticker % TickHandlerClient.vehicleLightOverrideRefreshRate == 0 && mc.theWorld != null) {
+            TickHandlerClient.vehicleLightOverrideRefreshRate = (mc.gameSettings.fancyGraphics ? 1 : 2);
             for (final Vector3i v : TickHandlerClient.vehicleLightOverrides) {
-                mc.field_71441_e.func_147463_c(EnumSkyBlock.Block, v.x, v.y, v.z);
+                mc.theWorld.updateLightByType(EnumSkyBlock.Block, v.x, v.y, v.z);
             }
             TickHandlerClient.vehicleLightOverrides.clear();
         }
@@ -1141,18 +1141,18 @@ public class TickHandlerClient
     }
     
     public void renderTickStart(final Minecraft mc, final float smoothing) {
-        if (mc.field_71462_r == null && FlansModClient.controlModeMouse) {
-            final MouseHelper mouse = mc.field_71417_B;
-            final Entity ridden = mc.field_71439_g.field_70154_o;
+        if (mc.currentScreen == null && FlansModClient.controlModeMouse) {
+            final MouseHelper mouse = mc.mouseHelper;
+            final Entity ridden = mc.thePlayer.ridingEntity;
             if (ridden instanceof EntityDriveable) {
                 final EntityDriveable entity = (EntityDriveable)ridden;
-                entity.onMouseMoved(mouse.field_74377_a, mouse.field_74375_b);
+                entity.onMouseMoved(mouse.deltaX, mouse.deltaY);
             }
         }
         FlansModClient.renderTick(smoothing);
-        if (mc.field_71462_r instanceof GuiDriveableController) {
-            TickHandlerClient.guiDriveableController = mc.field_71462_r;
-            mc.field_71462_r = null;
+        if (mc.currentScreen instanceof GuiDriveableController) {
+            TickHandlerClient.guiDriveableController = mc.currentScreen;
+            mc.currentScreen = null;
         }
         else {
             TickHandlerClient.guiDriveableController = null;
@@ -1160,14 +1160,14 @@ public class TickHandlerClient
     }
     
     public void renderTickEnd(final Minecraft mc) {
-        if (mc.field_71462_r == null && TickHandlerClient.guiDriveableController != null) {
-            mc.field_71462_r = TickHandlerClient.guiDriveableController;
+        if (mc.currentScreen == null && TickHandlerClient.guiDriveableController != null) {
+            mc.currentScreen = TickHandlerClient.guiDriveableController;
             TickHandlerClient.guiDriveableController = null;
         }
-        final Tessellator tessellator = Tessellator.field_78398_a;
-        final ScaledResolution scaledresolution = new ScaledResolution(FlansModClient.minecraft, FlansModClient.minecraft.field_71443_c, FlansModClient.minecraft.field_71440_d);
-        final int i = scaledresolution.func_78326_a();
-        final int j = scaledresolution.func_78328_b();
+        final Tessellator tessellator = Tessellator.instance;
+        final ScaledResolution scaledresolution = new ScaledResolution(FlansModClient.minecraft, FlansModClient.minecraft.displayWidth, FlansModClient.minecraft.displayHeight);
+        final int i = scaledresolution.getScaledWidth();
+        final int j = scaledresolution.getScaledHeight();
         if (FlansModClient.isInFlash) {
             this.isInFlash = true;
             this.flashTime = FlansModClient.flashTime;
@@ -1176,20 +1176,20 @@ public class TickHandlerClient
             FlansModClient.flashTime = 0;
         }
         if (this.isInFlash && this.tickcountflash < this.flashTime) {
-            FlansModClient.minecraft.field_71460_t.func_78478_c();
+            FlansModClient.minecraft.entityRenderer.setupOverlayRendering();
             GL11.glEnable(3042);
             GL11.glDisable(2929);
             GL11.glDepthMask(false);
             GL11.glBlendFunc(770, 771);
             GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
             GL11.glDisable(3008);
-            mc.field_71446_o.func_110577_a(new ResourceLocation("flansmod", "gui/flash.png"));
-            tessellator.func_78382_b();
-            tessellator.func_78374_a((double)(i / 2 - 2 * j), (double)j, -90.0, 0.0, 1.0);
-            tessellator.func_78374_a((double)(i / 2 + 2 * j), (double)j, -90.0, 1.0, 1.0);
-            tessellator.func_78374_a((double)(i / 2 + 2 * j), 0.0, -90.0, 1.0, 0.0);
-            tessellator.func_78374_a((double)(i / 2 - 2 * j), 0.0, -90.0, 0.0, 0.0);
-            tessellator.func_78381_a();
+            mc.renderEngine.bindTexture(new ResourceLocation("flansmod", "gui/flash.png"));
+            tessellator.startDrawingQuads();
+            tessellator.addVertexWithUV((double)(i / 2 - 2 * j), (double)j, -90.0, 0.0, 1.0);
+            tessellator.addVertexWithUV((double)(i / 2 + 2 * j), (double)j, -90.0, 1.0, 1.0);
+            tessellator.addVertexWithUV((double)(i / 2 + 2 * j), 0.0, -90.0, 1.0, 0.0);
+            tessellator.addVertexWithUV((double)(i / 2 - 2 * j), 0.0, -90.0, 0.0, 0.0);
+            tessellator.draw();
             GL11.glDepthMask(true);
             GL11.glEnable(2929);
             GL11.glEnable(3008);
@@ -1204,11 +1204,11 @@ public class TickHandlerClient
     }
     
     private static void drawSlotInventory(final FontRenderer fontRenderer, final ItemStack itemstack, final int i, final int j) {
-        if (itemstack == null || itemstack.func_77973_b() == null) {
+        if (itemstack == null || itemstack.getItem() == null) {
             return;
         }
-        TickHandlerClient.itemRenderer.func_77015_a(fontRenderer, FlansModClient.minecraft.field_71446_o, itemstack, i, j);
-        TickHandlerClient.itemRenderer.func_77021_b(fontRenderer, FlansModClient.minecraft.field_71446_o, itemstack, i, j);
+        TickHandlerClient.itemRenderer.renderItemIntoGUI(fontRenderer, FlansModClient.minecraft.renderEngine, itemstack, i, j);
+        TickHandlerClient.itemRenderer.renderItemOverlayIntoGUI(fontRenderer, FlansModClient.minecraft.renderEngine, itemstack, i, j);
     }
     
     public static void addKillMessage(final boolean headshot, final InfoType infoType, final int itmDmg, final String killer, final String killed) {

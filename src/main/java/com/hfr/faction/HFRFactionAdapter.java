@@ -49,4 +49,9 @@ public class HFRFactionAdapter implements IFaction {
     public void removeTransportVehicle(Object entity) {
         // No-op: the new Clowder API does not expose transport vehicle tracking.
     }
+
+    @Override
+    public void addTransportVehicle(Object entity, Object name) {
+        // No-op: the new Clowder API does not expose transport vehicle tracking.
+    }
 }

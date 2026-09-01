@@ -29,14 +29,14 @@ public class ModelChinaShield extends ModelGun
         this.gunModel[3] = new ModelRendererTurbo(this, 49, 1, this.textureX, this.textureY);
         this.gunModel[4] = new ModelRendererTurbo(this, 1, 1, this.textureX, this.textureY);
         this.gunModel[0].addShapeBox(0.0f, 0.0f, 0.0f, 1, 5, 10, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -0.25f, 0.0f, 0.0f, -0.25f, 0.0f, 0.0f, -0.25f, 0.0f, 0.0f, -0.25f);
-        this.gunModel[0].func_78793_a(0.5f, 0.0f, -5.0f);
+        this.gunModel[0].setRotationPoint(0.5f, 0.0f, -5.0f);
         this.gunModel[1].addShapeBox(0.0f, 0.0f, 0.0f, 1, 5, 5, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -0.5f, 0.0f, 0.0f, -0.5f);
-        this.gunModel[1].func_78793_a(0.5f, -5.0f, 0.0f);
+        this.gunModel[1].setRotationPoint(0.5f, -5.0f, 0.0f);
         this.gunModel[2].addShapeBox(0.0f, 0.0f, 0.0f, 1, 6, 12, 0.0f, 0.0f, 0.0f, -0.5f, 0.0f, 0.0f, -0.5f, 0.0f, 0.0f, -0.5f, 0.0f, 0.0f, -0.5f, 0.0f, 0.0f, -0.25f, 0.0f, 0.0f, -0.25f, 0.0f, 0.0f, -0.25f, 0.0f, 0.0f, -0.25f);
-        this.gunModel[2].func_78793_a(0.5f, 5.0f, -6.0f);
+        this.gunModel[2].setRotationPoint(0.5f, 5.0f, -6.0f);
         this.gunModel[3].addShapeBox(0.0f, 0.0f, 0.0f, 1, 5, 5, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -0.5f, 0.0f, 0.0f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.gunModel[3].func_78793_a(0.5f, -5.0f, -5.0f);
+        this.gunModel[3].setRotationPoint(0.5f, -5.0f, -5.0f);
         this.gunModel[4].addShapeBox(0.0f, 0.0f, 0.0f, 1, 1, 2, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.gunModel[4].func_78793_a(0.5f, -5.5f, -1.0f);
+        this.gunModel[4].setRotationPoint(0.5f, -5.5f, -1.0f);
     }
 }

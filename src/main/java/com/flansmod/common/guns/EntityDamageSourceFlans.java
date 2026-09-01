@@ -35,28 +35,28 @@ public class EntityDamageSourceFlans extends EntityDamageSourceIndirect
     }
     
     public Entity getDamageSourceEntity() {
-        return this.field_76386_o;
+        return this.damageSourceEntity;
     }
     
-    public IChatComponent func_151519_b(final EntityLivingBase living) {
+    public IChatComponent getDeathMessage(final EntityLivingBase living) {
         if (!(living instanceof EntityPlayer) || this.shooter == null || PlayerHandler.getPlayerData(this.shooter) == null) {
-            return super.func_151519_b(living);
+            return super.getDeathMessage(living);
         }
         final EntityPlayer player = (EntityPlayer)living;
         final Team killedTeam = PlayerHandler.getPlayerData(player).team;
         final Team killerTeam = PlayerHandler.getPlayerData(this.shooter).team;
-        final float dist = player.func_70032_d((Entity)this.shooter);
+        final float dist = player.getDistanceToEntity((Entity)this.shooter);
         final PlayerData playerData = PlayerHandler.getPlayerData(player);
         ++playerData.died;
         final PlayerData playerData2 = PlayerHandler.getPlayerData(this.shooter);
         ++playerData2.killStreak;
         PlayerHandler.getPlayerData(this.shooter).killStreakTimer = 0;
         if (PlayerHandler.getPlayerData(this.shooter).killStreak > 1) {
-            return (IChatComponent)new ChatComponentText(EnumChatFormatting.DARK_GREEN + this.shooter.func_70005_c_() + EnumChatFormatting.DARK_AQUA + "'s Kill Streak: " + EnumChatFormatting.RED + Integer.toString(PlayerHandler.getPlayerData(this.shooter).killStreak) + " kills");
+            return (IChatComponent)new ChatComponentText(EnumChatFormatting.DARK_GREEN + this.shooter.getCommandSenderName() + EnumChatFormatting.DARK_AQUA + "'s Kill Streak: " + EnumChatFormatting.RED + Integer.toString(PlayerHandler.getPlayerData(this.shooter).killStreak) + " kills");
         }
-        if (this.weapon != null && this.shooter != null && this.shooter.func_70694_bm() != null) {
-            FlansMod.getPacketHandler().sendToDimension(new PacketKillMessage(this.headshot, this.weapon, this.shooter.func_70694_bm().func_77960_j(), ((killedTeam == null) ? "f" : Character.valueOf(killedTeam.textColour)) + player.func_70005_c_(), ((killerTeam == null) ? "f" : Character.valueOf(killerTeam.textColour)) + this.shooter.func_70005_c_(), dist), living.field_71093_bK);
+        if (this.weapon != null && this.shooter != null && this.shooter.getHeldItem() != null) {
+            FlansMod.getPacketHandler().sendToDimension(new PacketKillMessage(this.headshot, this.weapon, this.shooter.getHeldItem().getMetadata(), ((killedTeam == null) ? "f" : Character.valueOf(killedTeam.textColour)) + player.getCommandSenderName(), ((killerTeam == null) ? "f" : Character.valueOf(killerTeam.textColour)) + this.shooter.getCommandSenderName(), dist), living.dimension);
         }
-        return (IChatComponent)new ChatComponentText(EnumChatFormatting.DARK_GRAY + "[" + EnumChatFormatting.RED + "Flansmod" + EnumChatFormatting.DARK_GRAY + "] " + EnumChatFormatting.ITALIC + EnumChatFormatting.DARK_RED + player.func_70005_c_() + EnumChatFormatting.RESET + EnumChatFormatting.GRAY + " Was killed by " + EnumChatFormatting.ITALIC + EnumChatFormatting.DARK_GREEN + this.shooter.func_70005_c_() + (FlansMod.showDistanceInKillMessage ? ("" + EnumChatFormatting.RESET + EnumChatFormatting.GRAY + " from " + EnumChatFormatting.ITALIC + EnumChatFormatting.DARK_AQUA + String.format("%.1f", dist) + "m" + EnumChatFormatting.RESET + EnumChatFormatting.GRAY + " away") : ""));
+        return (IChatComponent)new ChatComponentText(EnumChatFormatting.DARK_GRAY + "[" + EnumChatFormatting.RED + "Flansmod" + EnumChatFormatting.DARK_GRAY + "] " + EnumChatFormatting.ITALIC + EnumChatFormatting.DARK_RED + player.getCommandSenderName() + EnumChatFormatting.RESET + EnumChatFormatting.GRAY + " Was killed by " + EnumChatFormatting.ITALIC + EnumChatFormatting.DARK_GREEN + this.shooter.getCommandSenderName() + (FlansMod.showDistanceInKillMessage ? ("" + EnumChatFormatting.RESET + EnumChatFormatting.GRAY + " from " + EnumChatFormatting.ITALIC + EnumChatFormatting.DARK_AQUA + String.format("%.1f", dist) + "m" + EnumChatFormatting.RESET + EnumChatFormatting.GRAY + " away") : ""));
     }
 }

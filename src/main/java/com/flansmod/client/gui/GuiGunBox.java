@@ -55,25 +55,25 @@ public class GuiGunBox extends GuiContainer
         this.craftHighlight = false;
         this.nextHighlight = false;
         this.backHighlight = false;
-        this.field_146297_k = FMLClientHandler.instance().getClient();
+        this.mc = FMLClientHandler.instance().getClient();
         this.type = type;
         this.inventory = playerinventory;
-        this.field_146999_f = 273;
-        this.field_147000_g = 233;
+        this.xSize = 273;
+        this.ySize = 233;
         this.currentPage = type.gunPages.get(this.pageIndex);
     }
     
-    protected void func_146979_b(final int x, final int y) {
+    protected void drawGuiContainerForegroundLayer(final int x, final int y) {
         final GunBoxEntry[] entries = this.currentPage.gunList;
-        this.field_146289_q.func_78276_b(this.type.name, 7, 6, hexColor(this.type.gunBoxTextColor));
-        this.field_146289_q.func_78261_a(this.currentPage.pageName, 62 - this.field_146289_q.func_78256_a(this.currentPage.pageName) / 2, 26, hexColor(this.type.pageTextColor));
+        this.fontRendererObj.drawString(this.type.name, 7, 6, hexColor(this.type.gunBoxTextColor));
+        this.fontRendererObj.drawStringWithShadow(this.currentPage.pageName, 62 - this.fontRendererObj.getStringWidth(this.currentPage.pageName) / 2, 26, hexColor(this.type.pageTextColor));
         for (int i = 0; i < entries.length && i < 8; ++i) {
             if (entries[i] != null) {
                 String label = entries[i].type.name;
-                if (this.field_146289_q.func_78256_a(label) > 97) {
+                if (this.fontRendererObj.getStringWidth(label) > 97) {
                     label = label.substring(0, Math.min(label.length(), 15)) + "...";
                 }
-                this.field_146289_q.func_78276_b(label, 19, 46 + i * 12, hexColor(this.type.itemListTextColor));
+                this.fontRendererObj.drawString(label, 19, 46 + i * 12, hexColor(this.type.itemListTextColor));
             }
         }
         if (this.selectedItem != -1) {
@@ -85,107 +85,107 @@ public class GuiGunBox extends GuiContainer
                 }
             }
             if (!this.tabToAmmo) {
-                this.field_146289_q.func_78276_b(entry.type.name, 127, 52, hexColor(this.type.itemTextColor));
+                this.fontRendererObj.drawString(entry.type.name, 127, 52, hexColor(this.type.itemTextColor));
                 this.drawRecipe(entry.requiredParts);
             }
             else if (!entry.isAmmoNullOrEmpty()) {
-                this.field_146289_q.func_78276_b(entry.ammoEntryList.get(this.selectedAmmoitem).type.name, 127, 52, hexColor(this.type.itemTextColor));
+                this.fontRendererObj.drawString(entry.ammoEntryList.get(this.selectedAmmoitem).type.name, 127, 52, hexColor(this.type.itemTextColor));
                 this.drawRecipe(entry.ammoEntryList.get(this.selectedAmmoitem).requiredParts);
             }
             if (this.craftHighlight) {
-                this.field_146289_q.func_78261_a("Craft", 158 - this.field_146289_q.func_78256_a("Craft") / 2, 117, hexColor(this.type.buttonTextHoverColor));
+                this.fontRendererObj.drawStringWithShadow("Craft", 158 - this.fontRendererObj.getStringWidth("Craft") / 2, 117, hexColor(this.type.buttonTextHoverColor));
             }
             else {
-                this.field_146289_q.func_78261_a("Craft", 158 - this.field_146289_q.func_78256_a("Craft") / 2, 117, hexColor(this.type.buttonTextColor));
+                this.fontRendererObj.drawStringWithShadow("Craft", 158 - this.fontRendererObj.getStringWidth("Craft") / 2, 117, hexColor(this.type.buttonTextColor));
             }
         }
         if (this.nextHighlight) {
-            this.field_146289_q.func_78261_a(">", 107 - this.field_146289_q.func_78256_a(">") / 2, 26, hexColor(this.type.buttonTextHoverColor));
+            this.fontRendererObj.drawStringWithShadow(">", 107 - this.fontRendererObj.getStringWidth(">") / 2, 26, hexColor(this.type.buttonTextHoverColor));
         }
         else {
-            this.field_146289_q.func_78261_a(">", 107 - this.field_146289_q.func_78256_a(">") / 2, 26, hexColor(this.type.buttonTextColor));
+            this.fontRendererObj.drawStringWithShadow(">", 107 - this.fontRendererObj.getStringWidth(">") / 2, 26, hexColor(this.type.buttonTextColor));
         }
         if (this.backHighlight) {
-            this.field_146289_q.func_78261_a("<", 17 - this.field_146289_q.func_78256_a("<") / 2, 26, hexColor(this.type.buttonTextHoverColor));
+            this.fontRendererObj.drawStringWithShadow("<", 17 - this.fontRendererObj.getStringWidth("<") / 2, 26, hexColor(this.type.buttonTextHoverColor));
         }
         else {
-            this.field_146289_q.func_78261_a("<", 17 - this.field_146289_q.func_78256_a("<") / 2, 26, hexColor(this.type.buttonTextColor));
+            this.fontRendererObj.drawStringWithShadow("<", 17 - this.fontRendererObj.getStringWidth("<") / 2, 26, hexColor(this.type.buttonTextColor));
         }
         if (this.recipeTooltip != null) {
-            this.drawHoveringText((List)Collections.singletonList(this.recipeTooltip), this.mouseX - this.field_147003_i, this.mouseY - this.field_147009_r, this.field_146289_q);
+            this.drawHoveringText((List)Collections.singletonList(this.recipeTooltip), this.mouseX - this.guiLeft, this.mouseY - this.guiTop, this.fontRendererObj);
         }
     }
     
-    protected void func_146976_a(final float f, final int i, final int j) {
+    protected void drawGuiContainerBackgroundLayer(final float f, final int i, final int j) {
         GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-        final int xOrigin = (this.field_146294_l - this.field_146999_f) / 2;
-        final int yOrigin = (this.field_146295_m - this.field_147000_g) / 2;
+        final int xOrigin = (this.width - this.xSize) / 2;
+        final int yOrigin = (this.height - this.ySize) / 2;
         if (this.type.guiTexturePath != null) {
             this.texture = new ResourceLocation("flansmod", this.type.guiTexturePath + ".png");
         }
-        this.field_146297_k.field_71446_o.func_110577_a(this.texture);
-        this.func_73729_b(xOrigin, yOrigin, 0, 0, this.field_146999_f, this.field_147000_g);
+        this.mc.renderEngine.bindTexture(this.texture);
+        this.drawTexturedModalRect(xOrigin, yOrigin, 0, 0, this.xSize, this.ySize);
         if (this.hoverOver != -1) {
-            this.func_73729_b(xOrigin + 8, yOrigin + 43 + this.hoverOver * 12, 383, 5, 108, 12);
+            this.drawTexturedModalRect(xOrigin + 8, yOrigin + 43 + this.hoverOver * 12, 383, 5, 108, 12);
         }
         if (this.selectedItem != -1) {
             final GunBoxEntry entry = this.currentPage.gunList[this.selectedItem];
-            this.func_73729_b(xOrigin + 8, yOrigin + 43 + this.selectedItem * 12, 275, 5, 108, 12);
-            this.func_73729_b(xOrigin + 121, yOrigin + 20, 275, 207, 144, 25);
+            this.drawTexturedModalRect(xOrigin + 8, yOrigin + 43 + this.selectedItem * 12, 275, 5, 108, 12);
+            this.drawTexturedModalRect(xOrigin + 121, yOrigin + 20, 275, 207, 144, 25);
             if (!this.tabToAmmo) {
-                this.func_73729_b(xOrigin + 121, yOrigin + 45, 275, 17, 144, 95);
-                this.func_73729_b(xOrigin + 127, yOrigin + 26, 419, 33, 16, 16);
+                this.drawTexturedModalRect(xOrigin + 121, yOrigin + 45, 275, 17, 144, 95);
+                this.drawTexturedModalRect(xOrigin + 127, yOrigin + 26, 419, 33, 16, 16);
             }
             else {
-                this.func_73729_b(xOrigin + 121, yOrigin + 45, 275, 112, 144, 95);
+                this.drawTexturedModalRect(xOrigin + 121, yOrigin + 45, 275, 112, 144, 95);
             }
             if (!entry.isAmmoNullOrEmpty()) {
                 for (int k = 0; k < entry.ammoEntryList.size(); ++k) {
-                    this.func_73729_b(xOrigin + 154 + k * 22, yOrigin + 25, 435, 17, 18, 18);
+                    this.drawTexturedModalRect(xOrigin + 154 + k * 22, yOrigin + 25, 435, 17, 18, 18);
                 }
             }
             if (this.craftHighlight) {
-                this.func_73729_b(xOrigin + 126, yOrigin + 111, 419, 85, 64, 20);
+                this.drawTexturedModalRect(xOrigin + 126, yOrigin + 111, 419, 85, 64, 20);
             }
             else {
-                this.func_73729_b(xOrigin + 126, yOrigin + 111, 419, 65, 64, 20);
+                this.drawTexturedModalRect(xOrigin + 126, yOrigin + 111, 419, 65, 64, 20);
             }
         }
         if (this.tabToAmmo && this.selectedAmmoitem != -1) {
-            this.func_73729_b(xOrigin + 155 + this.selectedAmmoitem * 22, yOrigin + 26, 419, 17, 16, 16);
+            this.drawTexturedModalRect(xOrigin + 155 + this.selectedAmmoitem * 22, yOrigin + 26, 419, 17, 16, 16);
         }
         if (this.nextHighlight) {
-            this.func_73729_b(xOrigin + 97, yOrigin + 20, 439, 105, 20, 20);
+            this.drawTexturedModalRect(xOrigin + 97, yOrigin + 20, 439, 105, 20, 20);
         }
         else {
-            this.func_73729_b(xOrigin + 97, yOrigin + 20, 419, 105, 20, 20);
+            this.drawTexturedModalRect(xOrigin + 97, yOrigin + 20, 419, 105, 20, 20);
         }
         if (this.backHighlight) {
-            this.func_73729_b(xOrigin + 7, yOrigin + 20, 439, 105, 20, 20);
+            this.drawTexturedModalRect(xOrigin + 7, yOrigin + 20, 439, 105, 20, 20);
         }
         else {
-            this.func_73729_b(xOrigin + 7, yOrigin + 20, 419, 105, 20, 20);
+            this.drawTexturedModalRect(xOrigin + 7, yOrigin + 20, 419, 105, 20, 20);
         }
     }
     
-    public void func_73729_b(final int par1, final int par2, final int par3, final int par4, final int par5, final int par6) {
+    public void drawTexturedModalRect(final int par1, final int par2, final int par3, final int par4, final int par5, final int par6) {
         final float f = 0.001953125f;
         final float f2 = 0.00390625f;
-        final Tessellator tessellator = Tessellator.field_78398_a;
-        tessellator.func_78382_b();
-        tessellator.func_78374_a((double)par1, (double)(par2 + par6), (double)this.field_73735_i, (double)(par3 * f), (double)((par4 + par6) * f2));
-        tessellator.func_78374_a((double)(par1 + par5), (double)(par2 + par6), (double)this.field_73735_i, (double)((par3 + par5) * f), (double)((par4 + par6) * f2));
-        tessellator.func_78374_a((double)(par1 + par5), (double)par2, (double)this.field_73735_i, (double)((par3 + par5) * f), (double)(par4 * f2));
-        tessellator.func_78374_a((double)par1, (double)par2, (double)this.field_73735_i, (double)(par3 * f), (double)(par4 * f2));
-        tessellator.func_78381_a();
+        final Tessellator tessellator = Tessellator.instance;
+        tessellator.startDrawingQuads();
+        tessellator.addVertexWithUV((double)par1, (double)(par2 + par6), (double)this.zLevel, (double)(par3 * f), (double)((par4 + par6) * f2));
+        tessellator.addVertexWithUV((double)(par1 + par5), (double)(par2 + par6), (double)this.zLevel, (double)((par3 + par5) * f), (double)((par4 + par6) * f2));
+        tessellator.addVertexWithUV((double)(par1 + par5), (double)par2, (double)this.zLevel, (double)((par3 + par5) * f), (double)(par4 * f2));
+        tessellator.addVertexWithUV((double)par1, (double)par2, (double)this.zLevel, (double)(par3 * f), (double)(par4 * f2));
+        tessellator.draw();
     }
     
-    public void func_146274_d() {
-        super.func_146274_d();
-        this.mouseX = Mouse.getEventX() * this.field_146294_l / this.field_146297_k.field_71443_c;
-        this.mouseY = this.field_146295_m - Mouse.getEventY() * this.field_146295_m / this.field_146297_k.field_71440_d - 1;
-        final int mouseXInGUI = this.mouseX - this.field_147003_i;
-        final int mouseYInGUI = this.mouseY - this.field_147009_r;
+    public void handleMouseInput() {
+        super.handleMouseInput();
+        this.mouseX = Mouse.getEventX() * this.width / this.mc.displayWidth;
+        this.mouseY = this.height - Mouse.getEventY() * this.height / this.mc.displayHeight - 1;
+        final int mouseXInGUI = this.mouseX - this.guiLeft;
+        final int mouseYInGUI = this.mouseY - this.guiTop;
         this.hoverOver = -1;
         final int sectionX = 8;
         for (int i = 0; i < this.currentPage.gunList.length && i < 8; ++i) {
@@ -208,16 +208,16 @@ public class GuiGunBox extends GuiContainer
                     itemY = 87;
                 }
                 if (mouseXInGUI >= itemX && mouseXInGUI < itemX + 16 && mouseYInGUI >= itemY && mouseYInGUI < itemY + 16) {
-                    this.recipeTooltip = (this.tabToAmmo ? entry.ammoEntryList.get(this.selectedAmmoitem).requiredParts.get(j).func_82833_r() : entry.requiredParts.get(j).func_82833_r());
+                    this.recipeTooltip = (this.tabToAmmo ? entry.ammoEntryList.get(this.selectedAmmoitem).requiredParts.get(j).getDisplayName() : entry.requiredParts.get(j).getDisplayName());
                 }
             }
         }
     }
     
-    protected void func_73864_a(final int x, final int y, final int button) {
-        final int xOrigin = (this.field_146294_l - this.field_146999_f) / 2;
-        final int yOrigin = (this.field_146295_m - this.field_147000_g) / 2;
-        super.func_73864_a(x, y, button);
+    protected void mouseClicked(final int x, final int y, final int button) {
+        final int xOrigin = (this.width - this.xSize) / 2;
+        final int yOrigin = (this.height - this.ySize) / 2;
+        super.mouseClicked(x, y, button);
         final int m = x - xOrigin;
         final int n = y - yOrigin;
         if (button == 0 || button == 1) {
@@ -277,12 +277,12 @@ public class GuiGunBox extends GuiContainer
     }
     
     private void drawSlotInventory(final ItemStack itemstack, final int i, final int j) {
-        if (itemstack == null || itemstack.func_77973_b() == null) {
+        if (itemstack == null || itemstack.getItem() == null) {
             return;
         }
-        RenderHelper.func_74520_c();
-        GuiGunBox.itemRenderer.func_77015_a(this.field_146289_q, this.field_146297_k.field_71446_o, itemstack, i, j);
-        GuiGunBox.itemRenderer.func_77021_b(this.field_146289_q, this.field_146297_k.field_71446_o, itemstack, i, j);
+        RenderHelper.enableGUIStandardItemLighting();
+        GuiGunBox.itemRenderer.renderItemIntoGUI(this.fontRendererObj, this.mc.renderEngine, itemstack, i, j);
+        GuiGunBox.itemRenderer.renderItemOverlayIntoGUI(this.fontRendererObj, this.mc.renderEngine, itemstack, i, j);
         GL11.glDisable(2896);
         GL11.glDisable(2929);
     }
@@ -304,13 +304,13 @@ public class GuiGunBox extends GuiContainer
         return Integer.parseInt(color, 16);
     }
     
-    protected void func_73869_a(final char c, final int i) {
-        if (i == 1 || i == this.field_146297_k.field_71474_y.field_151445_Q.func_151463_i()) {
-            this.field_146297_k.field_71439_g.func_71053_j();
+    protected void keyTyped(final char c, final int i) {
+        if (i == 1 || i == this.mc.gameSettings.keyBindInventory.getKeyCode()) {
+            this.mc.thePlayer.closeScreen();
         }
     }
     
-    public boolean func_73868_f() {
+    public boolean doesGuiPauseGame() {
         return false;
     }
     

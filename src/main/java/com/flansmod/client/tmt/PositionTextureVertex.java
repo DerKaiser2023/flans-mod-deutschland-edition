@@ -15,7 +15,7 @@ public class PositionTextureVertex extends net.minecraft.client.model.PositionTe
     }
     
     public PositionTextureVertex(final float par1, final float par2, final float par3, final float par4, final float par5, final float par6) {
-        this(Vec3.func_72443_a((double)par1, (double)par2, (double)par3), par4, par5);
+        this(Vec3.createVectorHelper((double)par1, (double)par2, (double)par3), par4, par5);
     }
     
     public PositionTextureVertex setTexturePosition(final float par1, final float par2) {

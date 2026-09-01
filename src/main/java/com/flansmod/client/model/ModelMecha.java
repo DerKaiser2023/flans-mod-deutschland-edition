@@ -120,12 +120,12 @@ public class ModelMecha extends ModelDriveable
     public void render(final float f5, final EntityMecha mecha, final float f) {
         if (mecha.isPartIntact(EnumDriveablePart.core)) {
             for (final ModelRendererTurbo aBodyModel : this.bodyModel) {
-                aBodyModel.func_78785_a(f5);
+                aBodyModel.render(f5);
             }
         }
         if (mecha.isPartIntact(EnumDriveablePart.head)) {
             for (final ModelRendererTurbo model : this.headModel) {
-                model.func_78785_a(f5);
+                model.render(f5);
             }
         }
         float pitch = 0.0f;
@@ -141,7 +141,7 @@ public class ModelMecha extends ModelDriveable
         }
         if (mecha.isPartIntact(EnumDriveablePart.barrel)) {
             for (final ModelRendererTurbo aBarrelModel : this.barrelModel) {
-                aBarrelModel.field_78808_h = -(pitch * 3.1415927f / 180.0f);
+                aBarrelModel.rotateAngleZ = -(pitch * 3.1415927f / 180.0f);
                 aBarrelModel.render(f5, this.oldRotateOrder);
             }
         }
@@ -149,91 +149,91 @@ public class ModelMecha extends ModelDriveable
     
     public void renderLeftArm(final float f5, final EntityMecha mecha, final float f) {
         for (final ModelRendererTurbo model : this.leftArmModel) {
-            model.func_78785_a(f5);
+            model.render(f5);
         }
     }
     
     public void renderLeftHand(final float f5, final EntityMecha mecha, final float f) {
         for (final ModelRendererTurbo model : this.leftHandModel) {
-            model.func_78785_a(f5);
+            model.render(f5);
         }
     }
     
     public void renderRightArm(final float f5, final EntityMecha mecha, final float f) {
         for (final ModelRendererTurbo model : this.rightArmModel) {
-            model.func_78785_a(f5);
+            model.render(f5);
         }
     }
     
     public void renderRightHand(final float f5, final EntityMecha mecha, final float f) {
         for (final ModelRendererTurbo model : this.rightHandModel) {
-            model.func_78785_a(f5);
+            model.render(f5);
         }
     }
     
     public void renderRightFoot(final float f5, final EntityMecha mecha, final float f) {
         for (final ModelRendererTurbo model : this.rightFootModel) {
-            model.func_78785_a(f5);
+            model.render(f5);
         }
     }
     
     public void renderLeftFoot(final float f5, final EntityMecha mecha, final float f) {
         for (final ModelRendererTurbo model : this.leftFootModel) {
-            model.func_78785_a(f5);
+            model.render(f5);
         }
     }
     
     public void renderRightLeg(final float f5, final EntityMecha mecha, final float f) {
         for (final ModelRendererTurbo model : this.rightLegModel) {
-            model.func_78785_a(f5);
+            model.render(f5);
         }
     }
     
     public void renderRightAnimLegUpper(final float f5, final EntityMecha mecha, final float f) {
         for (final ModelRendererTurbo model : this.rightAnimLegUpperModel) {
-            model.func_78785_a(f5);
+            model.render(f5);
         }
     }
     
     public void renderRightAnimLegLower(final float f5, final EntityMecha mecha, final float f) {
         for (final ModelRendererTurbo model : this.rightAnimLegLowerModel) {
-            model.func_78785_a(f5);
+            model.render(f5);
         }
     }
     
     public void renderRightAnimFoot(final float f5, final EntityMecha mecha, final float f) {
         for (final ModelRendererTurbo model : this.rightAnimFootModel) {
-            model.func_78785_a(f5);
+            model.render(f5);
         }
     }
     
     public void renderLeftAnimLegUpper(final float f5, final EntityMecha mecha, final float f) {
         for (final ModelRendererTurbo model : this.leftAnimLegUpperModel) {
-            model.func_78785_a(f5);
+            model.render(f5);
         }
     }
     
     public void renderLeftAnimLegLower(final float f5, final EntityMecha mecha, final float f) {
         for (final ModelRendererTurbo model : this.leftAnimLegLowerModel) {
-            model.func_78785_a(f5);
+            model.render(f5);
         }
     }
     
     public void renderLeftAnimFoot(final float f5, final EntityMecha mecha, final float f) {
         for (final ModelRendererTurbo model : this.leftAnimFootModel) {
-            model.func_78785_a(f5);
+            model.render(f5);
         }
     }
     
     public void renderLeftLeg(final float f5, final EntityMecha mecha, final float f) {
         for (final ModelRendererTurbo model : this.leftLegModel) {
-            model.func_78785_a(f5);
+            model.render(f5);
         }
     }
     
     public void renderHips(final float f5, final EntityMecha mecha, final float f) {
         for (final ModelRendererTurbo model : this.hipsModel) {
-            model.func_78785_a(f5);
+            model.render(f5);
         }
     }
     

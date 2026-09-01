@@ -117,41 +117,41 @@ public class KeyInputHandler
         ClientRegistry.registerKeyBinding(KeyInputHandler.missileDown);
         ClientRegistry.registerKeyBinding(KeyInputHandler.missileLeft);
         ClientRegistry.registerKeyBinding(KeyInputHandler.missileRight);
-        this.mc = Minecraft.func_71410_x();
+        this.mc = Minecraft.getMinecraft();
     }
     
     @SubscribeEvent
     public void onKeyInput(final InputEvent.KeyInputEvent event) {
-        if (FMLClientHandler.instance().isGUIOpen((Class)GuiChat.class) || this.mc.field_71462_r != null) {
+        if (FMLClientHandler.instance().isGUIOpen((Class)GuiChat.class) || this.mc.currentScreen != null) {
             return;
         }
-        final EntityPlayer player = (EntityPlayer)this.mc.field_71439_g;
-        final Entity ridingEntity = player.field_70154_o;
-        if (KeyInputHandler.teamsMenuKey.func_151468_f()) {
-            this.mc.func_147108_a((GuiScreen)new GuiTeamSelect());
+        final EntityPlayer player = (EntityPlayer)this.mc.thePlayer;
+        final Entity ridingEntity = player.ridingEntity;
+        if (KeyInputHandler.teamsMenuKey.isPressed()) {
+            this.mc.displayGuiScreen((GuiScreen)new GuiTeamSelect());
             return;
         }
-        if (KeyInputHandler.teamsScoresKey.func_151468_f()) {
-            this.mc.func_147108_a((GuiScreen)new GuiTeamScores());
+        if (KeyInputHandler.teamsScoresKey.isPressed()) {
+            this.mc.displayGuiScreen((GuiScreen)new GuiTeamScores());
             return;
         }
-        if (KeyInputHandler.reloadKey.func_151468_f() && FlansModClient.shootTime(false) <= 0.0f) {
+        if (KeyInputHandler.reloadKey.isPressed() && FlansModClient.shootTime(false) <= 0.0f) {
             FlansMod.getPacketHandler().sendToServer(new PacketReload(false));
             return;
         }
-        if (KeyInputHandler.gunModeKey.func_151468_f()) {
+        if (KeyInputHandler.gunModeKey.isPressed()) {
             FlansMod.getPacketHandler().sendToServer(new PacketGunMode(1));
             return;
         }
-        if (KeyInputHandler.bolterino.func_151468_f()) {
+        if (KeyInputHandler.bolterino.isPressed()) {
             FlansMod.getPacketHandler().sendToServer(new PacketBolterino(true));
             return;
         }
-        if (KeyInputHandler.secondaryKey.func_151468_f()) {
+        if (KeyInputHandler.secondaryKey.isPressed()) {
             FlansMod.getPacketHandler().sendToServer(new PacketGunMode(2));
             return;
         }
-        if (KeyInputHandler.debugKey.func_151468_f()) {
+        if (KeyInputHandler.debugKey.isPressed()) {
             if (FlansMod.DEBUG) {
                 FlansMod.DEBUG = false;
             }
@@ -159,129 +159,129 @@ public class KeyInputHandler
                 FlansMod.packetHandler.sendToServer(new PacketRequestDebug());
             }
         }
-        if (KeyInputHandler.reloadModelsKey.func_151468_f()) {
+        if (KeyInputHandler.reloadModelsKey.isPressed()) {
             FlansModClient.reloadModels(Keyboard.isKeyDown(42));
         }
         if (ridingEntity instanceof IControllable) {
             final IControllable riding = (IControllable)ridingEntity;
-            if (this.mc.field_71474_y.field_74351_w.func_151468_f()) {
+            if (this.mc.gameSettings.keyBindForward.isPressed()) {
                 riding.pressKey(0, player);
             }
-            if (this.mc.field_71474_y.field_74368_y.func_151468_f()) {
+            if (this.mc.gameSettings.keyBindBack.isPressed()) {
                 riding.pressKey(1, player);
             }
-            if (this.mc.field_71474_y.field_74370_x.func_151468_f()) {
+            if (this.mc.gameSettings.keyBindLeft.isPressed()) {
                 riding.pressKey(2, player);
             }
-            if (this.mc.field_71474_y.field_74366_z.func_151468_f()) {
+            if (this.mc.gameSettings.keyBindRight.isPressed()) {
                 riding.pressKey(3, player);
             }
-            if (this.mc.field_71474_y.field_74314_A.func_151468_f()) {
+            if (this.mc.gameSettings.keyBindJump.isPressed()) {
                 riding.pressKey(4, player);
             }
-            if (KeyInputHandler.downKey.func_151468_f()) {
+            if (KeyInputHandler.downKey.isPressed()) {
                 riding.pressKey(5, player);
             }
-            if (this.mc.field_71474_y.field_74311_E.func_151468_f()) {
+            if (this.mc.gameSettings.keyBindSneak.isPressed()) {
                 riding.pressKey(6, player);
             }
-            if (this.mc.field_71474_y.field_151445_Q.func_151468_f() || KeyInputHandler.inventoryKey.func_151468_f()) {
+            if (this.mc.gameSettings.keyBindInventory.isPressed() || KeyInputHandler.inventoryKey.isPressed()) {
                 riding.pressKey(7, player);
             }
-            if (KeyInputHandler.bombKey.func_151468_f()) {
+            if (KeyInputHandler.bombKey.isPressed()) {
                 riding.pressKey(8, player);
             }
-            if (KeyInputHandler.gunKey.func_151468_f()) {
+            if (KeyInputHandler.gunKey.isPressed()) {
                 riding.pressKey(9, player);
             }
-            if (KeyInputHandler.controlSwitchKey.func_151468_f()) {
+            if (KeyInputHandler.controlSwitchKey.isPressed()) {
                 riding.pressKey(10, player);
             }
-            if (KeyInputHandler.leftRollKey.func_151468_f()) {
+            if (KeyInputHandler.leftRollKey.isPressed()) {
                 riding.pressKey(11, player);
             }
-            if (KeyInputHandler.rightRollKey.func_151468_f()) {
+            if (KeyInputHandler.rightRollKey.isPressed()) {
                 riding.pressKey(12, player);
             }
-            if (KeyInputHandler.gearKey.func_151468_f()) {
+            if (KeyInputHandler.gearKey.isPressed()) {
                 riding.pressKey(13, player);
             }
-            if (KeyInputHandler.doorKey.func_151468_f()) {
+            if (KeyInputHandler.doorKey.isPressed()) {
                 riding.pressKey(14, player);
             }
-            if (KeyInputHandler.modeKey.func_151468_f()) {
+            if (KeyInputHandler.modeKey.isPressed()) {
                 riding.pressKey(15, player);
             }
-            if (KeyInputHandler.trimKey.func_151468_f()) {
+            if (KeyInputHandler.trimKey.isPressed()) {
                 riding.pressKey(16, player);
             }
-            if (KeyInputHandler.flareKey.func_151468_f()) {
+            if (KeyInputHandler.flareKey.isPressed()) {
                 riding.pressKey(18, player);
             }
-            if (KeyInputHandler.nintendoSwitch.func_151468_f()) {
+            if (KeyInputHandler.nintendoSwitch.isPressed()) {
                 riding.pressKey(19, player);
             }
-            if (KeyInputHandler.s0.func_151468_f()) {
+            if (KeyInputHandler.s0.isPressed()) {
                 riding.pressKey(20, player);
             }
-            if (KeyInputHandler.s1.func_151468_f()) {
+            if (KeyInputHandler.s1.isPressed()) {
                 riding.pressKey(21, player);
             }
-            if (KeyInputHandler.s2.func_151468_f()) {
+            if (KeyInputHandler.s2.isPressed()) {
                 riding.pressKey(22, player);
             }
-            if (KeyInputHandler.s3.func_151468_f()) {
+            if (KeyInputHandler.s3.isPressed()) {
                 riding.pressKey(23, player);
             }
-            if (KeyInputHandler.s4.func_151468_f()) {
+            if (KeyInputHandler.s4.isPressed()) {
                 riding.pressKey(24, player);
             }
-            if (KeyInputHandler.s5.func_151468_f()) {
+            if (KeyInputHandler.s5.isPressed()) {
                 riding.pressKey(25, player);
             }
-            if (KeyInputHandler.s6.func_151468_f()) {
+            if (KeyInputHandler.s6.isPressed()) {
                 riding.pressKey(26, player);
             }
-            if (KeyInputHandler.s7.func_151468_f()) {
+            if (KeyInputHandler.s7.isPressed()) {
                 riding.pressKey(27, player);
             }
-            if (KeyInputHandler.s8.func_151468_f()) {
+            if (KeyInputHandler.s8.isPressed()) {
                 riding.pressKey(28, player);
             }
-            if (KeyInputHandler.s9.func_151468_f()) {
+            if (KeyInputHandler.s9.isPressed()) {
                 riding.pressKey(29, player);
             }
-            if (KeyInputHandler.eject.func_151468_f()) {
+            if (KeyInputHandler.eject.isPressed()) {
                 riding.pressKey(30, player);
             }
-            if (KeyInputHandler.openBorders.func_151468_f()) {
+            if (KeyInputHandler.openBorders.isPressed()) {
                 riding.pressKey(31, player);
             }
-            if (KeyInputHandler.thermal.func_151468_f()) {
+            if (KeyInputHandler.thermal.isPressed()) {
                 riding.pressKey(32, player);
             }
-            if (KeyInputHandler.artilleryMode.func_151468_f()) {
+            if (KeyInputHandler.artilleryMode.isPressed()) {
                 riding.pressKey(33, player);
             }
-            if (KeyInputHandler.repairKey.func_151468_f()) {
+            if (KeyInputHandler.repairKey.isPressed()) {
                 riding.pressKey(34, player);
             }
-            if (KeyInputHandler.activeRadar.func_151468_f()) {
+            if (KeyInputHandler.activeRadar.isPressed()) {
                 riding.pressKey(35, player);
             }
-            if (KeyInputHandler.switchWeapon.func_151468_f()) {
+            if (KeyInputHandler.switchWeapon.isPressed()) {
                 riding.pressKey(36, player);
             }
-            if (KeyInputHandler.missileUp.func_151468_f()) {
+            if (KeyInputHandler.missileUp.isPressed()) {
                 riding.pressKey(37, player);
             }
-            if (KeyInputHandler.missileDown.func_151468_f()) {
+            if (KeyInputHandler.missileDown.isPressed()) {
                 riding.pressKey(38, player);
             }
-            if (KeyInputHandler.missileLeft.func_151468_f()) {
+            if (KeyInputHandler.missileLeft.isPressed()) {
                 riding.pressKey(39, player);
             }
-            if (KeyInputHandler.missileRight.func_151468_f()) {
+            if (KeyInputHandler.missileRight.isPressed()) {
                 riding.pressKey(40, player);
             }
         }

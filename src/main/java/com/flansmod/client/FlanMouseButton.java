@@ -18,7 +18,7 @@ public enum FlanMouseButton
     }
     
     public String getName() {
-        return StatCollector.func_74838_a(String.format("firebutton.%s.name", this.name().toLowerCase()));
+        return StatCollector.translateToLocal(String.format("firebutton.%s.name", this.name().toLowerCase()));
     }
     
     public int getButton() {

@@ -25,19 +25,19 @@ public class SlotMechaInventory extends Slot
         this.restrictInput = filterInput;
     }
     
-    public boolean func_75214_a(final ItemStack stack) {
-        if (stack == null || stack.func_77973_b() == null) {
+    public boolean isItemValid(final ItemStack stack) {
+        if (stack == null || stack.getItem() == null) {
             return true;
         }
         if (!this.restrictInput) {
             return true;
         }
-        final Item item = stack.func_77973_b();
+        final Item item = stack.getItem();
         return (item instanceof ItemPart && ((ItemPart)item).type.fuel > 0) || item instanceof ItemBullet || item instanceof ItemGrenade;
     }
     
-    public void func_75215_d(final ItemStack stack) {
-        this.field_75224_c.func_70299_a(this.slotd, stack);
-        this.func_75218_e();
+    public void putStack(final ItemStack stack) {
+        this.inventory.setInventorySlotContents(this.slotd, stack);
+        this.onSlotChanged();
     }
 }

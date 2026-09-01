@@ -35,26 +35,26 @@ public class ModelHuochong extends ModelGun
         this.gunModel[9] = new ModelRendererTurbo(this, 17, 4, this.textureX, this.textureY);
         this.gunModel[10] = new ModelRendererTurbo(this, 1, 9, this.textureX, this.textureY);
         this.gunModel[0].addShapeBox(0.0f, 0.0f, 0.0f, 12, 1, 1, 0.0f, 25.0f, 0.0f, 0.0f, 6.0f, 0.3f, 0.3f, 6.0f, 0.3f, 0.3f, 25.0f, 0.0f, 0.0f, 25.0f, 0.0f, 0.0f, 6.0f, 0.3f, 0.3f, 6.0f, 0.3f, 0.3f, 25.0f, 0.0f, 0.0f);
-        this.gunModel[0].func_78793_a(-14.0f, -2.8f, 0.0f);
+        this.gunModel[0].setRotationPoint(-14.0f, -2.8f, 0.0f);
         this.gunModel[1].addShapeBox(0.0f, 0.0f, 0.0f, 4, 2, 2, 0.0f, 0.2f, 0.2f, 0.2f, 0.2f, 0.3f, 0.3f, 0.2f, 0.3f, 0.3f, 0.2f, 0.2f, 0.2f, 0.2f, 0.2f, 0.2f, 0.2f, 0.3f, 0.3f, 0.2f, 0.3f, 0.3f, 0.2f, 0.2f, 0.2f);
-        this.gunModel[1].func_78793_a(4.0f, -3.3f, -0.5f);
+        this.gunModel[1].setRotationPoint(4.0f, -3.3f, -0.5f);
         this.gunModel[2].addShapeBox(0.0f, 0.0f, 0.0f, 1, 2, 2, 0.0f, -0.2f, 0.5f, 0.5f, -0.2f, 0.5f, 0.5f, -0.2f, 0.5f, 0.5f, -0.2f, 0.5f, 0.5f, -0.2f, 0.5f, 0.5f, -0.2f, 0.5f, 0.5f, -0.2f, 0.5f, 0.5f, -0.2f, 0.5f, 0.5f);
-        this.gunModel[2].func_78793_a(8.0f, -3.3f, -0.5f);
+        this.gunModel[2].setRotationPoint(8.0f, -3.3f, -0.5f);
         this.gunModel[3].addShapeBox(0.0f, 0.0f, 0.0f, 1, 2, 2, 0.0f, -0.2f, 0.4f, 0.4f, -0.2f, 0.4f, 0.4f, -0.2f, 0.4f, 0.4f, -0.2f, 0.4f, 0.4f, -0.2f, 0.4f, 0.4f, -0.2f, 0.4f, 0.4f, -0.2f, 0.4f, 0.4f, -0.2f, 0.4f, 0.4f);
-        this.gunModel[3].func_78793_a(3.0f, -3.3f, -0.5f);
+        this.gunModel[3].setRotationPoint(3.0f, -3.3f, -0.5f);
         this.gunModel[4].addShapeBox(0.0f, 0.0f, 0.0f, 1, 2, 2, 0.0f, 0.2f, 0.2f, 0.2f, -0.5f, 0.55f, 0.5f, -0.5f, 0.5f, 0.5f, 0.2f, 0.2f, 0.2f, 0.2f, 0.2f, 0.2f, -0.5f, 0.5f, 0.5f, -0.5f, 0.5f, 0.5f, 0.2f, 0.2f, 0.2f);
-        this.gunModel[4].func_78793_a(9.0f, -3.3f, -0.5f);
+        this.gunModel[4].setRotationPoint(9.0f, -3.3f, -0.5f);
         this.gunModel[5].addShapeBox(0.0f, 0.0f, 0.0f, 2, 2, 2, 0.0f, 0.0f, 0.5f, 0.5f, 0.0f, 0.8f, 0.8f, 0.0f, 0.8f, 0.8f, 0.0f, 0.5f, 0.5f, 0.0f, 0.5f, 0.5f, 0.0f, 0.8f, 0.8f, 0.0f, 0.8f, 0.8f, 0.0f, 0.5f, 0.5f);
-        this.gunModel[5].func_78793_a(9.5f, -3.3f, -0.5f);
+        this.gunModel[5].setRotationPoint(9.5f, -3.3f, -0.5f);
         this.gunModel[6].addShapeBox(0.0f, 0.0f, 0.0f, 1, 2, 2, 0.0f, -0.2f, 0.5f, 0.5f, -0.2f, 0.5f, 0.5f, -0.2f, 0.5f, 0.5f, -0.2f, 0.5f, 0.5f, -0.2f, 0.5f, 0.5f, -0.2f, 0.5f, 0.5f, -0.2f, 0.5f, 0.5f, -0.2f, 0.5f, 0.5f);
-        this.gunModel[6].func_78793_a(14.0f, -3.3f, -0.5f);
+        this.gunModel[6].setRotationPoint(14.0f, -3.3f, -0.5f);
         this.gunModel[7].addShapeBox(0.0f, 0.0f, 0.0f, 9, 2, 2, 0.0f, 0.0f, 0.2f, 0.2f, 0.0f, 0.2f, 0.2f, 0.0f, 0.2f, 0.2f, 0.0f, 0.2f, 0.2f, 0.0f, 0.2f, 0.2f, 0.0f, 0.2f, 0.2f, 0.0f, 0.2f, 0.2f, 0.0f, 0.2f, 0.2f);
-        this.gunModel[7].func_78793_a(14.5f, -3.3f, -0.5f);
+        this.gunModel[7].setRotationPoint(14.5f, -3.3f, -0.5f);
         this.gunModel[8].addShapeBox(0.0f, 0.0f, 0.0f, 1, 2, 2, 0.0f, -0.2f, 0.4f, 0.4f, -0.2f, 0.4f, 0.4f, -0.2f, 0.4f, 0.4f, -0.2f, 0.4f, 0.4f, -0.2f, 0.4f, 0.4f, -0.2f, 0.4f, 0.4f, -0.2f, 0.4f, 0.4f, -0.2f, 0.4f, 0.4f);
-        this.gunModel[8].func_78793_a(23.0f, -3.3f, -0.5f);
+        this.gunModel[8].setRotationPoint(23.0f, -3.3f, -0.5f);
         this.gunModel[9].addShapeBox(0.0f, 0.0f, 0.0f, 2, 2, 2, 0.0f, 0.0f, 0.8f, 0.8f, 0.0f, 0.5f, 0.5f, 0.0f, 0.5f, 0.5f, 0.0f, 0.8f, 0.8f, 0.0f, 0.8f, 0.8f, 0.0f, 0.5f, 0.5f, 0.0f, 0.5f, 0.5f, 0.0f, 0.8f, 0.8f);
-        this.gunModel[9].func_78793_a(11.5f, -3.3f, -0.5f);
+        this.gunModel[9].setRotationPoint(11.5f, -3.3f, -0.5f);
         this.gunModel[10].addShapeBox(0.0f, 0.0f, 0.0f, 1, 2, 2, 0.0f, -0.5f, 0.55f, 0.5f, 0.2f, 0.2f, 0.2f, 0.2f, 0.2f, 0.2f, -0.5f, 0.5f, 0.5f, -0.5f, 0.5f, 0.5f, 0.2f, 0.2f, 0.2f, 0.2f, 0.2f, 0.2f, -0.5f, 0.5f, 0.5f);
-        this.gunModel[10].func_78793_a(13.0f, -3.3f, -0.5f);
+        this.gunModel[10].setRotationPoint(13.0f, -3.3f, -0.5f);
     }
 }

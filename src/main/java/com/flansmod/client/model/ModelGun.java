@@ -316,14 +316,14 @@ public class ModelGun extends ModelBase
         final float glowRatioX = Math.min(glow / 15.0f * 240.0f + ModelGun.lightmapLastX, 240.0f);
         final float glowRatioY = Math.min(glow / 15.0f * 240.0f + ModelGun.lightmapLastY, 240.0f);
         if (!ModelGun.optifineBreak) {
-            OpenGlHelper.func_77475_a(OpenGlHelper.field_77476_b, glowRatioX, glowRatioY);
+            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, glowRatioX, glowRatioY);
         }
     }
     
     public static void glowOff() {
         GL11.glEnable(2896);
         if (!ModelGun.optifineBreak) {
-            OpenGlHelper.func_77475_a(OpenGlHelper.field_77476_b, ModelGun.lightmapLastX, ModelGun.lightmapLastY);
+            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, ModelGun.lightmapLastX, ModelGun.lightmapLastY);
         }
         GL11.glPopAttrib();
     }
@@ -412,7 +412,7 @@ public class ModelGun extends ModelBase
         for (int i = 0; i < this.bulletCounterModel.length; ++i) {
             if (i == k) {
                 glowOn();
-                this.bulletCounterModel[i].func_78785_a(f);
+                this.bulletCounterModel[i].render(f);
                 glowOff();
             }
         }
@@ -433,7 +433,7 @@ public class ModelGun extends ModelBase
             for (int j = 0; j < this.advBulletCounterModel[i].length; ++j) {
                 if (digits[i] == j) {
                     glowOn();
-                    this.advBulletCounterModel[i][j].func_78785_a(f);
+                    this.advBulletCounterModel[i][j].render(f);
                     glowOff();
                 }
             }
@@ -443,7 +443,7 @@ public class ModelGun extends ModelBase
     protected void render(final ModelRendererTurbo[] models, final float f) {
         for (final ModelRendererTurbo model : models) {
             if (model != null) {
-                model.func_78785_a(f);
+                model.render(f);
             }
         }
     }
@@ -478,7 +478,7 @@ public class ModelGun extends ModelBase
     protected void flip(final ModelRendererTurbo[] model) {
         for (final ModelRendererTurbo part : model) {
             part.doMirror(false, true, true);
-            part.func_78793_a(part.field_78800_c, -part.field_78797_d, -part.field_78798_e);
+            part.setRotationPoint(part.rotationPointX, -part.rotationPointY, -part.rotationPointZ);
         }
     }
     
@@ -512,11 +512,11 @@ public class ModelGun extends ModelBase
     protected void translate(final ModelRendererTurbo[] model, final float x, final float y, final float z) {
         for (final ModelRendererTurbo modelRendererTurbo : model) {
             final ModelRendererTurbo mod = modelRendererTurbo;
-            modelRendererTurbo.field_78800_c += x;
+            modelRendererTurbo.rotationPointX += x;
             final ModelRendererTurbo modelRendererTurbo2 = mod;
-            modelRendererTurbo2.field_78797_d += y;
+            modelRendererTurbo2.rotationPointY += y;
             final ModelRendererTurbo modelRendererTurbo3 = mod;
-            modelRendererTurbo3.field_78798_e += z;
+            modelRendererTurbo3.rotationPointZ += z;
         }
     }
     

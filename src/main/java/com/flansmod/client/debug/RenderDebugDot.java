@@ -12,7 +12,7 @@ import net.minecraft.client.renderer.entity.Render;
 
 public class RenderDebugDot extends Render
 {
-    public void func_76986_a(final Entity entity, final double d0, final double d1, final double d2, final float f, final float f1) {
+    public void doRender(final Entity entity, final double d0, final double d1, final double d2, final float f, final float f1) {
         if (!FlansMod.DEBUG) {
             return;
         }
@@ -31,7 +31,7 @@ public class RenderDebugDot extends Render
         GL11.glEnable(2929);
     }
     
-    protected ResourceLocation func_110775_a(final Entity p_110775_1_) {
+    protected ResourceLocation getEntityTexture(final Entity p_110775_1_) {
         return null;
     }
 }

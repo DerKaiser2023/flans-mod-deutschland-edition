@@ -111,7 +111,7 @@ public class PlayerClass extends InfoType
     
     @Override
     public void onWorldLoad(final World world) {
-        if (world != null && world.field_72995_K) {
+        if (world != null && world.isRemote) {
             return;
         }
         try {
@@ -121,9 +121,9 @@ public class PlayerClass extends InfoType
                 int amount = 1;
                 int damage = 0;
                 final String[] itemNames = split[1].split("\\+");
-                for (final Object object : Item.field_150901_e) {
+                for (final Object object : Item.itemRegistry) {
                     final Item item = (Item)object;
-                    if (item != null && item.func_77658_a() != null && (item.func_77658_a().equals(itemNames[0]) || (item.func_77658_a().split("\\.").length > 1 && item.func_77658_a().split("\\.")[1].equals(itemNames[0])))) {
+                    if (item != null && item.getUnlocalizedName() != null && (item.getUnlocalizedName().equals(itemNames[0]) || (item.getUnlocalizedName().split("\\.").length > 1 && item.getUnlocalizedName().split("\\.")[1].equals(itemNames[0])))) {
                         matchingItem = item;
                     }
                 }
@@ -175,12 +175,12 @@ public class PlayerClass extends InfoType
                                 }
                             }
                             final NBTTagCompound specificAttachmentTags = new NBTTagCompound();
-                            new ItemStack(attachment.item).func_77955_b(specificAttachmentTags);
-                            attachmentTags.func_74782_a(tagName, (NBTBase)specificAttachmentTags);
+                            new ItemStack(attachment.item).writeToNBT(specificAttachmentTags);
+                            attachmentTags.setTag(tagName, (NBTBase)specificAttachmentTags);
                         }
                     }
-                    tags.func_74782_a("attachments", (NBTBase)attachmentTags);
-                    stack.field_77990_d = tags;
+                    tags.setTag("attachments", (NBTBase)attachmentTags);
+                    stack.stackTagCompound = tags;
                 }
                 this.startingItems.add(stack);
             }

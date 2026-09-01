@@ -18,9 +18,9 @@ public class ModelClaymore extends ModelBase
         (this.claymoreModel[1] = new ModelRendererTurbo(this, 12, 4, 32, 16)).addBox(0.0f, -2.0f, -4.0f, 0, 4, 8);
     }
     
-    public void func_78088_a(final Entity entity, final float f, final float f1, final float f2, final float f3, final float f4, final float f5) {
+    public void render(final Entity entity, final float f, final float f1, final float f2, final float f3, final float f4, final float f5) {
         for (final ModelRendererTurbo claymoreModelBit : this.claymoreModel) {
-            claymoreModelBit.func_78785_a(f5);
+            claymoreModelBit.render(f5);
         }
     }
 }

@@ -23,7 +23,7 @@ public class ModelPool
             return entry;
         }
         try {
-            entry = modelClass.newInstance();
+            entry = (ModelPoolEntry) modelClass.newInstance();
         }
         catch (final Exception e) {
             if (entry != null) {

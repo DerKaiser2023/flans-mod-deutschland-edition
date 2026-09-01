@@ -13,7 +13,7 @@ public class ChunkLoadingHandler implements ForgeChunkManager.LoadingCallback
 {
     public void ticketsLoaded(final List<ForgeChunkManager.Ticket> tickets, final World world) {
         for (final ForgeChunkManager.Ticket ticket : tickets) {
-            final String s = ticket.getModData().func_74779_i("ShortName");
+            final String s = ticket.getModData().getString("ShortName");
             final TeamsMap map = TeamsManager.getInstance().maps.get(s);
             if (map != null) {
                 map.forceChunkLoading(ticket);

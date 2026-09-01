@@ -58,7 +58,7 @@ public class ModelCobra extends ModelPlane
         (this.heliMainRotorModels[0][1] = new ModelRendererTurbo(this, 110, 184, textureX, textureY)).addBox(-4.0f, 56.0f, -2.0f, 8, 1, 4);
         (this.heliMainRotorModels[0][2] = new ModelRendererTurbo(this, 0, 212, textureX, textureY)).addBox(4.0f, 56.0f, -2.0f, 72, 1, 8);
         (this.heliMainRotorModels[0][3] = new ModelRendererTurbo(this, 0, 223, textureX, textureY)).addBox(4.0f, 56.0f, -2.0f, 72, 1, 8);
-        this.heliMainRotorModels[0][3].field_78796_g = 3.1415927f;
+        this.heliMainRotorModels[0][3].rotateAngleY = 3.1415927f;
         this.heliMainRotorOrigins = new Vector3f[] { new Vector3f(0.0f, 3.0f, 0.0f) };
         this.heliTailRotorModels = new ModelRendererTurbo[1][4];
         (this.heliTailRotorModels[0][0] = new ModelRendererTurbo(this, 138, 38, textureX, textureY)).addBox(111.5f, 43.5f, 1.0f, 1, 1, 4);
@@ -80,7 +80,7 @@ public class ModelCobra extends ModelPlane
         for (final ModelRendererTurbo[] array2 : noseGun) {
             final ModelRendererTurbo[] dorsalGunParts = array2;
             for (final ModelRendererTurbo dorsalGunPart : array2) {
-                dorsalGunPart.func_78793_a(-64.0f, 12.0f, 0.0f);
+                dorsalGunPart.setRotationPoint(-64.0f, 12.0f, 0.0f);
             }
         }
         this.registerGunModel("Nose", noseGun);

@@ -38,24 +38,24 @@ import net.minecraft.client.renderer.entity.Render;
 public class RenderVehicle extends Render implements IItemRenderer
 {
     public RenderVehicle() {
-        this.field_76989_e = 1.0f;
+        this.shadowSize = 1.0f;
     }
     
     public void render(final EntityVehicle vehicle, final double d, final double d1, final double d2, final float f, final float f1) {
-        if (vehicle.field_70154_o != null && vehicle.field_70154_o.getClass().toString().indexOf("mcheli.aircraft.MCH_EntitySeat") > 0) {
+        if (vehicle.ridingEntity != null && vehicle.ridingEntity.getClass().toString().indexOf("mcheli.aircraft.MCH_EntitySeat") > 0) {
             return;
         }
-        this.func_110777_b((Entity)vehicle);
+        this.bindEntityTexture((Entity)vehicle);
         final VehicleType type = vehicle.getVehicleType();
         GL11.glPushMatrix();
         GL11.glTranslatef((float)d, (float)d1, (float)d2);
         float dYaw;
-        for (dYaw = vehicle.axes.getYaw() - vehicle.field_70126_B; dYaw > 180.0f; dYaw -= 360.0f) {}
+        for (dYaw = vehicle.axes.getYaw() - vehicle.prevRotationYaw; dYaw > 180.0f; dYaw -= 360.0f) {}
         while (dYaw <= -180.0f) {
             dYaw += 360.0f;
         }
         float dPitch;
-        for (dPitch = vehicle.axes.getPitch() - vehicle.field_70127_C; dPitch > 180.0f; dPitch -= 360.0f) {}
+        for (dPitch = vehicle.axes.getPitch() - vehicle.prevRotationPitch; dPitch > 180.0f; dPitch -= 360.0f) {}
         while (dPitch <= -180.0f) {
             dPitch += 360.0f;
         }
@@ -64,8 +64,8 @@ public class RenderVehicle extends Render implements IItemRenderer
         while (dRoll <= -180.0f) {
             dRoll += 360.0f;
         }
-        GL11.glRotatef(180.0f - vehicle.field_70126_B - dYaw * f1, 0.0f, 1.0f, 0.0f);
-        GL11.glRotatef(vehicle.field_70127_C + dPitch * f1, 0.0f, 0.0f, 1.0f);
+        GL11.glRotatef(180.0f - vehicle.prevRotationYaw - dYaw * f1, 0.0f, 1.0f, 0.0f);
+        GL11.glRotatef(vehicle.prevRotationPitch + dPitch * f1, 0.0f, 0.0f, 1.0f);
         GL11.glRotatef(vehicle.prevRotationRoll + dRoll * f1, 1.0f, 0.0f, 0.0f);
         GL11.glRotatef(180.0f, 0.0f, 1.0f, 0.0f);
         GL11.glPushMatrix();
@@ -203,10 +203,10 @@ public class RenderVehicle extends Render implements IItemRenderer
             }
         }
         GL11.glPopMatrix();
-        if ((vehicle.getDriveableType().walterGunRange || vehicle.getDriveableType().walterMortar) && Minecraft.func_71410_x() != null) {
+        if ((vehicle.getDriveableType().walterGunRange || vehicle.getDriveableType().walterMortar) && Minecraft.getMinecraft() != null) {
             GL11.glPushMatrix();
-            final Minecraft mc = Minecraft.func_71410_x();
-            if (mc.field_71439_g != null && mc.field_71439_g.field_70154_o != null && mc.field_71439_g.field_70154_o instanceof EntitySeat && vehicle.seats[0] != null && vehicle.seats[0].field_70153_n != null && vehicle.seats[0].field_70153_n instanceof EntityPlayer && ((EntityPlayer)vehicle.seats[0].field_70153_n).getDisplayName() == mc.field_71439_g.getDisplayName()) {
+            final Minecraft mc = Minecraft.getMinecraft();
+            if (mc.thePlayer != null && mc.thePlayer.ridingEntity != null && mc.thePlayer.ridingEntity instanceof EntitySeat && vehicle.seats[0] != null && vehicle.seats[0].riddenByEntity != null && vehicle.seats[0].riddenByEntity instanceof EntityPlayer && ((EntityPlayer)vehicle.seats[0].riddenByEntity).getDisplayName() == mc.thePlayer.getDisplayName()) {
                 final float pitch2 = -vehicle.seats[0].looking.getPitch();
                 float WalterRange = -0.3228f * (pitch2 * pitch2) + 29.3893f * pitch2 - 76.1646f;
                 if (vehicle.getDriveableType().walterMortar) {
@@ -215,19 +215,19 @@ public class RenderVehicle extends Render implements IItemRenderer
                 if (TeamsManager.shellsEnabled) {
                     int slot = -1;
                     for (int i = vehicle.getDriveableData().getMissileInventoryStart(); i < vehicle.getDriveableData().getMissileInventoryStart() + type.numMissileSlots; ++i) {
-                        final ItemStack shell = vehicle.getDriveableData().func_70301_a(i);
-                        if (shell != null && shell.func_77973_b() instanceof ItemBullet) {
+                        final ItemStack shell = vehicle.getDriveableData().getStackInSlot(i);
+                        if (shell != null && shell.getItem() instanceof ItemBullet) {
                             slot = i;
                         }
                     }
                     if (slot != -1) {
-                        final ItemStack bulletStack = vehicle.driveableData.func_70301_a(slot);
-                        final ItemBullet item = (ItemBullet)bulletStack.func_77973_b();
+                        final ItemStack bulletStack = vehicle.driveableData.getStackInSlot(slot);
+                        final ItemBullet item = (ItemBullet)bulletStack.getItem();
                         if (item instanceof ItemBullet && item.type.model != null && (vehicle.getDriveableType().walterGunRange || vehicle.getDriveableType().walterMortar)) {
                             final BulletType gunType = item.type;
                             final ModelBase modelo = item.type.model;
-                            final TextureManager texturemanager = Minecraft.func_71410_x().func_110434_K();
-                            texturemanager.func_110577_a(FlansModResourceHandler.getTexture(gunType));
+                            final TextureManager texturemanager = Minecraft.getMinecraft().getTextureManager();
+                            texturemanager.bindTexture(FlansModResourceHandler.getTexture(gunType));
                             final IItemRenderer.ItemRenderType typerino = IItemRenderer.ItemRenderType.ENTITY;
                             if (vehicle.seats[0] != null) {
                                 final float yaw2 = vehicle.seats[0].prevLooking.getYaw() + dYaw * f1;
@@ -238,22 +238,22 @@ public class RenderVehicle extends Render implements IItemRenderer
                             GL11.glRotatef(-90.0f, -90.0f, 1.0f, 0.0f);
                             GL11.glTranslatef(0.0f, 0.0f, 0.0f);
                             GL11.glScalef(3.0f, 3.0f, 3.0f);
-                            modelo.func_78088_a((Entity)null, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0625f);
+                            modelo.render((Entity)null, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0625f);
                             GL11.glTranslatef(0.0f, -3.0f, 0.0f);
                             GL11.glScalef(2.0f, 2.0f, 2.0f);
-                            modelo.func_78088_a((Entity)null, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0625f);
+                            modelo.render((Entity)null, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0625f);
                             GL11.glTranslatef(0.0f, -3.0f, 0.0f);
                             GL11.glScalef(2.0f, 2.0f, 2.0f);
-                            modelo.func_78088_a((Entity)null, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0625f);
+                            modelo.render((Entity)null, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0625f);
                             GL11.glTranslatef(0.0f, -3.0f, 0.0f);
                             GL11.glScalef(2.0f, 2.0f, 2.0f);
-                            modelo.func_78088_a((Entity)null, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0625f);
+                            modelo.render((Entity)null, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0625f);
                             GL11.glTranslatef(0.0f, -3.0f, 0.0f);
                             GL11.glScalef(2.0f, 2.0f, 2.0f);
-                            modelo.func_78088_a((Entity)null, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0625f);
+                            modelo.render((Entity)null, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0625f);
                             GL11.glTranslatef(0.0f, -3.0f, 0.0f);
                             GL11.glScalef(2.0f, 2.0f, 2.0f);
-                            modelo.func_78088_a((Entity)null, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0625f);
+                            modelo.render((Entity)null, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0625f);
                         }
                     }
                 }
@@ -274,13 +274,13 @@ public class RenderVehicle extends Render implements IItemRenderer
             GL11.glColor4f(0.0f, 0.0f, 1.0f, 0.3f);
             for (final ShootPoint point : type.shootPointsPrimary) {
                 if (point.rootPos.part == EnumDriveablePart.turret) {
-                    func_76980_a(AxisAlignedBB.func_72330_a((double)(point.rootPos.position.x - 0.25f), (double)(point.rootPos.position.y - 0.25f), (double)(point.rootPos.position.z - 0.25f), (double)(point.rootPos.position.x + 0.25f), (double)(point.rootPos.position.y + 0.25f), (double)(point.rootPos.position.z + 0.25f)));
+                    renderAABB(AxisAlignedBB.getBoundingBox((double)(point.rootPos.position.x - 0.25f), (double)(point.rootPos.position.y - 0.25f), (double)(point.rootPos.position.z - 0.25f), (double)(point.rootPos.position.x + 0.25f), (double)(point.rootPos.position.y + 0.25f), (double)(point.rootPos.position.z + 0.25f)));
                 }
             }
             GL11.glColor4f(0.0f, 1.0f, 0.0f, 0.3f);
             for (final ShootPoint point : type.shootPointsSecondary) {
                 if (point.rootPos.part == EnumDriveablePart.turret) {
-                    func_76980_a(AxisAlignedBB.func_72330_a((double)(point.rootPos.position.x - 0.25f), (double)(point.rootPos.position.y - 0.25f), (double)(point.rootPos.position.z - 0.25f), (double)(point.rootPos.position.x + 0.25f), (double)(point.rootPos.position.y + 0.25f), (double)(point.rootPos.position.z + 0.25f)));
+                    renderAABB(AxisAlignedBB.getBoundingBox((double)(point.rootPos.position.x - 0.25f), (double)(point.rootPos.position.y - 0.25f), (double)(point.rootPos.position.z - 0.25f), (double)(point.rootPos.position.x + 0.25f), (double)(point.rootPos.position.y + 0.25f), (double)(point.rootPos.position.z + 0.25f)));
                 }
             }
         }
@@ -319,9 +319,9 @@ public class RenderVehicle extends Render implements IItemRenderer
         GL11.glDisable(2929);
         GL11.glColor4f(1.0f, 0.0f, 0.0f, 0.3f);
         GL11.glScalef(1.0f, 1.0f, 1.0f);
-        if ((vehicle.getDriveableType().walterGunRange || vehicle.getDriveableType().walterMortar) && Minecraft.func_71410_x() != null) {
-            final Minecraft mc2 = Minecraft.func_71410_x();
-            if (mc2.field_71439_g != null && mc2.field_71439_g.field_70154_o != null && mc2.field_71439_g.field_70154_o instanceof EntitySeat && vehicle.seats[0] != null && vehicle.seats[0].field_70153_n != null && vehicle.seats[0].field_70153_n instanceof EntityPlayer && ((EntityPlayer)vehicle.seats[0].field_70153_n).getDisplayName() == mc2.field_71439_g.getDisplayName()) {
+        if ((vehicle.getDriveableType().walterGunRange || vehicle.getDriveableType().walterMortar) && Minecraft.getMinecraft() != null) {
+            final Minecraft mc2 = Minecraft.getMinecraft();
+            if (mc2.thePlayer != null && mc2.thePlayer.ridingEntity != null && mc2.thePlayer.ridingEntity instanceof EntitySeat && vehicle.seats[0] != null && vehicle.seats[0].riddenByEntity != null && vehicle.seats[0].riddenByEntity instanceof EntityPlayer && ((EntityPlayer)vehicle.seats[0].riddenByEntity).getDisplayName() == mc2.thePlayer.getDisplayName()) {
                 GL11.glColor4f(0.0f, 2.0f, 2.0f, 0.3f);
                 final float pitch3 = -vehicle.seats[0].looking.getPitch();
                 float WalterRange2 = -0.3228f * (pitch3 * pitch3) + 29.3893f * pitch3 - 76.1646f;
@@ -335,12 +335,12 @@ public class RenderVehicle extends Render implements IItemRenderer
                 if (WalterRange2 < 0.0f) {
                     WalterRange2 = 0.0f;
                 }
-                func_76980_a(AxisAlignedBB.func_72330_a((double)(-1.0f + WalterRange2), 0.0, -1.0, (double)(1.0f + WalterRange2), 1.0, 1.0));
-                func_76980_a(AxisAlignedBB.func_72330_a((double)(-2.0f + WalterRange2), 1.0, -2.0, (double)(2.0f + WalterRange2), 2.0, 2.0));
-                func_76980_a(AxisAlignedBB.func_72330_a((double)(-2.5f + WalterRange2), 2.0, -2.5, (double)(2.5f + WalterRange2), 3.0, 2.5));
-                func_76980_a(AxisAlignedBB.func_72330_a((double)(-3.0f + WalterRange2), 3.0, -3.0, (double)(3.0f + WalterRange2), 4.0, 3.0));
-                func_76980_a(AxisAlignedBB.func_72330_a((double)(-3.5f + WalterRange2), 4.0, -3.5, (double)(3.5f + WalterRange2), 5.0, 3.5));
-                func_76980_a(AxisAlignedBB.func_72330_a((double)(-0.5f + WalterRange2), 5.0, -0.5, (double)(0.5f + WalterRange2), 450.0, 0.5));
+                renderAABB(AxisAlignedBB.getBoundingBox((double)(-1.0f + WalterRange2), 0.0, -1.0, (double)(1.0f + WalterRange2), 1.0, 1.0));
+                renderAABB(AxisAlignedBB.getBoundingBox((double)(-2.0f + WalterRange2), 1.0, -2.0, (double)(2.0f + WalterRange2), 2.0, 2.0));
+                renderAABB(AxisAlignedBB.getBoundingBox((double)(-2.5f + WalterRange2), 2.0, -2.5, (double)(2.5f + WalterRange2), 3.0, 2.5));
+                renderAABB(AxisAlignedBB.getBoundingBox((double)(-3.0f + WalterRange2), 3.0, -3.0, (double)(3.0f + WalterRange2), 4.0, 3.0));
+                renderAABB(AxisAlignedBB.getBoundingBox((double)(-3.5f + WalterRange2), 4.0, -3.5, (double)(3.5f + WalterRange2), 5.0, 3.5));
+                renderAABB(AxisAlignedBB.getBoundingBox((double)(-0.5f + WalterRange2), 5.0, -0.5, (double)(0.5f + WalterRange2), 450.0, 0.5));
             }
         }
         for (final DriveablePart part : vehicle.getDriveableData().parts.values()) {
@@ -352,7 +352,7 @@ public class RenderVehicle extends Render implements IItemRenderer
                 flux = 0.1f;
             }
             else {
-                flux = (float)Math.sin(vehicle.field_70173_aa / 10.0f);
+                flux = (float)Math.sin(vehicle.ticksExisted / 10.0f);
             }
             float red = 0.5f;
             if (vehicle.shieldHitTimer > 0 || (part.health <= 0 && part.maxHealth > 0 && part.type == EnumDriveablePart.shield)) {
@@ -385,19 +385,19 @@ public class RenderVehicle extends Render implements IItemRenderer
             else if (part.type != EnumDriveablePart.shield) {
                 GL11.glColor4f(0.0f, 0.0f, 0.0f, 0.0f);
             }
-            func_76980_a(AxisAlignedBB.func_72330_a((double)part.box.x, (double)part.box.y, (double)part.box.z, (double)(part.box.x + part.box.w), (double)(part.box.y + part.box.h), (double)(part.box.z + part.box.d)));
+            renderAABB(AxisAlignedBB.getBoundingBox((double)part.box.x, (double)part.box.y, (double)part.box.z, (double)(part.box.x + part.box.w), (double)(part.box.y + part.box.h), (double)(part.box.z + part.box.d)));
         }
         if (FlansMod.DEBUG) {
             GL11.glColor4f(0.0f, 0.0f, 1.0f, 0.3f);
             for (final ShootPoint point2 : type.shootPointsPrimary) {
                 if (point2.rootPos.part != EnumDriveablePart.turret) {
-                    func_76980_a(AxisAlignedBB.func_72330_a((double)(point2.rootPos.position.x - 0.25f), (double)(point2.rootPos.position.y - 0.25f), (double)(point2.rootPos.position.z - 0.25f), (double)(point2.rootPos.position.x + 0.25f), (double)(point2.rootPos.position.y + 0.25f), (double)(point2.rootPos.position.z + 0.25f)));
+                    renderAABB(AxisAlignedBB.getBoundingBox((double)(point2.rootPos.position.x - 0.25f), (double)(point2.rootPos.position.y - 0.25f), (double)(point2.rootPos.position.z - 0.25f), (double)(point2.rootPos.position.x + 0.25f), (double)(point2.rootPos.position.y + 0.25f), (double)(point2.rootPos.position.z + 0.25f)));
                 }
             }
             GL11.glColor4f(0.0f, 1.0f, 0.0f, 0.3f);
             for (final ShootPoint point2 : type.shootPointsSecondary) {
                 if (point2.rootPos.part != EnumDriveablePart.turret) {
-                    func_76980_a(AxisAlignedBB.func_72330_a((double)(point2.rootPos.position.x - 0.25f), (double)(point2.rootPos.position.y - 0.25f), (double)(point2.rootPos.position.z - 0.25f), (double)(point2.rootPos.position.x + 0.25f), (double)(point2.rootPos.position.y + 0.25f), (double)(point2.rootPos.position.z + 0.25f)));
+                    renderAABB(AxisAlignedBB.getBoundingBox((double)(point2.rootPos.position.x - 0.25f), (double)(point2.rootPos.position.y - 0.25f), (double)(point2.rootPos.position.z - 0.25f), (double)(point2.rootPos.position.x + 0.25f), (double)(point2.rootPos.position.y + 0.25f), (double)(point2.rootPos.position.z + 0.25f)));
                 }
             }
         }
@@ -408,11 +408,11 @@ public class RenderVehicle extends Render implements IItemRenderer
         GL11.glPopMatrix();
     }
     
-    public void func_76986_a(final Entity entity, final double d, final double d1, final double d2, final float f, final float f1) {
+    public void doRender(final Entity entity, final double d, final double d1, final double d2, final float f, final float f1) {
         this.render((EntityVehicle)entity, d, d1, d2, f, f1);
     }
     
-    protected ResourceLocation func_110775_a(final Entity entity) {
+    protected ResourceLocation getEntityTexture(final Entity entity) {
         final DriveableType type = ((EntityDriveable)entity).getDriveableType();
         final Paintjob paintjob = type.getPaintjob(((EntityDriveable)entity).getDriveableData().paintjobID);
         return FlansModResourceHandler.getPaintjobTexture(paintjob);
@@ -423,7 +423,7 @@ public class RenderVehicle extends Render implements IItemRenderer
             case EQUIPPED:
             case EQUIPPED_FIRST_PERSON:
             case ENTITY: {
-                return Minecraft.func_71410_x().field_71474_y.field_74347_j && item != null && item.func_77973_b() instanceof ItemVehicle && ((ItemVehicle)item.func_77973_b()).type.model != null;
+                return Minecraft.getMinecraft().gameSettings.fancyGraphics && item != null && item.getItem() instanceof ItemVehicle && ((ItemVehicle)item.getItem()).type.model != null;
             }
             default: {
                 return false;
@@ -437,14 +437,14 @@ public class RenderVehicle extends Render implements IItemRenderer
     
     public void renderItem(final IItemRenderer.ItemRenderType type, final ItemStack item, final Object... data) {
         GL11.glPushMatrix();
-        if (item != null && item.func_77973_b() instanceof ItemVehicle) {
-            final VehicleType vehicleType = ((ItemVehicle)item.func_77973_b()).type;
+        if (item != null && item.getItem() instanceof ItemVehicle) {
+            final VehicleType vehicleType = ((ItemVehicle)item.getItem()).type;
             if (vehicleType.model != null) {
                 float scale = 0.5f;
                 switch (type) {
                     case ENTITY: {
                         scale = 1.5f;
-                        GL11.glRotatef((float)((EntityItem)data[1]).field_70173_aa, 0.0f, 1.0f, 0.0f);
+                        GL11.glRotatef((float)((EntityItem)data[1]).ticksExisted, 0.0f, 1.0f, 0.0f);
                         break;
                     }
                     case EQUIPPED: {
@@ -463,7 +463,7 @@ public class RenderVehicle extends Render implements IItemRenderer
                     }
                 }
                 GL11.glScalef(scale / vehicleType.cameraDistance, scale / vehicleType.cameraDistance, scale / vehicleType.cameraDistance);
-                Minecraft.func_71410_x().field_71446_o.func_110577_a(FlansModResourceHandler.getTexture(vehicleType));
+                Minecraft.getMinecraft().renderEngine.bindTexture(FlansModResourceHandler.getTexture(vehicleType));
                 final ModelDriveable model = vehicleType.model;
                 model.render(vehicleType);
             }

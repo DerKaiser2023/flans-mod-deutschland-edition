@@ -59,8 +59,8 @@ public class GametypeZombies extends Gametype
         if (GametypeZombies.teamsManager.currentRound.teams[0].members.size() > 0) {
             final EntityPlayer zombifiedPlayer = (EntityPlayer)GametypeZombies.teamsManager.getPlayer(GametypeZombies.teamsManager.currentRound.teams[0].members.get(GametypeZombies.rand.nextInt(GametypeZombies.teamsManager.currentRound.teams[0].members.size())));
             final TeamsManager teamsManager = GametypeZombies.teamsManager;
-            TeamsManager.messageAll("§4" + zombifiedPlayer.func_70005_c_() + "§c was infected with the §4zombie plague§c!");
-            zombifiedPlayer.func_70097_a(DamageSource.field_76377_j, 1.0E9f);
+            TeamsManager.messageAll("§4" + zombifiedPlayer.getCommandSenderName() + "§c was infected with the §4zombie plague§c!");
+            zombifiedPlayer.attackEntityFrom(DamageSource.generic, 1.0E9f);
         }
     }
     
@@ -197,7 +197,7 @@ public class GametypeZombies extends Gametype
         }
         if (validSpawnPoints.size() > 0) {
             final ITeamObject spawnPoint = validSpawnPoints.get(GametypeZombies.rand.nextInt(validSpawnPoints.size()));
-            return Vec3.func_72443_a(spawnPoint.getPosX(), spawnPoint.getPosY(), spawnPoint.getPosZ());
+            return Vec3.createVectorHelper(spawnPoint.getPosX(), spawnPoint.getPosY(), spawnPoint.getPosZ());
         }
         return null;
     }
@@ -214,12 +214,12 @@ public class GametypeZombies extends Gametype
     
     @Override
     public void readFromNBT(final NBTTagCompound tags) {
-        this.humanPrepTime = tags.func_74762_e("ZOMPrepTime");
+        this.humanPrepTime = tags.getInteger("ZOMPrepTime");
     }
     
     @Override
     public void saveToNBT(final NBTTagCompound tags) {
-        tags.func_74768_a("ZOMPrepTime", this.humanPrepTime);
+        tags.setInteger("ZOMPrepTime", this.humanPrepTime);
     }
     
     @Override

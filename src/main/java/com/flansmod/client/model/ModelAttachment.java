@@ -43,7 +43,7 @@ public class ModelAttachment extends ModelBase
     public void renderAttachment(final float f) {
         for (final ModelRendererTurbo model : this.attachmentModel) {
             if (model != null) {
-                model.func_78785_a(f);
+                model.render(f);
             }
         }
     }
@@ -51,7 +51,7 @@ public class ModelAttachment extends ModelBase
     public void renderAttachmentAmmo(final float f) {
         for (final ModelRendererTurbo model : this.ammoModel) {
             if (model != null) {
-                model.func_78785_a(f);
+                model.render(f);
             }
         }
     }
@@ -59,11 +59,11 @@ public class ModelAttachment extends ModelBase
     public void flipAll() {
         for (final ModelRendererTurbo anAttachmentModel : this.attachmentModel) {
             anAttachmentModel.doMirror(false, true, true);
-            anAttachmentModel.func_78793_a(anAttachmentModel.field_78800_c, -anAttachmentModel.field_78797_d, -anAttachmentModel.field_78798_e);
+            anAttachmentModel.setRotationPoint(anAttachmentModel.rotationPointX, -anAttachmentModel.rotationPointY, -anAttachmentModel.rotationPointZ);
         }
         for (final ModelRendererTurbo anAmmoModel : this.ammoModel) {
             anAmmoModel.doMirror(false, true, true);
-            anAmmoModel.func_78793_a(anAmmoModel.field_78800_c, -anAmmoModel.field_78797_d, -anAmmoModel.field_78798_e);
+            anAmmoModel.setRotationPoint(anAmmoModel.rotationPointX, -anAmmoModel.rotationPointY, -anAmmoModel.rotationPointZ);
         }
     }
 }

@@ -26,21 +26,21 @@ public class ModelMinigun extends ModelGun
         this.minigunBarrelModel = new ModelRendererTurbo[12];
         for (int i = 0; i < 6; ++i) {
             (this.minigunBarrelModel[i] = new ModelRendererTurbo(this, 0, 16 + 2 * i, textureX, textureY)).addBox(12.0f, 1.0f, -0.5f, 28, 1, 1);
-            this.minigunBarrelModel[i].field_78795_f = i * 3.1415927f / 3.0f;
-            this.minigunBarrelModel[i].func_78793_a(0.0f, -1.0f, 0.0f);
+            this.minigunBarrelModel[i].rotateAngleX = i * 3.1415927f / 3.0f;
+            this.minigunBarrelModel[i].setRotationPoint(0.0f, -1.0f, 0.0f);
         }
         (this.minigunBarrelModel[6] = new ModelRendererTurbo(this, 0, 28, textureX, textureY)).addShapeBox(8.0f, 0.0f, -3.0f, 4, 3, 6, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -0.5f, -1.5f, 0.0f, -0.5f, -1.5f, 0.0f, -0.5f, -1.5f, 0.0f, -0.5f, -1.5f);
-        this.minigunBarrelModel[6].func_78793_a(0.0f, -1.0f, 0.0f);
+        this.minigunBarrelModel[6].setRotationPoint(0.0f, -1.0f, 0.0f);
         (this.minigunBarrelModel[7] = new ModelRendererTurbo(this, 20, 28, textureX, textureY)).addShapeBox(8.0f, -3.0f, -3.0f, 4, 3, 6, 0.0f, 0.0f, -0.5f, -1.5f, 0.0f, -0.5f, -1.5f, 0.0f, -0.5f, -1.5f, 0.0f, -0.5f, -1.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.minigunBarrelModel[7].func_78793_a(0.0f, -1.0f, 0.0f);
+        this.minigunBarrelModel[7].setRotationPoint(0.0f, -1.0f, 0.0f);
         (this.minigunBarrelModel[8] = new ModelRendererTurbo(this, 0, 37, textureX, textureY)).addShapeBox(28.0f, 0.0f, -3.0f, 2, 3, 6, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -0.5f, -1.5f, 0.0f, -0.5f, -1.5f, 0.0f, -0.5f, -1.5f, 0.0f, -0.5f, -1.5f);
-        this.minigunBarrelModel[8].func_78793_a(0.0f, -1.0f, 0.0f);
+        this.minigunBarrelModel[8].setRotationPoint(0.0f, -1.0f, 0.0f);
         (this.minigunBarrelModel[9] = new ModelRendererTurbo(this, 16, 37, textureX, textureY)).addShapeBox(28.0f, -3.0f, -3.0f, 2, 3, 6, 0.0f, 0.0f, -0.5f, -1.5f, 0.0f, -0.5f, -1.5f, 0.0f, -0.5f, -1.5f, 0.0f, -0.5f, -1.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.minigunBarrelModel[9].func_78793_a(0.0f, -1.0f, 0.0f);
+        this.minigunBarrelModel[9].setRotationPoint(0.0f, -1.0f, 0.0f);
         (this.minigunBarrelModel[10] = new ModelRendererTurbo(this, 32, 37, textureX, textureY)).addShapeBox(36.0f, 0.0f, -3.0f, 2, 3, 6, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -0.5f, -1.5f, 0.0f, -0.5f, -1.5f, 0.0f, -0.5f, -1.5f, 0.0f, -0.5f, -1.5f);
-        this.minigunBarrelModel[10].func_78793_a(0.0f, -1.0f, 0.0f);
+        this.minigunBarrelModel[10].setRotationPoint(0.0f, -1.0f, 0.0f);
         (this.minigunBarrelModel[11] = new ModelRendererTurbo(this, 48, 37, textureX, textureY)).addShapeBox(36.0f, -3.0f, -3.0f, 2, 3, 6, 0.0f, 0.0f, -0.5f, -1.5f, 0.0f, -0.5f, -1.5f, 0.0f, -0.5f, -1.5f, 0.0f, -0.5f, -1.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.minigunBarrelModel[11].func_78793_a(0.0f, -1.0f, 0.0f);
+        this.minigunBarrelModel[11].setRotationPoint(0.0f, -1.0f, 0.0f);
         this.minigunBarrelOrigin = new Vector3f(0.5f, -0.0625f, 0.0f);
         this.animationType = EnumAnimationType.SIDE_CLIP;
         this.thirdPersonOffset = new Vector3f(0.0f, -0.15f, 0.0f);

@@ -50,76 +50,76 @@ public class ItemTool extends ItemFood
     
     public ItemTool(final ToolType t) {
         super(t.foodness, false);
-        this.field_77777_bU = 1;
+        this.maxStackSize = 1;
         this.type = t;
-        ((ItemTool)(this.type.item = (Item)this)).func_77656_e(this.type.toolLife);
+        ((ItemTool)(this.type.item = (Item)this)).setMaxDurability(this.type.toolLife);
         if (this.type.foodness == 0) {
-            this.func_77637_a((CreativeTabs)FlansMod.tabFlanParts);
+            this.setCreativeTab((CreativeTabs)FlansMod.tabFlanParts);
             if (this.type.remote) {
-                this.func_77637_a((CreativeTabs)FlansMod.tabFlanGuns);
+                this.setCreativeTab((CreativeTabs)FlansMod.tabFlanGuns);
             }
             if (this.type.healDriveables) {
-                this.func_77637_a((CreativeTabs)FlansMod.tabFlanDriveables);
+                this.setCreativeTab((CreativeTabs)FlansMod.tabFlanDriveables);
             }
         }
         GameRegistry.registerItem((Item)this, this.type.shortName, "flansmod");
     }
     
-    public void func_77624_a(final ItemStack stack, final EntityPlayer player, final List lines, final boolean b) {
+    public void addInformation(final ItemStack stack, final EntityPlayer player, final List lines, final boolean b) {
         if (!this.type.packName.isEmpty()) {
             lines.add(this.type.packName);
         }
         if (this.type.description != null) {
             Collections.addAll(lines, this.type.description.split("_"));
         }
-        if (stack.field_77990_d != null) {
-            lines.add(stack.field_77990_d.func_74779_i("key"));
+        if (stack.stackTagCompound != null) {
+            lines.add(stack.stackTagCompound.getString("key"));
         }
     }
     
-    public void func_77622_d(final ItemStack itemStack, final World world, final EntityPlayer player) {
-        (itemStack.field_77990_d = new NBTTagCompound()).func_74778_a("key", this.generateRandomString());
+    public void onCreated(final ItemStack itemStack, final World world, final EntityPlayer player) {
+        (itemStack.stackTagCompound = new NBTTagCompound()).setString("key", this.generateRandomString());
     }
     
     @SideOnly(Side.CLIENT)
-    public int func_82790_a(final ItemStack par1ItemStack, final int par2) {
+    public int getColorFromItemStack(final ItemStack par1ItemStack, final int par2) {
         return this.type.colour;
     }
     
     @SideOnly(Side.CLIENT)
-    public void func_94581_a(final IIconRegister icon) {
-        this.field_77791_bV = icon.func_94245_a("FlansMod:" + this.type.iconPath);
+    public void registerIcons(final IIconRegister icon) {
+        this.itemIcon = icon.registerIcon("FlansMod:" + this.type.iconPath);
     }
     
-    public ItemStack func_77659_a(final ItemStack itemstack, final World world, final EntityPlayer entityplayer) {
+    public ItemStack onItemRightClick(final ItemStack itemstack, final World world, final EntityPlayer entityplayer) {
         if (this.type.foodness > 0) {
-            super.func_77659_a(itemstack, world, entityplayer);
+            super.onItemRightClick(itemstack, world, entityplayer);
         }
         else {
             if (this.type.parachute) {
                 if (EntityParachute.canUseParachute((Entity)entityplayer)) {
-                    if (!world.field_72995_K) {
+                    if (!world.isRemote) {
                         final EntityParachute parachute = new EntityParachute(world, this.type, entityplayer);
-                        if (!parachute.field_70128_L) {
-                            world.func_72838_d((Entity)parachute);
-                            entityplayer.func_70078_a((Entity)parachute);
+                        if (!parachute.isDead) {
+                            world.spawnEntityInWorld((Entity)parachute);
+                            entityplayer.mountEntity((Entity)parachute);
                         }
                     }
-                    if (!entityplayer.field_71075_bZ.field_75098_d && this.type.toolLife > 0) {
-                        itemstack.func_77964_b(itemstack.func_77960_j() + 1);
+                    if (!entityplayer.capabilities.isCreativeMode && this.type.toolLife > 0) {
+                        itemstack.setMetadata(itemstack.getMetadata() + 1);
                     }
-                    if (this.type.toolLife > 0 && this.type.destroyOnEmpty && itemstack.func_77960_j() == itemstack.func_77958_k()) {
-                        --itemstack.field_77994_a;
+                    if (this.type.toolLife > 0 && this.type.destroyOnEmpty && itemstack.getMetadata() == itemstack.getMaxDurability()) {
+                        --itemstack.stackSize;
                     }
                 }
                 return itemstack;
             }
             if (this.type.remote) {
-                final PlayerData data = PlayerHandler.getPlayerData(entityplayer, world.field_72995_K ? Side.CLIENT : Side.SERVER);
+                final PlayerData data = PlayerHandler.getPlayerData(entityplayer, world.isRemote ? Side.CLIENT : Side.SERVER);
                 final Iterator<EntityGrenade> i = data.remoteExplosives.iterator();
                 while (i.hasNext()) {
                     final EntityGrenade grenade = i.next();
-                    if (grenade.field_70128_L) {
+                    if (grenade.isDead) {
                         i.remove();
                     }
                 }
@@ -128,11 +128,11 @@ public class ItemTool extends ItemFood
                     if (data.remoteExplosives.get(0).detonated) {
                         data.remoteExplosives.remove(0);
                     }
-                    if (!entityplayer.field_71075_bZ.field_75098_d && this.type.toolLife > 0) {
-                        itemstack.func_77964_b(itemstack.func_77960_j() + 1);
+                    if (!entityplayer.capabilities.isCreativeMode && this.type.toolLife > 0) {
+                        itemstack.setMetadata(itemstack.getMetadata() + 1);
                     }
-                    if (this.type.toolLife > 0 && this.type.destroyOnEmpty && itemstack.func_77960_j() == itemstack.func_77958_k()) {
-                        --itemstack.field_77994_a;
+                    if (this.type.toolLife > 0 && this.type.destroyOnEmpty && itemstack.getMetadata() == itemstack.getMaxDurability()) {
+                        --itemstack.stackSize;
                     }
                     return itemstack;
                 }
@@ -140,21 +140,21 @@ public class ItemTool extends ItemFood
             else {
                 if (this.type.bandAid && PlayerHandler.getPlayerData(entityplayer).minorBleed > 0) {
                     PlayerHandler.getPlayerData(entityplayer).minorBleed = 0;
-                    if (!entityplayer.field_71075_bZ.field_75098_d && this.type.toolLife > 0) {
-                        itemstack.func_77964_b(itemstack.func_77960_j() + 1);
+                    if (!entityplayer.capabilities.isCreativeMode && this.type.toolLife > 0) {
+                        itemstack.setMetadata(itemstack.getMetadata() + 1);
                     }
-                    if (this.type.toolLife > 0 && itemstack.func_77960_j() == itemstack.func_77958_k()) {
-                        --itemstack.field_77994_a;
+                    if (this.type.toolLife > 0 && itemstack.getMetadata() == itemstack.getMaxDurability()) {
+                        --itemstack.stackSize;
                     }
                 }
                 if (this.type.superBandAid && PlayerHandler.getPlayerData(entityplayer).Bleed > 0) {
                     PlayerHandler.getPlayerData(entityplayer).minorBleed = 0;
                     PlayerHandler.getPlayerData(entityplayer).Bleed = 0;
-                    if (!entityplayer.field_71075_bZ.field_75098_d && this.type.toolLife > 0) {
-                        itemstack.func_77964_b(itemstack.func_77960_j() + 1);
+                    if (!entityplayer.capabilities.isCreativeMode && this.type.toolLife > 0) {
+                        itemstack.setMetadata(itemstack.getMetadata() + 1);
                     }
-                    if (this.type.toolLife > 0 && itemstack.func_77960_j() == itemstack.func_77958_k()) {
-                        --itemstack.field_77994_a;
+                    if (this.type.toolLife > 0 && itemstack.getMetadata() == itemstack.getMaxDurability()) {
+                        --itemstack.stackSize;
                     }
                 }
                 if (this.type.surgery && PlayerHandler.getPlayerData(entityplayer).hemorrhaging > 0) {
@@ -163,21 +163,21 @@ public class ItemTool extends ItemFood
                     PlayerHandler.getPlayerData(entityplayer).hemorrhaging = 0;
                     final PlayerData playerData = PlayerHandler.getPlayerData(entityplayer);
                     --playerData.blood;
-                    if (!entityplayer.field_71075_bZ.field_75098_d && this.type.toolLife > 0) {
-                        itemstack.func_77964_b(itemstack.func_77960_j() + 1);
+                    if (!entityplayer.capabilities.isCreativeMode && this.type.toolLife > 0) {
+                        itemstack.setMetadata(itemstack.getMetadata() + 1);
                     }
-                    if (this.type.toolLife > 0 && itemstack.func_77960_j() == itemstack.func_77958_k()) {
-                        --itemstack.field_77994_a;
+                    if (this.type.toolLife > 0 && itemstack.getMetadata() == itemstack.getMaxDurability()) {
+                        --itemstack.stackSize;
                     }
                 }
                 if (this.type.transfusion && PlayerHandler.getPlayerData(entityplayer).blood < 100.0f) {
                     final PlayerData playerData2 = PlayerHandler.getPlayerData(entityplayer);
                     playerData2.blood += this.type.healAmount;
-                    if (!entityplayer.field_71075_bZ.field_75098_d && this.type.toolLife > 0) {
-                        itemstack.func_77964_b(itemstack.func_77960_j() + 1);
+                    if (!entityplayer.capabilities.isCreativeMode && this.type.toolLife > 0) {
+                        itemstack.setMetadata(itemstack.getMetadata() + 1);
                     }
-                    if (this.type.toolLife > 0 && itemstack.func_77960_j() == itemstack.func_77958_k()) {
-                        --itemstack.field_77994_a;
+                    if (this.type.toolLife > 0 && itemstack.getMetadata() == itemstack.getMaxDurability()) {
+                        --itemstack.stackSize;
                     }
                 }
                 if (this.type.needle) {
@@ -192,47 +192,47 @@ public class ItemTool extends ItemFood
                         itemName = itemName.split("\\.")[0];
                     }
                     final ItemStack dropStack = InfoType.getRecipeElement(itemName, damage);
-                    world.func_72838_d((Entity)new EntityItem(world, entityplayer.field_70165_t, entityplayer.field_70163_u, entityplayer.field_70161_v, dropStack));
-                    if (this.type.toolLife > 0 && itemstack.func_77960_j() == itemstack.func_77958_k()) {
-                        --itemstack.field_77994_a;
+                    world.spawnEntityInWorld((Entity)new EntityItem(world, entityplayer.posX, entityplayer.posY, entityplayer.posZ, dropStack));
+                    if (this.type.toolLife > 0 && itemstack.getMetadata() == itemstack.getMaxDurability()) {
+                        --itemstack.stackSize;
                     }
                 }
-                final float cosYaw = MathHelper.func_76134_b(-entityplayer.field_70177_z * 0.01745329f);
-                final float sinYaw = MathHelper.func_76126_a(-entityplayer.field_70177_z * 0.01745329f);
-                final float cosPitch = -MathHelper.func_76134_b(entityplayer.field_70125_A * 0.01745329f);
-                final float sinPitch = MathHelper.func_76126_a(entityplayer.field_70125_A * 0.01745329f);
+                final float cosYaw = MathHelper.cos(-entityplayer.rotationYaw * 0.01745329f);
+                final float sinYaw = MathHelper.sin(-entityplayer.rotationYaw * 0.01745329f);
+                final float cosPitch = -MathHelper.cos(entityplayer.rotationPitch * 0.01745329f);
+                final float sinPitch = MathHelper.sin(entityplayer.rotationPitch * 0.01745329f);
                 final double length = -5.0;
-                final Vec3 posVec = Vec3.func_72443_a(entityplayer.field_70165_t, entityplayer.field_70163_u + 1.62 - entityplayer.field_70129_M, entityplayer.field_70161_v);
-                final Vec3 lookVec = posVec.func_72441_c(sinYaw * cosPitch * length, sinPitch * length, cosYaw * cosPitch * length);
-                if (world.field_72995_K && FlansMod.DEBUG) {
-                    world.func_72838_d((Entity)new EntityDebugVector(world, new Vector3f(posVec), new Vector3f(posVec.func_72444_a(lookVec)), 100));
+                final Vec3 posVec = Vec3.createVectorHelper(entityplayer.posX, entityplayer.posY + 1.62 - entityplayer.yOffset, entityplayer.posZ);
+                final Vec3 lookVec = posVec.addVector(sinYaw * cosPitch * length, sinPitch * length, cosYaw * cosPitch * length);
+                if (world.isRemote && FlansMod.DEBUG) {
+                    world.spawnEntityInWorld((Entity)new EntityDebugVector(world, new Vector3f(posVec), new Vector3f(posVec.subtract(lookVec)), 100));
                 }
                 if (this.type.healDriveables) {
-                    for (int j = 0; j < world.field_72996_f.size(); ++j) {
-                        final Object obj = world.field_72996_f.get(j);
+                    for (int j = 0; j < world.loadedEntityList.size(); ++j) {
+                        final Object obj = world.loadedEntityList.get(j);
                         if (obj instanceof EntityDriveable) {
                             final EntityDriveable driveable = (EntityDriveable)obj;
                             final DriveablePart part = driveable.raytraceParts(new Vector3f(posVec), Vector3f.sub(new Vector3f(lookVec), new Vector3f(posVec), null));
-                            if (part != null && part.maxHealth > 0 && part.health < part.maxHealth && (this.type.toolLife == 0 || itemstack.func_77960_j() < itemstack.func_77958_k())) {
+                            if (part != null && part.maxHealth > 0 && part.health < part.maxHealth && (this.type.toolLife == 0 || itemstack.getMetadata() < itemstack.getMaxDurability())) {
                                 final DriveablePart driveablePart = part;
                                 driveablePart.health += this.type.healAmount;
                                 if (part.health > part.maxHealth) {
                                     part.health = part.maxHealth;
                                 }
-                                if (!entityplayer.field_71075_bZ.field_75098_d && this.type.toolLife > 0) {
-                                    itemstack.func_77964_b(itemstack.func_77960_j() + 1);
+                                if (!entityplayer.capabilities.isCreativeMode && this.type.toolLife > 0) {
+                                    itemstack.setMetadata(itemstack.getMetadata() + 1);
                                 }
-                                if (this.type.toolLife > 0 && this.type.destroyOnEmpty && itemstack.func_77960_j() == itemstack.func_77958_k()) {
-                                    --itemstack.field_77994_a;
+                                if (this.type.toolLife > 0 && this.type.destroyOnEmpty && itemstack.getMetadata() == itemstack.getMaxDurability()) {
+                                    --itemstack.stackSize;
                                 }
                                 return itemstack;
                             }
                         }
                     }
                 }
-                if (!world.field_72995_K && this.type.healPlayers) {
+                if (!world.isRemote && this.type.healPlayers) {
                     EntityLivingBase hitLiving = (EntityLivingBase)entityplayer;
-                    final List list = world.func_72872_a((Class)EntityLivingBase.class, AxisAlignedBB.func_72330_a(Math.min(posVec.field_72450_a, lookVec.field_72450_a), Math.min(posVec.field_72448_b, lookVec.field_72448_b), Math.min(posVec.field_72449_c, lookVec.field_72449_c), Math.max(posVec.field_72450_a, lookVec.field_72450_a), Math.max(posVec.field_72448_b, lookVec.field_72448_b), Math.max(posVec.field_72449_c, lookVec.field_72449_c)));
+                    final List list = world.getEntitiesWithinAABB((Class)EntityLivingBase.class, AxisAlignedBB.getBoundingBox(Math.min(posVec.xCoord, lookVec.xCoord), Math.min(posVec.yCoord, lookVec.yCoord), Math.min(posVec.zCoord, lookVec.zCoord), Math.max(posVec.xCoord, lookVec.xCoord), Math.max(posVec.yCoord, lookVec.yCoord), Math.max(posVec.zCoord, lookVec.zCoord)));
                     for (final Object aList : list) {
                         if (!(aList instanceof EntityLivingBase)) {
                             continue;
@@ -241,22 +241,22 @@ public class ItemTool extends ItemFood
                         if (checkEntity == entityplayer) {
                             continue;
                         }
-                        final MovingObjectPosition hit = checkEntity.field_70121_D.func_72327_a(posVec, lookVec);
+                        final MovingObjectPosition hit = checkEntity.boundingBox.calculateIntercept(posVec, lookVec);
                         if (hit == null) {
                             continue;
                         }
                         hitLiving = checkEntity;
                     }
-                    if (itemstack.func_77960_j() >= itemstack.func_77958_k() && this.type.toolLife > 0) {
+                    if (itemstack.getMetadata() >= itemstack.getMaxDurability() && this.type.toolLife > 0) {
                         return itemstack;
                     }
-                    hitLiving.func_70690_d(new PotionEffect(Potion.field_76428_l.field_76415_H, this.type.healAmount, this.type.healStrength));
-                    FlansMod.getPacketHandler().sendToAllAround(new PacketFlak(hitLiving.field_70165_t, hitLiving.field_70163_u, hitLiving.field_70161_v, 5, "heart"), new NetworkRegistry.TargetPoint(hitLiving.field_71093_bK, hitLiving.field_70165_t, hitLiving.field_70163_u, hitLiving.field_70161_v, 50.0));
-                    if (!entityplayer.field_71075_bZ.field_75098_d && this.type.toolLife > 0) {
-                        itemstack.func_77964_b(itemstack.func_77960_j() + 1);
+                    hitLiving.addPotionEffect(new PotionEffect(Potion.regeneration.id, this.type.healAmount, this.type.healStrength));
+                    FlansMod.getPacketHandler().sendToAllAround(new PacketFlak(hitLiving.posX, hitLiving.posY, hitLiving.posZ, 5, "heart"), new NetworkRegistry.TargetPoint(hitLiving.dimension, hitLiving.posX, hitLiving.posY, hitLiving.posZ, 50.0));
+                    if (!entityplayer.capabilities.isCreativeMode && this.type.toolLife > 0) {
+                        itemstack.setMetadata(itemstack.getMetadata() + 1);
                     }
-                    if (this.type.toolLife > 0 && this.type.destroyOnEmpty && itemstack.func_77960_j() >= itemstack.func_77958_k()) {
-                        --itemstack.field_77994_a;
+                    if (this.type.toolLife > 0 && this.type.destroyOnEmpty && itemstack.getMetadata() >= itemstack.getMaxDurability()) {
+                        --itemstack.stackSize;
                     }
                 }
             }
@@ -285,6 +285,6 @@ public class ItemTool extends ItemFood
     }
     
     public String toString() {
-        return (this.type == null) ? this.func_77658_a() : this.type.name;
+        return (this.type == null) ? this.getUnlocalizedName() : this.type.name;
     }
 }

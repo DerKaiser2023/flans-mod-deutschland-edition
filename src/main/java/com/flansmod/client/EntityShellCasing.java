@@ -17,15 +17,15 @@ public class EntityShellCasing extends EntityFX
     
     public EntityShellCasing(final World w, final double px, final double py, final double pz, final double mx, final double my, final double mz) {
         super(w, px, py, pz, mx, my, mz);
-        this.field_70547_e = 100;
-        this.field_70545_g = 5.0f;
-        this.field_70159_w = mx;
-        this.field_70181_x = my;
-        this.field_70179_y = mz;
+        this.particleMaxAge = 100;
+        this.particleGravity = 5.0f;
+        this.motionX = mx;
+        this.motionY = my;
+        this.motionZ = mz;
         EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing1.png");
     }
     
-    public int func_70537_b() {
+    public int getFXLayer() {
         return 3;
     }
     
@@ -33,347 +33,347 @@ public class EntityShellCasing extends EntityFX
         return 1.0f;
     }
     
-    public void func_70539_a(final Tessellator par1Tessellator, final float par2, final float par3, final float par4, final float par5, final float par6, final float par7) {
+    public void renderParticle(final Tessellator par1Tessellator, final float par2, final float par3, final float par4, final float par5, final float par6, final float par7) {
         GL11.glPushMatrix();
-        par1Tessellator.func_78382_b();
+        par1Tessellator.startDrawingQuads();
         GL11.glAlphaFunc(516, 0.001f);
         GL11.glEnable(3042);
         final int srcBlend = GL11.glGetInteger(3041);
         final int dstBlend = GL11.glGetInteger(3040);
         GL11.glBlendFunc(1, 771);
         GL11.glDepthMask(false);
-        FMLClientHandler.instance().getClient().field_71446_o.func_110577_a(EntityShellCasing.icon);
+        FMLClientHandler.instance().getClient().renderEngine.bindTexture(EntityShellCasing.icon);
         final float scale = 0.1f;
-        final float xPos = (float)(this.field_70169_q + (this.field_70165_t - this.field_70169_q) * par2 - EntityShellCasing.field_70556_an);
-        final float yPos = (float)(this.field_70167_r + (this.field_70163_u - this.field_70167_r) * par2 - EntityShellCasing.field_70554_ao);
-        final float zPos = (float)(this.field_70166_s + (this.field_70161_v - this.field_70166_s) * par2 - EntityShellCasing.field_70555_ap);
+        final float xPos = (float)(this.prevPosX + (this.posX - this.prevPosX) * par2 - EntityShellCasing.interpPosX);
+        final float yPos = (float)(this.prevPosY + (this.posY - this.prevPosY) * par2 - EntityShellCasing.interpPosY);
+        final float zPos = (float)(this.prevPosZ + (this.posZ - this.prevPosZ) * par2 - EntityShellCasing.interpPosZ);
         final float colorIntensity = 1.0f;
-        par1Tessellator.func_78386_a(this.field_70552_h * colorIntensity, this.field_70553_i * colorIntensity, this.field_70551_j * colorIntensity);
-        par1Tessellator.func_78374_a((double)(xPos - par3 * scale - par6 * scale), (double)(yPos - par4 * scale), (double)(zPos - par5 * scale - par7 * scale), 0.0, 1.0);
-        par1Tessellator.func_78374_a((double)(xPos - par3 * scale + par6 * scale), (double)(yPos + par4 * scale), (double)(zPos - par5 * scale + par7 * scale), 1.0, 1.0);
-        par1Tessellator.func_78374_a((double)(xPos + par3 * scale + par6 * scale), (double)(yPos + par4 * scale), (double)(zPos + par5 * scale + par7 * scale), 1.0, 0.0);
-        par1Tessellator.func_78374_a((double)(xPos + par3 * scale - par6 * scale), (double)(yPos - par4 * scale), (double)(zPos + par5 * scale - par7 * scale), 0.0, 0.0);
-        par1Tessellator.func_78381_a();
+        par1Tessellator.setColorOpaque_F(this.particleRed * colorIntensity, this.particleGreen * colorIntensity, this.particleBlue * colorIntensity);
+        par1Tessellator.addVertexWithUV((double)(xPos - par3 * scale - par6 * scale), (double)(yPos - par4 * scale), (double)(zPos - par5 * scale - par7 * scale), 0.0, 1.0);
+        par1Tessellator.addVertexWithUV((double)(xPos - par3 * scale + par6 * scale), (double)(yPos + par4 * scale), (double)(zPos - par5 * scale + par7 * scale), 1.0, 1.0);
+        par1Tessellator.addVertexWithUV((double)(xPos + par3 * scale + par6 * scale), (double)(yPos + par4 * scale), (double)(zPos + par5 * scale + par7 * scale), 1.0, 0.0);
+        par1Tessellator.addVertexWithUV((double)(xPos + par3 * scale - par6 * scale), (double)(yPos - par4 * scale), (double)(zPos + par5 * scale - par7 * scale), 0.0, 0.0);
+        par1Tessellator.draw();
         GL11.glBlendFunc(srcBlend, dstBlend);
         GL11.glDisable(3042);
         GL11.glDepthMask(true);
         GL11.glPopMatrix();
     }
     
-    public void func_70071_h_() {
-        this.field_70169_q = this.field_70165_t;
-        this.field_70167_r = this.field_70163_u;
-        this.field_70166_s = this.field_70161_v;
-        if (this.field_70546_d++ >= this.field_70547_e) {
-            this.func_70106_y();
+    public void onUpdate() {
+        this.prevPosX = this.posX;
+        this.prevPosY = this.posY;
+        this.prevPosZ = this.posZ;
+        if (this.particleAge++ >= this.particleMaxAge) {
+            this.setDead();
         }
-        if (this.field_70122_E) {
-            this.func_70106_y();
+        if (this.onGround) {
+            this.setDead();
         }
-        if (this.field_70546_d == 1) {
+        if (this.particleAge == 1) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing2.png");
         }
-        if (this.field_70546_d == 2) {
+        if (this.particleAge == 2) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing3.png");
         }
-        if (this.field_70546_d == 3) {
+        if (this.particleAge == 3) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing4.png");
         }
-        if (this.field_70546_d == 4) {
+        if (this.particleAge == 4) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing5.png");
         }
-        if (this.field_70546_d == 5) {
+        if (this.particleAge == 5) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing6.png");
         }
-        if (this.field_70546_d == 6) {
+        if (this.particleAge == 6) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing1.png");
         }
-        if (this.field_70546_d == 7) {
+        if (this.particleAge == 7) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing2.png");
         }
-        if (this.field_70546_d == 8) {
+        if (this.particleAge == 8) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing3.png");
         }
-        if (this.field_70546_d == 9) {
+        if (this.particleAge == 9) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing4.png");
         }
-        if (this.field_70546_d == 10) {
+        if (this.particleAge == 10) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing5.png");
         }
-        if (this.field_70546_d == 11) {
+        if (this.particleAge == 11) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing6.png");
         }
-        if (this.field_70546_d == 12) {
+        if (this.particleAge == 12) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing1.png");
         }
-        if (this.field_70546_d == 13) {
+        if (this.particleAge == 13) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing2.png");
         }
-        if (this.field_70546_d == 14) {
+        if (this.particleAge == 14) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing3.png");
         }
-        if (this.field_70546_d == 15) {
+        if (this.particleAge == 15) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing4.png");
         }
-        if (this.field_70546_d == 16) {
+        if (this.particleAge == 16) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing5.png");
         }
-        if (this.field_70546_d == 17) {
+        if (this.particleAge == 17) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing6.png");
         }
-        if (this.field_70546_d == 18) {
+        if (this.particleAge == 18) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing1.png");
         }
-        if (this.field_70546_d == 19) {
+        if (this.particleAge == 19) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing2.png");
         }
-        if (this.field_70546_d == 20) {
+        if (this.particleAge == 20) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing3.png");
         }
-        if (this.field_70546_d == 21) {
+        if (this.particleAge == 21) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing4.png");
         }
-        if (this.field_70546_d == 22) {
+        if (this.particleAge == 22) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing5.png");
         }
-        if (this.field_70546_d == 23) {
+        if (this.particleAge == 23) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing6.png");
         }
-        if (this.field_70546_d == 24) {
+        if (this.particleAge == 24) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing1.png");
         }
-        if (this.field_70546_d == 25) {
+        if (this.particleAge == 25) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing2.png");
         }
-        if (this.field_70546_d == 20) {
+        if (this.particleAge == 20) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing3.png");
         }
-        if (this.field_70546_d == 26) {
+        if (this.particleAge == 26) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing4.png");
         }
-        if (this.field_70546_d == 27) {
+        if (this.particleAge == 27) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing5.png");
         }
-        if (this.field_70546_d == 28) {
+        if (this.particleAge == 28) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing6.png");
         }
-        if (this.field_70546_d == 29) {
+        if (this.particleAge == 29) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing1.png");
         }
-        if (this.field_70546_d == 30) {
+        if (this.particleAge == 30) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing2.png");
         }
-        if (this.field_70546_d == 31) {
+        if (this.particleAge == 31) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing3.png");
         }
-        if (this.field_70546_d == 32) {
+        if (this.particleAge == 32) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing4.png");
         }
-        if (this.field_70546_d == 33) {
+        if (this.particleAge == 33) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing5.png");
         }
-        if (this.field_70546_d == 34) {
+        if (this.particleAge == 34) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing6.png");
         }
-        if (this.field_70546_d == 35) {
+        if (this.particleAge == 35) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing1.png");
         }
-        if (this.field_70546_d == 36) {
+        if (this.particleAge == 36) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing2.png");
         }
-        if (this.field_70546_d == 37) {
+        if (this.particleAge == 37) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing3.png");
         }
-        if (this.field_70546_d == 38) {
+        if (this.particleAge == 38) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing4.png");
         }
-        if (this.field_70546_d == 39) {
+        if (this.particleAge == 39) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing5.png");
         }
-        if (this.field_70546_d == 40) {
+        if (this.particleAge == 40) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing6.png");
         }
-        if (this.field_70546_d == 41) {
+        if (this.particleAge == 41) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing1.png");
         }
-        if (this.field_70546_d == 42) {
+        if (this.particleAge == 42) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing2.png");
         }
-        if (this.field_70546_d == 43) {
+        if (this.particleAge == 43) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing3.png");
         }
-        if (this.field_70546_d == 44) {
+        if (this.particleAge == 44) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing4.png");
         }
-        if (this.field_70546_d == 45) {
+        if (this.particleAge == 45) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing5.png");
         }
-        if (this.field_70546_d == 46) {
+        if (this.particleAge == 46) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing6.png");
         }
-        if (this.field_70546_d == 47) {
+        if (this.particleAge == 47) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing1.png");
         }
-        if (this.field_70546_d == 48) {
+        if (this.particleAge == 48) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing2.png");
         }
-        if (this.field_70546_d == 49) {
+        if (this.particleAge == 49) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing3.png");
         }
-        if (this.field_70546_d == 50) {
+        if (this.particleAge == 50) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing4.png");
         }
-        if (this.field_70546_d == 51) {
+        if (this.particleAge == 51) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing5.png");
         }
-        if (this.field_70546_d == 52) {
+        if (this.particleAge == 52) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing6.png");
         }
-        if (this.field_70546_d == 53) {
+        if (this.particleAge == 53) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing1.png");
         }
-        if (this.field_70546_d == 54) {
+        if (this.particleAge == 54) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing2.png");
         }
-        if (this.field_70546_d == 55) {
+        if (this.particleAge == 55) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing3.png");
         }
-        if (this.field_70546_d == 56) {
+        if (this.particleAge == 56) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing4.png");
         }
-        if (this.field_70546_d == 57) {
+        if (this.particleAge == 57) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing5.png");
         }
-        if (this.field_70546_d == 58) {
+        if (this.particleAge == 58) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing6.png");
         }
-        if (this.field_70546_d == 59) {
+        if (this.particleAge == 59) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing1.png");
         }
-        if (this.field_70546_d == 60) {
+        if (this.particleAge == 60) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing2.png");
         }
-        if (this.field_70546_d == 61) {
+        if (this.particleAge == 61) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing3.png");
         }
-        if (this.field_70546_d == 62) {
+        if (this.particleAge == 62) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing5.png");
         }
-        if (this.field_70546_d == 63) {
+        if (this.particleAge == 63) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing6.png");
         }
-        if (this.field_70546_d == 64) {
+        if (this.particleAge == 64) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing1.png");
         }
-        if (this.field_70546_d == 65) {
+        if (this.particleAge == 65) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing2.png");
         }
-        if (this.field_70546_d == 66) {
+        if (this.particleAge == 66) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing4.png");
         }
-        if (this.field_70546_d == 67) {
+        if (this.particleAge == 67) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing5.png");
         }
-        if (this.field_70546_d == 68) {
+        if (this.particleAge == 68) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing6.png");
         }
-        if (this.field_70546_d == 69) {
+        if (this.particleAge == 69) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing1.png");
         }
-        if (this.field_70546_d == 70) {
+        if (this.particleAge == 70) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing2.png");
         }
-        if (this.field_70546_d == 71) {
+        if (this.particleAge == 71) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing3.png");
         }
-        if (this.field_70546_d == 72) {
+        if (this.particleAge == 72) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing4.png");
         }
-        if (this.field_70546_d == 73) {
+        if (this.particleAge == 73) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing5.png");
         }
-        if (this.field_70546_d == 74) {
+        if (this.particleAge == 74) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing6.png");
         }
-        if (this.field_70546_d == 75) {
+        if (this.particleAge == 75) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing1.png");
         }
-        if (this.field_70546_d == 76) {
+        if (this.particleAge == 76) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing2.png");
         }
-        if (this.field_70546_d == 77) {
+        if (this.particleAge == 77) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing3.png");
         }
-        if (this.field_70546_d == 78) {
+        if (this.particleAge == 78) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing4.png");
         }
-        if (this.field_70546_d == 79) {
+        if (this.particleAge == 79) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing5.png");
         }
-        if (this.field_70546_d == 80) {
+        if (this.particleAge == 80) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing6.png");
         }
-        if (this.field_70546_d == 81) {
+        if (this.particleAge == 81) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing1.png");
         }
-        if (this.field_70546_d == 82) {
+        if (this.particleAge == 82) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing2.png");
         }
-        if (this.field_70546_d == 83) {
+        if (this.particleAge == 83) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing3.png");
         }
-        if (this.field_70546_d == 84) {
+        if (this.particleAge == 84) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing4.png");
         }
-        if (this.field_70546_d == 85) {
+        if (this.particleAge == 85) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing5.png");
         }
-        if (this.field_70546_d == 86) {
+        if (this.particleAge == 86) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing6.png");
         }
-        if (this.field_70546_d == 87) {
+        if (this.particleAge == 87) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing1.png");
         }
-        if (this.field_70546_d == 88) {
+        if (this.particleAge == 88) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing2.png");
         }
-        if (this.field_70546_d == 89) {
+        if (this.particleAge == 89) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing3.png");
         }
-        if (this.field_70546_d == 90) {
+        if (this.particleAge == 90) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing4.png");
         }
-        if (this.field_70546_d == 91) {
+        if (this.particleAge == 91) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing5.png");
         }
-        if (this.field_70546_d == 92) {
+        if (this.particleAge == 92) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing6.png");
         }
-        if (this.field_70546_d == 93) {
+        if (this.particleAge == 93) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing1.png");
         }
-        if (this.field_70546_d == 94) {
+        if (this.particleAge == 94) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing2.png");
         }
-        if (this.field_70546_d == 95) {
+        if (this.particleAge == 95) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing3.png");
         }
-        if (this.field_70546_d == 96) {
+        if (this.particleAge == 96) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing4.png");
         }
-        if (this.field_70546_d == 97) {
+        if (this.particleAge == 97) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing5.png");
         }
-        if (this.field_70546_d == 98) {
+        if (this.particleAge == 98) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing6.png");
         }
-        if (this.field_70546_d == 99) {
+        if (this.particleAge == 99) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing1.png");
         }
-        if (this.field_70546_d == 100) {
+        if (this.particleAge == 100) {
             EntityShellCasing.icon = new ResourceLocation("flansmod", "particle/Casing2.png");
         }
-        FMLClientHandler.instance().getClient().field_71446_o.func_110577_a(EntityShellCasing.icon);
+        FMLClientHandler.instance().getClient().renderEngine.bindTexture(EntityShellCasing.icon);
     }
     
     static {

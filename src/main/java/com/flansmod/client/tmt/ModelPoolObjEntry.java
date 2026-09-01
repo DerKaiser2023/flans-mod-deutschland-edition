@@ -151,7 +151,7 @@ public class ModelPoolObjEntry extends ModelPoolEntry
                                 curNormals = new float[] { 0.0f, 0.0f, 0.0f };
                             }
                         }
-                        iNormal.add(Vec3.func_72443_a((double)curNormals[0], (double)curNormals[1], (double)curNormals[2]));
+                        iNormal.add(Vec3.createVectorHelper((double)curNormals[0], (double)curNormals[1], (double)curNormals[2]));
                         final float[] array = normal;
                         final int n = 0;
                         array[n] += curNormals[0];
@@ -174,7 +174,7 @@ public class ModelPoolObjEntry extends ModelPoolEntry
                             ++finalPhase;
                         }
                     } while (finalPhase < 1);
-                    final float d = MathHelper.func_76133_a((double)(normal[0] * normal[0] + normal[1] * normal[1] + normal[2] * normal[2]));
+                    final float d = MathHelper.sqrt_double((double)(normal[0] * normal[0] + normal[1] * normal[1] + normal[2] * normal[2]));
                     final float[] array4 = normal;
                     final int n4 = 0;
                     array4[n4] /= d;

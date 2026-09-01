@@ -27,28 +27,28 @@ public class ModelCannonBall extends ModelBase
         this.cannonballModel[7] = new ModelRendererTurbo(this, 1, 1, this.textureX, this.textureY);
         this.cannonballModel[8] = new ModelRendererTurbo(this, 1, 1, this.textureX, this.textureY);
         this.cannonballModel[0].addShapeBox(-1.0f, -1.0f, -3.0f, 2, 2, 6, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.cannonballModel[0].func_78793_a(0.0f, 0.0f, 0.0f);
+        this.cannonballModel[0].setRotationPoint(0.0f, 0.0f, 0.0f);
         this.cannonballModel[1].addShapeBox(-1.0f, -3.0f, -3.0f, 2, 2, 6, 0.0f, 0.0f, 0.0f, -2.0f, 0.0f, 0.0f, -2.0f, 0.0f, 0.0f, -2.0f, 0.0f, 0.0f, -2.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.cannonballModel[1].func_78793_a(0.0f, 0.0f, 0.0f);
+        this.cannonballModel[1].setRotationPoint(0.0f, 0.0f, 0.0f);
         this.cannonballModel[2].addShapeBox(-1.0f, 1.0f, -3.0f, 2, 2, 6, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -2.0f, 0.0f, 0.0f, -2.0f, 0.0f, 0.0f, -2.0f, 0.0f, 0.0f, -2.0f);
-        this.cannonballModel[2].func_78793_a(0.0f, 0.0f, 0.0f);
+        this.cannonballModel[2].setRotationPoint(0.0f, 0.0f, 0.0f);
         this.cannonballModel[3].addShapeBox(-1.01f, -1.0f, 3.0f, 2, 2, 6, 0.0f, 0.0f, 0.0f, -2.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -2.0f, 0.0f, 0.0f, -2.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -2.0f);
-        this.cannonballModel[3].func_78793_a(-2.0f, 0.0f, -6.0f);
+        this.cannonballModel[3].setRotationPoint(-2.0f, 0.0f, -6.0f);
         this.cannonballModel[4].addShapeBox(-1.01f, -3.01f, 3.01f, 2, 2, 6, 0.0f, -1.9f, 0.0f, -2.0f, 0.0f, 0.0f, -2.0f, 0.0f, 0.0f, -2.0f, -1.9f, 0.0f, -2.0f, 0.0f, 0.0f, -2.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -2.0f);
-        this.cannonballModel[4].func_78793_a(-2.0f, 0.0f, -6.0f);
+        this.cannonballModel[4].setRotationPoint(-2.0f, 0.0f, -6.0f);
         this.cannonballModel[5].addShapeBox(-1.01f, 0.99f, 3.01f, 2, 2, 6, 0.0f, 0.0f, 0.0f, -2.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -2.0f, -1.9f, 0.0f, -2.0f, 0.0f, 0.0f, -2.0f, 0.0f, 0.0f, -2.0f, -1.9f, 0.0f, -2.0f);
-        this.cannonballModel[5].func_78793_a(-2.0f, 0.0f, -6.0f);
+        this.cannonballModel[5].setRotationPoint(-2.0f, 0.0f, -6.0f);
         this.cannonballModel[6].addShapeBox(3.01f, 0.99f, 3.01f, 2, 2, 6, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -2.0f, 0.0f, 0.0f, -2.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -2.0f, -1.9f, 0.0f, -2.0f, -1.9f, 0.0f, -2.0f, 0.0f, 0.0f, -2.0f);
-        this.cannonballModel[6].func_78793_a(-2.0f, 0.0f, -6.0f);
+        this.cannonballModel[6].setRotationPoint(-2.0f, 0.0f, -6.0f);
         this.cannonballModel[7].addShapeBox(3.01f, -3.01f, 3.01f, 2, 2, 6, 0.0f, 0.0f, 0.0f, -2.0f, -1.9f, 0.0f, -2.0f, -1.9f, 0.0f, -2.0f, 0.0f, 0.0f, -2.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -2.0f, 0.0f, 0.0f, -2.0f, 0.0f, 0.0f, 0.0f);
-        this.cannonballModel[7].func_78793_a(-2.0f, 0.0f, -6.0f);
+        this.cannonballModel[7].setRotationPoint(-2.0f, 0.0f, -6.0f);
         this.cannonballModel[8].addShapeBox(3.01f, -1.0f, 3.0f, 2, 2, 6, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -2.0f, 0.0f, 0.0f, -2.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -2.0f, 0.0f, 0.0f, -2.0f, 0.0f, 0.0f, 0.0f);
-        this.cannonballModel[8].func_78793_a(-2.0f, 0.0f, -6.0f);
+        this.cannonballModel[8].setRotationPoint(-2.0f, 0.0f, -6.0f);
     }
     
-    public void func_78088_a(final Entity entity, final float f, final float f1, final float f2, final float f3, final float f4, final float f5) {
+    public void render(final Entity entity, final float f, final float f1, final float f2, final float f3, final float f4, final float f5) {
         for (int i = 0; i < 9; ++i) {
-            this.cannonballModel[i].func_78785_a(f5);
+            this.cannonballModel[i].render(f5);
         }
     }
     

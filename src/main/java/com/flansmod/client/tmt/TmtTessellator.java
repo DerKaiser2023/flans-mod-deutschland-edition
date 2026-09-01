@@ -48,13 +48,13 @@ public class TmtTessellator extends Tessellator
     private int rawBufferIndex;
     private int addedVertices;
     private boolean isColorDisabled;
-    public int field_78409_u;
-    public double field_78408_v;
-    public double field_78407_w;
-    public double field_78417_x;
+    public int drawMode;
+    public double xOffset;
+    public double yOffset;
+    public double zOffset;
     private int normal;
     public static TmtTessellator instance;
-    public boolean field_78415_z;
+    public boolean isDrawing;
     private static boolean useVBO;
     private static IntBuffer vertexBuffers;
     private int vboIndex;
@@ -73,7 +73,7 @@ public class TmtTessellator extends Tessellator
         this.rawBufferIndex = 0;
         this.addedVertices = 0;
         this.isColorDisabled = false;
-        this.field_78415_z = false;
+        this.isDrawing = false;
         this.vboIndex = 0;
     }
     
@@ -89,19 +89,19 @@ public class TmtTessellator extends Tessellator
         this.rawBufferIndex = 0;
         this.addedVertices = 0;
         this.isColorDisabled = false;
-        this.field_78415_z = false;
+        this.isDrawing = false;
         this.vboIndex = 0;
     }
     
-    public int func_78381_a() {
-        if (!this.field_78415_z) {
+    public int draw() {
+        if (!this.isDrawing) {
             throw new IllegalStateException("Not tesselating!");
         }
-        this.field_78415_z = false;
+        this.isDrawing = false;
         int offs = 0;
         while (offs < this.vertexCount) {
             int vtc = 0;
-            if (this.field_78409_u == 7 && TmtTessellator.convertQuadsToTriangles) {
+            if (this.drawMode == 7 && TmtTessellator.convertQuadsToTriangles) {
                 vtc = Math.min(this.vertexCount - offs, TmtTessellator.trivertsInBuffer);
             }
             else {
@@ -128,7 +128,7 @@ public class TmtTessellator extends Tessellator
                 GL11.glEnableClientState(32888);
             }
             if (this.hasBrightness) {
-                OpenGlHelper.func_77472_b(OpenGlHelper.field_77476_b);
+                OpenGlHelper.setClientActiveTexture(OpenGlHelper.lightmapTexUnit);
                 if (TmtTessellator.useVBO) {
                     GL11.glTexCoordPointer(2, 5122, 40, 36L);
                 }
@@ -137,7 +137,7 @@ public class TmtTessellator extends Tessellator
                     GL11.glTexCoordPointer(2, 40, TmtTessellator.shortBuffer);
                 }
                 GL11.glEnableClientState(32888);
-                OpenGlHelper.func_77472_b(OpenGlHelper.field_77478_a);
+                OpenGlHelper.setClientActiveTexture(OpenGlHelper.defaultTexUnit);
             }
             if (this.hasColor) {
                 if (TmtTessellator.useVBO) {
@@ -167,20 +167,20 @@ public class TmtTessellator extends Tessellator
                 GL11.glVertexPointer(3, 40, TmtTessellator.floatBuffer);
             }
             GL11.glEnableClientState(32884);
-            if (this.field_78409_u == 7 && TmtTessellator.convertQuadsToTriangles) {
+            if (this.drawMode == 7 && TmtTessellator.convertQuadsToTriangles) {
                 GL11.glDrawArrays(4, 0, vtc);
             }
             else {
-                GL11.glDrawArrays(this.field_78409_u, 0, vtc);
+                GL11.glDrawArrays(this.drawMode, 0, vtc);
             }
             GL11.glDisableClientState(32884);
             if (this.hasTexture) {
                 GL11.glDisableClientState(32888);
             }
             if (this.hasBrightness) {
-                OpenGlHelper.func_77472_b(OpenGlHelper.field_77476_b);
+                OpenGlHelper.setClientActiveTexture(OpenGlHelper.lightmapTexUnit);
                 GL11.glDisableClientState(32888);
-                OpenGlHelper.func_77472_b(OpenGlHelper.field_77478_a);
+                OpenGlHelper.setClientActiveTexture(OpenGlHelper.defaultTexUnit);
             }
             if (this.hasColor) {
                 GL11.glDisableClientState(32886);
@@ -205,17 +205,17 @@ public class TmtTessellator extends Tessellator
         this.addedVertices = 0;
     }
     
-    public void func_78382_b() {
-        this.func_78371_b(7);
+    public void startDrawingQuads() {
+        this.startDrawing(7);
     }
     
-    public void func_78371_b(final int par1) {
-        if (this.field_78415_z) {
+    public void startDrawing(final int par1) {
+        if (this.isDrawing) {
             throw new IllegalStateException("Already tesselating!");
         }
-        this.field_78415_z = true;
+        this.isDrawing = true;
         this.reset();
-        this.field_78409_u = par1;
+        this.drawMode = par1;
         this.hasNormals = false;
         this.hasColor = false;
         this.hasTexture = false;
@@ -223,7 +223,7 @@ public class TmtTessellator extends Tessellator
         this.isColorDisabled = false;
     }
     
-    public void func_78385_a(final double par1, final double par3) {
+    public void setTextureUV(final double par1, final double par3) {
         this.hasTexture = true;
         this.textureU = par1;
         this.textureV = par3;
@@ -237,24 +237,24 @@ public class TmtTessellator extends Tessellator
         this.textureW = par4;
     }
     
-    public void func_78380_c(final int par1) {
+    public void setBrightness(final int par1) {
         this.hasBrightness = true;
         this.brightness = par1;
     }
     
-    public void func_78386_a(final float par1, final float par2, final float par3) {
-        this.func_78376_a((int)(par1 * 255.0f), (int)(par2 * 255.0f), (int)(par3 * 255.0f));
+    public void setColorOpaque_F(final float par1, final float par2, final float par3) {
+        this.setColorOpaque((int)(par1 * 255.0f), (int)(par2 * 255.0f), (int)(par3 * 255.0f));
     }
     
-    public void func_78369_a(final float par1, final float par2, final float par3, final float par4) {
-        this.func_78370_a((int)(par1 * 255.0f), (int)(par2 * 255.0f), (int)(par3 * 255.0f), (int)(par4 * 255.0f));
+    public void setColorRGBA_F(final float par1, final float par2, final float par3, final float par4) {
+        this.setColorRGBA((int)(par1 * 255.0f), (int)(par2 * 255.0f), (int)(par3 * 255.0f), (int)(par4 * 255.0f));
     }
     
-    public void func_78376_a(final int par1, final int par2, final int par3) {
-        this.func_78370_a(par1, par2, par3, 255);
+    public void setColorOpaque(final int par1, final int par2, final int par3) {
+        this.setColorRGBA(par1, par2, par3, 255);
     }
     
-    public void func_78370_a(int par1, int par2, int par3, int par4) {
+    public void setColorRGBA(int par1, int par2, int par3, int par4) {
         if (!this.isColorDisabled) {
             if (par1 > 255) {
                 par1 = 255;
@@ -290,17 +290,17 @@ public class TmtTessellator extends Tessellator
         }
     }
     
-    public void func_78374_a(final double par1, final double par3, final double par5, final double par7, final double par9) {
-        this.func_78385_a(par7, par9);
-        this.func_78377_a(par1, par3, par5);
+    public void addVertexWithUV(final double par1, final double par3, final double par5, final double par7, final double par9) {
+        this.setTextureUV(par7, par9);
+        this.addVertex(par1, par3, par5);
     }
     
     public void addVertexWithUVW(final double par1, final double par3, final double par5, final double par7, final double par9, final double par10) {
         this.setTextureUVW(par7, par9, par10);
-        this.func_78377_a(par1, par3, par5);
+        this.addVertex(par1, par3, par5);
     }
     
-    public void func_78377_a(final double par1, final double par3, final double par5) {
+    public void addVertex(final double par1, final double par3, final double par5) {
         if (this.rawBufferIndex >= this.rawBufferSize - 40) {
             if (this.rawBufferSize == 0) {
                 this.rawBufferSize = 65536;
@@ -312,7 +312,7 @@ public class TmtTessellator extends Tessellator
             }
         }
         ++this.addedVertices;
-        if (this.field_78409_u == 7 && TmtTessellator.convertQuadsToTriangles && this.addedVertices % 4 == 0) {
+        if (this.drawMode == 7 && TmtTessellator.convertQuadsToTriangles && this.addedVertices % 4 == 0) {
             for (int var7 = 0; var7 < 2; ++var7) {
                 final int var8 = 10 * (3 - var7);
                 if (this.hasTexture) {
@@ -349,32 +349,32 @@ public class TmtTessellator extends Tessellator
         if (this.hasNormals) {
             this.rawBuffer[this.rawBufferIndex + 8] = this.normal;
         }
-        this.rawBuffer[this.rawBufferIndex] = Float.floatToRawIntBits((float)(par1 + this.field_78408_v));
-        this.rawBuffer[this.rawBufferIndex + 1] = Float.floatToRawIntBits((float)(par3 + this.field_78407_w));
-        this.rawBuffer[this.rawBufferIndex + 2] = Float.floatToRawIntBits((float)(par5 + this.field_78417_x));
+        this.rawBuffer[this.rawBufferIndex] = Float.floatToRawIntBits((float)(par1 + this.xOffset));
+        this.rawBuffer[this.rawBufferIndex + 1] = Float.floatToRawIntBits((float)(par3 + this.yOffset));
+        this.rawBuffer[this.rawBufferIndex + 2] = Float.floatToRawIntBits((float)(par5 + this.zOffset));
         this.rawBufferIndex += 10;
         ++this.vertexCount;
     }
     
-    public void func_78378_d(final int par1) {
+    public void setColorOpaque_I(final int par1) {
         final int j = par1 >> 16 & 0xFF;
         final int k = par1 >> 8 & 0xFF;
         final int l = par1 & 0xFF;
-        this.func_78376_a(j, k, l);
+        this.setColorOpaque(j, k, l);
     }
     
-    public void func_78384_a(final int par1, final int par2) {
+    public void setColorRGBA_I(final int par1, final int par2) {
         final int k = par1 >> 16 & 0xFF;
         final int l = par1 >> 8 & 0xFF;
         final int i1 = par1 & 0xFF;
-        this.func_78370_a(k, l, i1, par2);
+        this.setColorRGBA(k, l, i1, par2);
     }
     
-    public void func_78383_c() {
+    public void disableColor() {
         this.isColorDisabled = true;
     }
     
-    public void func_78375_b(final float par1, final float par2, final float par3) {
+    public void setNormal(final float par1, final float par2, final float par3) {
         this.hasNormals = true;
         final byte b0 = (byte)(par1 * 127.0f);
         final byte b2 = (byte)(par2 * 127.0f);
@@ -382,16 +382,16 @@ public class TmtTessellator extends Tessellator
         this.normal = ((b0 & 0xFF) | (b2 & 0xFF) << 8 | (b3 & 0xFF) << 16);
     }
     
-    public void func_78373_b(final double par1, final double par3, final double par5) {
-        this.field_78408_v = par1;
-        this.field_78407_w = par3;
-        this.field_78417_x = par5;
+    public void setTranslation(final double par1, final double par3, final double par5) {
+        this.xOffset = par1;
+        this.yOffset = par3;
+        this.zOffset = par5;
     }
     
-    public void func_78372_c(final float par1, final float par2, final float par3) {
-        this.field_78408_v += par1;
-        this.field_78407_w += par2;
-        this.field_78417_x += par3;
+    public void addTranslation(final float par1, final float par2, final float par3) {
+        this.xOffset += par1;
+        this.yOffset += par2;
+        this.zOffset += par3;
     }
     
     static {
@@ -400,7 +400,7 @@ public class TmtTessellator extends Tessellator
         TmtTessellator.renderingWorldRenderer = false;
         TmtTessellator.convertQuadsToTriangles = false;
         TmtTessellator.tryVBO = false;
-        TmtTessellator.byteBuffer = GLAllocation.func_74524_c(TmtTessellator.nativeBufferSize * 4);
+        TmtTessellator.byteBuffer = GLAllocation.createDirectByteBuffer(TmtTessellator.nativeBufferSize * 4);
         TmtTessellator.intBuffer = TmtTessellator.byteBuffer.asIntBuffer();
         TmtTessellator.floatBuffer = TmtTessellator.byteBuffer.asFloatBuffer();
         TmtTessellator.shortBuffer = TmtTessellator.byteBuffer.asShortBuffer();
@@ -410,7 +410,7 @@ public class TmtTessellator extends Tessellator
         TmtTessellator.instance.defaultTexture = true;
         TmtTessellator.useVBO = (TmtTessellator.tryVBO && GLContext.getCapabilities().GL_ARB_vertex_buffer_object);
         if (TmtTessellator.useVBO) {
-            ARBBufferObject.glGenBuffersARB(TmtTessellator.vertexBuffers = GLAllocation.func_74527_f(TmtTessellator.vboCount));
+            ARBBufferObject.glGenBuffersARB(TmtTessellator.vertexBuffers = GLAllocation.createDirectIntBuffer(TmtTessellator.vboCount));
         }
     }
 }

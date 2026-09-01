@@ -19,12 +19,12 @@ public class SlotMecha extends Slot
         this.slotType = e;
     }
     
-    public boolean func_75214_a(final ItemStack stack) {
-        if (stack == null || stack.func_77973_b() == null) {
+    public boolean isItemValid(final ItemStack stack) {
+        if (stack == null || stack.getItem() == null) {
             return true;
         }
         EnumMechaItemType itemType = null;
-        final Item item = stack.func_77973_b();
+        final Item item = stack.getItem();
         if (item instanceof ItemGun && ((ItemGun)item).type.usableByMechas) {
             itemType = EnumMechaItemType.tool;
         }
@@ -37,11 +37,11 @@ public class SlotMecha extends Slot
         return this.slotType.accepts(itemType);
     }
     
-    public void func_75215_d(final ItemStack stack) {
-        if (!this.func_75214_a(stack)) {
+    public void putStack(final ItemStack stack) {
+        if (!this.isItemValid(stack)) {
             return;
         }
-        this.field_75224_c.func_70299_a(this.slotType.ordinal(), stack);
-        this.func_75218_e();
+        this.inventory.setInventorySlotContents(this.slotType.ordinal(), stack);
+        this.onSlotChanged();
     }
 }

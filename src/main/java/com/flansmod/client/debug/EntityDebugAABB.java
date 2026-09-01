@@ -27,9 +27,9 @@ public class EntityDebugAABB extends Entity
         this.green = 1.0f;
         this.blue = 1.0f;
         this.opacity = 0.0f;
-        this.func_70107_b((double)u.x, (double)u.y, (double)u.z);
-        this.field_70177_z = yaw;
-        this.field_70125_A = pitch;
+        this.setPosition((double)u.x, (double)u.y, (double)u.z);
+        this.rotationYaw = yaw;
+        this.rotationPitch = pitch;
         this.rotationRoll = roll;
         this.vector = v;
         this.life = i;
@@ -52,23 +52,23 @@ public class EntityDebugAABB extends Entity
         this(w, u, v, i, 1.0f, 1.0f, 1.0f);
     }
     
-    public void func_70071_h_() {
+    public void onUpdate() {
         --this.life;
         if (this.life <= 0) {
-            this.func_70106_y();
+            this.setDead();
         }
     }
     
-    public AxisAlignedBB func_70046_E() {
+    public AxisAlignedBB getBoundingBox() {
         return null;
     }
     
-    protected void func_70088_a() {
+    protected void entityInit() {
     }
     
-    protected void func_70037_a(final NBTTagCompound nbttagcompound) {
+    protected void readEntityFromNBT(final NBTTagCompound nbttagcompound) {
     }
     
-    protected void func_70014_b(final NBTTagCompound nbttagcompound) {
+    protected void writeEntityToNBT(final NBTTagCompound nbttagcompound) {
     }
 }

@@ -29,7 +29,7 @@ public class GuiTeamSelect extends GuiScreen
     
     public GuiTeamSelect() {
         if (GuiTeamSelect.teamChoices == null) {
-            FMLClientHandler.instance().getClient().func_147108_a((GuiScreen)null);
+            FMLClientHandler.instance().getClient().displayGuiScreen((GuiScreen)null);
             return;
         }
         this.classMenu = false;
@@ -48,79 +48,79 @@ public class GuiTeamSelect extends GuiScreen
         this.guiHeight = 29 + 24 * classes.length;
     }
     
-    public void func_73866_w_() {
-        super.func_73866_w_();
+    public void initGui() {
+        super.initGui();
         if (this.classMenu) {
             for (int i = 0; i < this.classChoices.length; ++i) {
                 if (this.classChoices[i] != null) {
-                    this.field_146292_n.add(new GuiButton(i, this.field_146294_l / 2 - 128 + 9, this.field_146295_m / 2 - this.guiHeight / 2 + 24 + 24 * i, 73, 20, this.classChoices[i].name));
+                    this.buttonList.add(new GuiButton(i, this.width / 2 - 128 + 9, this.height / 2 - this.guiHeight / 2 + 24 + 24 * i, 73, 20, this.classChoices[i].name));
                 }
             }
         }
         else {
             if (GuiTeamSelect.teamChoices == null) {
-                FMLClientHandler.instance().getClient().func_147108_a((GuiScreen)null);
+                FMLClientHandler.instance().getClient().displayGuiScreen((GuiScreen)null);
                 return;
             }
             for (int i = 0; i < GuiTeamSelect.teamChoices.length; ++i) {
                 if (GuiTeamSelect.teamChoices[i] != null) {
-                    this.field_146292_n.add(new GuiButton(i, this.field_146294_l / 2 - 128 + 10, this.field_146295_m / 2 - this.guiHeight / 2 + 24 + 24 * i, 236, 20, "§" + GuiTeamSelect.teamChoices[i].textColour + GuiTeamSelect.teamChoices[i].name));
+                    this.buttonList.add(new GuiButton(i, this.width / 2 - 128 + 10, this.height / 2 - this.guiHeight / 2 + 24 + 24 * i, 236, 20, "§" + GuiTeamSelect.teamChoices[i].textColour + GuiTeamSelect.teamChoices[i].name));
                 }
                 else {
-                    this.field_146292_n.add(new GuiButton(i, this.field_146294_l / 2 - 128 + 10, this.field_146295_m / 2 - this.guiHeight / 2 + 24 + 24 * i, 236, 20, "No Team / Builder"));
+                    this.buttonList.add(new GuiButton(i, this.width / 2 - 128 + 10, this.height / 2 - this.guiHeight / 2 + 24 + 24 * i, 236, 20, "No Team / Builder"));
                 }
             }
         }
     }
     
-    public void func_73863_a(final int i, final int j, final float f) {
+    public void drawScreen(final int i, final int j, final float f) {
         GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-        this.field_146297_k.field_71446_o.func_110577_a(GuiTeamSelect.texture);
-        this.func_73729_b(this.field_146294_l / 2 - 128, this.field_146295_m / 2 - this.guiHeight / 2, 0, 0, 256, 22);
-        this.func_73729_b(this.field_146294_l / 2 - 128, this.field_146295_m / 2 + this.guiHeight / 2 - 6, 0, 73, 256, 7);
+        this.mc.renderEngine.bindTexture(GuiTeamSelect.texture);
+        this.drawTexturedModalRect(this.width / 2 - 128, this.height / 2 - this.guiHeight / 2, 0, 0, 256, 22);
+        this.drawTexturedModalRect(this.width / 2 - 128, this.height / 2 + this.guiHeight / 2 - 6, 0, 73, 256, 7);
         if (this.classMenu) {
             for (int n = 0; n < this.classChoices.length; ++n) {
-                this.func_73729_b(this.field_146294_l / 2 - 128, this.field_146295_m / 2 - this.guiHeight / 2 + 22 + 24 * n, 0, 23, 256, 24);
+                this.drawTexturedModalRect(this.width / 2 - 128, this.height / 2 - this.guiHeight / 2 + 22 + 24 * n, 0, 23, 256, 24);
             }
         }
         else {
             for (int n = 0; n < GuiTeamSelect.teamChoices.length; ++n) {
-                this.func_73729_b(this.field_146294_l / 2 - 128, this.field_146295_m / 2 - this.guiHeight / 2 + 22 + 24 * n, 0, 48, 256, 24);
+                this.drawTexturedModalRect(this.width / 2 - 128, this.height / 2 - this.guiHeight / 2 + 22 + 24 * n, 0, 48, 256, 24);
             }
         }
-        this.field_146289_q.func_78261_a(this.classMenu ? "Choose a Class" : "Choose a Team", this.field_146294_l / 2 - 120, this.field_146295_m / 2 - this.guiHeight / 2 + 8, 16777215);
-        super.func_73863_a(i, j, f);
+        this.fontRendererObj.drawStringWithShadow(this.classMenu ? "Choose a Class" : "Choose a Team", this.width / 2 - 120, this.height / 2 - this.guiHeight / 2 + 8, 16777215);
+        super.drawScreen(i, j, f);
         if (this.classMenu) {
             for (int n = 0; n < this.classChoices.length; ++n) {
                 for (int m = 0; m < this.classChoices[n].startingItems.size(); ++m) {
-                    this.drawSlotInventory(this.classChoices[n].startingItems.get(m), this.field_146294_l / 2 - 128 + 85 + 18 * m, this.field_146295_m / 2 - this.guiHeight / 2 + 26 + 24 * n);
+                    this.drawSlotInventory(this.classChoices[n].startingItems.get(m), this.width / 2 - 128 + 85 + 18 * m, this.height / 2 - this.guiHeight / 2 + 26 + 24 * n);
                 }
             }
         }
     }
     
-    protected void func_146284_a(final GuiButton button) {
+    protected void actionPerformed(final GuiButton button) {
         if (this.classMenu) {
-            FlansMod.getPacketHandler().sendToServer(new PacketTeamSelect(this.classChoices[button.field_146127_k].shortName, true));
+            FlansMod.getPacketHandler().sendToServer(new PacketTeamSelect(this.classChoices[button.id].shortName, true));
         }
         else {
-            FlansMod.getPacketHandler().sendToServer(new PacketTeamSelect((GuiTeamSelect.teamChoices[button.field_146127_k] == null) ? "null" : GuiTeamSelect.teamChoices[button.field_146127_k].shortName, false));
+            FlansMod.getPacketHandler().sendToServer(new PacketTeamSelect((GuiTeamSelect.teamChoices[button.id] == null) ? "null" : GuiTeamSelect.teamChoices[button.id].shortName, false));
         }
-        Minecraft.func_71410_x().func_147108_a((GuiScreen)null);
+        Minecraft.getMinecraft().displayGuiScreen((GuiScreen)null);
     }
     
     private void drawSlotInventory(final ItemStack itemstack, final int i, final int j) {
-        GuiTeamSelect.itemRenderer.func_77015_a(this.field_146289_q, this.field_146297_k.field_71446_o, itemstack, i, j);
-        GuiTeamSelect.itemRenderer.func_77021_b(this.field_146289_q, this.field_146297_k.field_71446_o, itemstack, i, j);
+        GuiTeamSelect.itemRenderer.renderItemIntoGUI(this.fontRendererObj, this.mc.renderEngine, itemstack, i, j);
+        GuiTeamSelect.itemRenderer.renderItemOverlayIntoGUI(this.fontRendererObj, this.mc.renderEngine, itemstack, i, j);
     }
     
-    public boolean func_73868_f() {
+    public boolean doesGuiPauseGame() {
         return false;
     }
     
-    protected void func_73869_a(final char c, final int i) {
-        if (i == 1 || i == this.field_146297_k.field_71474_y.field_151445_Q.func_151463_i()) {
-            this.field_146297_k.field_71439_g.func_71053_j();
+    protected void keyTyped(final char c, final int i) {
+        if (i == 1 || i == this.mc.gameSettings.keyBindInventory.getKeyCode()) {
+            this.mc.thePlayer.closeScreen();
             if (this.classMenu) {
                 if (this.classChoices != null && this.classChoices.length > 0) {
                     FlansMod.getPacketHandler().sendToServer(new PacketTeamSelect(this.classChoices[0].shortName, true));
@@ -132,7 +132,7 @@ public class GuiTeamSelect extends GuiScreen
         }
     }
     
-    public void func_146281_b() {
+    public void onGuiClosed() {
     }
     
     static {

@@ -23,8 +23,8 @@ public class ModelG3 extends ModelGun
         (this.gunModel[4] = new ModelRendererTurbo(this, 0, 13, textureX, textureY)).addBox(15.0f, 3.375f, -0.375f, 2.0f, 0.75f, 0.75f);
         (this.gunModel[5] = new ModelRendererTurbo(this, 6, 13, textureX, textureY)).addBox(17.0f, 3.25f, -0.5f, 1, 1, 1);
         (this.gunModel[6] = new ModelRendererTurbo(this, 20, 0, textureX, textureY)).addBox(-0.75f, -3.0f, -0.75f, 1.5f, 4.0f, 1.5f);
-        this.gunModel[6].func_78793_a(1.0f, 2.0f, 0.0f);
-        this.gunModel[6].field_78808_h = -0.5f;
+        this.gunModel[6].setRotationPoint(1.0f, 2.0f, 0.0f);
+        this.gunModel[6].rotateAngleZ = -0.5f;
         (this.gunModel[7] = new ModelRendererTurbo(this, 16, 5, textureX, textureY)).addBox(14.0f, 5.0f, -0.5f, 1, 1, 1);
         this.scopeAttachPoint = new Vector3f(0.25f, 0.3125f, 0.0f);
         this.defaultStockModel = new ModelRendererTurbo[3];

@@ -25,12 +25,12 @@ public class ItemMechaAddon extends Item implements IFlanItem
     
     public ItemMechaAddon(final MechaItemType type1) {
         this.type = type1;
-        this.func_77625_d(1);
-        ((ItemMechaAddon)(this.type.item = this)).func_77637_a((CreativeTabs)FlansMod.tabFlanMechas);
+        this.setMaxStackSize(1);
+        ((ItemMechaAddon)(this.type.item = this)).setCreativeTab((CreativeTabs)FlansMod.tabFlanMechas);
         GameRegistry.registerItem((Item)this, this.type.shortName, "flansmod");
     }
     
-    public void func_77624_a(final ItemStack stack, final EntityPlayer player, final List list, final boolean b) {
+    public void addInformation(final ItemStack stack, final EntityPlayer player, final List list, final boolean b) {
         if (!this.type.packName.isEmpty()) {
             list.add(this.type.packName);
         }
@@ -40,13 +40,13 @@ public class ItemMechaAddon extends Item implements IFlanItem
     }
     
     @SideOnly(Side.CLIENT)
-    public int func_82790_a(final ItemStack par1ItemStack, final int par2) {
+    public int getColorFromItemStack(final ItemStack par1ItemStack, final int par2) {
         return this.type.colour;
     }
     
     @SideOnly(Side.CLIENT)
-    public void func_94581_a(final IIconRegister icon) {
-        this.field_77791_bV = icon.func_94245_a("FlansMod:" + this.type.iconPath);
+    public void registerIcons(final IIconRegister icon) {
+        this.itemIcon = icon.registerIcon("FlansMod:" + this.type.iconPath);
     }
     
     public InfoType getInfoType() {

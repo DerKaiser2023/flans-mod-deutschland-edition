@@ -120,7 +120,7 @@ public class EntitySeat extends Entity implements IControllable, IEntityAddition
         this.walterMortar = false;
         this.targetYaw = 0.0f;
         this.targetPitch = 0.0f;
-        this.func_70105_a(1.0f, 1.0f);
+        this.setSize(1.0f, 1.0f);
         this.prevLooking = new RotatedAxes();
         this.looking = new RotatedAxes();
         this.playerLooking = new RotatedAxes();
@@ -131,19 +131,19 @@ public class EntitySeat extends Entity implements IControllable, IEntityAddition
     public EntitySeat(final World world, final EntityDriveable d, final int id) {
         this(world);
         this.driveable = d;
-        this.driveableID = d.func_145782_y();
+        this.driveableID = d.getEntityId();
         this.seatInfo = this.driveable.getDriveableType().seats[id];
         this.driver = (id == 0);
-        this.func_70107_b(d.field_70165_t, d.field_70163_u, d.field_70161_v);
-        final double field_70165_t = this.field_70165_t;
-        this.prevPlayerPosX = field_70165_t;
-        this.playerPosX = field_70165_t;
-        final double field_70163_u = this.field_70163_u;
-        this.prevPlayerPosY = field_70163_u;
-        this.playerPosY = field_70163_u;
-        final double field_70161_v = this.field_70161_v;
-        this.prevPlayerPosZ = field_70161_v;
-        this.playerPosZ = field_70161_v;
+        this.setPosition(d.posX, d.posY, d.posZ);
+        final double posX = this.posX;
+        this.prevPlayerPosX = posX;
+        this.playerPosX = posX;
+        final double posY = this.posY;
+        this.prevPlayerPosY = posY;
+        this.playerPosY = posY;
+        final double posZ = this.posZ;
+        this.prevPlayerPosZ = posZ;
+        this.playerPosZ = posZ;
         this.looking.setAngles((this.seatInfo.minYaw + this.seatInfo.maxYaw) / 2.0f, 0.0f, 0.0f);
         this.playerLooking.setAngles((this.seatInfo.minYaw + this.seatInfo.maxYaw) / 2.0f, 0.0f, 0.0f);
         if (this.driveable.getDriveableType().gunRange) {
@@ -157,18 +157,18 @@ public class EntitySeat extends Entity implements IControllable, IEntityAddition
         }
     }
     
-    public boolean func_70097_a(final DamageSource source, final float f) {
+    public boolean attackEntityFrom(final DamageSource source, final float f) {
         if (this.seatInfo == null || this.seatInfo.hardpoint || this.seatInfo.helipad || this.seatInfo.carrier || (this.seatInfo.id == 0 && !this.driveable.getDriveableType().hijackablePilot)) {
             return false;
         }
-        if (this.field_70153_n != null) {
+        if (this.riddenByEntity != null) {
             if (this.exitTimer > 0) {
-                FlansMod.getPacketHandler().sendToAllAround(new PacketPlaySound(this.field_70165_t, this.field_70163_u, this.field_70161_v, "woodHit"), this.field_70165_t, this.field_70163_u, this.field_70161_v, 25.0f, this.field_71093_bK);
+                FlansMod.getPacketHandler().sendToAllAround(new PacketPlaySound(this.posX, this.posY, this.posZ, "woodHit"), this.posX, this.posY, this.posZ, 25.0f, this.dimension);
             }
             else if (this.exitTimer <= 5) {
-                FlansMod.getPacketHandler().sendToAllAround(new PacketPlaySound(this.field_70165_t, this.field_70163_u, this.field_70161_v, "woodBreak"), this.field_70165_t, this.field_70163_u, this.field_70161_v, 25.0f, this.field_71093_bK);
+                FlansMod.getPacketHandler().sendToAllAround(new PacketPlaySound(this.posX, this.posY, this.posZ, "woodBreak"), this.posX, this.posY, this.posZ, 25.0f, this.dimension);
             }
-            FlansMod.getPacketHandler().sendToAllAround(new PacketParticle("crit", this.field_70165_t, this.field_70163_u, this.field_70161_v, 0.0, 0.0, 0.0), this.field_70165_t, this.field_70163_u, this.field_70161_v, 25.0f, this.field_71093_bK);
+            FlansMod.getPacketHandler().sendToAllAround(new PacketParticle("crit", this.posX, this.posY, this.posZ, 0.0, 0.0, 0.0), this.posX, this.posY, this.posZ, 25.0f, this.dimension);
             this.exitTimer -= 5;
             FlansMod.getPacketHandler().sendToServer(new PacketSeatUpdates(this));
             return false;
@@ -176,11 +176,11 @@ public class EntitySeat extends Entity implements IControllable, IEntityAddition
         return false;
     }
     
-    public boolean func_70067_L() {
-        return !this.field_70128_L;
+    public boolean canBeCollidedWith() {
+        return !this.isDead;
     }
     
-    protected void func_70088_a() {
+    protected void entityInit() {
     }
     
     @SideOnly(Side.CLIENT)
@@ -193,7 +193,7 @@ public class EntitySeat extends Entity implements IControllable, IEntityAddition
     }
     
     public Entity getControllingEntity() {
-        return this.field_70153_n;
+        return this.riddenByEntity;
     }
     
     public boolean getInvincible() {
@@ -205,7 +205,7 @@ public class EntitySeat extends Entity implements IControllable, IEntityAddition
     }
     
     public ItemStack getPickedResult(final MovingObjectPosition target) {
-        if (this.field_70170_p.field_72995_K && !this.foundDriveable) {
+        if (this.worldObj.isRemote && !this.foundDriveable) {
             return null;
         }
         return this.driveable.getPickedResult(target);
@@ -221,104 +221,104 @@ public class EntitySeat extends Entity implements IControllable, IEntityAddition
         return this.playerRoll;
     }
     
-    public float func_70053_R() {
+    public float getShadowSize() {
         return 4.0f;
     }
     
-    public boolean func_130002_c(final EntityPlayer entityplayer) {
-        if (this.field_70128_L) {
+    public boolean interactFirst(final EntityPlayer entityplayer) {
+        if (this.isDead) {
             return false;
         }
-        if (this.field_70170_p.field_72995_K) {
+        if (this.worldObj.isRemote) {
             return false;
         }
         if (this.seatID == 0) {
             FlansMod.proxy.doTutorialStuff(entityplayer, this.driveable);
         }
-        final ItemStack currentItem = entityplayer.func_71045_bC();
-        if (currentItem != null && currentItem.func_77973_b() instanceof ItemTool && ((ItemTool)currentItem.func_77973_b()).type.healDriveables) {
+        final ItemStack currentItem = entityplayer.getCurrentEquippedItem();
+        if (currentItem != null && currentItem.getItem() instanceof ItemTool && ((ItemTool)currentItem.getItem()).type.healDriveables) {
             return true;
         }
-        if (currentItem != null && currentItem.func_77973_b() instanceof ItemTool && ((ItemTool)currentItem.func_77973_b()).type.key) {
+        if (currentItem != null && currentItem.getItem() instanceof ItemTool && ((ItemTool)currentItem.getItem()).type.key) {
             return true;
         }
-        if (currentItem != null && currentItem.func_77973_b() instanceof ItemGun && ((ItemGun)currentItem.func_77973_b()).type.shootMelee) {
+        if (currentItem != null && currentItem.getItem() instanceof ItemGun && ((ItemGun)currentItem.getItem()).type.shootMelee) {
             return true;
         }
         if (!this.seatInfo.enterable) {
             return true;
         }
-        if (currentItem != null && currentItem.func_77973_b() instanceof ItemPlane && (this.seatInfo.carrier || this.seatInfo.helipad || this.seatInfo.hardpoint)) {
-            if (currentItem.func_77973_b() instanceof ItemPlane) {
-                final ItemPlane plane = (ItemPlane)currentItem.func_77973_b();
+        if (currentItem != null && currentItem.getItem() instanceof ItemPlane && (this.seatInfo.carrier || this.seatInfo.helipad || this.seatInfo.hardpoint)) {
+            if (currentItem.getItem() instanceof ItemPlane) {
+                final ItemPlane plane = (ItemPlane)currentItem.getItem();
                 final PlaneType type = plane.type;
                 if (type.mass < this.driveable.getDriveableType().weightLimit) {
                     if (type.helipadLandable || (type.carrierLandable && this.seatInfo.carrier) || (type.parasitePlane && this.seatInfo.hardpoint)) {
-                        if (!this.field_70170_p.field_72995_K) {
-                            final DriveableData data = plane.getPlaneData(currentItem, this.field_70170_p);
+                        if (!this.worldObj.isRemote) {
+                            final DriveableData data = plane.getPlaneData(currentItem, this.worldObj);
                             if (data != null) {
-                                this.field_70170_p.func_72838_d((Entity)new EntityPlane(this.field_70170_p, this.field_70165_t + 0.5, this.field_70163_u + 2.5, this.field_70161_v + 0.5, entityplayer, type, data, false));
+                                this.worldObj.spawnEntityInWorld((Entity)new EntityPlane(this.worldObj, this.posX + 0.5, this.posY + 2.5, this.posZ + 0.5, entityplayer, type, data, false));
                             }
                         }
-                        if (!entityplayer.field_71075_bZ.field_75098_d) {
+                        if (!entityplayer.capabilities.isCreativeMode) {
                             final ItemStack itemStack = currentItem;
-                            --itemStack.field_77994_a;
+                            --itemStack.stackSize;
                         }
                     }
                     else if (type.carrierLandable && this.seatInfo.helipad) {
-                        entityplayer.func_145747_a((IChatComponent)new ChatComponentText("This carrier slot can only handle Helicopters, VTOL Planes or Seaplanes"));
+                        entityplayer.addChatMessage((IChatComponent)new ChatComponentText("This carrier slot can only handle Helicopters, VTOL Planes or Seaplanes"));
                     }
                     else if (type.carrierLandable || (type.helipadLandable && this.seatInfo.hardpoint)) {
-                        entityplayer.func_145747_a((IChatComponent)new ChatComponentText("This slot can only handle parasite aircraft"));
+                        entityplayer.addChatMessage((IChatComponent)new ChatComponentText("This slot can only handle parasite aircraft"));
                     }
                 }
                 else if ((type.carrierLandable || type.helipadLandable) && type.mass < 1.5f * this.driveable.getDriveableType().weightLimit) {
-                    entityplayer.func_145747_a((IChatComponent)new ChatComponentText("This plane (" + type.mass + " kg) is too heavy to properly operate on this carrier! (" + this.driveable.getDriveableType().weightLimit + " kg Weight Limit)"));
-                    entityplayer.func_145747_a((IChatComponent)new ChatComponentText("However, you CAN launch it: Park the carrier near land and place the plane nearby to load it onto the deck"));
-                    entityplayer.func_145747_a((IChatComponent)new ChatComponentText("Also, you will not be able to land back on the carrier after takeoff"));
+                    entityplayer.addChatMessage((IChatComponent)new ChatComponentText("This plane (" + type.mass + " kg) is too heavy to properly operate on this carrier! (" + this.driveable.getDriveableType().weightLimit + " kg Weight Limit)"));
+                    entityplayer.addChatMessage((IChatComponent)new ChatComponentText("However, you CAN launch it: Park the carrier near land and place the plane nearby to load it onto the deck"));
+                    entityplayer.addChatMessage((IChatComponent)new ChatComponentText("Also, you will not be able to land back on the carrier after takeoff"));
                 }
                 else if (!type.carrierLandable && !type.helipadLandable && this.seatInfo.carrier && type.mass < 1.5f * this.driveable.getDriveableType().weightLimit) {
-                    entityplayer.func_145747_a((IChatComponent)new ChatComponentText("This aircraft is not meant to operate on carriers, however it CAN take off for a one-way trip!"));
-                    entityplayer.func_145747_a((IChatComponent)new ChatComponentText("Park the carrier near land and place the aircraft nearby to load it onto the deck"));
+                    entityplayer.addChatMessage((IChatComponent)new ChatComponentText("This aircraft is not meant to operate on carriers, however it CAN take off for a one-way trip!"));
+                    entityplayer.addChatMessage((IChatComponent)new ChatComponentText("Park the carrier near land and place the aircraft nearby to load it onto the deck"));
                 }
                 else {
-                    entityplayer.func_145747_a((IChatComponent)new ChatComponentText("This plane (" + type.mass + " kg) is way too heavy for this carrier (" + this.driveable.getDriveableType().weightLimit + " kg Weight Limit)"));
+                    entityplayer.addChatMessage((IChatComponent)new ChatComponentText("This plane (" + type.mass + " kg) is way too heavy for this carrier (" + this.driveable.getDriveableType().weightLimit + " kg Weight Limit)"));
                 }
             }
             return true;
         }
-        if (currentItem != null && currentItem.func_77973_b() instanceof ItemLead) {
-            if (this.field_70153_n != null && this.field_70153_n instanceof EntityLiving && !(this.field_70153_n instanceof EntityPlayer)) {
-                final EntityLiving mob = (EntityLiving)this.field_70153_n;
-                this.field_70153_n.func_70078_a((Entity)null);
-                mob.func_110162_b((Entity)entityplayer, true);
+        if (currentItem != null && currentItem.getItem() instanceof ItemLead) {
+            if (this.riddenByEntity != null && this.riddenByEntity instanceof EntityLiving && !(this.riddenByEntity instanceof EntityPlayer)) {
+                final EntityLiving mob = (EntityLiving)this.riddenByEntity;
+                this.riddenByEntity.mountEntity((Entity)null);
+                mob.setLeashedToEntity((Entity)entityplayer, true);
                 return true;
             }
             final double checkRange = 10.0;
-            final List nearbyMobs = this.field_70170_p.func_72872_a((Class)EntityLiving.class, AxisAlignedBB.func_72330_a(this.field_70165_t - checkRange, this.field_70163_u - checkRange, this.field_70161_v - checkRange, this.field_70165_t + checkRange, this.field_70163_u + checkRange, this.field_70161_v + checkRange));
+            final List nearbyMobs = this.worldObj.getEntitiesWithinAABB((Class)EntityLiving.class, AxisAlignedBB.getBoundingBox(this.posX - checkRange, this.posY - checkRange, this.posZ - checkRange, this.posX + checkRange, this.posY + checkRange, this.posZ + checkRange));
             for (final Object obj : nearbyMobs) {
                 final EntityLiving entity = (EntityLiving)obj;
-                if (entity.func_110167_bD() && entity.func_110166_bE() == entityplayer && !this.driveable.locked) {
-                    entity.func_70078_a((Entity)this);
-                    this.looking.setAngles(-entity.field_70177_z, entity.field_70125_A, 0.0f);
-                    entity.func_110160_i(true, !entityplayer.field_71075_bZ.field_75098_d);
+                if (entity.getLeashed() && entity.getLeashedToEntity() == entityplayer && !this.driveable.locked) {
+                    entity.mountEntity((Entity)this);
+                    this.looking.setAngles(-entity.rotationYaw, entity.rotationPitch, 0.0f);
+                    entity.clearLeashed(true, !entityplayer.capabilities.isCreativeMode);
                 }
             }
             return true;
         }
         else {
-            if (this.field_70153_n != null) {
+            if (this.riddenByEntity != null) {
                 return false;
             }
             if (this.driveable.owner == null || this.driveable.owner.getMembersOfRankAndAbove(IFaction.PermLevel.PLEBEIAN).contains(entityplayer.getDisplayName())) {
-                entityplayer.func_70078_a((Entity)this);
+                entityplayer.mountEntity((Entity)this);
                 if (this.driveable.owner == null) {
                     this.driveable.owner = Factions.getFactionFromPlayer(entityplayer);
                 }
                 return true;
             }
             if (!this.driveable.locked) {
-                entityplayer.func_70078_a((Entity)this);
+                entityplayer.mountEntity((Entity)this);
                 if (!this.driveable.stolen && this.driver) {
                     this.driveable.stolen = true;
                     this.driveable.owner.removeTransportVehicle((Entity)this.driveable);
@@ -339,7 +339,7 @@ public class EntitySeat extends Entity implements IControllable, IEntityAddition
     }
     
     public boolean isDead() {
-        return this.field_70128_L;
+        return this.isDead;
     }
     
     public void onMouseMoved(final int deltaX, final int deltaY) {
@@ -351,7 +351,7 @@ public class EntitySeat extends Entity implements IControllable, IEntityAddition
         if (this.driver) {
             this.driveable.onMouseMoved(deltaX, deltaY);
         }
-        if (!this.driver || !FlansModClient.controlModeMouse || !this.driveable.hasMouseControlMode() || this.driver || !this.driveable.getDriveableType().centralControl || this.field_70153_n == null) {
+        if (!this.driver || !FlansModClient.controlModeMouse || !this.driveable.hasMouseControlMode() || this.driver || !this.driveable.getDriveableType().centralControl || this.riddenByEntity == null) {
             final float lookSpeed = 4.0f;
             float newPlayerPitch = this.playerLooking.getPitch() - deltaY / lookSpeed * FlansMod.proxy.getMouseSensitivity();
             if (newPlayerPitch < -this.seatInfo.maxPitch) {
@@ -536,21 +536,21 @@ public class EntitySeat extends Entity implements IControllable, IEntityAddition
         }
     }
     
-    public void func_70071_h_() {
-        super.func_70071_h_();
-        if (this.driver && this.field_70153_n == null && this.driveable != null && this.driveable.type != null && !this.driveable.type.evilGolem) {
+    public void onUpdate() {
+        super.onUpdate();
+        if (this.driver && this.riddenByEntity == null && this.driveable != null && this.driveable.type != null && !this.driveable.type.evilGolem) {
             this.prevLooking = this.looking.clone();
             this.prevPlayerLooking = this.playerLooking.clone();
         }
-        if (this.seatInfo != null && (this.seatInfo.helipad || this.seatInfo.carrier || this.seatInfo.hardpoint) && this.field_70153_n == null) {
-            this.func_70105_a(5.0f, 5.0f);
+        if (this.seatInfo != null && (this.seatInfo.helipad || this.seatInfo.carrier || this.seatInfo.hardpoint) && this.riddenByEntity == null) {
+            this.setSize(5.0f, 5.0f);
         }
-        else if (this.seatInfo != null && (this.seatInfo.helipad || this.seatInfo.carrier || this.seatInfo.hardpoint) && this.field_70153_n != null) {
-            this.func_70105_a(0.1f, 0.1f);
+        else if (this.seatInfo != null && (this.seatInfo.helipad || this.seatInfo.carrier || this.seatInfo.hardpoint) && this.riddenByEntity != null) {
+            this.setSize(0.1f, 0.1f);
         }
-        if (this.field_70170_p.field_72995_K && !this.foundDriveable) {
-            if (this.field_70170_p.func_73045_a(this.driveableID) instanceof EntityDriveable) {
-                this.driveable = (EntityDriveable)this.field_70170_p.func_73045_a(this.driveableID);
+        if (this.worldObj.isRemote && !this.foundDriveable) {
+            if (this.worldObj.getEntityByID(this.driveableID) instanceof EntityDriveable) {
+                this.driveable = (EntityDriveable)this.worldObj.getEntityByID(this.driveableID);
             }
             if (this.driveable == null) {
                 return;
@@ -561,26 +561,26 @@ public class EntitySeat extends Entity implements IControllable, IEntityAddition
             this.looking.setAngles((this.seatInfo.minYaw + this.seatInfo.maxYaw) / 2.0f, 0.0f, 0.0f);
             this.playerLooking.setAngles((this.seatInfo.minYaw + this.seatInfo.maxYaw) / 2.0f, 0.0f, 0.0f);
             this.prevLooking = this.looking.clone();
-            final double field_70165_t = this.driveable.field_70165_t;
-            this.field_70165_t = field_70165_t;
-            this.prevPlayerPosX = field_70165_t;
-            this.playerPosX = field_70165_t;
-            final double field_70163_u = this.driveable.field_70163_u;
-            this.field_70163_u = field_70163_u;
-            this.prevPlayerPosY = field_70163_u;
-            this.playerPosY = field_70163_u;
-            final double field_70161_v = this.driveable.field_70161_v;
-            this.field_70161_v = field_70161_v;
-            this.prevPlayerPosZ = field_70161_v;
-            this.playerPosZ = field_70161_v;
-            this.func_70107_b(this.field_70165_t, this.field_70163_u, this.field_70161_v);
+            final double posX = this.driveable.posX;
+            this.posX = posX;
+            this.prevPlayerPosX = posX;
+            this.playerPosX = posX;
+            final double posY = this.driveable.posY;
+            this.posY = posY;
+            this.prevPlayerPosY = posY;
+            this.playerPosY = posY;
+            final double posZ = this.driveable.posZ;
+            this.posZ = posZ;
+            this.prevPlayerPosZ = posZ;
+            this.playerPosZ = posZ;
+            this.setPosition(this.posX, this.posY, this.posZ);
         }
         if (this.driveable == null) {
             return;
         }
         EntityDriveable entD;
-        if (this.field_70170_p.func_73045_a(this.driveableID) instanceof EntityDriveable) {
-            entD = (EntityDriveable)this.field_70170_p.func_73045_a(this.driveableID);
+        if (this.worldObj.getEntityByID(this.driveableID) instanceof EntityDriveable) {
+            entD = (EntityDriveable)this.worldObj.getEntityByID(this.driveableID);
         }
         else {
             entD = null;
@@ -592,7 +592,7 @@ public class EntitySeat extends Entity implements IControllable, IEntityAddition
             this.timeLimitDriveableNull = 0;
         }
         if (this.timeLimitDriveableNull > 1200) {
-            this.func_70106_y();
+            this.setDead();
         }
         if (this.gunDelay > 0) {
             --this.gunDelay;
@@ -609,25 +609,25 @@ public class EntitySeat extends Entity implements IControllable, IEntityAddition
         if (this.nintendoSwitch > 0) {
             --this.nintendoSwitch;
         }
-        if (this.field_70170_p.field_72995_K && this.field_70153_n != null && this.field_70153_n instanceof EntityPlayer && this.driveable != null && (this.seatID > 0 || (this.seatID == 0 && !this.driveable.getDriveableType().walterMortar && !this.driveable.getDriveableType().walterGunRange && this.driveable instanceof EntityVehicle)) && !FlansModClient.controlModeMouse) {
-            FlansMod.proxy.changeControlMode((EntityPlayer)this.field_70153_n);
+        if (this.worldObj.isRemote && this.riddenByEntity != null && this.riddenByEntity instanceof EntityPlayer && this.driveable != null && (this.seatID > 0 || (this.seatID == 0 && !this.driveable.getDriveableType().walterMortar && !this.driveable.getDriveableType().walterGunRange && this.driveable instanceof EntityVehicle)) && !FlansModClient.controlModeMouse) {
+            FlansMod.proxy.changeControlMode((EntityPlayer)this.riddenByEntity);
         }
         if (this.exitTimer < 20) {
             ++this.exitTimer;
         }
-        if (this.exitTimer < 0 || (this.driveable.gtfo && this.field_70153_n != null && !this.driver)) {
-            if (this.field_70153_n != null && this.field_70153_n instanceof EntityPlane && this.driveable != null && this.driveable instanceof EntityPlane) {
+        if (this.exitTimer < 0 || (this.driveable.gtfo && this.riddenByEntity != null && !this.driver)) {
+            if (this.riddenByEntity != null && this.riddenByEntity instanceof EntityPlane && this.driveable != null && this.driveable instanceof EntityPlane) {
                 final EntityPlane Mothership = (EntityPlane)this.driveable;
                 Mothership.accidentDelay = 100;
             }
-            this.field_70153_n.func_70078_a((Entity)null);
+            this.riddenByEntity.mountEntity((Entity)null);
             this.exitTimer = 20;
         }
-        if (!this.field_70170_p.field_72995_K) {
-            if (this.field_70153_n != null && this.field_70153_n instanceof EntityPlayer) {
-                final EntityPlayerMP mp = (EntityPlayerMP)this.field_70153_n;
+        if (!this.worldObj.isRemote) {
+            if (this.riddenByEntity != null && this.riddenByEntity instanceof EntityPlayer) {
+                final EntityPlayerMP mp = (EntityPlayerMP)this.riddenByEntity;
                 if (this.Seatbelt != mp) {
-                    this.Seatbelt = (EntityPlayer)this.field_70153_n;
+                    this.Seatbelt = (EntityPlayer)this.riddenByEntity;
                     this.SeatBeltMemory = 1200;
                 }
             }
@@ -635,9 +635,9 @@ public class EntitySeat extends Entity implements IControllable, IEntityAddition
                 --this.SeatBeltMemory;
             }
             final int testerino = 0;
-            if (!this.field_70170_p.field_73010_i.contains(this.Seatbelt)) {
+            if (!this.worldObj.playerEntities.contains(this.Seatbelt)) {
                 if (this.Seatbelt != null) {
-                    this.func_70078_a((Entity)null);
+                    this.mountEntity((Entity)null);
                 }
             }
             if (this.Seatbelt != null && this.SeatBeltMemory == 0) {
@@ -645,37 +645,37 @@ public class EntitySeat extends Entity implements IControllable, IEntityAddition
             }
         }
         if (this.playYawSound && this.yawSoundDelay == 0 && this.seatInfo.traverseSounds) {
-            PacketPlaySound.sendSoundPacket(this.field_70165_t, this.field_70163_u, this.field_70161_v, 50.0, this.field_71093_bK, this.seatInfo.yawSound, false);
+            PacketPlaySound.sendSoundPacket(this.posX, this.posY, this.posZ, 50.0, this.dimension, this.seatInfo.yawSound, false);
             this.yawSoundDelay = this.seatInfo.yawSoundLength;
         }
         if (this.playPitchSound && this.pitchSoundDelay == 0 && this.seatInfo.traverseSounds) {
-            PacketPlaySound.sendSoundPacket(this.field_70165_t, this.field_70163_u, this.field_70161_v, 50.0, this.field_71093_bK, this.seatInfo.pitchSound, false);
+            PacketPlaySound.sendSoundPacket(this.posX, this.posY, this.posZ, 50.0, this.dimension, this.seatInfo.pitchSound, false);
             this.pitchSoundDelay = this.seatInfo.pitchSoundLength;
         }
-        if (!(this.field_70153_n instanceof EntityPlayer) || !FlansMod.proxy.isThePlayer((EntityPlayer)this.field_70153_n)) {
+        if (!(this.riddenByEntity instanceof EntityPlayer) || !FlansMod.proxy.isThePlayer((EntityPlayer)this.riddenByEntity)) {
             this.playYawSound = false;
             this.playPitchSound = false;
             this.yawSoundDelay = 0;
             this.pitchSoundDelay = 0;
         }
-        if (this.field_70170_p.field_72995_K) {
-            if (this.driver && this.field_70153_n instanceof EntityPlayer && FlansMod.proxy.isThePlayer((EntityPlayer)this.field_70153_n) && FlansModClient.controlModeMouse && this.driveable.hasMouseControlMode()) {
+        if (this.worldObj.isRemote) {
+            if (this.driver && this.riddenByEntity instanceof EntityPlayer && FlansMod.proxy.isThePlayer((EntityPlayer)this.riddenByEntity) && FlansModClient.controlModeMouse && this.driveable.hasMouseControlMode()) {
                 this.looking = new RotatedAxes();
                 this.playerLooking = new RotatedAxes();
             }
-            if (this.seatInfo.invisiblePassenger && this.field_70153_n != null) {
-                this.field_70153_n.func_82142_c(true);
+            if (this.seatInfo.invisiblePassenger && this.riddenByEntity != null) {
+                this.riddenByEntity.setInvisible(true);
             }
             final Vector3f xAxis = this.driveable.axes.findLocalAxesGlobally(this.looking).getXAxis();
             final Vector3f yAxis = this.driveable.axes.findLocalAxesGlobally(this.looking).getYAxis();
             final Vector3f zAxis = this.driveable.axes.findLocalAxesGlobally(this.looking).getZAxis();
-            final Vector3f yOffset = this.driveable.axes.findLocalVectorGlobally(new Vector3f(0.0f, (this.field_70153_n == null) ? 0.0f : ((float)this.field_70153_n.func_70033_W()), 0.0f));
+            final Vector3f yOffset = this.driveable.axes.findLocalVectorGlobally(new Vector3f(0.0f, (this.riddenByEntity == null) ? 0.0f : ((float)this.riddenByEntity.getYOffset()), 0.0f));
             for (int i = 0; i < 10; ++i) {}
-            if ((this.lastRiddenByEntity instanceof EntityPlayer && this.field_70153_n == null && FlansModClient.proxy.isThePlayer((EntityPlayer)this.lastRiddenByEntity)) || (this.driveable != null && this.driveable.type != null && this.driveable.type.evilGolem)) {
+            if ((this.lastRiddenByEntity instanceof EntityPlayer && this.riddenByEntity == null && FlansModClient.proxy.isThePlayer((EntityPlayer)this.lastRiddenByEntity)) || (this.driveable != null && this.driveable.type != null && this.driveable.type.evilGolem)) {
                 FlansMod.getPacketHandler().sendToServer(new PacketSeatCheck(this));
             }
         }
-        if ((this.driveable.getDriveableType().centralControl && this.field_70153_n == null && this.seatInfo.id > 0 && this.driveable.seats[0] != null && this.driveable.seats[0].field_70153_n != null) || (this.driveable.seats[0] != null && this.driveable instanceof EntityVehicle && this.driveable.getDriveableType().evilGolem && ((EntityVehicle)this.driveable).target != null && ((EntityVehicle)this.driveable).humanTarget != null)) {
+        if ((this.driveable.getDriveableType().centralControl && this.riddenByEntity == null && this.seatInfo.id > 0 && this.driveable.seats[0] != null && this.driveable.seats[0].riddenByEntity != null) || (this.driveable.seats[0] != null && this.driveable instanceof EntityVehicle && this.driveable.getDriveableType().evilGolem && ((EntityVehicle)this.driveable).target != null && ((EntityVehicle)this.driveable).humanTarget != null)) {
             if (this.driveable.getDriveableType().evilGolem) {
                 final RotatedAxes evilTarget = new RotatedAxes(((EntityVehicle)this.driveable).aimYaw, ((EntityVehicle)this.driveable).aimPitch, 0.0f);
                 final RotatedAxes evilTargetAA = new RotatedAxes(((EntityVehicle)this.driveable).aimYawAA, ((EntityVehicle)this.driveable).aimPitchAA, 0.0f);
@@ -798,71 +798,71 @@ public class EntitySeat extends Entity implements IControllable, IEntityAddition
             }
             this.looking.setAngles(newYaw, newPitch, 0.0f);
         }
-        if ((this.driveable.getDriveableType().centralControl && this.field_70153_n == null && this.driveable.shootingTertiary && this.driveable.seats[0] != null && this.driveable.seats[0].field_70153_n != null && this.driveable.seats[0].field_70153_n instanceof EntityPlayer && this.driveable.getDriveableData().parts.get(this.seatInfo.part).health > 0 && this.driveable.seats[0].playerLooking.getYaw() + 8.0f >= this.looking.getYaw() && this.driveable.seats[0].playerLooking.getYaw() - 8.0f <= this.looking.getYaw() && this.driveable.seats[0].playerLooking.getPitch() + 8.0f >= this.looking.getPitch() && this.driveable.seats[0].playerLooking.getPitch() - 8.0f <= this.looking.getPitch()) || (this.driveable instanceof EntityVehicle && this.driveable.getDriveableType().evilGolem && this.driveable.shootingTertiary && ((EntityVehicle)this.driveable).target != null && ((EntityVehicle)this.driveable).humanTarget != null && this.driveable.getDriveableData().parts.get(this.seatInfo.part).health > 0 && this.driveable.seats[0].playerLooking.getYaw() + 8.0f >= this.looking.getYaw() && this.driveable.seats[0].playerLooking.getYaw() - 8.0f <= this.looking.getYaw() && this.driveable.seats[0].playerLooking.getPitch() + 8.0f >= this.looking.getPitch() && this.driveable.seats[0].playerLooking.getPitch() - 8.0f <= this.looking.getPitch())) {
-            EntityPlayer player = (EntityPlayer)this.driveable.seats[0].field_70153_n;
+        if ((this.driveable.getDriveableType().centralControl && this.riddenByEntity == null && this.driveable.shootingTertiary && this.driveable.seats[0] != null && this.driveable.seats[0].riddenByEntity != null && this.driveable.seats[0].riddenByEntity instanceof EntityPlayer && this.driveable.getDriveableData().parts.get(this.seatInfo.part).health > 0 && this.driveable.seats[0].playerLooking.getYaw() + 8.0f >= this.looking.getYaw() && this.driveable.seats[0].playerLooking.getYaw() - 8.0f <= this.looking.getYaw() && this.driveable.seats[0].playerLooking.getPitch() + 8.0f >= this.looking.getPitch() && this.driveable.seats[0].playerLooking.getPitch() - 8.0f <= this.looking.getPitch()) || (this.driveable instanceof EntityVehicle && this.driveable.getDriveableType().evilGolem && this.driveable.shootingTertiary && ((EntityVehicle)this.driveable).target != null && ((EntityVehicle)this.driveable).humanTarget != null && this.driveable.getDriveableData().parts.get(this.seatInfo.part).health > 0 && this.driveable.seats[0].playerLooking.getYaw() + 8.0f >= this.looking.getYaw() && this.driveable.seats[0].playerLooking.getYaw() - 8.0f <= this.looking.getYaw() && this.driveable.seats[0].playerLooking.getPitch() + 8.0f >= this.looking.getPitch() && this.driveable.seats[0].playerLooking.getPitch() - 8.0f <= this.looking.getPitch())) {
+            EntityPlayer player = (EntityPlayer)this.driveable.seats[0].riddenByEntity;
             if (this.driveable instanceof EntityVehicle && this.driveable.getDriveableType().evilGolem) {
                 player = ((EntityVehicle)this.driveable).humanTarget;
             }
             final GunType gun = this.seatInfo.gunType;
             if (((this.driveable != null && this.driveable.atSea && gun != null && gun.mode != EnumFireMode.MINIGUN) || this.minigunSpeed > 2.0f) && this.gunDelay <= 0 && TeamsManager.bulletsEnabled && this.driveable.getDriveableData().ammo[this.seatInfo.gunnerID] != null) {
                 final ItemStack bulletItemStack = this.driveable.getDriveableData().ammo[this.seatInfo.gunnerID];
-                if (gun != null && bulletItemStack != null && bulletItemStack.func_77973_b() instanceof ItemShootable && !TeamsManager.violence) {
-                    final ShootableType bullet = ((ItemShootable)bulletItemStack.func_77973_b()).type;
+                if (gun != null && bulletItemStack != null && bulletItemStack.getItem() instanceof ItemShootable && !TeamsManager.violence) {
+                    final ShootableType bullet = ((ItemShootable)bulletItemStack.getItem()).type;
                     if (gun.isAmmo(bullet)) {
-                        final Vector3f gunOrigin = Vector3f.add(this.driveable.axes.findLocalVectorGlobally(this.seatInfo.gunOrigin), new Vector3f(this.driveable.field_70165_t, this.driveable.field_70163_u, this.driveable.field_70161_v), null);
+                        final Vector3f gunOrigin = Vector3f.add(this.driveable.axes.findLocalVectorGlobally(this.seatInfo.gunOrigin), new Vector3f(this.driveable.posX, this.driveable.posY, this.driveable.posZ), null);
                         final RotatedAxes globalLookAxes = this.driveable.axes.findLocalAxesGlobally(this.looking);
                         final Vector3f shootVec = this.driveable.axes.findLocalVectorGlobally(this.looking.getXAxis());
-                        final Vector3f yOffset2 = this.driveable.axes.findLocalVectorGlobally(new Vector3f(0.0, this.func_70042_X(), 0.0));
+                        final Vector3f yOffset2 = this.driveable.axes.findLocalVectorGlobally(new Vector3f(0.0, this.getMountedYOffset(), 0.0));
                         if (this.seatInfo.barrels == 1) {
-                            this.field_70170_p.func_72838_d((Entity)((ItemShootable)bulletItemStack.func_77973_b()).getEntity(this.field_70170_p, Vector3f.add(yOffset2, new Vector3f(gunOrigin.x + shootVec.z * 0.0f, gunOrigin.y, gunOrigin.z + shootVec.x * 0.0f), null), shootVec, (EntityLivingBase)player, gun.bulletSpread, gun.damage, gun.bulletSpeed, bulletItemStack.func_77960_j(), this.driveable.getDriveableType(), this.driveable.getDriveableType().evilGolem));
+                            this.worldObj.spawnEntityInWorld((Entity)((ItemShootable)bulletItemStack.getItem()).getEntity(this.worldObj, Vector3f.add(yOffset2, new Vector3f(gunOrigin.x + shootVec.z * 0.0f, gunOrigin.y, gunOrigin.z + shootVec.x * 0.0f), null), shootVec, (EntityLivingBase)player, gun.bulletSpread, gun.damage, gun.bulletSpeed, bulletItemStack.getMetadata(), this.driveable.getDriveableType(), this.driveable.getDriveableType().evilGolem));
                         }
                         if (this.seatInfo.barrels == 2) {
-                            this.field_70170_p.func_72838_d((Entity)((ItemShootable)bulletItemStack.func_77973_b()).getEntity(this.field_70170_p, Vector3f.add(yOffset2, new Vector3f(gunOrigin.x - shootVec.z * (this.seatInfo.barrelSpread / 2.0f), gunOrigin.y, gunOrigin.z - shootVec.x * (this.seatInfo.barrelSpread / 2.0f)), null), shootVec, (EntityLivingBase)player, gun.bulletSpread, gun.damage, gun.bulletSpeed, bulletItemStack.func_77960_j(), this.driveable.getDriveableType(), this.driveable.getDriveableType().evilGolem));
-                            this.field_70170_p.func_72838_d((Entity)((ItemShootable)bulletItemStack.func_77973_b()).getEntity(this.field_70170_p, Vector3f.add(yOffset2, new Vector3f(gunOrigin.x + shootVec.z * (this.seatInfo.barrelSpread / 2.0f), gunOrigin.y, gunOrigin.z + shootVec.x * (this.seatInfo.barrelSpread / 2.0f)), null), shootVec, (EntityLivingBase)player, gun.bulletSpread, gun.damage, gun.bulletSpeed, bulletItemStack.func_77960_j(), this.driveable.getDriveableType(), this.driveable.getDriveableType().evilGolem));
+                            this.worldObj.spawnEntityInWorld((Entity)((ItemShootable)bulletItemStack.getItem()).getEntity(this.worldObj, Vector3f.add(yOffset2, new Vector3f(gunOrigin.x - shootVec.z * (this.seatInfo.barrelSpread / 2.0f), gunOrigin.y, gunOrigin.z - shootVec.x * (this.seatInfo.barrelSpread / 2.0f)), null), shootVec, (EntityLivingBase)player, gun.bulletSpread, gun.damage, gun.bulletSpeed, bulletItemStack.getMetadata(), this.driveable.getDriveableType(), this.driveable.getDriveableType().evilGolem));
+                            this.worldObj.spawnEntityInWorld((Entity)((ItemShootable)bulletItemStack.getItem()).getEntity(this.worldObj, Vector3f.add(yOffset2, new Vector3f(gunOrigin.x + shootVec.z * (this.seatInfo.barrelSpread / 2.0f), gunOrigin.y, gunOrigin.z + shootVec.x * (this.seatInfo.barrelSpread / 2.0f)), null), shootVec, (EntityLivingBase)player, gun.bulletSpread, gun.damage, gun.bulletSpeed, bulletItemStack.getMetadata(), this.driveable.getDriveableType(), this.driveable.getDriveableType().evilGolem));
                         }
                         if (this.seatInfo.barrels == 3) {
-                            this.field_70170_p.func_72838_d((Entity)((ItemShootable)bulletItemStack.func_77973_b()).getEntity(this.field_70170_p, Vector3f.add(yOffset2, new Vector3f(gunOrigin.x - shootVec.z * this.seatInfo.barrelSpread, gunOrigin.y, gunOrigin.z - shootVec.x * this.seatInfo.barrelSpread), null), shootVec, (EntityLivingBase)player, gun.bulletSpread, gun.damage, gun.bulletSpeed, bulletItemStack.func_77960_j(), this.driveable.getDriveableType(), this.driveable.getDriveableType().evilGolem));
-                            this.field_70170_p.func_72838_d((Entity)((ItemShootable)bulletItemStack.func_77973_b()).getEntity(this.field_70170_p, Vector3f.add(yOffset2, new Vector3f(gunOrigin.x + shootVec.z * 0.0f, gunOrigin.y, gunOrigin.z + shootVec.x * 0.0f), null), shootVec, (EntityLivingBase)player, gun.bulletSpread, gun.damage, gun.bulletSpeed, bulletItemStack.func_77960_j(), this.driveable.getDriveableType(), this.driveable.getDriveableType().evilGolem));
-                            this.field_70170_p.func_72838_d((Entity)((ItemShootable)bulletItemStack.func_77973_b()).getEntity(this.field_70170_p, Vector3f.add(yOffset2, new Vector3f(gunOrigin.x + shootVec.z * this.seatInfo.barrelSpread, gunOrigin.y, gunOrigin.z + shootVec.x * this.seatInfo.barrelSpread), null), shootVec, (EntityLivingBase)player, gun.bulletSpread, gun.damage, gun.bulletSpeed, bulletItemStack.func_77960_j(), this.driveable.getDriveableType(), this.driveable.getDriveableType().evilGolem));
+                            this.worldObj.spawnEntityInWorld((Entity)((ItemShootable)bulletItemStack.getItem()).getEntity(this.worldObj, Vector3f.add(yOffset2, new Vector3f(gunOrigin.x - shootVec.z * this.seatInfo.barrelSpread, gunOrigin.y, gunOrigin.z - shootVec.x * this.seatInfo.barrelSpread), null), shootVec, (EntityLivingBase)player, gun.bulletSpread, gun.damage, gun.bulletSpeed, bulletItemStack.getMetadata(), this.driveable.getDriveableType(), this.driveable.getDriveableType().evilGolem));
+                            this.worldObj.spawnEntityInWorld((Entity)((ItemShootable)bulletItemStack.getItem()).getEntity(this.worldObj, Vector3f.add(yOffset2, new Vector3f(gunOrigin.x + shootVec.z * 0.0f, gunOrigin.y, gunOrigin.z + shootVec.x * 0.0f), null), shootVec, (EntityLivingBase)player, gun.bulletSpread, gun.damage, gun.bulletSpeed, bulletItemStack.getMetadata(), this.driveable.getDriveableType(), this.driveable.getDriveableType().evilGolem));
+                            this.worldObj.spawnEntityInWorld((Entity)((ItemShootable)bulletItemStack.getItem()).getEntity(this.worldObj, Vector3f.add(yOffset2, new Vector3f(gunOrigin.x + shootVec.z * this.seatInfo.barrelSpread, gunOrigin.y, gunOrigin.z + shootVec.x * this.seatInfo.barrelSpread), null), shootVec, (EntityLivingBase)player, gun.bulletSpread, gun.damage, gun.bulletSpeed, bulletItemStack.getMetadata(), this.driveable.getDriveableType(), this.driveable.getDriveableType().evilGolem));
                         }
                         if (this.seatInfo.barrels == 4) {
-                            this.field_70170_p.func_72838_d((Entity)((ItemShootable)bulletItemStack.func_77973_b()).getEntity(this.field_70170_p, Vector3f.add(yOffset2, new Vector3f(gunOrigin.x - shootVec.z * (this.seatInfo.barrelSpread / 2.0f), gunOrigin.y, gunOrigin.z - shootVec.x * (this.seatInfo.barrelSpread / 2.0f)), null), shootVec, (EntityLivingBase)player, gun.bulletSpread, gun.damage, gun.bulletSpeed, bulletItemStack.func_77960_j(), this.driveable.getDriveableType(), this.driveable.getDriveableType().evilGolem));
-                            this.field_70170_p.func_72838_d((Entity)((ItemShootable)bulletItemStack.func_77973_b()).getEntity(this.field_70170_p, Vector3f.add(yOffset2, new Vector3f(gunOrigin.x + shootVec.z * (this.seatInfo.barrelSpread / 2.0f), gunOrigin.y, gunOrigin.z + shootVec.x * (this.seatInfo.barrelSpread / 2.0f)), null), shootVec, (EntityLivingBase)player, gun.bulletSpread, gun.damage, gun.bulletSpeed, bulletItemStack.func_77960_j(), this.driveable.getDriveableType(), this.driveable.getDriveableType().evilGolem));
-                            this.field_70170_p.func_72838_d((Entity)((ItemShootable)bulletItemStack.func_77973_b()).getEntity(this.field_70170_p, Vector3f.add(yOffset2, new Vector3f(gunOrigin.x - shootVec.z * (this.seatInfo.barrelSpread / 2.0f), gunOrigin.y, gunOrigin.z - shootVec.x * this.seatInfo.barrelSpread), null), shootVec, (EntityLivingBase)player, gun.bulletSpread, gun.damage, gun.bulletSpeed, bulletItemStack.func_77960_j(), this.driveable.getDriveableType(), this.driveable.getDriveableType().evilGolem));
-                            this.field_70170_p.func_72838_d((Entity)((ItemShootable)bulletItemStack.func_77973_b()).getEntity(this.field_70170_p, Vector3f.add(yOffset2, new Vector3f(gunOrigin.x + shootVec.z * (this.seatInfo.barrelSpread / 2.0f), gunOrigin.y, gunOrigin.z + shootVec.x * this.seatInfo.barrelSpread), null), shootVec, (EntityLivingBase)player, gun.bulletSpread, gun.damage, gun.bulletSpeed, bulletItemStack.func_77960_j(), this.driveable.getDriveableType(), this.driveable.getDriveableType().evilGolem));
+                            this.worldObj.spawnEntityInWorld((Entity)((ItemShootable)bulletItemStack.getItem()).getEntity(this.worldObj, Vector3f.add(yOffset2, new Vector3f(gunOrigin.x - shootVec.z * (this.seatInfo.barrelSpread / 2.0f), gunOrigin.y, gunOrigin.z - shootVec.x * (this.seatInfo.barrelSpread / 2.0f)), null), shootVec, (EntityLivingBase)player, gun.bulletSpread, gun.damage, gun.bulletSpeed, bulletItemStack.getMetadata(), this.driveable.getDriveableType(), this.driveable.getDriveableType().evilGolem));
+                            this.worldObj.spawnEntityInWorld((Entity)((ItemShootable)bulletItemStack.getItem()).getEntity(this.worldObj, Vector3f.add(yOffset2, new Vector3f(gunOrigin.x + shootVec.z * (this.seatInfo.barrelSpread / 2.0f), gunOrigin.y, gunOrigin.z + shootVec.x * (this.seatInfo.barrelSpread / 2.0f)), null), shootVec, (EntityLivingBase)player, gun.bulletSpread, gun.damage, gun.bulletSpeed, bulletItemStack.getMetadata(), this.driveable.getDriveableType(), this.driveable.getDriveableType().evilGolem));
+                            this.worldObj.spawnEntityInWorld((Entity)((ItemShootable)bulletItemStack.getItem()).getEntity(this.worldObj, Vector3f.add(yOffset2, new Vector3f(gunOrigin.x - shootVec.z * (this.seatInfo.barrelSpread / 2.0f), gunOrigin.y, gunOrigin.z - shootVec.x * this.seatInfo.barrelSpread), null), shootVec, (EntityLivingBase)player, gun.bulletSpread, gun.damage, gun.bulletSpeed, bulletItemStack.getMetadata(), this.driveable.getDriveableType(), this.driveable.getDriveableType().evilGolem));
+                            this.worldObj.spawnEntityInWorld((Entity)((ItemShootable)bulletItemStack.getItem()).getEntity(this.worldObj, Vector3f.add(yOffset2, new Vector3f(gunOrigin.x + shootVec.z * (this.seatInfo.barrelSpread / 2.0f), gunOrigin.y, gunOrigin.z + shootVec.x * this.seatInfo.barrelSpread), null), shootVec, (EntityLivingBase)player, gun.bulletSpread, gun.damage, gun.bulletSpeed, bulletItemStack.getMetadata(), this.driveable.getDriveableType(), this.driveable.getDriveableType().evilGolem));
                         }
                         if (this.seatInfo.barrels == 5) {
-                            this.field_70170_p.func_72838_d((Entity)((ItemShootable)bulletItemStack.func_77973_b()).getEntity(this.field_70170_p, Vector3f.add(yOffset2, new Vector3f(gunOrigin.x + shootVec.z * 0.0f, gunOrigin.y, gunOrigin.z + shootVec.x * 0.0f), null), shootVec, (EntityLivingBase)player, gun.bulletSpread, gun.damage, gun.bulletSpeed, bulletItemStack.func_77960_j(), this.driveable.getDriveableType(), this.driveable.getDriveableType().evilGolem));
-                            this.field_70170_p.func_72838_d((Entity)((ItemShootable)bulletItemStack.func_77973_b()).getEntity(this.field_70170_p, Vector3f.add(yOffset2, new Vector3f(gunOrigin.x - shootVec.z * this.seatInfo.barrelSpread, gunOrigin.y, gunOrigin.z - shootVec.x * this.seatInfo.barrelSpread), null), shootVec, (EntityLivingBase)player, gun.bulletSpread, gun.damage, gun.bulletSpeed, bulletItemStack.func_77960_j(), this.driveable.getDriveableType(), this.driveable.getDriveableType().evilGolem));
-                            this.field_70170_p.func_72838_d((Entity)((ItemShootable)bulletItemStack.func_77973_b()).getEntity(this.field_70170_p, Vector3f.add(yOffset2, new Vector3f(gunOrigin.x + shootVec.z * this.seatInfo.barrelSpread, gunOrigin.y, gunOrigin.z + shootVec.x * this.seatInfo.barrelSpread), null), shootVec, (EntityLivingBase)player, gun.bulletSpread, gun.damage, gun.bulletSpeed, bulletItemStack.func_77960_j(), this.driveable.getDriveableType(), this.driveable.getDriveableType().evilGolem));
-                            this.field_70170_p.func_72838_d((Entity)((ItemShootable)bulletItemStack.func_77973_b()).getEntity(this.field_70170_p, Vector3f.add(yOffset2, new Vector3f(gunOrigin.x - shootVec.z * (this.seatInfo.barrelSpread / 2.0f), gunOrigin.y, gunOrigin.z - shootVec.x * this.seatInfo.barrelSpread), null), shootVec, (EntityLivingBase)player, gun.bulletSpread, gun.damage, gun.bulletSpeed, bulletItemStack.func_77960_j(), this.driveable.getDriveableType(), this.driveable.getDriveableType().evilGolem));
-                            this.field_70170_p.func_72838_d((Entity)((ItemShootable)bulletItemStack.func_77973_b()).getEntity(this.field_70170_p, Vector3f.add(yOffset2, new Vector3f(gunOrigin.x + shootVec.z * (this.seatInfo.barrelSpread / 2.0f), gunOrigin.y, gunOrigin.z + shootVec.x * this.seatInfo.barrelSpread), null), shootVec, (EntityLivingBase)player, gun.bulletSpread, gun.damage, gun.bulletSpeed, bulletItemStack.func_77960_j(), this.driveable.getDriveableType(), this.driveable.getDriveableType().evilGolem));
+                            this.worldObj.spawnEntityInWorld((Entity)((ItemShootable)bulletItemStack.getItem()).getEntity(this.worldObj, Vector3f.add(yOffset2, new Vector3f(gunOrigin.x + shootVec.z * 0.0f, gunOrigin.y, gunOrigin.z + shootVec.x * 0.0f), null), shootVec, (EntityLivingBase)player, gun.bulletSpread, gun.damage, gun.bulletSpeed, bulletItemStack.getMetadata(), this.driveable.getDriveableType(), this.driveable.getDriveableType().evilGolem));
+                            this.worldObj.spawnEntityInWorld((Entity)((ItemShootable)bulletItemStack.getItem()).getEntity(this.worldObj, Vector3f.add(yOffset2, new Vector3f(gunOrigin.x - shootVec.z * this.seatInfo.barrelSpread, gunOrigin.y, gunOrigin.z - shootVec.x * this.seatInfo.barrelSpread), null), shootVec, (EntityLivingBase)player, gun.bulletSpread, gun.damage, gun.bulletSpeed, bulletItemStack.getMetadata(), this.driveable.getDriveableType(), this.driveable.getDriveableType().evilGolem));
+                            this.worldObj.spawnEntityInWorld((Entity)((ItemShootable)bulletItemStack.getItem()).getEntity(this.worldObj, Vector3f.add(yOffset2, new Vector3f(gunOrigin.x + shootVec.z * this.seatInfo.barrelSpread, gunOrigin.y, gunOrigin.z + shootVec.x * this.seatInfo.barrelSpread), null), shootVec, (EntityLivingBase)player, gun.bulletSpread, gun.damage, gun.bulletSpeed, bulletItemStack.getMetadata(), this.driveable.getDriveableType(), this.driveable.getDriveableType().evilGolem));
+                            this.worldObj.spawnEntityInWorld((Entity)((ItemShootable)bulletItemStack.getItem()).getEntity(this.worldObj, Vector3f.add(yOffset2, new Vector3f(gunOrigin.x - shootVec.z * (this.seatInfo.barrelSpread / 2.0f), gunOrigin.y, gunOrigin.z - shootVec.x * this.seatInfo.barrelSpread), null), shootVec, (EntityLivingBase)player, gun.bulletSpread, gun.damage, gun.bulletSpeed, bulletItemStack.getMetadata(), this.driveable.getDriveableType(), this.driveable.getDriveableType().evilGolem));
+                            this.worldObj.spawnEntityInWorld((Entity)((ItemShootable)bulletItemStack.getItem()).getEntity(this.worldObj, Vector3f.add(yOffset2, new Vector3f(gunOrigin.x + shootVec.z * (this.seatInfo.barrelSpread / 2.0f), gunOrigin.y, gunOrigin.z + shootVec.x * this.seatInfo.barrelSpread), null), shootVec, (EntityLivingBase)player, gun.bulletSpread, gun.damage, gun.bulletSpeed, bulletItemStack.getMetadata(), this.driveable.getDriveableType(), this.driveable.getDriveableType().evilGolem));
                         }
                         if (this.seatInfo.barrels == 6) {
-                            this.field_70170_p.func_72838_d((Entity)((ItemShootable)bulletItemStack.func_77973_b()).getEntity(this.field_70170_p, Vector3f.add(yOffset2, new Vector3f(gunOrigin.x - shootVec.z * (this.seatInfo.barrelSpread / 2.0f), gunOrigin.y, gunOrigin.z - shootVec.x * (this.seatInfo.barrelSpread / 2.0f)), null), shootVec, (EntityLivingBase)player, gun.bulletSpread, gun.damage, gun.bulletSpeed, bulletItemStack.func_77960_j(), this.driveable.getDriveableType(), this.driveable.getDriveableType().evilGolem));
-                            this.field_70170_p.func_72838_d((Entity)((ItemShootable)bulletItemStack.func_77973_b()).getEntity(this.field_70170_p, Vector3f.add(yOffset2, new Vector3f(gunOrigin.x + shootVec.z * (this.seatInfo.barrelSpread / 2.0f), gunOrigin.y, gunOrigin.z + shootVec.x * (this.seatInfo.barrelSpread / 2.0f)), null), shootVec, (EntityLivingBase)player, gun.bulletSpread, gun.damage, gun.bulletSpeed, bulletItemStack.func_77960_j(), this.driveable.getDriveableType(), this.driveable.getDriveableType().evilGolem));
-                            this.field_70170_p.func_72838_d((Entity)((ItemShootable)bulletItemStack.func_77973_b()).getEntity(this.field_70170_p, Vector3f.add(yOffset2, new Vector3f(gunOrigin.x - shootVec.z * (this.seatInfo.barrelSpread / 2.0f), gunOrigin.y, gunOrigin.z - shootVec.x * this.seatInfo.barrelSpread), null), shootVec, (EntityLivingBase)player, gun.bulletSpread, gun.damage, gun.bulletSpeed, bulletItemStack.func_77960_j(), this.driveable.getDriveableType(), this.driveable.getDriveableType().evilGolem));
-                            this.field_70170_p.func_72838_d((Entity)((ItemShootable)bulletItemStack.func_77973_b()).getEntity(this.field_70170_p, Vector3f.add(yOffset2, new Vector3f(gunOrigin.x + shootVec.z * (this.seatInfo.barrelSpread / 2.0f), gunOrigin.y, gunOrigin.z + shootVec.x * this.seatInfo.barrelSpread), null), shootVec, (EntityLivingBase)player, gun.bulletSpread, gun.damage, gun.bulletSpeed, bulletItemStack.func_77960_j(), this.driveable.getDriveableType(), this.driveable.getDriveableType().evilGolem));
-                            this.field_70170_p.func_72838_d((Entity)((ItemShootable)bulletItemStack.func_77973_b()).getEntity(this.field_70170_p, Vector3f.add(yOffset2, new Vector3f(gunOrigin.x - shootVec.z * (this.seatInfo.barrelSpread / 2.0f), gunOrigin.y, gunOrigin.z - shootVec.x * (this.seatInfo.barrelSpread * 1.5f)), null), shootVec, (EntityLivingBase)player, gun.bulletSpread, gun.damage, gun.bulletSpeed, bulletItemStack.func_77960_j(), this.driveable.getDriveableType(), this.driveable.getDriveableType().evilGolem));
-                            this.field_70170_p.func_72838_d((Entity)((ItemShootable)bulletItemStack.func_77973_b()).getEntity(this.field_70170_p, Vector3f.add(yOffset2, new Vector3f(gunOrigin.x + shootVec.z * (this.seatInfo.barrelSpread / 2.0f), gunOrigin.y, gunOrigin.z + shootVec.x * (this.seatInfo.barrelSpread * 1.5f)), null), shootVec, (EntityLivingBase)player, gun.bulletSpread, gun.damage, gun.bulletSpeed, bulletItemStack.func_77960_j(), this.driveable.getDriveableType(), this.driveable.getDriveableType().evilGolem));
+                            this.worldObj.spawnEntityInWorld((Entity)((ItemShootable)bulletItemStack.getItem()).getEntity(this.worldObj, Vector3f.add(yOffset2, new Vector3f(gunOrigin.x - shootVec.z * (this.seatInfo.barrelSpread / 2.0f), gunOrigin.y, gunOrigin.z - shootVec.x * (this.seatInfo.barrelSpread / 2.0f)), null), shootVec, (EntityLivingBase)player, gun.bulletSpread, gun.damage, gun.bulletSpeed, bulletItemStack.getMetadata(), this.driveable.getDriveableType(), this.driveable.getDriveableType().evilGolem));
+                            this.worldObj.spawnEntityInWorld((Entity)((ItemShootable)bulletItemStack.getItem()).getEntity(this.worldObj, Vector3f.add(yOffset2, new Vector3f(gunOrigin.x + shootVec.z * (this.seatInfo.barrelSpread / 2.0f), gunOrigin.y, gunOrigin.z + shootVec.x * (this.seatInfo.barrelSpread / 2.0f)), null), shootVec, (EntityLivingBase)player, gun.bulletSpread, gun.damage, gun.bulletSpeed, bulletItemStack.getMetadata(), this.driveable.getDriveableType(), this.driveable.getDriveableType().evilGolem));
+                            this.worldObj.spawnEntityInWorld((Entity)((ItemShootable)bulletItemStack.getItem()).getEntity(this.worldObj, Vector3f.add(yOffset2, new Vector3f(gunOrigin.x - shootVec.z * (this.seatInfo.barrelSpread / 2.0f), gunOrigin.y, gunOrigin.z - shootVec.x * this.seatInfo.barrelSpread), null), shootVec, (EntityLivingBase)player, gun.bulletSpread, gun.damage, gun.bulletSpeed, bulletItemStack.getMetadata(), this.driveable.getDriveableType(), this.driveable.getDriveableType().evilGolem));
+                            this.worldObj.spawnEntityInWorld((Entity)((ItemShootable)bulletItemStack.getItem()).getEntity(this.worldObj, Vector3f.add(yOffset2, new Vector3f(gunOrigin.x + shootVec.z * (this.seatInfo.barrelSpread / 2.0f), gunOrigin.y, gunOrigin.z + shootVec.x * this.seatInfo.barrelSpread), null), shootVec, (EntityLivingBase)player, gun.bulletSpread, gun.damage, gun.bulletSpeed, bulletItemStack.getMetadata(), this.driveable.getDriveableType(), this.driveable.getDriveableType().evilGolem));
+                            this.worldObj.spawnEntityInWorld((Entity)((ItemShootable)bulletItemStack.getItem()).getEntity(this.worldObj, Vector3f.add(yOffset2, new Vector3f(gunOrigin.x - shootVec.z * (this.seatInfo.barrelSpread / 2.0f), gunOrigin.y, gunOrigin.z - shootVec.x * (this.seatInfo.barrelSpread * 1.5f)), null), shootVec, (EntityLivingBase)player, gun.bulletSpread, gun.damage, gun.bulletSpeed, bulletItemStack.getMetadata(), this.driveable.getDriveableType(), this.driveable.getDriveableType().evilGolem));
+                            this.worldObj.spawnEntityInWorld((Entity)((ItemShootable)bulletItemStack.getItem()).getEntity(this.worldObj, Vector3f.add(yOffset2, new Vector3f(gunOrigin.x + shootVec.z * (this.seatInfo.barrelSpread / 2.0f), gunOrigin.y, gunOrigin.z + shootVec.x * (this.seatInfo.barrelSpread * 1.5f)), null), shootVec, (EntityLivingBase)player, gun.bulletSpread, gun.damage, gun.bulletSpeed, bulletItemStack.getMetadata(), this.driveable.getDriveableType(), this.driveable.getDriveableType().evilGolem));
                         }
                         if (this.soundDelay <= 0) {
-                            PacketPlaySound.sendSoundPacket(this.field_70165_t, this.field_70163_u, this.field_70161_v, 200.0, this.field_71093_bK, gun.shootSound, false);
+                            PacketPlaySound.sendSoundPacket(this.posX, this.posY, this.posZ, 200.0, this.dimension, gun.shootSound, false);
                             this.soundDelay = gun.shootSoundLength;
                         }
-                        final int damage = bulletItemStack.func_77960_j();
-                        if ((this.driveable.type == null || !this.driveable.type.evilGolem) && (player == null || player.field_71075_bZ == null || !player.field_71075_bZ.field_75098_d)) {
-                            bulletItemStack.func_77964_b(damage + 1);
+                        final int damage = bulletItemStack.getMetadata();
+                        if ((this.driveable.type == null || !this.driveable.type.evilGolem) && (player == null || player.capabilities == null || !player.capabilities.isCreativeMode)) {
+                            bulletItemStack.setMetadata(damage + 1);
                         }
-                        if (damage >= bulletItemStack.func_77958_k()) {
-                            if (player == null || (this.field_70153_n != null && ((EntityPlayer)this.field_70153_n).field_71075_bZ.field_75098_d)) {
-                                bulletItemStack.func_77964_b(0);
+                        if (damage >= bulletItemStack.getMaxDurability()) {
+                            if (player == null || (this.riddenByEntity != null && ((EntityPlayer)this.riddenByEntity).capabilities.isCreativeMode)) {
+                                bulletItemStack.setMetadata(0);
                             }
                             else {
                                 final ItemStack itemStack = this.driveable.getDriveableData().ammo[this.seatInfo.gunnerID];
-                                --itemStack.field_77994_a;
-                                bulletItemStack.func_77964_b(0);
-                                if (this.driveable.getDriveableData().ammo[this.seatInfo.gunnerID].field_77994_a <= 0) {
+                                --itemStack.stackSize;
+                                bulletItemStack.setMetadata(0);
+                                if (this.driveable.getDriveableData().ammo[this.seatInfo.gunnerID].stackSize <= 0) {
                                     this.driveable.getDriveableData().ammo[this.seatInfo.gunnerID] = null;
                                 }
                             }
@@ -872,19 +872,19 @@ public class EntitySeat extends Entity implements IControllable, IEntityAddition
                 }
             }
         }
-        if (this.field_70153_n instanceof EntityPlayer && this.shooting) {
-            this.pressKey(9, (EntityPlayer)this.field_70153_n);
+        if (this.riddenByEntity instanceof EntityPlayer && this.shooting) {
+            this.pressKey(9, (EntityPlayer)this.riddenByEntity);
         }
         this.minigunSpeed *= 0.95f;
         this.minigunAngle += this.minigunSpeed;
-        this.lastRiddenByEntity = this.field_70153_n;
+        this.lastRiddenByEntity = this.riddenByEntity;
     }
     
     public boolean pressKey(final int key, final EntityPlayer player) {
-        if (this.driver && (!this.field_70170_p.field_72995_K || this.foundDriveable)) {
+        if (this.driver && (!this.worldObj.isRemote || this.foundDriveable)) {
             return this.driveable.pressKey(key, player);
         }
-        if (this.field_70170_p.field_72995_K) {
+        if (this.worldObj.isRemote) {
             if (this.foundDriveable) {
                 FlansMod.getPacketHandler().sendToServer(new PacketDriveableKey(key));
                 if (key == 9) {
@@ -893,56 +893,56 @@ public class EntitySeat extends Entity implements IControllable, IEntityAddition
             }
             return false;
         }
-        if (key == 6 && this.field_70153_n != null) {
+        if (key == 6 && this.riddenByEntity != null) {
             --this.exitTimer;
             --this.exitTimer;
             if (this.exitTimer > 20) {
                 return true;
             }
         }
-        if (key == 20 && this.field_70153_n != null && this.driveable.seats[0].field_70153_n == null && PlayerHandler.getPlayerData(player) != null && PlayerHandler.getPlayerData(player).s0 <= 0) {
+        if (key == 20 && this.riddenByEntity != null && this.driveable.seats[0].riddenByEntity == null && PlayerHandler.getPlayerData(player) != null && PlayerHandler.getPlayerData(player).s0 <= 0) {
             PlayerHandler.getPlayerData(player).s0 = 5;
-            player.func_70078_a((Entity)this.driveable.seats[0]);
+            player.mountEntity((Entity)this.driveable.seats[0]);
         }
-        if (key == 21 && this.field_70153_n != null && this.driveable.getDriveableType().numPassengers > 1 && this.driveable.seats[2].field_70153_n == null && PlayerHandler.getPlayerData(player) != null && PlayerHandler.getPlayerData(player).s1 <= 0) {
+        if (key == 21 && this.riddenByEntity != null && this.driveable.getDriveableType().numPassengers > 1 && this.driveable.seats[2].riddenByEntity == null && PlayerHandler.getPlayerData(player) != null && PlayerHandler.getPlayerData(player).s1 <= 0) {
             PlayerHandler.getPlayerData(player).s1 = 5;
-            player.func_70078_a((Entity)this.driveable.seats[2]);
+            player.mountEntity((Entity)this.driveable.seats[2]);
         }
-        if (key == 22 && this.field_70153_n != null && this.driveable.getDriveableType().numPassengers > 2 && this.driveable.seats[3].field_70153_n == null && PlayerHandler.getPlayerData(player) != null && PlayerHandler.getPlayerData(player).s2 <= 0) {
+        if (key == 22 && this.riddenByEntity != null && this.driveable.getDriveableType().numPassengers > 2 && this.driveable.seats[3].riddenByEntity == null && PlayerHandler.getPlayerData(player) != null && PlayerHandler.getPlayerData(player).s2 <= 0) {
             PlayerHandler.getPlayerData(player).s2 = 5;
-            player.func_70078_a((Entity)this.driveable.seats[3]);
+            player.mountEntity((Entity)this.driveable.seats[3]);
         }
-        if (key == 23 && this.field_70153_n != null && this.driveable.getDriveableType().numPassengers > 3 && this.driveable.seats[4].field_70153_n == null && PlayerHandler.getPlayerData(player) != null && PlayerHandler.getPlayerData(player).s3 <= 0) {
+        if (key == 23 && this.riddenByEntity != null && this.driveable.getDriveableType().numPassengers > 3 && this.driveable.seats[4].riddenByEntity == null && PlayerHandler.getPlayerData(player) != null && PlayerHandler.getPlayerData(player).s3 <= 0) {
             PlayerHandler.getPlayerData(player).s3 = 5;
-            player.func_70078_a((Entity)this.driveable.seats[4]);
+            player.mountEntity((Entity)this.driveable.seats[4]);
         }
-        if (key == 24 && this.field_70153_n != null && this.driveable.getDriveableType().numPassengers > 4 && this.driveable.seats[5].field_70153_n == null && PlayerHandler.getPlayerData(player) != null && PlayerHandler.getPlayerData(player).s4 <= 0) {
+        if (key == 24 && this.riddenByEntity != null && this.driveable.getDriveableType().numPassengers > 4 && this.driveable.seats[5].riddenByEntity == null && PlayerHandler.getPlayerData(player) != null && PlayerHandler.getPlayerData(player).s4 <= 0) {
             PlayerHandler.getPlayerData(player).s4 = 5;
-            player.func_70078_a((Entity)this.driveable.seats[5]);
+            player.mountEntity((Entity)this.driveable.seats[5]);
         }
-        if (key == 25 && this.field_70153_n != null && this.driveable.getDriveableType().numPassengers > 5 && this.driveable.seats[6].field_70153_n == null && PlayerHandler.getPlayerData(player) != null && PlayerHandler.getPlayerData(player).s5 <= 0) {
+        if (key == 25 && this.riddenByEntity != null && this.driveable.getDriveableType().numPassengers > 5 && this.driveable.seats[6].riddenByEntity == null && PlayerHandler.getPlayerData(player) != null && PlayerHandler.getPlayerData(player).s5 <= 0) {
             PlayerHandler.getPlayerData(player).s5 = 5;
-            player.func_70078_a((Entity)this.driveable.seats[6]);
+            player.mountEntity((Entity)this.driveable.seats[6]);
         }
-        if (key == 26 && this.field_70153_n != null && this.driveable.getDriveableType().numPassengers > 6 && this.driveable.seats[7].field_70153_n == null && PlayerHandler.getPlayerData(player) != null && PlayerHandler.getPlayerData(player).s6 <= 0) {
+        if (key == 26 && this.riddenByEntity != null && this.driveable.getDriveableType().numPassengers > 6 && this.driveable.seats[7].riddenByEntity == null && PlayerHandler.getPlayerData(player) != null && PlayerHandler.getPlayerData(player).s6 <= 0) {
             PlayerHandler.getPlayerData(player).s6 = 5;
-            player.func_70078_a((Entity)this.driveable.seats[7]);
+            player.mountEntity((Entity)this.driveable.seats[7]);
         }
-        if (key == 27 && this.field_70153_n != null && this.driveable.getDriveableType().numPassengers > 7 && this.driveable.seats[8].field_70153_n == null && PlayerHandler.getPlayerData(player) != null && PlayerHandler.getPlayerData(player).s7 <= 0) {
+        if (key == 27 && this.riddenByEntity != null && this.driveable.getDriveableType().numPassengers > 7 && this.driveable.seats[8].riddenByEntity == null && PlayerHandler.getPlayerData(player) != null && PlayerHandler.getPlayerData(player).s7 <= 0) {
             PlayerHandler.getPlayerData(player).s7 = 5;
-            player.func_70078_a((Entity)this.driveable.seats[8]);
+            player.mountEntity((Entity)this.driveable.seats[8]);
         }
-        if (key == 28 && this.field_70153_n != null && this.driveable.getDriveableType().numPassengers > 8 && this.driveable.seats[9].field_70153_n == null && PlayerHandler.getPlayerData(player) != null && PlayerHandler.getPlayerData(player).s8 <= 0) {
+        if (key == 28 && this.riddenByEntity != null && this.driveable.getDriveableType().numPassengers > 8 && this.driveable.seats[9].riddenByEntity == null && PlayerHandler.getPlayerData(player) != null && PlayerHandler.getPlayerData(player).s8 <= 0) {
             PlayerHandler.getPlayerData(player).s8 = 5;
-            player.func_70078_a((Entity)this.driveable.seats[9]);
+            player.mountEntity((Entity)this.driveable.seats[9]);
         }
-        if (key == 29 && this.field_70153_n != null && this.driveable.getDriveableType().numPassengers > 9 && this.driveable.seats[10].field_70153_n == null && PlayerHandler.getPlayerData(player) != null && PlayerHandler.getPlayerData(player).s9 <= 0) {
+        if (key == 29 && this.riddenByEntity != null && this.driveable.getDriveableType().numPassengers > 9 && this.driveable.seats[10].riddenByEntity == null && PlayerHandler.getPlayerData(player) != null && PlayerHandler.getPlayerData(player).s9 <= 0) {
             PlayerHandler.getPlayerData(player).s9 = 5;
-            player.func_70078_a((Entity)this.driveable.seats[10]);
+            player.mountEntity((Entity)this.driveable.seats[10]);
         }
-        if (key == 19 && this.field_70153_n != null && (this.driveable.seats[0].field_70153_n == player || this.driveable.seats[0].field_70153_n == null) && PlayerHandler.getPlayerData(player) != null && PlayerHandler.getPlayerData(player).nintendoSwitch <= 0 && this.driveable.seats[0].field_70153_n == null) {
+        if (key == 19 && this.riddenByEntity != null && (this.driveable.seats[0].riddenByEntity == player || this.driveable.seats[0].riddenByEntity == null) && PlayerHandler.getPlayerData(player) != null && PlayerHandler.getPlayerData(player).nintendoSwitch <= 0 && this.driveable.seats[0].riddenByEntity == null) {
             PlayerHandler.getPlayerData(player).nintendoSwitch = 10;
-            player.func_70078_a((Entity)this.driveable.seats[0]);
+            player.mountEntity((Entity)this.driveable.seats[0]);
             this.driveable.nintendoSwitchLite = 10;
         }
         if (key == 9) {
@@ -950,63 +950,63 @@ public class EntitySeat extends Entity implements IControllable, IEntityAddition
             this.minigunSpeed += 0.1f;
             if (((gun != null && gun.mode != EnumFireMode.MINIGUN) || this.minigunSpeed > 2.0f) && this.gunDelay <= 0 && TeamsManager.bulletsEnabled && this.driveable.getDriveableData().ammo[this.seatInfo.gunnerID] != null) {
                 final ItemStack bulletItemStack = this.driveable.getDriveableData().ammo[this.seatInfo.gunnerID];
-                if (gun != null && this.driveable.atSea && bulletItemStack != null && bulletItemStack.func_77973_b() instanceof ItemShootable && !TeamsManager.violence) {
-                    final ShootableType bullet = ((ItemShootable)bulletItemStack.func_77973_b()).type;
+                if (gun != null && this.driveable.atSea && bulletItemStack != null && bulletItemStack.getItem() instanceof ItemShootable && !TeamsManager.violence) {
+                    final ShootableType bullet = ((ItemShootable)bulletItemStack.getItem()).type;
                     if (gun.isAmmo(bullet)) {
-                        final Vector3f gunOrigin = Vector3f.add(this.driveable.axes.findLocalVectorGlobally(this.seatInfo.gunOrigin), new Vector3f(this.driveable.field_70165_t, this.driveable.field_70163_u, this.driveable.field_70161_v), null);
+                        final Vector3f gunOrigin = Vector3f.add(this.driveable.axes.findLocalVectorGlobally(this.seatInfo.gunOrigin), new Vector3f(this.driveable.posX, this.driveable.posY, this.driveable.posZ), null);
                         final RotatedAxes globalLookAxes = this.driveable.axes.findLocalAxesGlobally(this.looking);
                         final Vector3f shootVec = this.driveable.axes.findLocalVectorGlobally(this.looking.getXAxis());
-                        final Vector3f yOffset = this.driveable.axes.findLocalVectorGlobally(new Vector3f(0.0f, (float)player.func_70042_X(), 0.0f));
+                        final Vector3f yOffset = this.driveable.axes.findLocalVectorGlobally(new Vector3f(0.0f, (float)player.getMountedYOffset(), 0.0f));
                         if (this.seatInfo.barrels == 1) {
-                            this.field_70170_p.func_72838_d((Entity)((ItemShootable)bulletItemStack.func_77973_b()).getEntity(this.field_70170_p, Vector3f.add(yOffset, new Vector3f(gunOrigin.x, gunOrigin.y, gunOrigin.z), null), shootVec, (EntityLivingBase)this.field_70153_n, gun.bulletSpread, gun.damage, gun.bulletSpeed, bulletItemStack.func_77960_j(), this.driveable.getDriveableType()));
+                            this.worldObj.spawnEntityInWorld((Entity)((ItemShootable)bulletItemStack.getItem()).getEntity(this.worldObj, Vector3f.add(yOffset, new Vector3f(gunOrigin.x, gunOrigin.y, gunOrigin.z), null), shootVec, (EntityLivingBase)this.riddenByEntity, gun.bulletSpread, gun.damage, gun.bulletSpeed, bulletItemStack.getMetadata(), this.driveable.getDriveableType()));
                         }
                         if (this.seatInfo.barrels == 2) {
-                            this.field_70170_p.func_72838_d((Entity)((ItemShootable)bulletItemStack.func_77973_b()).getEntity(this.field_70170_p, Vector3f.add(yOffset, new Vector3f(gunOrigin.x - shootVec.z * (this.seatInfo.barrelSpread / 2.0f), gunOrigin.y, gunOrigin.z - shootVec.x * (this.seatInfo.barrelSpread / 2.0f)), null), shootVec, (EntityLivingBase)this.field_70153_n, gun.bulletSpread, gun.damage, gun.bulletSpeed, bulletItemStack.func_77960_j(), this.driveable.getDriveableType()));
-                            this.field_70170_p.func_72838_d((Entity)((ItemShootable)bulletItemStack.func_77973_b()).getEntity(this.field_70170_p, Vector3f.add(yOffset, new Vector3f(gunOrigin.x + shootVec.z * (this.seatInfo.barrelSpread / 2.0f), gunOrigin.y, gunOrigin.z + shootVec.x * (this.seatInfo.barrelSpread / 2.0f)), null), shootVec, (EntityLivingBase)this.field_70153_n, gun.bulletSpread, gun.damage, gun.bulletSpeed, bulletItemStack.func_77960_j(), this.driveable.getDriveableType()));
+                            this.worldObj.spawnEntityInWorld((Entity)((ItemShootable)bulletItemStack.getItem()).getEntity(this.worldObj, Vector3f.add(yOffset, new Vector3f(gunOrigin.x - shootVec.z * (this.seatInfo.barrelSpread / 2.0f), gunOrigin.y, gunOrigin.z - shootVec.x * (this.seatInfo.barrelSpread / 2.0f)), null), shootVec, (EntityLivingBase)this.riddenByEntity, gun.bulletSpread, gun.damage, gun.bulletSpeed, bulletItemStack.getMetadata(), this.driveable.getDriveableType()));
+                            this.worldObj.spawnEntityInWorld((Entity)((ItemShootable)bulletItemStack.getItem()).getEntity(this.worldObj, Vector3f.add(yOffset, new Vector3f(gunOrigin.x + shootVec.z * (this.seatInfo.barrelSpread / 2.0f), gunOrigin.y, gunOrigin.z + shootVec.x * (this.seatInfo.barrelSpread / 2.0f)), null), shootVec, (EntityLivingBase)this.riddenByEntity, gun.bulletSpread, gun.damage, gun.bulletSpeed, bulletItemStack.getMetadata(), this.driveable.getDriveableType()));
                         }
                         if (this.seatInfo.barrels == 3) {
-                            this.field_70170_p.func_72838_d((Entity)((ItemShootable)bulletItemStack.func_77973_b()).getEntity(this.field_70170_p, Vector3f.add(yOffset, new Vector3f(gunOrigin.x - shootVec.z * this.seatInfo.barrelSpread, gunOrigin.y, gunOrigin.z - shootVec.x * this.seatInfo.barrelSpread), null), shootVec, (EntityLivingBase)this.field_70153_n, gun.bulletSpread, gun.damage, gun.bulletSpeed, bulletItemStack.func_77960_j(), this.driveable.getDriveableType()));
-                            this.field_70170_p.func_72838_d((Entity)((ItemShootable)bulletItemStack.func_77973_b()).getEntity(this.field_70170_p, Vector3f.add(yOffset, new Vector3f(gunOrigin.x, gunOrigin.y, gunOrigin.z), null), shootVec, (EntityLivingBase)this.field_70153_n, gun.bulletSpread, gun.damage, gun.bulletSpeed, bulletItemStack.func_77960_j(), this.driveable.getDriveableType()));
-                            this.field_70170_p.func_72838_d((Entity)((ItemShootable)bulletItemStack.func_77973_b()).getEntity(this.field_70170_p, Vector3f.add(yOffset, new Vector3f(gunOrigin.x + shootVec.z * this.seatInfo.barrelSpread, gunOrigin.y, gunOrigin.z + shootVec.x * this.seatInfo.barrelSpread), null), shootVec, (EntityLivingBase)this.field_70153_n, gun.bulletSpread, gun.damage, gun.bulletSpeed, bulletItemStack.func_77960_j(), this.driveable.getDriveableType()));
+                            this.worldObj.spawnEntityInWorld((Entity)((ItemShootable)bulletItemStack.getItem()).getEntity(this.worldObj, Vector3f.add(yOffset, new Vector3f(gunOrigin.x - shootVec.z * this.seatInfo.barrelSpread, gunOrigin.y, gunOrigin.z - shootVec.x * this.seatInfo.barrelSpread), null), shootVec, (EntityLivingBase)this.riddenByEntity, gun.bulletSpread, gun.damage, gun.bulletSpeed, bulletItemStack.getMetadata(), this.driveable.getDriveableType()));
+                            this.worldObj.spawnEntityInWorld((Entity)((ItemShootable)bulletItemStack.getItem()).getEntity(this.worldObj, Vector3f.add(yOffset, new Vector3f(gunOrigin.x, gunOrigin.y, gunOrigin.z), null), shootVec, (EntityLivingBase)this.riddenByEntity, gun.bulletSpread, gun.damage, gun.bulletSpeed, bulletItemStack.getMetadata(), this.driveable.getDriveableType()));
+                            this.worldObj.spawnEntityInWorld((Entity)((ItemShootable)bulletItemStack.getItem()).getEntity(this.worldObj, Vector3f.add(yOffset, new Vector3f(gunOrigin.x + shootVec.z * this.seatInfo.barrelSpread, gunOrigin.y, gunOrigin.z + shootVec.x * this.seatInfo.barrelSpread), null), shootVec, (EntityLivingBase)this.riddenByEntity, gun.bulletSpread, gun.damage, gun.bulletSpeed, bulletItemStack.getMetadata(), this.driveable.getDriveableType()));
                         }
                         if (this.seatInfo.barrels == 4) {
-                            this.field_70170_p.func_72838_d((Entity)((ItemShootable)bulletItemStack.func_77973_b()).getEntity(this.field_70170_p, Vector3f.add(yOffset, new Vector3f(gunOrigin.x - shootVec.z * (this.seatInfo.barrelSpread / 2.0f), gunOrigin.y, gunOrigin.z - shootVec.x * (this.seatInfo.barrelSpread / 2.0f)), null), shootVec, (EntityLivingBase)this.field_70153_n, gun.bulletSpread, gun.damage, gun.bulletSpeed, bulletItemStack.func_77960_j(), this.driveable.getDriveableType()));
-                            this.field_70170_p.func_72838_d((Entity)((ItemShootable)bulletItemStack.func_77973_b()).getEntity(this.field_70170_p, Vector3f.add(yOffset, new Vector3f(gunOrigin.x + shootVec.z * (this.seatInfo.barrelSpread / 2.0f), gunOrigin.y, gunOrigin.z + shootVec.x * (this.seatInfo.barrelSpread / 2.0f)), null), shootVec, (EntityLivingBase)this.field_70153_n, gun.bulletSpread, gun.damage, gun.bulletSpeed, bulletItemStack.func_77960_j(), this.driveable.getDriveableType()));
-                            this.field_70170_p.func_72838_d((Entity)((ItemShootable)bulletItemStack.func_77973_b()).getEntity(this.field_70170_p, Vector3f.add(yOffset, new Vector3f(gunOrigin.x - shootVec.z * (1.5 * this.seatInfo.barrelSpread), gunOrigin.y, gunOrigin.z - shootVec.x * (this.seatInfo.barrelSpread / 2.0f)), null), shootVec, (EntityLivingBase)this.field_70153_n, gun.bulletSpread, gun.damage, gun.bulletSpeed, bulletItemStack.func_77960_j(), this.driveable.getDriveableType()));
-                            this.field_70170_p.func_72838_d((Entity)((ItemShootable)bulletItemStack.func_77973_b()).getEntity(this.field_70170_p, Vector3f.add(yOffset, new Vector3f(gunOrigin.x + shootVec.z * (1.5 * this.seatInfo.barrelSpread), gunOrigin.y, gunOrigin.z + shootVec.x * (this.seatInfo.barrelSpread / 2.0f)), null), shootVec, (EntityLivingBase)this.field_70153_n, gun.bulletSpread, gun.damage, gun.bulletSpeed, bulletItemStack.func_77960_j(), this.driveable.getDriveableType()));
+                            this.worldObj.spawnEntityInWorld((Entity)((ItemShootable)bulletItemStack.getItem()).getEntity(this.worldObj, Vector3f.add(yOffset, new Vector3f(gunOrigin.x - shootVec.z * (this.seatInfo.barrelSpread / 2.0f), gunOrigin.y, gunOrigin.z - shootVec.x * (this.seatInfo.barrelSpread / 2.0f)), null), shootVec, (EntityLivingBase)this.riddenByEntity, gun.bulletSpread, gun.damage, gun.bulletSpeed, bulletItemStack.getMetadata(), this.driveable.getDriveableType()));
+                            this.worldObj.spawnEntityInWorld((Entity)((ItemShootable)bulletItemStack.getItem()).getEntity(this.worldObj, Vector3f.add(yOffset, new Vector3f(gunOrigin.x + shootVec.z * (this.seatInfo.barrelSpread / 2.0f), gunOrigin.y, gunOrigin.z + shootVec.x * (this.seatInfo.barrelSpread / 2.0f)), null), shootVec, (EntityLivingBase)this.riddenByEntity, gun.bulletSpread, gun.damage, gun.bulletSpeed, bulletItemStack.getMetadata(), this.driveable.getDriveableType()));
+                            this.worldObj.spawnEntityInWorld((Entity)((ItemShootable)bulletItemStack.getItem()).getEntity(this.worldObj, Vector3f.add(yOffset, new Vector3f(gunOrigin.x - shootVec.z * (1.5 * this.seatInfo.barrelSpread), gunOrigin.y, gunOrigin.z - shootVec.x * (this.seatInfo.barrelSpread / 2.0f)), null), shootVec, (EntityLivingBase)this.riddenByEntity, gun.bulletSpread, gun.damage, gun.bulletSpeed, bulletItemStack.getMetadata(), this.driveable.getDriveableType()));
+                            this.worldObj.spawnEntityInWorld((Entity)((ItemShootable)bulletItemStack.getItem()).getEntity(this.worldObj, Vector3f.add(yOffset, new Vector3f(gunOrigin.x + shootVec.z * (1.5 * this.seatInfo.barrelSpread), gunOrigin.y, gunOrigin.z + shootVec.x * (this.seatInfo.barrelSpread / 2.0f)), null), shootVec, (EntityLivingBase)this.riddenByEntity, gun.bulletSpread, gun.damage, gun.bulletSpeed, bulletItemStack.getMetadata(), this.driveable.getDriveableType()));
                         }
                         if (this.seatInfo.barrels == 5) {
-                            this.field_70170_p.func_72838_d((Entity)((ItemShootable)bulletItemStack.func_77973_b()).getEntity(this.field_70170_p, Vector3f.add(yOffset, new Vector3f(gunOrigin.x - shootVec.z * this.seatInfo.barrelSpread, gunOrigin.y, gunOrigin.z - shootVec.x * this.seatInfo.barrelSpread), null), shootVec, (EntityLivingBase)this.field_70153_n, gun.bulletSpread, gun.damage, gun.bulletSpeed, bulletItemStack.func_77960_j(), this.driveable.getDriveableType()));
-                            this.field_70170_p.func_72838_d((Entity)((ItemShootable)bulletItemStack.func_77973_b()).getEntity(this.field_70170_p, Vector3f.add(yOffset, new Vector3f(gunOrigin.x, gunOrigin.y, gunOrigin.z), null), shootVec, (EntityLivingBase)this.field_70153_n, gun.bulletSpread, gun.damage, gun.bulletSpeed, bulletItemStack.func_77960_j(), this.driveable.getDriveableType()));
-                            this.field_70170_p.func_72838_d((Entity)((ItemShootable)bulletItemStack.func_77973_b()).getEntity(this.field_70170_p, Vector3f.add(yOffset, new Vector3f(gunOrigin.x + shootVec.z * this.seatInfo.barrelSpread, gunOrigin.y, gunOrigin.z + shootVec.x * this.seatInfo.barrelSpread), null), shootVec, (EntityLivingBase)this.field_70153_n, gun.bulletSpread, gun.damage, gun.bulletSpeed, bulletItemStack.func_77960_j(), this.driveable.getDriveableType()));
-                            this.field_70170_p.func_72838_d((Entity)((ItemShootable)bulletItemStack.func_77973_b()).getEntity(this.field_70170_p, Vector3f.add(yOffset, new Vector3f(gunOrigin.x + shootVec.z * this.seatInfo.barrelSpread, gunOrigin.y, gunOrigin.z + 2.0f * shootVec.x * this.seatInfo.barrelSpread), null), shootVec, (EntityLivingBase)this.field_70153_n, gun.bulletSpread, gun.damage, gun.bulletSpeed, bulletItemStack.func_77960_j(), this.driveable.getDriveableType()));
-                            this.field_70170_p.func_72838_d((Entity)((ItemShootable)bulletItemStack.func_77973_b()).getEntity(this.field_70170_p, Vector3f.add(yOffset, new Vector3f(gunOrigin.x + shootVec.z * this.seatInfo.barrelSpread, gunOrigin.y, gunOrigin.z - 2.0f * shootVec.x * this.seatInfo.barrelSpread), null), shootVec, (EntityLivingBase)this.field_70153_n, gun.bulletSpread, gun.damage, gun.bulletSpeed, bulletItemStack.func_77960_j(), this.driveable.getDriveableType()));
+                            this.worldObj.spawnEntityInWorld((Entity)((ItemShootable)bulletItemStack.getItem()).getEntity(this.worldObj, Vector3f.add(yOffset, new Vector3f(gunOrigin.x - shootVec.z * this.seatInfo.barrelSpread, gunOrigin.y, gunOrigin.z - shootVec.x * this.seatInfo.barrelSpread), null), shootVec, (EntityLivingBase)this.riddenByEntity, gun.bulletSpread, gun.damage, gun.bulletSpeed, bulletItemStack.getMetadata(), this.driveable.getDriveableType()));
+                            this.worldObj.spawnEntityInWorld((Entity)((ItemShootable)bulletItemStack.getItem()).getEntity(this.worldObj, Vector3f.add(yOffset, new Vector3f(gunOrigin.x, gunOrigin.y, gunOrigin.z), null), shootVec, (EntityLivingBase)this.riddenByEntity, gun.bulletSpread, gun.damage, gun.bulletSpeed, bulletItemStack.getMetadata(), this.driveable.getDriveableType()));
+                            this.worldObj.spawnEntityInWorld((Entity)((ItemShootable)bulletItemStack.getItem()).getEntity(this.worldObj, Vector3f.add(yOffset, new Vector3f(gunOrigin.x + shootVec.z * this.seatInfo.barrelSpread, gunOrigin.y, gunOrigin.z + shootVec.x * this.seatInfo.barrelSpread), null), shootVec, (EntityLivingBase)this.riddenByEntity, gun.bulletSpread, gun.damage, gun.bulletSpeed, bulletItemStack.getMetadata(), this.driveable.getDriveableType()));
+                            this.worldObj.spawnEntityInWorld((Entity)((ItemShootable)bulletItemStack.getItem()).getEntity(this.worldObj, Vector3f.add(yOffset, new Vector3f(gunOrigin.x + shootVec.z * this.seatInfo.barrelSpread, gunOrigin.y, gunOrigin.z + 2.0f * shootVec.x * this.seatInfo.barrelSpread), null), shootVec, (EntityLivingBase)this.riddenByEntity, gun.bulletSpread, gun.damage, gun.bulletSpeed, bulletItemStack.getMetadata(), this.driveable.getDriveableType()));
+                            this.worldObj.spawnEntityInWorld((Entity)((ItemShootable)bulletItemStack.getItem()).getEntity(this.worldObj, Vector3f.add(yOffset, new Vector3f(gunOrigin.x + shootVec.z * this.seatInfo.barrelSpread, gunOrigin.y, gunOrigin.z - 2.0f * shootVec.x * this.seatInfo.barrelSpread), null), shootVec, (EntityLivingBase)this.riddenByEntity, gun.bulletSpread, gun.damage, gun.bulletSpeed, bulletItemStack.getMetadata(), this.driveable.getDriveableType()));
                         }
                         if (this.seatInfo.barrels == 6) {
-                            this.field_70170_p.func_72838_d((Entity)((ItemShootable)bulletItemStack.func_77973_b()).getEntity(this.field_70170_p, Vector3f.add(yOffset, new Vector3f(gunOrigin.x - shootVec.z * (this.seatInfo.barrelSpread / 2.0f), gunOrigin.y, gunOrigin.z - shootVec.x * (this.seatInfo.barrelSpread / 2.0f)), null), shootVec, (EntityLivingBase)this.field_70153_n, gun.bulletSpread, gun.damage, gun.bulletSpeed, bulletItemStack.func_77960_j(), this.driveable.getDriveableType()));
-                            this.field_70170_p.func_72838_d((Entity)((ItemShootable)bulletItemStack.func_77973_b()).getEntity(this.field_70170_p, Vector3f.add(yOffset, new Vector3f(gunOrigin.x + shootVec.z * (this.seatInfo.barrelSpread / 2.0f), gunOrigin.y, gunOrigin.z + shootVec.x * (this.seatInfo.barrelSpread / 2.0f)), null), shootVec, (EntityLivingBase)this.field_70153_n, gun.bulletSpread, gun.damage, gun.bulletSpeed, bulletItemStack.func_77960_j(), this.driveable.getDriveableType()));
-                            this.field_70170_p.func_72838_d((Entity)((ItemShootable)bulletItemStack.func_77973_b()).getEntity(this.field_70170_p, Vector3f.add(yOffset, new Vector3f(gunOrigin.x - shootVec.z * (1.5 * this.seatInfo.barrelSpread), gunOrigin.y, gunOrigin.z - shootVec.x * (this.seatInfo.barrelSpread / 2.0f)), null), shootVec, (EntityLivingBase)this.field_70153_n, gun.bulletSpread, gun.damage, gun.bulletSpeed, bulletItemStack.func_77960_j(), this.driveable.getDriveableType()));
-                            this.field_70170_p.func_72838_d((Entity)((ItemShootable)bulletItemStack.func_77973_b()).getEntity(this.field_70170_p, Vector3f.add(yOffset, new Vector3f(gunOrigin.x + shootVec.z * (1.5 * this.seatInfo.barrelSpread), gunOrigin.y, gunOrigin.z + shootVec.x * (this.seatInfo.barrelSpread / 2.0f)), null), shootVec, (EntityLivingBase)this.field_70153_n, gun.bulletSpread, gun.damage, gun.bulletSpeed, bulletItemStack.func_77960_j(), this.driveable.getDriveableType()));
-                            this.field_70170_p.func_72838_d((Entity)((ItemShootable)bulletItemStack.func_77973_b()).getEntity(this.field_70170_p, Vector3f.add(yOffset, new Vector3f(gunOrigin.x - shootVec.z * (2.5 * this.seatInfo.barrelSpread), gunOrigin.y, gunOrigin.z - shootVec.x * (this.seatInfo.barrelSpread / 2.0f)), null), shootVec, (EntityLivingBase)this.field_70153_n, gun.bulletSpread, gun.damage, gun.bulletSpeed, bulletItemStack.func_77960_j(), this.driveable.getDriveableType()));
-                            this.field_70170_p.func_72838_d((Entity)((ItemShootable)bulletItemStack.func_77973_b()).getEntity(this.field_70170_p, Vector3f.add(yOffset, new Vector3f(gunOrigin.x + shootVec.z * (2.5 * this.seatInfo.barrelSpread), gunOrigin.y, gunOrigin.z + shootVec.x * (this.seatInfo.barrelSpread / 2.0f)), null), shootVec, (EntityLivingBase)this.field_70153_n, gun.bulletSpread, gun.damage, gun.bulletSpeed, bulletItemStack.func_77960_j(), this.driveable.getDriveableType()));
+                            this.worldObj.spawnEntityInWorld((Entity)((ItemShootable)bulletItemStack.getItem()).getEntity(this.worldObj, Vector3f.add(yOffset, new Vector3f(gunOrigin.x - shootVec.z * (this.seatInfo.barrelSpread / 2.0f), gunOrigin.y, gunOrigin.z - shootVec.x * (this.seatInfo.barrelSpread / 2.0f)), null), shootVec, (EntityLivingBase)this.riddenByEntity, gun.bulletSpread, gun.damage, gun.bulletSpeed, bulletItemStack.getMetadata(), this.driveable.getDriveableType()));
+                            this.worldObj.spawnEntityInWorld((Entity)((ItemShootable)bulletItemStack.getItem()).getEntity(this.worldObj, Vector3f.add(yOffset, new Vector3f(gunOrigin.x + shootVec.z * (this.seatInfo.barrelSpread / 2.0f), gunOrigin.y, gunOrigin.z + shootVec.x * (this.seatInfo.barrelSpread / 2.0f)), null), shootVec, (EntityLivingBase)this.riddenByEntity, gun.bulletSpread, gun.damage, gun.bulletSpeed, bulletItemStack.getMetadata(), this.driveable.getDriveableType()));
+                            this.worldObj.spawnEntityInWorld((Entity)((ItemShootable)bulletItemStack.getItem()).getEntity(this.worldObj, Vector3f.add(yOffset, new Vector3f(gunOrigin.x - shootVec.z * (1.5 * this.seatInfo.barrelSpread), gunOrigin.y, gunOrigin.z - shootVec.x * (this.seatInfo.barrelSpread / 2.0f)), null), shootVec, (EntityLivingBase)this.riddenByEntity, gun.bulletSpread, gun.damage, gun.bulletSpeed, bulletItemStack.getMetadata(), this.driveable.getDriveableType()));
+                            this.worldObj.spawnEntityInWorld((Entity)((ItemShootable)bulletItemStack.getItem()).getEntity(this.worldObj, Vector3f.add(yOffset, new Vector3f(gunOrigin.x + shootVec.z * (1.5 * this.seatInfo.barrelSpread), gunOrigin.y, gunOrigin.z + shootVec.x * (this.seatInfo.barrelSpread / 2.0f)), null), shootVec, (EntityLivingBase)this.riddenByEntity, gun.bulletSpread, gun.damage, gun.bulletSpeed, bulletItemStack.getMetadata(), this.driveable.getDriveableType()));
+                            this.worldObj.spawnEntityInWorld((Entity)((ItemShootable)bulletItemStack.getItem()).getEntity(this.worldObj, Vector3f.add(yOffset, new Vector3f(gunOrigin.x - shootVec.z * (2.5 * this.seatInfo.barrelSpread), gunOrigin.y, gunOrigin.z - shootVec.x * (this.seatInfo.barrelSpread / 2.0f)), null), shootVec, (EntityLivingBase)this.riddenByEntity, gun.bulletSpread, gun.damage, gun.bulletSpeed, bulletItemStack.getMetadata(), this.driveable.getDriveableType()));
+                            this.worldObj.spawnEntityInWorld((Entity)((ItemShootable)bulletItemStack.getItem()).getEntity(this.worldObj, Vector3f.add(yOffset, new Vector3f(gunOrigin.x + shootVec.z * (2.5 * this.seatInfo.barrelSpread), gunOrigin.y, gunOrigin.z + shootVec.x * (this.seatInfo.barrelSpread / 2.0f)), null), shootVec, (EntityLivingBase)this.riddenByEntity, gun.bulletSpread, gun.damage, gun.bulletSpeed, bulletItemStack.getMetadata(), this.driveable.getDriveableType()));
                         }
                         if (this.soundDelay <= 0) {
-                            PacketPlaySound.sendSoundPacket(this.field_70165_t, this.field_70163_u, this.field_70161_v, 200.0, this.field_71093_bK, gun.shootSound, false);
+                            PacketPlaySound.sendSoundPacket(this.posX, this.posY, this.posZ, 200.0, this.dimension, gun.shootSound, false);
                             this.soundDelay = gun.shootSoundLength;
                         }
-                        final int damage = bulletItemStack.func_77960_j();
-                        if (!((EntityPlayer)this.field_70153_n).field_71075_bZ.field_75098_d) {
-                            bulletItemStack.func_77964_b(damage + 1);
+                        final int damage = bulletItemStack.getMetadata();
+                        if (!((EntityPlayer)this.riddenByEntity).capabilities.isCreativeMode) {
+                            bulletItemStack.setMetadata(damage + 1);
                         }
-                        if (damage >= bulletItemStack.func_77958_k()) {
-                            if (((EntityPlayer)this.field_70153_n).field_71075_bZ.field_75098_d) {
-                                bulletItemStack.func_77964_b(0);
+                        if (damage >= bulletItemStack.getMaxDurability()) {
+                            if (((EntityPlayer)this.riddenByEntity).capabilities.isCreativeMode) {
+                                bulletItemStack.setMetadata(0);
                             }
                             else {
                                 final ItemStack itemStack = this.driveable.getDriveableData().ammo[this.seatInfo.gunnerID];
-                                --itemStack.field_77994_a;
-                                bulletItemStack.func_77964_b(0);
-                                if (this.driveable.getDriveableData().ammo[this.seatInfo.gunnerID].field_77994_a <= 0) {
+                                --itemStack.stackSize;
+                                bulletItemStack.setMetadata(0);
+                                if (this.driveable.getDriveableData().ammo[this.seatInfo.gunnerID].stackSize <= 0) {
                                     this.driveable.getDriveableData().ammo[this.seatInfo.gunnerID] = null;
                                 }
                             }
@@ -1021,8 +1021,8 @@ public class EntitySeat extends Entity implements IControllable, IEntityAddition
     
     @SideOnly(Side.CLIENT)
     public void printHook(final RenderGameOverlayEvent.Pre event, final World world, final int x, final int y, final int z) {
-        final EntityPlayer player = (EntityPlayer)Minecraft.func_71410_x().field_71439_g;
-        if (player.func_70115_ae() && player.field_70154_o instanceof EntitySeat) {
+        final EntityPlayer player = (EntityPlayer)Minecraft.getMinecraft().thePlayer;
+        if (player.isRiding() && player.ridingEntity instanceof EntitySeat) {
             return;
         }
         final List<String> text = new ArrayList<String>();
@@ -1033,7 +1033,7 @@ public class EntitySeat extends Entity implements IControllable, IEntityAddition
         boolean ownedByPlayerFaction = false;
         text.add(EnumChatFormatting.YELLOW + "" + EnumChatFormatting.BOLD + (this.driver ? "Driver" : "Passenger") + " seat");
         if (this.driveable.ownerName != null) {
-            final String own = (Factions.getFactionFromPlayer((EntityPlayer)Minecraft.func_71410_x().field_71439_g) == null) ? "Wilderness" : Factions.getFactionFromPlayer((EntityPlayer)Minecraft.func_71410_x().field_71439_g).getName();
+            final String own = (Factions.getFactionFromPlayer((EntityPlayer)Minecraft.getMinecraft().thePlayer) == null) ? "Wilderness" : Factions.getFactionFromPlayer((EntityPlayer)Minecraft.getMinecraft().thePlayer).getName();
             if (faction != null && !faction.equals("None") && !faction.isEmpty()) {
                 if (faction.equals(own)) {
                     faction = EnumChatFormatting.GREEN + faction;
@@ -1061,52 +1061,52 @@ public class EntitySeat extends Entity implements IControllable, IEntityAddition
         }
         else if (!ownedByPlayerFaction) {
             text.add(EnumChatFormatting.DARK_RED + "Hold right click to steal");
-            if (this.driveable.unlocks.containsKey(Minecraft.func_71410_x().field_71439_g.getDisplayName())) {
-                text.add(EnumChatFormatting.DARK_GRAY + "Progress: " + Math.round(100.0 * Math.min(1.0, this.driveable.unlocks.get(Minecraft.func_71410_x().field_71439_g.getDisplayName()) / (double)this.driveable.timeToUnlock)) + "%");
+            if (this.driveable.unlocks.containsKey(Minecraft.getMinecraft().thePlayer.getDisplayName())) {
+                text.add(EnumChatFormatting.DARK_GRAY + "Progress: " + Math.round(100.0 * Math.min(1.0, this.driveable.unlocks.get(Minecraft.getMinecraft().thePlayer.getDisplayName()) / (double)this.driveable.timeToUnlock)) + "%");
             }
         }
-        if ((!this.driveable.locked || ownedByPlayerFaction) && this.seatInfo.enterable && this.field_70153_n == null) {
+        if ((!this.driveable.locked || ownedByPlayerFaction) && this.seatInfo.enterable && this.riddenByEntity == null) {
             text.add(EnumChatFormatting.GREEN + "Use right click to enter");
         }
         ILookOverlay.printGeneric(event, this.driveable.getDriveableType().name, 16776960, 4210688, (List)text);
     }
     
-    protected void func_70037_a(final NBTTagCompound tags) {
+    protected void readEntityFromNBT(final NBTTagCompound tags) {
     }
     
     public void readSpawnData(final ByteBuf data) {
         this.driveableID = data.readInt();
-        this.driveable = (EntityDriveable)this.field_70170_p.func_73045_a(this.driveableID);
+        this.driveable = (EntityDriveable)this.worldObj.getEntityByID(this.driveableID);
         this.seatID = data.readInt();
         this.driver = (this.seatID == 0);
         if (this.driveable != null) {
             this.seatInfo = this.driveable.getDriveableType().seats[this.seatID];
             this.looking.setAngles((this.seatInfo.minYaw + this.seatInfo.maxYaw) / 2.0f, 0.0f, 0.0f);
-            final double field_70165_t = this.driveable.field_70165_t;
-            this.field_70165_t = field_70165_t;
-            this.prevPlayerPosX = field_70165_t;
-            this.playerPosX = field_70165_t;
-            final double field_70163_u = this.driveable.field_70163_u;
-            this.field_70163_u = field_70163_u;
-            this.prevPlayerPosY = field_70163_u;
-            this.playerPosY = field_70163_u;
-            final double field_70161_v = this.driveable.field_70161_v;
-            this.field_70161_v = field_70161_v;
-            this.prevPlayerPosZ = field_70161_v;
-            this.playerPosZ = field_70161_v;
-            this.func_70107_b(this.field_70165_t, this.field_70163_u, this.field_70161_v);
+            final double posX = this.driveable.posX;
+            this.posX = posX;
+            this.prevPlayerPosX = posX;
+            this.playerPosX = posX;
+            final double posY = this.driveable.posY;
+            this.posY = posY;
+            this.prevPlayerPosY = posY;
+            this.playerPosY = posY;
+            final double posZ = this.driveable.posZ;
+            this.posZ = posZ;
+            this.prevPlayerPosZ = posZ;
+            this.playerPosZ = posZ;
+            this.setPosition(this.posX, this.posY, this.posZ);
         }
     }
     
-    public void func_70106_y() {
-        super.func_70106_y();
+    public void setDead() {
+        super.setDead();
     }
     
-    public void func_70056_a(final double x, final double y, final double z, final float yaw, final float pitch, final int i) {
+    public void setPositionAndRotation2(final double x, final double y, final double z, final float yaw, final float pitch, final int i) {
     }
     
     public void updateKeyHeldState(final int key, final boolean held) {
-        if (this.field_70170_p.field_72995_K && this.foundDriveable) {
+        if (this.worldObj.isRemote && this.foundDriveable) {
             FlansMod.getPacketHandler().sendToServer(new PacketDriveableKeyHeld(key, held));
         }
         if (this.driver) {
@@ -1118,7 +1118,7 @@ public class EntitySeat extends Entity implements IControllable, IEntityAddition
     }
     
     public void updatePosition() {
-        if (this.field_70170_p.field_72995_K && !this.foundDriveable) {
+        if (this.worldObj.isRemote && !this.foundDriveable) {
             return;
         }
         this.prevPlayerPosX = this.playerPosX;
@@ -1133,29 +1133,29 @@ public class EntitySeat extends Entity implements IControllable, IEntityAddition
             Vector3f.add(localPosition, new Vector3f(rotatedOffset.x, (this.driveable.seats[0].seatInfo.part == EnumDriveablePart.barrel) ? rotatedOffset.y : 0.0f, rotatedOffset.z), localPosition);
         }
         final Vector3f relativePosition = this.driveable.axes.findLocalVectorGlobally(localPosition);
-        this.func_70107_b(this.driveable.field_70165_t + relativePosition.x, this.driveable.field_70163_u + relativePosition.y, this.driveable.field_70161_v + relativePosition.z);
-        if (this.field_70153_n != null) {
+        this.setPosition(this.driveable.posX + relativePosition.x, this.driveable.posY + relativePosition.y, this.driveable.posZ + relativePosition.z);
+        if (this.riddenByEntity != null) {
             final DriveableType type = this.driveable.getDriveableType();
-            final Vec3 yOffset = this.driveable.rotate(0.0, this.field_70153_n.func_70033_W(), 0.0).toVec3();
-            this.playerPosX = this.field_70165_t + yOffset.field_72450_a;
-            this.playerPosY = this.field_70163_u + yOffset.field_72448_b;
-            this.playerPosZ = this.field_70161_v + yOffset.field_72449_c;
-            final Entity field_70153_n = this.field_70153_n;
-            final Entity field_70153_n2 = this.field_70153_n;
+            final Vec3 yOffset = this.driveable.rotate(0.0, this.riddenByEntity.getYOffset(), 0.0).toVec3();
+            this.playerPosX = this.posX + yOffset.xCoord;
+            this.playerPosY = this.posY + yOffset.yCoord;
+            this.playerPosZ = this.posZ + yOffset.zCoord;
+            final Entity riddenByEntity = this.riddenByEntity;
+            final Entity field_70153_n2 = this.riddenByEntity;
             final double prevPlayerPosX = this.prevPlayerPosX;
-            field_70153_n2.field_70169_q = prevPlayerPosX;
-            field_70153_n.field_70142_S = prevPlayerPosX;
-            final Entity field_70153_n3 = this.field_70153_n;
-            final Entity field_70153_n4 = this.field_70153_n;
+            field_70153_n2.prevPosX = prevPlayerPosX;
+            riddenByEntity.lastTickPosX = prevPlayerPosX;
+            final Entity field_70153_n3 = this.riddenByEntity;
+            final Entity field_70153_n4 = this.riddenByEntity;
             final double prevPlayerPosY = this.prevPlayerPosY;
-            field_70153_n4.field_70167_r = prevPlayerPosY;
-            field_70153_n3.field_70137_T = prevPlayerPosY;
-            final Entity field_70153_n5 = this.field_70153_n;
-            final Entity field_70153_n6 = this.field_70153_n;
+            field_70153_n4.prevPosY = prevPlayerPosY;
+            field_70153_n3.lastTickPosY = prevPlayerPosY;
+            final Entity field_70153_n5 = this.riddenByEntity;
+            final Entity field_70153_n6 = this.riddenByEntity;
             final double prevPlayerPosZ = this.prevPlayerPosZ;
-            field_70153_n6.field_70166_s = prevPlayerPosZ;
-            field_70153_n5.field_70136_U = prevPlayerPosZ;
-            this.field_70153_n.func_70107_b(this.playerPosX, this.playerPosY, this.playerPosZ);
+            field_70153_n6.prevPosZ = prevPlayerPosZ;
+            field_70153_n5.lastTickPosZ = prevPlayerPosZ;
+            this.riddenByEntity.setPosition(this.playerPosX, this.playerPosY, this.playerPosZ);
             final RotatedAxes globalLookAxes = this.driveable.axes.findLocalAxesGlobally(this.playerLooking);
             this.playerYaw = -90.0f + globalLookAxes.getYaw();
             this.playerPitch = globalLookAxes.getPitch();
@@ -1166,13 +1166,13 @@ public class EntitySeat extends Entity implements IControllable, IEntityAddition
             if (dYaw < -180.0) {
                 this.prevPlayerYaw -= 360.0f;
             }
-            if (this.field_70153_n instanceof EntityPlayer) {
-                this.field_70153_n.field_70126_B = this.prevPlayerYaw;
-                this.field_70153_n.field_70127_C = this.prevPlayerPitch;
-                this.field_70153_n.field_70177_z = this.playerYaw;
-                this.field_70153_n.field_70125_A = this.playerPitch;
+            if (this.riddenByEntity instanceof EntityPlayer) {
+                this.riddenByEntity.prevRotationYaw = this.prevPlayerYaw;
+                this.riddenByEntity.prevRotationPitch = this.prevPlayerPitch;
+                this.riddenByEntity.rotationYaw = this.playerYaw;
+                this.riddenByEntity.rotationPitch = this.playerPitch;
             }
-            if (this.field_70170_p.field_72995_K) {
+            if (this.worldObj.isRemote) {
                 this.prevPlayerRoll = this.playerRoll;
                 this.playerRoll = -globalLookAxes.getRoll();
             }
@@ -1180,10 +1180,10 @@ public class EntitySeat extends Entity implements IControllable, IEntityAddition
     }
     
     public void updatePositionClient() {
-        if (this.field_70170_p.field_72995_K && !this.foundDriveable) {
+        if (this.worldObj.isRemote && !this.foundDriveable) {
             return;
         }
-        if (this.field_70170_p.field_72995_K) {
+        if (this.worldObj.isRemote) {
             this.prevPlayerPosX = this.playerPosX;
             this.prevPlayerPosY = this.playerPosY;
             this.prevPlayerPosZ = this.playerPosZ;
@@ -1196,29 +1196,29 @@ public class EntitySeat extends Entity implements IControllable, IEntityAddition
                 Vector3f.add(localPosition, new Vector3f(rotatedOffset.x, (this.driveable.seats[0].seatInfo.part == EnumDriveablePart.barrel) ? rotatedOffset.y : 0.0f, rotatedOffset.z), localPosition);
             }
             final Vector3f relativePosition = this.driveable.axes.findLocalVectorGlobally(localPosition);
-            this.func_70107_b(this.driveable.field_70165_t + relativePosition.x, this.driveable.field_70163_u + relativePosition.y, this.driveable.field_70161_v + relativePosition.z);
-            if (this.field_70153_n != null) {
+            this.setPosition(this.driveable.posX + relativePosition.x, this.driveable.posY + relativePosition.y, this.driveable.posZ + relativePosition.z);
+            if (this.riddenByEntity != null) {
                 final DriveableType type = this.driveable.getDriveableType();
-                final Vec3 yOffset = this.driveable.rotate(0.0, this.field_70153_n.func_70033_W(), 0.0).toVec3();
-                this.playerPosX = this.field_70165_t + yOffset.field_72450_a;
-                this.playerPosY = this.field_70163_u + yOffset.field_72448_b;
-                this.playerPosZ = this.field_70161_v + yOffset.field_72449_c;
-                final Entity field_70153_n = this.field_70153_n;
-                final Entity field_70153_n2 = this.field_70153_n;
+                final Vec3 yOffset = this.driveable.rotate(0.0, this.riddenByEntity.getYOffset(), 0.0).toVec3();
+                this.playerPosX = this.posX + yOffset.xCoord;
+                this.playerPosY = this.posY + yOffset.yCoord;
+                this.playerPosZ = this.posZ + yOffset.zCoord;
+                final Entity riddenByEntity = this.riddenByEntity;
+                final Entity field_70153_n2 = this.riddenByEntity;
                 final double prevPlayerPosX = this.prevPlayerPosX;
-                field_70153_n2.field_70169_q = prevPlayerPosX;
-                field_70153_n.field_70142_S = prevPlayerPosX;
-                final Entity field_70153_n3 = this.field_70153_n;
-                final Entity field_70153_n4 = this.field_70153_n;
+                field_70153_n2.prevPosX = prevPlayerPosX;
+                riddenByEntity.lastTickPosX = prevPlayerPosX;
+                final Entity field_70153_n3 = this.riddenByEntity;
+                final Entity field_70153_n4 = this.riddenByEntity;
                 final double prevPlayerPosY = this.prevPlayerPosY;
-                field_70153_n4.field_70167_r = prevPlayerPosY;
-                field_70153_n3.field_70137_T = prevPlayerPosY;
-                final Entity field_70153_n5 = this.field_70153_n;
-                final Entity field_70153_n6 = this.field_70153_n;
+                field_70153_n4.prevPosY = prevPlayerPosY;
+                field_70153_n3.lastTickPosY = prevPlayerPosY;
+                final Entity field_70153_n5 = this.riddenByEntity;
+                final Entity field_70153_n6 = this.riddenByEntity;
                 final double prevPlayerPosZ = this.prevPlayerPosZ;
-                field_70153_n6.field_70166_s = prevPlayerPosZ;
-                field_70153_n5.field_70136_U = prevPlayerPosZ;
-                this.field_70153_n.func_70107_b(this.playerPosX, this.playerPosY, this.playerPosZ);
+                field_70153_n6.prevPosZ = prevPlayerPosZ;
+                field_70153_n5.lastTickPosZ = prevPlayerPosZ;
+                this.riddenByEntity.setPosition(this.playerPosX, this.playerPosY, this.playerPosZ);
                 final RotatedAxes globalLookAxes = this.driveable.axes.findLocalAxesGlobally(this.playerLooking);
                 this.playerYaw = -90.0f + globalLookAxes.getYaw();
                 this.playerPitch = globalLookAxes.getPitch();
@@ -1229,13 +1229,13 @@ public class EntitySeat extends Entity implements IControllable, IEntityAddition
                 if (dYaw < -180.0) {
                     this.prevPlayerYaw -= 360.0f;
                 }
-                if (this.field_70153_n instanceof EntityPlayer) {
-                    this.field_70153_n.field_70126_B = this.prevPlayerYaw;
-                    this.field_70153_n.field_70127_C = this.prevPlayerPitch;
-                    this.field_70153_n.field_70177_z = this.playerYaw;
-                    this.field_70153_n.field_70125_A = this.playerPitch;
+                if (this.riddenByEntity instanceof EntityPlayer) {
+                    this.riddenByEntity.prevRotationYaw = this.prevPlayerYaw;
+                    this.riddenByEntity.prevRotationPitch = this.prevPlayerPitch;
+                    this.riddenByEntity.rotationYaw = this.playerYaw;
+                    this.riddenByEntity.rotationPitch = this.playerPitch;
                 }
-                if (this.field_70170_p.field_72995_K) {
+                if (this.worldObj.isRemote) {
                     this.prevPlayerRoll = this.playerRoll;
                     this.playerRoll = -globalLookAxes.getRoll();
                 }
@@ -1243,34 +1243,34 @@ public class EntitySeat extends Entity implements IControllable, IEntityAddition
         }
     }
     
-    public void func_70043_V() {
-        if (this.field_70153_n instanceof EntityPlayer) {
-            this.field_70153_n.field_70177_z = this.playerYaw;
-            this.field_70153_n.field_70125_A = this.playerPitch;
-            this.field_70153_n.field_70126_B = this.prevPlayerYaw;
-            this.field_70153_n.field_70127_C = this.prevPlayerPitch;
+    public void updateRiderPosition() {
+        if (this.riddenByEntity instanceof EntityPlayer) {
+            this.riddenByEntity.rotationYaw = this.playerYaw;
+            this.riddenByEntity.rotationPitch = this.playerPitch;
+            this.riddenByEntity.prevRotationYaw = this.prevPlayerYaw;
+            this.riddenByEntity.prevRotationPitch = this.prevPlayerPitch;
         }
-        final Entity field_70153_n = this.field_70153_n;
-        final Entity field_70153_n2 = this.field_70153_n;
+        final Entity riddenByEntity = this.riddenByEntity;
+        final Entity field_70153_n2 = this.riddenByEntity;
         final double prevPlayerPosX = this.prevPlayerPosX;
-        field_70153_n2.field_70169_q = prevPlayerPosX;
-        field_70153_n.field_70142_S = prevPlayerPosX;
-        final Entity field_70153_n3 = this.field_70153_n;
-        final Entity field_70153_n4 = this.field_70153_n;
+        field_70153_n2.prevPosX = prevPlayerPosX;
+        riddenByEntity.lastTickPosX = prevPlayerPosX;
+        final Entity field_70153_n3 = this.riddenByEntity;
+        final Entity field_70153_n4 = this.riddenByEntity;
         final double prevPlayerPosY = this.prevPlayerPosY;
-        field_70153_n4.field_70167_r = prevPlayerPosY;
-        field_70153_n3.field_70137_T = prevPlayerPosY;
-        final Entity field_70153_n5 = this.field_70153_n;
-        final Entity field_70153_n6 = this.field_70153_n;
+        field_70153_n4.prevPosY = prevPlayerPosY;
+        field_70153_n3.lastTickPosY = prevPlayerPosY;
+        final Entity field_70153_n5 = this.riddenByEntity;
+        final Entity field_70153_n6 = this.riddenByEntity;
         final double prevPlayerPosZ = this.prevPlayerPosZ;
-        field_70153_n6.field_70166_s = prevPlayerPosZ;
-        field_70153_n5.field_70136_U = prevPlayerPosZ;
+        field_70153_n6.prevPosZ = prevPlayerPosZ;
+        field_70153_n5.lastTickPosZ = prevPlayerPosZ;
     }
     
-    protected void func_70014_b(final NBTTagCompound tags) {
+    protected void writeEntityToNBT(final NBTTagCompound tags) {
     }
     
-    public boolean func_98035_c(final NBTTagCompound tags) {
+    public boolean writeMountToNBT(final NBTTagCompound tags) {
         return false;
     }
     
@@ -1279,7 +1279,7 @@ public class EntitySeat extends Entity implements IControllable, IEntityAddition
         data.writeInt(this.seatInfo.id);
     }
     
-    public boolean func_70039_c(final NBTTagCompound tags) {
+    public boolean writeToNBTOptional(final NBTTagCompound tags) {
         return false;
     }
 }

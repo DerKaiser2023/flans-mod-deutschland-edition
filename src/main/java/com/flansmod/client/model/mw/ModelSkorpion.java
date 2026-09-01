@@ -23,8 +23,8 @@ public class ModelSkorpion extends ModelGun
         (this.gunModel[4] = new ModelRendererTurbo(this, 4, 14, textureX, textureY)).addBox(8.0f, 3.5f, -0.25f, 2.0f, 0.5f, 0.5f);
         this.ammoModel = new ModelRendererTurbo[1];
         (this.ammoModel[0] = new ModelRendererTurbo(this, 8, 8, textureX, textureY)).addBox(-1.0f, -3.0f, -0.75f, 2.0f, 4.0f, 1.5f);
-        this.ammoModel[0].func_78793_a(4.0f, 2.0f, 0.0f);
-        this.ammoModel[0].field_78808_h = 0.5f;
+        this.ammoModel[0].setRotationPoint(4.0f, 2.0f, 0.0f);
+        this.ammoModel[0].rotateAngleZ = 0.5f;
         this.barrelAttachPoint = new Vector3f(0.5f, 0.234375f, 0.0f);
         this.scopeAttachPoint = new Vector3f(0.1875f, 0.3125f, 0.0f);
         this.gunSlideDistance = 0.25f;

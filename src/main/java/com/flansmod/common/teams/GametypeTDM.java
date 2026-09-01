@@ -163,7 +163,7 @@ public class GametypeTDM extends Gametype
         }
         if (validSpawnPoints.size() > 0) {
             final ITeamObject spawnPoint = validSpawnPoints.get(GametypeTDM.rand.nextInt(validSpawnPoints.size()));
-            return Vec3.func_72443_a(spawnPoint.getPosX(), spawnPoint.getPosY(), spawnPoint.getPosZ());
+            return Vec3.createVectorHelper(spawnPoint.getPosX(), spawnPoint.getPosY(), spawnPoint.getPosZ());
         }
         return null;
     }
@@ -191,16 +191,16 @@ public class GametypeTDM extends Gametype
     
     @Override
     public void readFromNBT(final NBTTagCompound tags) {
-        this.scoreLimit = tags.func_74762_e("TDMScoreLimit");
-        this.friendlyFire = tags.func_74767_n("TDMFriendlyFire");
-        this.autoBalance = tags.func_74767_n("TDMAutoBalance");
+        this.scoreLimit = tags.getInteger("TDMScoreLimit");
+        this.friendlyFire = tags.getBoolean("TDMFriendlyFire");
+        this.autoBalance = tags.getBoolean("TDMAutoBalance");
     }
     
     @Override
     public void saveToNBT(final NBTTagCompound tags) {
-        tags.func_74768_a("TDMScoreLimit", this.scoreLimit);
-        tags.func_74757_a("TDMFriendlyFire", this.friendlyFire);
-        tags.func_74757_a("TDMAutoBalance", this.autoBalance);
+        tags.setInteger("TDMScoreLimit", this.scoreLimit);
+        tags.setBoolean("TDMFriendlyFire", this.friendlyFire);
+        tags.setBoolean("TDMAutoBalance", this.autoBalance);
     }
     
     @Override

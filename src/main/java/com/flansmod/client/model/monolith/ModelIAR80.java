@@ -95,108 +95,108 @@ public class ModelIAR80 extends ModelPlane
         this.bodyModel[46] = new ModelRendererTurbo(this, 137, 9, this.textureX, this.textureY);
         this.bodyModel[47] = new ModelRendererTurbo(this, 473, 9, this.textureX, this.textureY);
         this.bodyModel[0].addShapeBox(0.0f, 0.0f, 0.0f, 37, 10, 22, 0.0f, 0.0f, 0.0f, 2.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 2.0f, 0.0f, 0.0f, 2.0f, 0.0f, 2.0f, 0.0f, 0.0f, 2.0f, 0.0f, 0.0f, 0.0f, 2.0f);
-        this.bodyModel[0].func_78793_a(-63.0f, -31.0f, -11.0f);
+        this.bodyModel[0].setRotationPoint(-63.0f, -31.0f, -11.0f);
         this.bodyModel[1].addShapeBox(0.0f, 0.0f, 0.0f, 37, 6, 10, 0.0f, 0.0f, 2.5f, 1.0f, 2.0f, 3.0f, -1.0f, 2.0f, 3.0f, -1.0f, 0.0f, 2.5f, 1.0f, 0.0f, 0.0f, 8.0f, 0.0f, 0.0f, 6.0f, 0.0f, 0.0f, 6.0f, 0.0f, 0.0f, 8.0f);
-        this.bodyModel[1].func_78793_a(-63.0f, -37.0f, -5.0f);
+        this.bodyModel[1].setRotationPoint(-63.0f, -37.0f, -5.0f);
         this.bodyModel[2].addShapeBox(0.0f, 0.0f, 0.0f, 37, 7, 10, 0.0f, 0.0f, 0.0f, 6.0f, 0.0f, -2.0f, 6.0f, 0.0f, -2.0f, 6.0f, 0.0f, 0.0f, 6.0f, 0.0f, 0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.5f, 0.0f);
-        this.bodyModel[2].func_78793_a(-63.0f, -21.0f, -5.0f);
+        this.bodyModel[2].setRotationPoint(-63.0f, -21.0f, -5.0f);
         this.bodyModel[3].addShapeBox(0.0f, 0.0f, 0.0f, 4, 7, 12, 0.0f, 0.0f, 0.0f, 6.5f, 0.0f, 0.0f, 7.0f, 0.0f, 0.0f, 7.0f, 0.0f, 0.0f, 6.5f, 0.0f, 0.0f, -1.0f, 0.0f, 0.5f, -1.0f, 0.0f, 0.5f, -1.0f, 0.0f, 0.0f, -1.0f);
-        this.bodyModel[3].func_78793_a(-67.0f, -21.0f, -6.0f);
+        this.bodyModel[3].setRotationPoint(-67.0f, -21.0f, -6.0f);
         this.bodyModel[4].addShapeBox(0.0f, 0.0f, 0.0f, 4, 8, 12, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.5f, 0.0f, 0.0f, 0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f, 6.5f, 0.0f, 0.0f, 7.0f, 0.0f, 0.0f, 7.0f, 0.0f, 0.0f, 6.5f);
-        this.bodyModel[4].func_78793_a(-67.0f, -39.0f, -6.0f);
+        this.bodyModel[4].setRotationPoint(-67.0f, -39.0f, -6.0f);
         this.bodyModel[5].addShapeBox(0.0f, 0.0f, 0.0f, 4, 10, 26, 0.0f, 0.0f, 0.0f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -0.5f, 0.0f, 0.0f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -0.5f);
-        this.bodyModel[5].func_78793_a(-67.0f, -31.0f, -13.0f);
+        this.bodyModel[5].setRotationPoint(-67.0f, -31.0f, -13.0f);
         this.bodyModel[6].addShapeBox(0.0f, 0.0f, 0.0f, 24, 13, 1, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f, -1.0f, -1.0f, 0.0f, -1.0f, 1.0f, 0.0f, -1.0f, 0.0f);
-        this.bodyModel[6].func_78793_a(-26.0f, -31.0f, -10.0f);
+        this.bodyModel[6].setRotationPoint(-26.0f, -31.0f, -10.0f);
         this.bodyModel[7].addShapeBox(0.0f, 0.0f, 0.0f, 24, 5, 10, 0.0f, 0.0f, 0.0f, 6.0f, 0.0f, 0.0f, 4.0f, 0.0f, 0.0f, 4.0f, 0.0f, 0.0f, 6.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.5f, -2.0f, 0.0f, -1.5f, -2.0f, 0.0f, 0.0f, 0.0f);
-        this.bodyModel[7].func_78793_a(-26.0f, -19.0f, -5.0f);
+        this.bodyModel[7].setRotationPoint(-26.0f, -19.0f, -5.0f);
         this.bodyModel[8].addShapeBox(0.0f, 0.0f, 0.0f, 8, 9, 1, 0.0f, 0.0f, 0.0f, -5.5f, 0.0f, -5.0f, -3.0f, 0.0f, -5.0f, 3.0f, 0.0f, 0.0f, 5.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.4f, 0.0f, 0.0f, 0.15f, 0.0f, 0.0f, 0.0f);
-        this.bodyModel[8].func_78793_a(-21.0f, -40.0f, -9.5f);
+        this.bodyModel[8].setRotationPoint(-21.0f, -40.0f, -9.5f);
         this.bodyModel[9].addShapeBox(0.0f, 0.0f, 0.0f, 10, 4, 1, 0.0f, 0.0f, 0.0f, -3.0f, 0.0f, 0.0f, -3.5f, 0.0f, 0.0f, 3.5f, 0.0f, 0.0f, 3.0f, 0.0f, 0.0f, 0.4f, 0.0f, 0.0f, -0.4f, 0.0f, 0.0f, 0.3f, 0.0f, 0.0f, 0.15f);
-        this.bodyModel[9].func_78793_a(-13.0f, -35.0f, -9.5f);
+        this.bodyModel[9].setRotationPoint(-13.0f, -35.0f, -9.5f);
         this.bodyModel[10].addShapeBox(0.0f, 0.0f, 0.0f, 1, 4, 1, 0.0f, 0.0f, 0.0f, -3.5f, 0.0f, 2.0f, -6.0f, 0.0f, 2.0f, 6.0f, 0.0f, 0.0f, 3.5f, 0.0f, 0.0f, -0.4f, 0.0f, 0.0f, -0.5f, 0.0f, 0.0f, 0.5f, 0.0f, 0.0f, 0.3f);
-        this.bodyModel[10].func_78793_a(-3.0f, -35.0f, -9.5f);
+        this.bodyModel[10].setRotationPoint(-3.0f, -35.0f, -9.5f);
         this.bodyModel[11].addShapeBox(0.0f, 0.0f, 0.0f, 42, 12, 18, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.5f, -4.5f, 0.0f, 1.5f, -4.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -4.0f, -4.5f, 0.0f, -4.0f, -4.5f, 0.0f, 0.0f, 0.0f);
-        this.bodyModel[11].func_78793_a(-2.0f, -31.0f, -9.0f);
+        this.bodyModel[11].setRotationPoint(-2.0f, -31.0f, -9.0f);
         this.bodyModel[12].addShapeBox(0.0f, 0.0f, 0.0f, 24, 13, 1, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f, -1.0f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f, -1.0f, -1.0f, 0.0f, -1.0f, 1.0f);
-        this.bodyModel[12].func_78793_a(-26.0f, -31.0f, 9.0f);
+        this.bodyModel[12].setRotationPoint(-26.0f, -31.0f, 9.0f);
         this.bodyModel[13].addShapeBox(0.0f, 0.0f, 0.0f, 8, 9, 1, 0.0f, 0.0f, 0.0f, 5.5f, 0.0f, -5.0f, 3.0f, 0.0f, -5.0f, -3.0f, 0.0f, 0.0f, -5.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.15f, 0.0f, 0.0f, 0.4f, 0.0f, 0.0f, 1.0f);
-        this.bodyModel[13].func_78793_a(-21.0f, -40.0f, 8.5f);
+        this.bodyModel[13].setRotationPoint(-21.0f, -40.0f, 8.5f);
         this.bodyModel[14].addShapeBox(0.0f, 0.0f, 0.0f, 10, 4, 1, 0.0f, 0.0f, 0.0f, 3.0f, 0.0f, 0.0f, 3.5f, 0.0f, 0.0f, -3.5f, 0.0f, 0.0f, -3.0f, 0.0f, 0.0f, 0.15f, 0.0f, 0.0f, 0.3f, 0.0f, 0.0f, -0.4f, 0.0f, 0.0f, 0.4f);
-        this.bodyModel[14].func_78793_a(-13.0f, -35.0f, 8.5f);
+        this.bodyModel[14].setRotationPoint(-13.0f, -35.0f, 8.5f);
         this.bodyModel[15].addShapeBox(0.0f, 0.0f, 0.0f, 1, 4, 1, 0.0f, 0.0f, 0.0f, 3.5f, 0.0f, 2.0f, 6.0f, 0.0f, 2.0f, -6.0f, 0.0f, 0.0f, -3.5f, 0.0f, 0.0f, 0.3f, 0.0f, 0.0f, 0.5f, 0.0f, 0.0f, -0.5f, 0.0f, 0.0f, -0.4f);
-        this.bodyModel[15].func_78793_a(-3.0f, -35.0f, 8.5f);
+        this.bodyModel[15].setRotationPoint(-3.0f, -35.0f, 8.5f);
         this.bodyModel[16].addShapeBox(0.0f, 0.0f, 0.0f, 42, 4, 18, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 4.0f, -4.5f, 0.0f, 4.0f, -4.5f, 0.0f, 0.0f, 0.0f, 0.0f, -0.5f, -6.0f, 0.0f, -4.0f, -7.5f, 0.0f, -4.0f, -7.5f, 0.0f, -0.5f, -6.0f);
-        this.bodyModel[16].func_78793_a(-2.0f, -19.0f, -9.0f);
+        this.bodyModel[16].setRotationPoint(-2.0f, -19.0f, -9.0f);
         this.bodyModel[17].addShapeBox(0.0f, 0.0f, 0.0f, 42, 6, 18, 0.0f, 0.0f, 0.0f, -5.5f, 0.0f, 0.0f, -7.0f, 0.0f, 0.0f, -7.0f, 0.0f, 0.0f, -5.5f, 0.0f, 0.0f, 0.0f, 0.0f, -1.5f, -4.5f, 0.0f, -1.5f, -4.5f, 0.0f, 0.0f, 0.0f);
-        this.bodyModel[17].func_78793_a(-2.0f, -37.0f, -9.0f);
+        this.bodyModel[17].setRotationPoint(-2.0f, -37.0f, -9.0f);
         this.bodyModel[18].addShapeBox(0.0f, 0.0f, 0.0f, 42, 3, 5, 0.0f, 0.0f, 0.0f, -0.5f, 0.0f, -5.0f, -1.5f, 0.0f, -5.0f, -1.5f, 0.0f, 0.0f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 4.0f, -1.0f, 0.0f, 4.0f, -1.0f, 0.0f, 0.0f, 0.0f);
-        this.bodyModel[18].func_78793_a(-2.0f, -40.0f, -2.5f);
+        this.bodyModel[18].setRotationPoint(-2.0f, -40.0f, -2.5f);
         this.bodyModel[19].addShapeBox(0.0f, 0.0f, 0.0f, 42, 2, 4, 0.0f, 0.0f, 0.0f, -1.5f, 0.0f, -5.0f, -1.5f, 0.0f, -5.0f, -1.5f, 0.0f, 0.0f, -1.5f, 0.0f, 0.0f, 0.0f, 0.0f, 5.0f, -1.0f, 0.0f, 5.0f, -1.0f, 0.0f, 0.0f, 0.0f);
-        this.bodyModel[19].func_78793_a(-2.0f, -42.0f, -2.0f);
+        this.bodyModel[19].setRotationPoint(-2.0f, -42.0f, -2.0f);
         this.bodyModel[20].addShapeBox(0.0f, 0.0f, 0.0f, 21, 6, 8, 0.0f, 0.0f, 0.0f, -2.0f, 0.0f, 0.0f, -2.0f, 0.0f, 0.0f, -2.0f, 0.0f, 0.0f, -2.0f, 0.0f, -1.5f, 0.5f, 0.0f, -5.5f, -2.0f, 0.0f, -5.5f, -2.0f, 0.0f, -1.5f, 0.5f);
-        this.bodyModel[20].func_78793_a(40.0f, -37.0f, -4.0f);
+        this.bodyModel[20].setRotationPoint(40.0f, -37.0f, -4.0f);
         this.bodyModel[21].addShapeBox(0.0f, 0.0f, -1.0f, 16, 19, 2, 0.0f, -7.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -7.0f, 0.0f, 0.0f, 1.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.5f, 0.0f, 0.0f);
-        this.bodyModel[21].func_78793_a(45.0f, -56.0f, 0.0f);
+        this.bodyModel[21].setRotationPoint(45.0f, -56.0f, 0.0f);
         this.bodyModel[22].addShapeBox(0.0f, 0.0f, -1.0f, 15, 3, 2, 0.0f, -2.0f, 0.0f, 0.0f, -2.0f, 0.0f, 0.0f, -2.0f, 0.0f, 0.0f, -2.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.bodyModel[22].func_78793_a(52.0f, -59.0f, 0.0f);
+        this.bodyModel[22].setRotationPoint(52.0f, -59.0f, 0.0f);
         this.bodyModel[23].addShapeBox(0.0f, 0.0f, -1.0f, 11, 2, 2, 0.0f, -4.0f, -0.2f, 0.0f, -4.0f, -0.2f, 0.0f, -4.0f, -0.2f, 0.0f, -4.0f, -0.2f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.bodyModel[23].func_78793_a(54.0f, -61.0f, 0.0f);
+        this.bodyModel[23].setRotationPoint(54.0f, -61.0f, 0.0f);
         this.bodyModel[24].addShapeBox(0.0f, 0.0f, 0.0f, 16, 2, 32, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -10.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -10.0f, 0.0f, -1.0f);
-        this.bodyModel[24].func_78793_a(41.0f, -35.5f, 0.0f);
+        this.bodyModel[24].setRotationPoint(41.0f, -35.5f, 0.0f);
         this.bodyModel[25].addShapeBox(0.0f, 0.0f, 0.0f, 16, 2, 32, 0.0f, -10.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -10.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.bodyModel[25].func_78793_a(41.0f, -35.5f, -32.0f);
+        this.bodyModel[25].setRotationPoint(41.0f, -35.5f, -32.0f);
         this.bodyModel[26].addShapeBox(0.0f, 0.0f, 0.0f, 1, 12, 1, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.bodyModel[26].func_78793_a(-17.5f, -44.5f, 3.0f);
-        this.bodyModel[26].field_78795_f = 0.2443461f;
-        this.bodyModel[26].field_78808_h = 0.36651915f;
+        this.bodyModel[26].setRotationPoint(-17.5f, -44.5f, 3.0f);
+        this.bodyModel[26].rotateAngleX = 0.2443461f;
+        this.bodyModel[26].rotateAngleZ = 0.36651915f;
         this.bodyModel[27].addShapeBox(0.0f, 0.0f, 0.0f, 1, 12, 1, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.bodyModel[27].func_78793_a(-17.5f, -44.5f, -4.0f);
-        this.bodyModel[27].field_78795_f = -0.2443461f;
-        this.bodyModel[27].field_78808_h = 0.36651915f;
+        this.bodyModel[27].setRotationPoint(-17.5f, -44.5f, -4.0f);
+        this.bodyModel[27].rotateAngleX = -0.2443461f;
+        this.bodyModel[27].rotateAngleZ = 0.36651915f;
         this.bodyModel[28].addShapeBox(0.0f, 0.0f, 0.0f, 1, 5, 1, 0.0f, 0.0f, 0.0f, -1.5f, 0.0f, 0.0f, -1.5f, 0.0f, 0.0f, 1.5f, 0.0f, 0.0f, 1.5f, 4.0f, 0.0f, -1.0f, -4.0f, 0.0f, -1.0f, -4.0f, 0.0f, 1.0f, 4.0f, 0.0f, 1.0f);
-        this.bodyModel[28].func_78793_a(-17.5f, -44.5f, -4.7f);
-        this.bodyModel[28].field_78808_h = -0.10471976f;
+        this.bodyModel[28].setRotationPoint(-17.5f, -44.5f, -4.7f);
+        this.bodyModel[28].rotateAngleZ = -0.10471976f;
         this.bodyModel[29].addShapeBox(0.0f, 0.0f, 0.0f, 1, 1, 5, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.bodyModel[29].func_78793_a(-17.5f, -44.5f, -2.5f);
+        this.bodyModel[29].setRotationPoint(-17.5f, -44.5f, -2.5f);
         this.bodyModel[30].addShapeBox(0.0f, 0.0f, 0.0f, 1, 4, 4, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.bodyModel[30].func_78793_a(-3.0f, -42.0f, -2.0f);
+        this.bodyModel[30].setRotationPoint(-3.0f, -42.0f, -2.0f);
         this.bodyModel[31].addShapeBox(0.0f, 0.0f, 0.0f, 1, 18, 6, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.bodyModel[31].func_78793_a(-3.0f, -38.0f, -3.0f);
-        this.bodyModel[31].field_78808_h = -0.12217305f;
+        this.bodyModel[31].setRotationPoint(-3.0f, -38.0f, -3.0f);
+        this.bodyModel[31].rotateAngleZ = -0.12217305f;
         this.bodyModel[32].addShapeBox(0.0f, 0.0f, 0.0f, 8, 10, 6, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.bodyModel[32].func_78793_a(-12.0f, -28.0f, -3.0f);
+        this.bodyModel[32].setRotationPoint(-12.0f, -28.0f, -3.0f);
         this.bodyModel[33].addShapeBox(0.0f, 0.0f, 0.0f, 5, 9, 1, 0.0f, -2.0f, 0.0f, -1.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f, -2.0f, 0.0f, 3.0f, 0.0f, 0.0f, 6.0f, 0.0f, 0.0f, 5.5f, 0.0f, 0.0f, -4.5f, 0.0f, 0.0f, -5.0f);
-        this.bodyModel[33].func_78793_a(-26.0f, -40.0f, -5.0f);
+        this.bodyModel[33].setRotationPoint(-26.0f, -40.0f, -5.0f);
         this.bodyModel[34].addShapeBox(0.0f, 0.0f, 0.0f, 5, 9, 1, 0.0f, -2.0f, 0.0f, 3.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, -1.0f, -2.0f, 0.0f, -1.0f, 0.0f, 0.0f, -5.0f, 0.0f, 0.0f, -4.5f, 0.0f, 0.0f, 5.5f, 0.0f, 0.0f, 6.0f);
-        this.bodyModel[34].func_78793_a(-26.0f, -40.0f, 4.0f);
+        this.bodyModel[34].setRotationPoint(-26.0f, -40.0f, 4.0f);
         this.bodyModel[35].addShapeBox(0.0f, 0.0f, 0.0f, 1, 6, 3, 0.0f, 0.0f, 0.0f, -0.5f, 0.0f, 0.0f, -0.5f, 0.0f, -0.5f, 0.0f, 0.0f, -0.5f, 0.0f, 0.0f, 0.0f, 4.0f, 0.0f, 0.0f, 4.0f, 0.0f, 0.0f, 0.5f, 0.0f, 0.0f, 0.5f);
-        this.bodyModel[35].func_78793_a(-18.5f, -38.8f, -4.5f);
+        this.bodyModel[35].setRotationPoint(-18.5f, -38.8f, -4.5f);
         this.bodyModel[36].addShapeBox(0.0f, 0.0f, 0.0f, 1, 6, 3, 0.0f, 0.0f, -0.5f, 0.0f, 0.0f, -0.5f, 0.0f, 0.0f, 0.0f, -0.5f, 0.0f, 0.0f, -0.5f, 0.0f, 0.0f, 0.5f, 0.0f, 0.0f, 0.5f, 0.0f, 0.0f, 4.0f, 0.0f, 0.0f, 4.0f);
-        this.bodyModel[36].func_78793_a(-18.5f, -38.8f, 1.5f);
+        this.bodyModel[36].setRotationPoint(-18.5f, -38.8f, 1.5f);
         this.bodyModel[37].addShapeBox(0.0f, 0.0f, 0.0f, 1, 4, 3, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.bodyModel[37].func_78793_a(-18.0f, -36.8f, -1.5f);
+        this.bodyModel[37].setRotationPoint(-18.0f, -36.8f, -1.5f);
         this.bodyModel[38].addShapeBox(0.0f, 0.0f, 0.0f, 7, 2, 3, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.bodyModel[38].func_78793_a(-25.5f, -38.5f, -1.5f);
+        this.bodyModel[38].setRotationPoint(-25.5f, -38.5f, -1.5f);
         this.bodyModel[39].addShapeBox(0.0f, 0.0f, 0.0f, 1, 4, 3, 0.0f, 0.0f, -0.5f, -0.1f, 0.0f, -0.5f, -0.1f, 0.0f, -0.5f, -0.1f, 0.0f, -0.5f, -0.1f, 0.0f, -0.2f, -0.1f, 0.0f, -0.2f, -0.1f, 0.0f, -0.2f, -0.1f, 0.0f, -0.2f, -0.1f);
-        this.bodyModel[39].func_78793_a(-18.5f, -37.5f, -1.5f);
+        this.bodyModel[39].setRotationPoint(-18.5f, -37.5f, -1.5f);
         this.bodyModel[40].addShapeBox(0.0f, 0.0f, 0.0f, 1, 2, 2, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.bodyModel[40].func_78793_a(-18.3f, -37.5f, -4.0f);
+        this.bodyModel[40].setRotationPoint(-18.3f, -37.5f, -4.0f);
         this.bodyModel[41].addShapeBox(0.0f, 0.0f, 0.0f, 1, 2, 4, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.bodyModel[41].func_78793_a(-18.3f, -34.9f, -6.0f);
+        this.bodyModel[41].setRotationPoint(-18.3f, -34.9f, -6.0f);
         this.bodyModel[42].addShapeBox(0.0f, 0.0f, 0.0f, 1, 2, 2, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.bodyModel[42].func_78793_a(-18.3f, -34.9f, 3.0f);
+        this.bodyModel[42].setRotationPoint(-18.3f, -34.9f, 3.0f);
         this.bodyModel[43].addShapeBox(0.0f, 0.0f, 0.0f, 1, 4, 1, 0.0f, 0.0f, 0.0f, -0.2f, 0.0f, 0.0f, -0.2f, 0.0f, 0.0f, -0.2f, 0.0f, 0.0f, -0.2f, 0.0f, 0.0f, -0.2f, 0.0f, 0.0f, -0.2f, 0.0f, 0.0f, -0.2f, 0.0f, 0.0f, -0.2f);
-        this.bodyModel[43].func_78793_a(-18.3f, -36.9f, 1.8f);
+        this.bodyModel[43].setRotationPoint(-18.3f, -36.9f, 1.8f);
         this.bodyModel[44].addShapeBox(0.0f, 0.0f, 0.0f, 1, 2, 2, 0.0f, 0.0f, -0.3f, -0.3f, 0.0f, -0.3f, -0.3f, 0.0f, -0.3f, -0.3f, 0.0f, -0.3f, -0.3f, 0.0f, -0.3f, -0.3f, 0.0f, -0.3f, -0.3f, 0.0f, -0.3f, -0.3f, 0.0f, -0.3f, -0.3f);
-        this.bodyModel[44].func_78793_a(-18.3f, -36.9f, 3.0f);
+        this.bodyModel[44].setRotationPoint(-18.3f, -36.9f, 3.0f);
         this.bodyModel[45].addShapeBox(0.0f, 0.0f, 0.0f, 1, 1, 2, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.1f, 0.0f, 0.0f, 0.1f, 0.0f);
-        this.bodyModel[45].func_78793_a(-18.5f, -37.8f, -1.5f);
+        this.bodyModel[45].setRotationPoint(-18.5f, -37.8f, -1.5f);
         this.bodyModel[46].addShapeBox(0.0f, 0.0f, 0.0f, 1, 1, 2, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.1f, 0.0f, 0.0f, 0.1f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.bodyModel[46].func_78793_a(-18.5f, -37.8f, -0.5f);
+        this.bodyModel[46].setRotationPoint(-18.5f, -37.8f, -0.5f);
         this.bodyModel[47].addShapeBox(0.0f, 0.0f, 0.0f, 1, 5, 1, 0.0f, 0.0f, 0.0f, 1.5f, 0.0f, 0.0f, 1.5f, 0.0f, 0.0f, -1.5f, 0.0f, 0.0f, -1.5f, 4.0f, 0.0f, 1.0f, -4.0f, 0.0f, 1.0f, -4.0f, 0.0f, -1.0f, 4.0f, 0.0f, -1.0f);
-        this.bodyModel[47].func_78793_a(-17.5f, -44.5f, 3.7f);
-        this.bodyModel[47].field_78808_h = -0.10471976f;
+        this.bodyModel[47].setRotationPoint(-17.5f, -44.5f, 3.7f);
+        this.bodyModel[47].rotateAngleZ = -0.10471976f;
     }
     
     private void initnoseModel_1() {
@@ -214,31 +214,31 @@ public class ModelIAR80 extends ModelPlane
         this.noseModel[11] = new ModelRendererTurbo(this, 41, 57, this.textureX, this.textureY);
         this.noseModel[12] = new ModelRendererTurbo(this, 1, 49, this.textureX, this.textureY);
         this.noseModel[0].addShapeBox(0.0f, 0.0f, 0.0f, 12, 10, 26, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -0.5f, 0.0f, 0.0f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -0.5f, 0.0f, 0.0f, -0.5f, 0.0f, 0.0f, 0.0f);
-        this.noseModel[0].func_78793_a(-83.0f, -31.5f, -13.0f);
+        this.noseModel[0].setRotationPoint(-83.0f, -31.5f, -13.0f);
         this.noseModel[1].addShapeBox(0.0f, 0.0f, 0.0f, 12, 8, 26, 0.0f, 0.0f, 0.0f, -8.0f, 0.0f, -0.5f, -8.5f, 0.0f, -0.5f, -8.5f, 0.0f, 0.0f, -8.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -0.5f, 0.0f, 0.0f, -0.5f, 0.0f, 0.0f, 0.0f);
-        this.noseModel[1].func_78793_a(-83.0f, -39.5f, -13.0f);
+        this.noseModel[1].setRotationPoint(-83.0f, -39.5f, -13.0f);
         this.noseModel[2].addShapeBox(0.0f, 0.0f, 0.0f, 12, 8, 26, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -0.5f, 0.0f, 0.0f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.5f, -8.0f, 0.0f, 0.0f, -8.5f, 0.0f, 0.0f, -8.5f, 0.0f, 0.5f, -8.0f);
-        this.noseModel[2].func_78793_a(-83.0f, -21.5f, -13.0f);
+        this.noseModel[2].setRotationPoint(-83.0f, -21.5f, -13.0f);
         this.noseModel[3].addShapeBox(0.0f, 0.0f, 0.0f, 7, 8, 26, 0.0f, 0.0f, 0.0f, -3.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -3.0f, 0.0f, -2.0f, -8.5f, 0.0f, 0.5f, -8.0f, 0.0f, 0.5f, -8.0f, 0.0f, -2.0f, -8.5f);
-        this.noseModel[3].func_78793_a(-90.0f, -21.5f, -13.0f);
+        this.noseModel[3].setRotationPoint(-90.0f, -21.5f, -13.0f);
         this.noseModel[4].addShapeBox(0.0f, 0.0f, 0.0f, 7, 8, 26, 0.0f, 0.0f, -2.5f, -9.5f, 0.0f, 0.0f, -8.0f, 0.0f, 0.0f, -8.0f, 0.0f, -2.5f, -9.5f, 0.0f, 0.0f, -3.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -3.0f);
-        this.noseModel[4].func_78793_a(-90.0f, -39.5f, -13.0f);
+        this.noseModel[4].setRotationPoint(-90.0f, -39.5f, -13.0f);
         this.noseModel[5].addShapeBox(0.0f, 0.0f, 0.0f, 7, 10, 26, 0.0f, 0.0f, 0.0f, -3.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -3.0f, 0.0f, 0.0f, -3.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -3.0f);
-        this.noseModel[5].func_78793_a(-90.0f, -31.5f, -13.0f);
+        this.noseModel[5].setRotationPoint(-90.0f, -31.5f, -13.0f);
         this.noseModel[6].addShapeBox(0.0f, 0.0f, 0.0f, 5, 10, 10, 0.0f, 0.0f, -3.0f, -3.0f, 0.0f, -0.2f, -0.2f, 0.0f, -0.2f, -0.2f, 0.0f, -3.0f, -3.0f, 0.0f, -3.0f, -3.0f, 0.0f, -0.2f, -0.2f, 0.0f, -0.2f, -0.2f, 0.0f, -3.0f, -3.0f);
-        this.noseModel[6].func_78793_a(-101.0f, -31.5f, -5.0f);
+        this.noseModel[6].setRotationPoint(-101.0f, -31.5f, -5.0f);
         this.noseModel[7].addShapeBox(0.0f, 0.0f, 0.0f, 6, 10, 10, 0.0f, 0.0f, -0.2f, -0.2f, 0.0f, 0.2f, 0.2f, 0.0f, 0.2f, 0.2f, 0.0f, -0.2f, -0.2f, 0.0f, -0.2f, -0.2f, 0.0f, 0.2f, 0.2f, 0.0f, 0.2f, 0.2f, 0.0f, -0.2f, -0.2f);
-        this.noseModel[7].func_78793_a(-96.0f, -31.5f, -5.0f);
+        this.noseModel[7].setRotationPoint(-96.0f, -31.5f, -5.0f);
         this.noseModel[8].addShapeBox(0.0f, 0.0f, 0.0f, 5, 8, 26, 0.0f, 0.0f, -0.5f, -8.5f, 0.0f, 0.0f, -8.0f, 0.0f, 0.0f, -8.0f, 0.0f, -0.5f, -8.5f, 0.0f, 0.0f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -0.5f);
-        this.noseModel[8].func_78793_a(-71.5f, -39.5f, -13.0f);
+        this.noseModel[8].setRotationPoint(-71.5f, -39.5f, -13.0f);
         this.noseModel[9].addShapeBox(0.0f, 0.0f, 0.0f, 5, 8, 26, 0.0f, 0.0f, 0.0f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -0.5f, 0.0f, 0.0f, -8.5f, 0.0f, 0.5f, -8.0f, 0.0f, 0.5f, -8.0f, 0.0f, 0.0f, -8.5f);
-        this.noseModel[9].func_78793_a(-71.5f, -21.5f, -13.0f);
+        this.noseModel[9].setRotationPoint(-71.5f, -21.5f, -13.0f);
         this.noseModel[10].addShapeBox(0.0f, 0.0f, 0.0f, 5, 10, 26, 0.0f, 0.0f, 0.0f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -0.5f, 0.0f, 0.0f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -0.5f);
-        this.noseModel[10].func_78793_a(-71.5f, -31.5f, -13.0f);
+        this.noseModel[10].setRotationPoint(-71.5f, -31.5f, -13.0f);
         this.noseModel[11].addShapeBox(0.0f, 0.0f, 0.0f, 12, 5, 6, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -0.5f, 0.0f);
-        this.noseModel[11].func_78793_a(-83.0f, -13.5f, -3.0f);
+        this.noseModel[11].setRotationPoint(-83.0f, -13.5f, -3.0f);
         this.noseModel[12].addShapeBox(0.0f, 0.0f, 0.0f, 6, 5, 6, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -0.5f, -1.5f, 0.0f, -0.5f, -1.5f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.noseModel[12].func_78793_a(-71.0f, -13.5f, -3.0f);
+        this.noseModel[12].setRotationPoint(-71.0f, -13.5f, -3.0f);
     }
     
     private void inittailModel_1() {
@@ -246,11 +246,11 @@ public class ModelIAR80 extends ModelPlane
         this.tailModel[1] = new ModelRendererTurbo(this, 665, 25, this.textureX, this.textureY);
         this.tailModel[2] = new ModelRendererTurbo(this, 769, 17, this.textureX, this.textureY);
         this.tailModel[0].addShapeBox(0.0f, 0.0f, 0.0f, 21, 9, 9, 0.0f, 0.0f, 0.5f, 0.0f, 0.0f, 4.5f, -2.5f, 0.0f, 4.5f, -2.5f, 0.0f, 0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -2.5f, 0.0f, 0.0f, -2.5f, 0.0f, 0.0f, 0.0f);
-        this.tailModel[0].func_78793_a(40.0f, -32.0f, -4.5f);
+        this.tailModel[0].setRotationPoint(40.0f, -32.0f, -4.5f);
         this.tailModel[1].addShapeBox(0.0f, 0.0f, 0.0f, 21, 4, 9, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -2.5f, 0.0f, 0.0f, -2.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -3.0f, -11.0f, -1.5f, -4.0f, -11.0f, -1.5f, -4.0f, 0.0f, 0.0f, -3.0f);
-        this.tailModel[1].func_78793_a(40.0f, -23.0f, -4.5f);
+        this.tailModel[1].setRotationPoint(40.0f, -23.0f, -4.5f);
         this.tailModel[2].addShapeBox(0.0f, 0.0f, -1.0f, 7, 4, 2, 0.0f, 0.0f, 0.0f, 0.0f, -2.2f, 0.0f, 0.0f, -2.2f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -3.0f, 0.0f, -0.8f, 0.0f, 0.0f, -0.8f, 0.0f, 0.0f, 0.0f, -3.0f, 0.0f);
-        this.tailModel[2].func_78793_a(50.0f, -22.0f, 0.0f);
+        this.tailModel[2].setRotationPoint(50.0f, -22.0f, 0.0f);
     }
     
     private void initleftWingModel_1() {
@@ -259,13 +259,13 @@ public class ModelIAR80 extends ModelPlane
         this.leftWingModel[2] = new ModelRendererTurbo(this, 177, 17, this.textureX, this.textureY);
         this.leftWingModel[3] = new ModelRendererTurbo(this, 257, 17, this.textureX, this.textureY);
         this.leftWingModel[0].addShapeBox(0.0f, 0.0f, 0.0f, 21, 4, 84, 0.0f, -3.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 8.0f, 0.0f, 4.0f, 0.0f, 0.0f, 4.0f, -3.0f, -1.0f, 0.0f, 0.0f, -1.0f, 0.0f, 8.0f, 2.0f, 4.0f, 0.0f, 2.0f, 4.0f);
-        this.leftWingModel[0].func_78793_a(-64.0f, -24.0f, -94.5f);
+        this.leftWingModel[0].setRotationPoint(-64.0f, -24.0f, -94.5f);
         this.leftWingModel[1].addShapeBox(0.0f, 0.0f, 0.0f, 23, 3, 10, 0.0f, -4.0f, 0.0f, 0.5f, -8.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -4.0f, -0.3f, 0.5f, -8.0f, -0.3f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.leftWingModel[1].func_78793_a(-61.0f, -24.0f, -104.5f);
+        this.leftWingModel[1].setRotationPoint(-61.0f, -24.0f, -104.5f);
         this.leftWingModel[2].addShapeBox(0.0f, 0.0f, 0.0f, 3, 1, 1, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.leftWingModel[2].func_78793_a(-66.0f, -22.0f, -39.5f);
+        this.leftWingModel[2].setRotationPoint(-66.0f, -22.0f, -39.5f);
         this.leftWingModel[3].addShapeBox(0.0f, 0.0f, 0.0f, 3, 1, 1, 0.0f, 0.0f, -0.2f, -0.2f, 0.0f, -0.2f, -0.2f, 0.0f, -0.2f, -0.2f, 0.0f, -0.2f, -0.2f, 0.0f, -0.2f, -0.2f, 0.0f, -0.2f, -0.2f, 0.0f, -0.2f, -0.2f, 0.0f, -0.2f, -0.2f);
-        this.leftWingModel[3].func_78793_a(-65.0f, -22.0f, -42.5f);
+        this.leftWingModel[3].setRotationPoint(-65.0f, -22.0f, -42.5f);
     }
     
     private void initrightWingModel_1() {
@@ -274,13 +274,13 @@ public class ModelIAR80 extends ModelPlane
         this.rightWingModel[2] = new ModelRendererTurbo(this, 217, 9, this.textureX, this.textureY);
         this.rightWingModel[3] = new ModelRendererTurbo(this, 241, 9, this.textureX, this.textureY);
         this.rightWingModel[0].addShapeBox(0.0f, 0.0f, 0.0f, 21, 4, 84, 0.0f, 0.0f, 0.0f, 4.0f, 8.0f, 0.0f, 4.0f, 0.0f, 0.0f, 0.0f, -3.0f, 0.0f, 0.0f, 0.0f, 2.0f, 4.0f, 8.0f, 2.0f, 4.0f, 0.0f, -1.0f, 0.0f, -3.0f, -1.0f, 0.0f);
-        this.rightWingModel[0].func_78793_a(-64.0f, -24.0f, 10.5f);
+        this.rightWingModel[0].setRotationPoint(-64.0f, -24.0f, 10.5f);
         this.rightWingModel[1].addShapeBox(0.0f, 0.0f, 0.0f, 23, 3, 10, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -8.0f, 0.0f, 0.0f, -4.0f, 0.0f, 0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -8.0f, -0.3f, 0.0f, -4.0f, -0.3f, 0.5f);
-        this.rightWingModel[1].func_78793_a(-61.0f, -24.0f, 94.5f);
+        this.rightWingModel[1].setRotationPoint(-61.0f, -24.0f, 94.5f);
         this.rightWingModel[2].addShapeBox(0.0f, 0.0f, 0.0f, 3, 1, 1, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.rightWingModel[2].func_78793_a(-66.0f, -22.0f, 38.5f);
+        this.rightWingModel[2].setRotationPoint(-66.0f, -22.0f, 38.5f);
         this.rightWingModel[3].addShapeBox(0.0f, 0.0f, 0.0f, 3, 1, 1, 0.0f, 0.0f, -0.2f, -0.2f, 0.0f, -0.2f, -0.2f, 0.0f, -0.2f, -0.2f, 0.0f, -0.2f, -0.2f, 0.0f, -0.2f, -0.2f, 0.0f, -0.2f, -0.2f, 0.0f, -0.2f, -0.2f, 0.0f, -0.2f, -0.2f);
-        this.rightWingModel[3].func_78793_a(-65.0f, -22.0f, 41.5f);
+        this.rightWingModel[3].setRotationPoint(-65.0f, -22.0f, 41.5f);
     }
     
     private void inityawFlapModel_1() {
@@ -289,41 +289,41 @@ public class ModelIAR80 extends ModelPlane
         this.yawFlapModel[2] = new ModelRendererTurbo(this, 281, 41, this.textureX, this.textureY);
         this.yawFlapModel[3] = new ModelRendererTurbo(this, 361, 41, this.textureX, this.textureY);
         this.yawFlapModel[0].addShapeBox(0.0f, 0.0f, -0.5f, 13, 14, 1, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.5f, 0.0f, -1.5f, -3.5f, 0.0f, -1.5f, -3.5f, 0.0f, 0.0f, 0.5f, 0.0f);
-        this.yawFlapModel[0].func_78793_a(61.0f, -37.0f, 0.0f);
+        this.yawFlapModel[0].setRotationPoint(61.0f, -37.0f, 0.0f);
         this.yawFlapModel[1].addShapeBox(0.0f, 0.0f, -0.5f, 13, 19, 1, 0.0f, 0.0f, 0.0f, 0.0f, -7.0f, 0.0f, 0.0f, -7.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.yawFlapModel[1].func_78793_a(61.0f, -56.0f, 0.0f);
+        this.yawFlapModel[1].setRotationPoint(61.0f, -56.0f, 0.0f);
         this.yawFlapModel[2].addShapeBox(-4.0f, 0.0f, 3.5f, 8, 1, 4, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.yawFlapModel[2].func_78793_a(-19.0f, -23.3f, 0.0f);
-        this.yawFlapModel[2].field_78808_h = -0.6981317f;
+        this.yawFlapModel[2].setRotationPoint(-19.0f, -23.3f, 0.0f);
+        this.yawFlapModel[2].rotateAngleZ = -0.6981317f;
         this.yawFlapModel[3].addShapeBox(-4.0f, 0.0f, -7.5f, 8, 1, 4, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.yawFlapModel[3].func_78793_a(-19.0f, -23.3f, 0.0f);
-        this.yawFlapModel[3].field_78808_h = -0.6981317f;
+        this.yawFlapModel[3].setRotationPoint(-19.0f, -23.3f, 0.0f);
+        this.yawFlapModel[3].rotateAngleZ = -0.6981317f;
     }
     
     private void initpitchFlapLeftModel_1() {
         this.pitchFlapLeftModel[0] = new ModelRendererTurbo(this, 481, 41, this.textureX, this.textureY);
         this.pitchFlapLeftModel[1] = new ModelRendererTurbo(this, 993, 33, this.textureX, this.textureY);
         this.pitchFlapLeftModel[0].addShapeBox(0.0f, -0.5f, 0.0f, 11, 2, 30, 0.0f, 0.0f, -0.2f, 0.0f, -5.0f, -0.2f, -3.0f, 1.0f, -0.2f, -5.0f, 0.0f, -0.2f, 0.0f, 0.0f, -0.2f, 0.0f, -5.0f, -0.2f, -3.0f, 1.0f, -0.2f, -5.0f, 0.0f, -0.2f, 0.0f);
-        this.pitchFlapLeftModel[0].func_78793_a(57.0f, -35.0f, -32.0f);
+        this.pitchFlapLeftModel[0].setRotationPoint(57.0f, -35.0f, -32.0f);
         this.pitchFlapLeftModel[1].addShapeBox(-0.5f, -12.0f, -0.5f, 1, 16, 1, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.pitchFlapLeftModel[1].func_78793_a(-13.0f, -24.3f, 0.0f);
+        this.pitchFlapLeftModel[1].setRotationPoint(-13.0f, -24.3f, 0.0f);
     }
     
     private void initpitchFlapRightModel_1() {
         (this.pitchFlapRightModel[0] = new ModelRendererTurbo(this, 393, 41, this.textureX, this.textureY)).addShapeBox(0.0f, -0.5f, 0.0f, 11, 2, 30, 0.0f, 0.0f, -0.2f, 0.0f, 1.0f, -0.2f, -5.0f, -5.0f, -0.2f, -3.0f, 0.0f, -0.2f, 0.0f, 0.0f, -0.2f, 0.0f, 1.0f, -0.2f, -5.0f, -5.0f, -0.2f, -3.0f, 0.0f, -0.2f, 0.0f);
-        this.pitchFlapRightModel[0].func_78793_a(57.0f, -35.0f, 2.0f);
+        this.pitchFlapRightModel[0].setRotationPoint(57.0f, -35.0f, 2.0f);
     }
     
     private void initpitchFlapLeftWingModel_1() {
         (this.pitchFlapLeftWingModel[0] = new ModelRendererTurbo(this, 697, 65, this.textureX, this.textureY)).addShapeBox(0.0f, -1.5f, -42.0f, 5, 3, 84, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -0.5f, -0.5f, 2.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, -1.5f, -0.5f, 2.0f, 1.0f, 0.0f, 0.0f, 2.0f, 0.0f);
-        this.pitchFlapLeftWingModel[0].func_78793_a(-39.0f, -22.0f, -52.5f);
-        this.pitchFlapLeftWingModel[0].field_78796_g = -0.09599311f;
+        this.pitchFlapLeftWingModel[0].setRotationPoint(-39.0f, -22.0f, -52.5f);
+        this.pitchFlapLeftWingModel[0].rotateAngleY = -0.09599311f;
     }
     
     private void initpitchFlapRightWingModel_1() {
         (this.pitchFlapRightWingModel[0] = new ModelRendererTurbo(this, 817, 49, this.textureX, this.textureY)).addShapeBox(0.0f, -1.5f, -42.0f, 5, 3, 84, 0.0f, 0.0f, 0.0f, 0.0f, 2.0f, -1.0f, 0.0f, 0.0f, -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 2.0f, 0.0f, 2.0f, 1.0f, 0.0f, 0.0f, -1.5f, -0.5f, 0.0f, -1.0f, 0.0f);
-        this.pitchFlapRightWingModel[0].func_78793_a(-39.0f, -22.0f, 52.5f);
-        this.pitchFlapRightWingModel[0].field_78796_g = 0.09599311f;
+        this.pitchFlapRightWingModel[0].setRotationPoint(-39.0f, -22.0f, 52.5f);
+        this.pitchFlapRightWingModel[0].rotateAngleY = 0.09599311f;
     }
     
     private void initleftWingWheelModel_1() {
@@ -332,14 +332,14 @@ public class ModelIAR80 extends ModelPlane
         this.leftWingWheelModel[2] = new ModelRendererTurbo(this, 289, 49, this.textureX, this.textureY);
         this.leftWingWheelModel[3] = new ModelRendererTurbo(this, 537, 41, this.textureX, this.textureY);
         this.leftWingWheelModel[0].addShapeBox(0.0f, 0.0f, 0.0f, 12, 4, 3, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.leftWingWheelModel[0].func_78793_a(-64.0f, 2.0f, -36.0f);
+        this.leftWingWheelModel[0].setRotationPoint(-64.0f, 2.0f, -36.0f);
         this.leftWingWheelModel[1].addShapeBox(0.0f, 0.0f, 0.0f, 12, 4, 3, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -4.0f, 0.0f, 0.0f, -4.0f, 0.0f, 0.0f, -4.0f, 0.0f, 0.0f, -4.0f, 0.0f, 0.0f);
-        this.leftWingWheelModel[1].func_78793_a(-64.0f, 6.0f, -36.0f);
+        this.leftWingWheelModel[1].setRotationPoint(-64.0f, 6.0f, -36.0f);
         this.leftWingWheelModel[2].addShapeBox(0.0f, 0.0f, 0.0f, 12, 4, 3, 0.0f, -4.0f, 0.0f, 0.0f, -4.0f, 0.0f, 0.0f, -4.0f, 0.0f, 0.0f, -4.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.leftWingWheelModel[2].func_78793_a(-64.0f, -2.0f, -36.0f);
+        this.leftWingWheelModel[2].setRotationPoint(-64.0f, -2.0f, -36.0f);
         this.leftWingWheelModel[3].addShapeBox(0.0f, 0.0f, 0.0f, 5, 26, 2, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.leftWingWheelModel[3].func_78793_a(-57.0f, -20.0f, -37.5f);
-        this.leftWingWheelModel[3].field_78808_h = -0.17453294f;
+        this.leftWingWheelModel[3].setRotationPoint(-57.0f, -20.0f, -37.5f);
+        this.leftWingWheelModel[3].rotateAngleZ = -0.17453294f;
     }
     
     private void initrightWingWheelModel_1() {
@@ -348,14 +348,14 @@ public class ModelIAR80 extends ModelPlane
         this.rightWingWheelModel[2] = new ModelRendererTurbo(this, 849, 25, this.textureX, this.textureY);
         this.rightWingWheelModel[3] = new ModelRendererTurbo(this, 1009, 17, this.textureX, this.textureY);
         this.rightWingWheelModel[0].addShapeBox(0.0f, 0.0f, 0.0f, 12, 4, 3, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.rightWingWheelModel[0].func_78793_a(-64.0f, 2.0f, 33.0f);
+        this.rightWingWheelModel[0].setRotationPoint(-64.0f, 2.0f, 33.0f);
         this.rightWingWheelModel[1].addShapeBox(0.0f, 0.0f, 0.0f, 12, 4, 3, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -4.0f, 0.0f, 0.0f, -4.0f, 0.0f, 0.0f, -4.0f, 0.0f, 0.0f, -4.0f, 0.0f, 0.0f);
-        this.rightWingWheelModel[1].func_78793_a(-64.0f, 6.0f, 33.0f);
+        this.rightWingWheelModel[1].setRotationPoint(-64.0f, 6.0f, 33.0f);
         this.rightWingWheelModel[2].addShapeBox(0.0f, 0.0f, 0.0f, 12, 4, 3, 0.0f, -4.0f, 0.0f, 0.0f, -4.0f, 0.0f, 0.0f, -4.0f, 0.0f, 0.0f, -4.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.rightWingWheelModel[2].func_78793_a(-64.0f, -2.0f, 33.0f);
+        this.rightWingWheelModel[2].setRotationPoint(-64.0f, -2.0f, 33.0f);
         this.rightWingWheelModel[3].addShapeBox(0.0f, 0.0f, 0.0f, 5, 26, 2, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, -1.0f, 0.0f);
-        this.rightWingWheelModel[3].func_78793_a(-57.0f, -20.0f, 35.5f);
-        this.rightWingWheelModel[3].field_78808_h = -0.17453294f;
+        this.rightWingWheelModel[3].setRotationPoint(-57.0f, -20.0f, 35.5f);
+        this.rightWingWheelModel[3].rotateAngleZ = -0.17453294f;
     }
     
     private void initPropeller() {
@@ -364,12 +364,12 @@ public class ModelIAR80 extends ModelPlane
     
     private ModelRendererTurbo[] makeProp1(final float i, final float j, final float k) {
         final ModelRendererTurbo[] prop = { new ModelRendererTurbo(this, 523, 49, this.textureX, this.textureY), new ModelRendererTurbo(this, 523, 49, this.textureX, this.textureY), new ModelRendererTurbo(this, 523, 49, this.textureX, this.textureY) };
-        prop[0].func_78790_a(-1.0f, -24.0f, -1.5f, 2, 24, 3, 0.0f);
-        prop[1].func_78790_a(-1.0f, -24.0f, -1.5f, 2, 24, 3, 0.0f);
-        prop[2].func_78790_a(-1.0f, -24.0f, -1.5f, 2, 24, 3, 0.0f);
-        prop[0].func_78793_a(i, j, k);
-        prop[1].func_78793_a(i, j, k);
-        prop[2].func_78793_a(i, j, k);
+        prop[0].addBox(-1.0f, -24.0f, -1.5f, 2, 24, 3, 0.0f);
+        prop[1].addBox(-1.0f, -24.0f, -1.5f, 2, 24, 3, 0.0f);
+        prop[2].addBox(-1.0f, -24.0f, -1.5f, 2, 24, 3, 0.0f);
+        prop[0].setRotationPoint(i, j, k);
+        prop[1].setRotationPoint(i, j, k);
+        prop[2].setRotationPoint(i, j, k);
         return prop;
     }
 }

@@ -146,24 +146,24 @@ public class EntityBullet extends EntityShootable implements IEntityAdditionalSp
         this.VLSDelay = 0;
         this.hasSetLook = false;
         this.ticksInAir = 0;
-        this.func_70105_a(0.5f, 0.5f);
+        this.setSize(0.5f, 0.5f);
     }
     
     private EntityBullet(final World world, final EntityLivingBase shooter, final float gunDamage, final BulletType bulletType, final InfoType shotFrom) {
         this(world);
         this.owner = (Entity)shooter;
         if (shooter instanceof EntityPlayerMP) {
-            this.pingOfShooter = ((EntityPlayerMP)shooter).field_71138_i;
+            this.pingOfShooter = ((EntityPlayerMP)shooter).ping;
         }
         this.type = bulletType;
         this.firedFrom = shotFrom;
         this.damage = gunDamage;
         this.penetratingPower = this.type.penetratingPower;
-        this.func_70105_a(bulletType.hitBoxSize, bulletType.hitBoxSize);
+        this.setSize(bulletType.hitBoxSize, bulletType.hitBoxSize);
     }
     
     public EntityBullet(final World world, final EntityLivingBase shooter, final float spread, final float gunDamage, final BulletType type1, final float speed, final boolean shot, final InfoType shotFrom, final float Xoffset, final float Yoffset, final float Zoffset) {
-        this(world, Vec3.func_72443_a(shooter.field_70165_t - MathHelper.func_76134_b(shooter.field_70177_z / 180.0f * 3.1415927f) * Zoffset - MathHelper.func_76134_b(shooter.field_70125_A / 180.0f * 3.1415927f) * MathHelper.func_76126_a(shooter.field_70177_z / 180.0f * 3.1415927f) * Xoffset, shooter.field_70163_u + Yoffset + shooter.func_70047_e() - MathHelper.func_76126_a(shooter.field_70125_A / 180.0f * 3.1415927f) * Xoffset, shooter.field_70161_v + MathHelper.func_76134_b(shooter.field_70125_A / 180.0f * 3.1415927f) * MathHelper.func_76134_b(shooter.field_70177_z / 180.0f * 3.1415927f) * Xoffset - MathHelper.func_76126_a(shooter.field_70177_z / 180.0f * 3.1415927f) * Zoffset), shooter.field_70177_z, shooter.field_70125_A, shooter, spread, gunDamage, type1, speed, shotFrom);
+        this(world, Vec3.createVectorHelper(shooter.posX - MathHelper.cos(shooter.rotationYaw / 180.0f * 3.1415927f) * Zoffset - MathHelper.cos(shooter.rotationPitch / 180.0f * 3.1415927f) * MathHelper.sin(shooter.rotationYaw / 180.0f * 3.1415927f) * Xoffset, shooter.posY + Yoffset + shooter.getEyeHeight() - MathHelper.sin(shooter.rotationPitch / 180.0f * 3.1415927f) * Xoffset, shooter.posZ + MathHelper.cos(shooter.rotationPitch / 180.0f * 3.1415927f) * MathHelper.cos(shooter.rotationYaw / 180.0f * 3.1415927f) * Xoffset - MathHelper.sin(shooter.rotationYaw / 180.0f * 3.1415927f) * Zoffset), shooter.rotationYaw, shooter.rotationPitch, shooter, spread, gunDamage, type1, speed, shotFrom);
         this.shotgun = shot;
     }
     
@@ -173,85 +173,85 @@ public class EntityBullet extends EntityShootable implements IEntityAdditionalSp
     
     public EntityBullet(final World world, final Vec3 origin, final float yaw, final float pitch, final EntityLivingBase shooter, final float spread, final float gunDamage, final BulletType type1, final float speed, final InfoType shotFrom) {
         this(world, shooter, gunDamage, type1, shotFrom);
-        this.func_70012_b(origin.field_72450_a, origin.field_72448_b, origin.field_72449_c, yaw, pitch);
-        this.func_70107_b(this.field_70165_t, this.field_70163_u, this.field_70161_v);
-        this.field_70129_M = 0.0f;
-        this.field_70159_w = -MathHelper.func_76126_a(this.field_70177_z / 180.0f * 3.1415927f) * MathHelper.func_76134_b(this.field_70125_A / 180.0f * 3.1415927f);
-        this.field_70179_y = MathHelper.func_76134_b(this.field_70177_z / 180.0f * 3.1415927f) * MathHelper.func_76134_b(this.field_70125_A / 180.0f * 3.1415927f);
-        this.field_70181_x = -MathHelper.func_76126_a(this.field_70125_A / 180.0f * 3.141593f);
-        this.setArrowHeading(this.field_70159_w, this.field_70181_x, this.field_70179_y, spread / 2.0f, speed);
+        this.setLocationAndAngles(origin.xCoord, origin.yCoord, origin.zCoord, yaw, pitch);
+        this.setPosition(this.posX, this.posY, this.posZ);
+        this.yOffset = 0.0f;
+        this.motionX = -MathHelper.sin(this.rotationYaw / 180.0f * 3.1415927f) * MathHelper.cos(this.rotationPitch / 180.0f * 3.1415927f);
+        this.motionZ = MathHelper.cos(this.rotationYaw / 180.0f * 3.1415927f) * MathHelper.cos(this.rotationPitch / 180.0f * 3.1415927f);
+        this.motionY = -MathHelper.sin(this.rotationPitch / 180.0f * 3.141593f);
+        this.setArrowHeading(this.motionX, this.motionY, this.motionZ, spread / 2.0f, speed);
     }
     
     public EntityBullet(final World world, final Vector3f origin, final Vector3f direction, final EntityLivingBase shooter, final float spread, final float gunDamage, final BulletType type1, final float speed, final InfoType shotFrom) {
         this(world, shooter, gunDamage, type1, shotFrom);
         this.damage = gunDamage;
-        this.func_70107_b((double)origin.x, (double)origin.y, (double)origin.z);
-        this.field_70159_w = direction.x;
-        this.field_70181_x = direction.y;
-        this.field_70179_y = direction.z;
-        this.setArrowHeading(this.field_70159_w, this.field_70181_x, this.field_70179_y, spread, speed);
+        this.setPosition((double)origin.x, (double)origin.y, (double)origin.z);
+        this.motionX = direction.x;
+        this.motionY = direction.y;
+        this.motionZ = direction.z;
+        this.setArrowHeading(this.motionX, this.motionY, this.motionZ, spread, speed);
     }
     
     public EntityBullet(final World world, final Vector3f origin, final Vector3f direction, final EntityLivingBase shooter, final float spread, final float gunDamage, final BulletType type1, final float speed, final InfoType shotFrom, final Boolean ai) {
         this(world, shooter, gunDamage, type1, shotFrom);
         this.damage = gunDamage;
         this.evilBullet = ai;
-        this.func_70107_b((double)origin.x, (double)origin.y, (double)origin.z);
-        this.field_70159_w = direction.x;
-        this.field_70181_x = direction.y;
-        this.field_70179_y = direction.z;
-        this.setArrowHeading(this.field_70159_w, this.field_70181_x, this.field_70179_y, spread, speed);
+        this.setPosition((double)origin.x, (double)origin.y, (double)origin.z);
+        this.motionX = direction.x;
+        this.motionY = direction.y;
+        this.motionZ = direction.z;
+        this.setArrowHeading(this.motionX, this.motionY, this.motionZ, spread, speed);
     }
     
     public EntityBullet(final World world, final Vec3 origin, final float yaw, final float pitch, final double motX, final double motY, final double motZ, final EntityLivingBase shooter, final float gunDamage, final BulletType type1, final InfoType shotFrom) {
         this(world, shooter, gunDamage, type1, shotFrom);
-        this.func_70012_b(origin.field_72450_a, origin.field_72448_b, origin.field_72449_c, yaw, pitch);
-        this.func_70107_b(this.field_70165_t, this.field_70163_u, this.field_70161_v);
-        this.field_70129_M = 0.0f;
-        this.field_70159_w = motX;
-        this.field_70181_x = motY;
-        this.field_70179_y = motZ;
+        this.setLocationAndAngles(origin.xCoord, origin.yCoord, origin.zCoord, yaw, pitch);
+        this.setPosition(this.posX, this.posY, this.posZ);
+        this.yOffset = 0.0f;
+        this.motionX = motX;
+        this.motionY = motY;
+        this.motionZ = motZ;
     }
     
-    protected void func_70088_a() {
+    protected void entityInit() {
     }
     
     public void setArrowHeading(double d, double d1, double d2, final float spread, final float speed) {
-        final float f2 = MathHelper.func_76133_a(d * d + d1 * d1 + d2 * d2);
+        final float f2 = MathHelper.sqrt_double(d * d + d1 * d1 + d2 * d2);
         d /= f2;
         d1 /= f2;
         d2 /= f2;
         d *= speed;
         d1 *= speed;
         d2 *= speed;
-        d += this.field_70146_Z.nextGaussian() * 0.005 * spread * speed;
-        d1 += this.field_70146_Z.nextGaussian() * 0.005 * spread * speed;
-        d2 += this.field_70146_Z.nextGaussian() * 0.005 * spread * speed;
-        this.field_70159_w = d;
-        this.field_70181_x = d1;
-        this.field_70179_y = d2;
-        final float f3 = MathHelper.func_76133_a(d * d + d2 * d2);
+        d += this.rand.nextGaussian() * 0.005 * spread * speed;
+        d1 += this.rand.nextGaussian() * 0.005 * spread * speed;
+        d2 += this.rand.nextGaussian() * 0.005 * spread * speed;
+        this.motionX = d;
+        this.motionY = d1;
+        this.motionZ = d2;
+        final float f3 = MathHelper.sqrt_double(d * d + d2 * d2);
         final float n = (float)(Math.atan2(d, d2) * 180.0 / 3.1415927410125732);
-        this.field_70177_z = n;
-        this.field_70126_B = n;
+        this.rotationYaw = n;
+        this.prevRotationYaw = n;
         final float n2 = (float)(Math.atan2(d1, f3) * 180.0 / 3.1415927410125732);
-        this.field_70125_A = n2;
-        this.field_70127_C = n2;
+        this.rotationPitch = n2;
+        this.prevRotationPitch = n2;
     }
     
     private void getLockOnTarget() {
         if (this.type.lockOnToPlanes || this.type.lockOnToVehicles || this.type.lockOnToMechas || this.type.lockOnToLivings || this.type.lockOnToPlayers) {
-            final Vector3f motionVec = new Vector3f(this.field_70159_w, this.field_70181_x, this.field_70179_y);
+            final Vector3f motionVec = new Vector3f(this.motionX, this.motionY, this.motionZ);
             Entity closestEntity = null;
             float closestAngle = this.type.maxLockOnAngle * 3.1415927f / 180.0f;
-            for (final Object obj : this.field_70170_p.field_72996_f) {
+            for (final Object obj : this.worldObj.loadedEntityList) {
                 final Entity entity = (Entity)obj;
-                final String etype = entity.getEntityData().func_74779_i("EntityType");
+                final String etype = entity.getEntityData().getString("EntityType");
                 if ((this.type.lockOnToMechas && entity instanceof EntityMecha) || (this.type.lockOnToVehicles && entity instanceof EntityVehicle) || (this.type.lockOnToVehicles && etype.equals("Vehicle")) || (this.type.lockOnToPlanes && entity instanceof EntityPlane) || (this.type.lockOnToPlanes && etype.equals("Plane")) || (this.type.lockOnToPlayers && entity instanceof EntityPlayer) || (this.type.lockOnToLivings && entity instanceof EntityLivingBase)) {
-                    final Vector3f relPosVec = new Vector3f(entity.field_70165_t - this.field_70165_t, entity.field_70163_u - this.field_70163_u, entity.field_70161_v - this.field_70161_v);
+                    final Vector3f relPosVec = new Vector3f(entity.posX - this.posX, entity.posY - this.posY, entity.posZ - this.posZ);
                     final float angle = Math.abs(Vector3f.angle(motionVec, relPosVec));
                     final Vector3f missileDirection = (Vector3f)motionVec.normalise();
-                    final Vector3f targetDirection = (Vector3f)new Vector3f(entity.field_70159_w, entity.field_70181_x, entity.field_70179_y).normalise();
+                    final Vector3f targetDirection = (Vector3f)new Vector3f(entity.motionX, entity.motionY, entity.motionZ).normalise();
                     boolean rearLock = false;
                     if (Math.abs(missileDirection.x - targetDirection.x) < 0.5f && Math.abs(missileDirection.y - targetDirection.y) < 0.5f && Math.abs(missileDirection.z - targetDirection.z) < 0.5f) {
                         rearLock = true;
@@ -275,7 +275,7 @@ public class EntityBullet extends EntityShootable implements IEntityAdditionalSp
                         closestEntity = entity;
                         closestAngle = angle;
                     }
-                    if (((this.owner.field_70154_o == null || victim == this.owner.field_70154_o) && this.owner.func_70115_ae()) || !this.type.modernTorpedo || !this.func_70090_H() || this.type.ASWminRange + this.type.seekerRange * noisiness <= relPosVec.length()) {
+                    if (((this.owner.ridingEntity == null || victim == this.owner.ridingEntity) && this.owner.isRiding()) || !this.type.modernTorpedo || !this.isInWater() || this.type.ASWminRange + this.type.seekerRange * noisiness <= relPosVec.length()) {
                         continue;
                     }
                     closestEntity = entity;
@@ -284,61 +284,61 @@ public class EntityBullet extends EntityShootable implements IEntityAdditionalSp
             }
             if (closestEntity != null) {
                 this.lockedOnTo = closestEntity;
-                if (this.owner != null && this.owner instanceof EntityPlayer && this.lockedOnTo instanceof EntityDriveable && !this.field_70170_p.field_72995_K) {
+                if (this.owner != null && this.owner instanceof EntityPlayer && this.lockedOnTo instanceof EntityDriveable && !this.worldObj.isRemote) {
                     final EntityDriveable target = (EntityDriveable)this.lockedOnTo;
                     final EntityPlayer human = (EntityPlayer)this.owner;
-                    human.func_145747_a((IChatComponent)new ChatComponentText(this.type.name + " has successfully locked onto " + target.getDriveableType().name));
+                    human.addChatMessage((IChatComponent)new ChatComponentText(this.type.name + " has successfully locked onto " + target.getDriveableType().name));
                 }
             }
         }
     }
     
-    public void func_70016_h(final double d, final double d1, final double d2) {
-        this.field_70159_w = d;
-        this.field_70181_x = d1;
-        this.field_70179_y = d2;
-        if (this.field_70127_C == 0.0f && this.field_70126_B == 0.0f) {
-            final float f = MathHelper.func_76133_a(d * d + d2 * d2);
+    public void setVelocity(final double d, final double d1, final double d2) {
+        this.motionX = d;
+        this.motionY = d1;
+        this.motionZ = d2;
+        if (this.prevRotationPitch == 0.0f && this.prevRotationYaw == 0.0f) {
+            final float f = MathHelper.sqrt_double(d * d + d2 * d2);
             final float n = (float)(Math.atan2(d, d2) * 180.0 / 3.1415927410125732);
-            this.field_70177_z = n;
-            this.field_70126_B = n;
+            this.rotationYaw = n;
+            this.prevRotationYaw = n;
             final float n2 = (float)(Math.atan2(d1, f) * 180.0 / 3.1415927410125732);
-            this.field_70125_A = n2;
-            this.field_70127_C = n2;
-            this.func_70012_b(this.field_70165_t, this.field_70163_u, this.field_70161_v, this.field_70177_z, this.field_70125_A);
+            this.rotationPitch = n2;
+            this.prevRotationPitch = n2;
+            this.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, this.rotationPitch);
         }
     }
     
-    public void func_70071_h_() {
-        super.func_70071_h_();
-        this.field_70169_q = this.field_70165_t;
-        this.field_70167_r = this.field_70163_u;
-        this.field_70166_s = this.field_70161_v;
+    public void onUpdate() {
+        super.onUpdate();
+        this.prevPosX = this.posX;
+        this.prevPosY = this.posY;
+        this.prevPosZ = this.posZ;
         if (this.type == null) {
             FlansMod.log("EntityBullet.onUpdate() Error: BulletType is null (" + this + ")");
-            this.func_70106_y();
+            this.setDead();
             return;
         }
-        if (this.field_70173_aa == this.type.lockonDelay && !this.type.modernTorpedo) {
+        if (this.ticksExisted == this.type.lockonDelay && !this.type.modernTorpedo) {
             this.getLockOnTarget();
         }
-        if (this.type.modernTorpedo && this.func_70090_H() && !this.lockAttempted) {
+        if (this.type.modernTorpedo && this.isInWater() && !this.lockAttempted) {
             this.getLockOnTarget();
             this.lockAttempted = true;
         }
-        if (this.type.despawnTime > 0 && this.field_70173_aa > this.type.despawnTime) {
+        if (this.type.despawnTime > 0 && this.ticksExisted > this.type.despawnTime) {
             this.detonated = true;
-            this.func_70106_y();
+            this.setDead();
             return;
         }
-        if (this.field_70173_aa < 10) {
+        if (this.ticksExisted < 10) {
             this.truePen = (float)this.type.armorPen;
             this.isHEAT = this.type.HEAT;
             this.isSword = this.type.swordEnergy;
             this.missNoise = this.type.missNoise;
         }
         if (this.truePen > 2.0f && this.truePen > 0.5 * this.type.armorPen) {
-            this.truePen -= this.field_70173_aa * this.type.penDecay;
+            this.truePen -= this.ticksExisted * this.type.penDecay;
         }
         if (this.type.armorPen > 2 && this.truePen < 2.0f) {
             this.truePen = 2.0f;
@@ -357,64 +357,64 @@ public class EntityBullet extends EntityShootable implements IEntityAdditionalSp
             --this.VLSDelay;
         }
         if (!this.hasSetLook && this.owner != null) {
-            this.lookVector = new Vector3f((float)this.owner.func_70040_Z().field_72450_a, (float)this.owner.func_70040_Z().field_72448_b, (float)this.owner.func_70040_Z().field_72449_c);
-            this.initialPos = new Vector3f(this.owner.field_70165_t, this.owner.field_70163_u, this.owner.field_70161_v);
+            this.lookVector = new Vector3f((float)this.owner.getLookVec().xCoord, (float)this.owner.getLookVec().yCoord, (float)this.owner.getLookVec().zCoord);
+            this.initialPos = new Vector3f(this.owner.posX, this.owner.posY, this.owner.posZ);
             this.hasSetLook = true;
         }
         if (this.soundTime > 0) {
             --this.soundTime;
         }
         if (this.owner != null) {
-            final double rangeX = this.owner.field_70165_t - this.field_70165_t;
-            final double rangeY = this.owner.field_70163_u - this.field_70163_u;
-            final double rangeZ = this.owner.field_70161_v - this.field_70161_v;
+            final double rangeX = this.owner.posX - this.posX;
+            final double rangeY = this.owner.posY - this.posY;
+            final double rangeZ = this.owner.posZ - this.posZ;
             final double range = Math.sqrt(rangeX * rangeX + rangeY * rangeY + rangeZ * rangeZ);
             if (this.type.maxRange != -1 && this.type.maxRange < range) {
-                if (this.field_70173_aa > this.type.fuse && this.type.fuse > 0) {
+                if (this.ticksExisted > this.type.fuse && this.type.fuse > 0) {
                     this.detonate();
                 }
-                this.func_70106_y();
+                this.setDead();
             }
         }
         else {
-            this.func_70106_y();
+            this.setDead();
         }
         ++this.ticksInAir;
-        if (this.ticksInAir > this.type.fuse && this.type.fuse > 0 && !this.field_70128_L) {
-            this.func_70106_y();
+        if (this.ticksInAir > this.type.fuse && this.type.fuse > 0 && !this.isDead) {
+            this.setDead();
         }
-        if (this.field_70173_aa > EntityBullet.bulletLife) {
-            this.func_70106_y();
+        if (this.ticksExisted > EntityBullet.bulletLife) {
+            this.setDead();
         }
-        if (this.field_70128_L) {
+        if (this.isDead) {
             return;
         }
-        if (!this.field_70170_p.field_72995_K) {
-            if (this.field_70173_aa > this.type.fuse && this.type.fuse > 0) {
+        if (!this.worldObj.isRemote) {
+            if (this.ticksExisted > this.type.fuse && this.type.fuse > 0) {
                 this.detonate();
             }
             if (this.type.livingProximityTrigger > 0.0f || this.type.driveableProximityTrigger > 0.0f) {
                 final float checkRadius = Math.max(this.type.livingProximityTrigger, this.type.driveableProximityTrigger);
-                final List list = this.field_70170_p.func_72839_b((Entity)this, this.field_70121_D.func_72314_b((double)checkRadius, (double)checkRadius, (double)checkRadius));
+                final List list = this.worldObj.getEntitiesWithinAABBExcludingEntity((Entity)this, this.boundingBox.expand((double)checkRadius, (double)checkRadius, (double)checkRadius));
                 for (final Object obj : list) {
-                    if (obj == this.owner && this.field_70173_aa < 10) {
+                    if (obj == this.owner && this.ticksExisted < 10) {
                         continue;
                     }
-                    if (obj instanceof EntityLivingBase && this.func_70032_d((Entity)obj) < this.type.livingProximityTrigger) {
+                    if (obj instanceof EntityLivingBase && this.getDistanceToEntity((Entity)obj) < this.type.livingProximityTrigger) {
                         if (TeamsManager.getInstance() != null && TeamsManager.getInstance().currentRound != null && obj instanceof EntityPlayerMP && this.owner instanceof EntityPlayer && !TeamsManager.getInstance().currentRound.gametype.playerAttacked((EntityPlayerMP)obj, (DamageSource)new EntityDamageSourceFlans(this.type.shortName, this, (EntityPlayer)this.owner, this.type, false, false))) {
                             continue;
                         }
                         if (this.type.damageToTriggerer > 0.0f) {
-                            ((EntityLivingBase)obj).func_70097_a(this.getBulletDamage(false), this.type.damageToTriggerer);
+                            ((EntityLivingBase)obj).attackEntityFrom(this.getBulletDamage(false), this.type.damageToTriggerer);
                         }
-                        FlansMod.proxy.spawnParticle("redstone", this.field_70165_t, this.field_70163_u, this.field_70161_v, 0.0, 0.0, 0.0);
+                        FlansMod.proxy.spawnParticle("redstone", this.posX, this.posY, this.posZ, 0.0, 0.0, 0.0);
                         this.detonate();
                         break;
                     }
                     else {
-                        if (obj instanceof EntityDriveable && this.func_70032_d((Entity)obj) < this.type.driveableProximityTrigger) {
+                        if (obj instanceof EntityDriveable && this.getDistanceToEntity((Entity)obj) < this.type.driveableProximityTrigger) {
                             if (this.type.damageToTriggerer > 0.0f) {
-                                ((EntityDriveable)obj).func_70097_a(this.getBulletDamage(false), this.type.damageToTriggerer);
+                                ((EntityDriveable)obj).attackEntityFrom(this.getBulletDamage(false), this.type.damageToTriggerer);
                             }
                             this.detonate();
                             break;
@@ -425,8 +425,8 @@ public class EntityBullet extends EntityShootable implements IEntityAdditionalSp
             }
         }
         final ArrayList<BulletHit> hits = new ArrayList<BulletHit>();
-        final Vector3f origin = new Vector3f(this.field_70165_t, this.field_70163_u, this.field_70161_v);
-        final Vector3f motion = new Vector3f(this.field_70159_w, this.field_70181_x, this.field_70179_y);
+        final Vector3f origin = new Vector3f(this.posX, this.posY, this.posZ);
+        final Vector3f motion = new Vector3f(this.motionX, this.motionY, this.motionZ);
         final float hitBoxSize = (this.type.hitBoxSize >= 0.0f) ? this.type.hitBoxSize : 0.0f;
         final float speed = motion.length();
         this.speedA = speed;
@@ -434,8 +434,8 @@ public class EntityBullet extends EntityShootable implements IEntityAdditionalSp
             this.DeploySubmunitions();
             this.submunitionDelay = 9001;
         }
-        for (int i = 0; i < this.field_70170_p.field_72996_f.size(); ++i) {
-            final Object obj2 = this.field_70170_p.field_72996_f.get(i);
+        for (int i = 0; i < this.worldObj.loadedEntityList.size(); ++i) {
+            final Object obj2 = this.worldObj.loadedEntityList.get(i);
             if (obj2 instanceof EntityDriveable) {
                 final EntityDriveable driveable = (EntityDriveable)obj2;
                 if (!driveable.isDead() && (!driveable.isPartOfThis(this.owner) || this.evilBullet || (driveable.getDriveableType().evilGolem && !this.evilBullet))) {
@@ -447,7 +447,7 @@ public class EntityBullet extends EntityShootable implements IEntityAdditionalSp
                             continue;
                         }
                     }
-                    if (this.func_70032_d((Entity)driveable) <= driveable.getDriveableType().bulletDetectionRadius + speed) {
+                    if (this.getDistanceToEntity((Entity)driveable) <= driveable.getDriveableType().bulletDetectionRadius + speed) {
                         if (driveable.getDriveableType().autisticHitDetection && (!driveable.getDriveableType().evilGolem || !this.evilBullet)) {
                             final ArrayList<BulletHit> driveableHits = driveable.attackFromBullet(origin, motion, this.evilBullet);
                             hits.addAll(driveableHits);
@@ -464,7 +464,7 @@ public class EntityBullet extends EntityShootable implements IEntityAdditionalSp
                 final PlayerData data = PlayerHandler.getPlayerData(player);
                 boolean shouldDoNormalHitDetect = false;
                 if (data != null) {
-                    if (player.field_70128_L) {
+                    if (player.isDead) {
                         continue;
                     }
                     if (data.team == Team.spectators) {
@@ -496,9 +496,9 @@ public class EntityBullet extends EntityShootable implements IEntityAdditionalSp
                     }
                 }
                 if (data == null || shouldDoNormalHitDetect) {
-                    final MovingObjectPosition mop = player.field_70121_D.func_72314_b((double)hitBoxSize, (double)hitBoxSize, (double)hitBoxSize).func_72327_a(origin.toVec3(), Vec3.func_72443_a(this.field_70165_t + this.field_70159_w, this.field_70163_u + this.field_70181_x, this.field_70161_v + this.field_70179_y));
+                    final MovingObjectPosition mop = player.boundingBox.expand((double)hitBoxSize, (double)hitBoxSize, (double)hitBoxSize).calculateIntercept(origin.toVec3(), Vec3.createVectorHelper(this.posX + this.motionX, this.posY + this.motionY, this.posZ + this.motionZ));
                     if (mop != null) {
-                        final Vector3f hitPoint = new Vector3f(mop.field_72307_f.field_72450_a - this.field_70165_t, mop.field_72307_f.field_72448_b - this.field_70163_u, mop.field_72307_f.field_72449_c - this.field_70161_v);
+                        final Vector3f hitPoint = new Vector3f(mop.hitVec.xCoord - this.posX, mop.hitVec.yCoord - this.posY, mop.hitVec.zCoord - this.posZ);
                         float hitLambda = 1.0f;
                         if (motion.x != 0.0f) {
                             hitLambda = hitPoint.x / motion.x;
@@ -518,11 +518,11 @@ public class EntityBullet extends EntityShootable implements IEntityAdditionalSp
             }
             else {
                 final Entity entity = (Entity)obj2;
-                if (entity != this && entity != this.owner && !this.evilBullet && !entity.field_70128_L && !(entity instanceof EntityItem) && !(entity instanceof EntityXPOrb) && !(entity instanceof EntityArrow) && (entity.getClass().toString().indexOf("flansmod.") < 0 || entity instanceof EntityAAGun || entity instanceof EntityGrenade) && entity.getClass().toString().indexOf("holographicdisplays") < 0) {
-                    final AxisAlignedBB bb = entity.field_70121_D.func_72321_a(-(entity.field_70165_t - entity.field_70169_q) * 2.0, -(entity.field_70163_u - entity.field_70167_r) * 2.0, -(entity.field_70161_v - entity.field_70166_s) * 2.0);
-                    final MovingObjectPosition mop2 = bb.func_72314_b((double)hitBoxSize, (double)hitBoxSize, (double)hitBoxSize).func_72327_a(origin.toVec3(), Vec3.func_72443_a(this.field_70165_t + this.field_70159_w, this.field_70163_u + this.field_70181_x, this.field_70161_v + this.field_70179_y));
+                if (entity != this && entity != this.owner && !this.evilBullet && !entity.isDead && !(entity instanceof EntityItem) && !(entity instanceof EntityXPOrb) && !(entity instanceof EntityArrow) && (entity.getClass().toString().indexOf("flansmod.") < 0 || entity instanceof EntityAAGun || entity instanceof EntityGrenade) && entity.getClass().toString().indexOf("holographicdisplays") < 0) {
+                    final AxisAlignedBB bb = entity.boundingBox.addCoord(-(entity.posX - entity.prevPosX) * 2.0, -(entity.posY - entity.prevPosY) * 2.0, -(entity.posZ - entity.prevPosZ) * 2.0);
+                    final MovingObjectPosition mop2 = bb.expand((double)hitBoxSize, (double)hitBoxSize, (double)hitBoxSize).calculateIntercept(origin.toVec3(), Vec3.createVectorHelper(this.posX + this.motionX, this.posY + this.motionY, this.posZ + this.motionZ));
                     if (mop2 != null) {
-                        final Vector3f hitPoint2 = new Vector3f(mop2.field_72307_f.field_72450_a - this.field_70165_t, mop2.field_72307_f.field_72448_b - this.field_70163_u, mop2.field_72307_f.field_72449_c - this.field_70161_v);
+                        final Vector3f hitPoint2 = new Vector3f(mop2.hitVec.xCoord - this.posX, mop2.hitVec.yCoord - this.posY, mop2.hitVec.zCoord - this.posZ);
                         float hitLambda2 = 1.0f;
                         if (motion.x != 0.0f) {
                             hitLambda2 = hitPoint2.x / motion.x;
@@ -541,21 +541,21 @@ public class EntityBullet extends EntityShootable implements IEntityAdditionalSp
                 }
             }
         }
-        Vec3 posVec = Vec3.func_72443_a(this.field_70165_t, this.field_70163_u, this.field_70161_v);
-        final Vec3 nextPosVec = Vec3.func_72443_a(this.field_70165_t + this.field_70159_w, this.field_70163_u + this.field_70181_x, this.field_70161_v + this.field_70179_y);
-        final MovingObjectPosition hit = CustomBlockRaytracing.func_147447_a(this.field_70170_p, posVec, nextPosVec, false, true, true);
-        posVec = Vec3.func_72443_a(this.field_70165_t, this.field_70163_u, this.field_70161_v);
+        Vec3 posVec = Vec3.createVectorHelper(this.posX, this.posY, this.posZ);
+        final Vec3 nextPosVec = Vec3.createVectorHelper(this.posX + this.motionX, this.posY + this.motionY, this.posZ + this.motionZ);
+        final MovingObjectPosition hit = CustomBlockRaytracing.rayTraceBlocks(this.worldObj, posVec, nextPosVec, false, true, true);
+        posVec = Vec3.createVectorHelper(this.posX, this.posY, this.posZ);
         if (hit != null) {
-            final Vec3 hitVec = posVec.func_72444_a(hit.field_72307_f);
+            final Vec3 hitVec = posVec.subtract(hit.hitVec);
             float lambda = 1.0f;
-            if (this.field_70159_w != 0.0) {
-                lambda = (float)(hitVec.field_72450_a / this.field_70159_w);
+            if (this.motionX != 0.0) {
+                lambda = (float)(hitVec.xCoord / this.motionX);
             }
-            else if (this.field_70181_x != 0.0) {
-                lambda = (float)(hitVec.field_72448_b / this.field_70181_x);
+            else if (this.motionY != 0.0) {
+                lambda = (float)(hitVec.yCoord / this.motionY);
             }
-            else if (this.field_70179_y != 0.0) {
-                lambda = (float)(hitVec.field_72449_c / this.field_70179_y);
+            else if (this.motionZ != 0.0) {
+                lambda = (float)(hitVec.zCoord / this.motionZ);
             }
             if (lambda < 0.0f) {
                 lambda = -lambda;
@@ -567,9 +567,9 @@ public class EntityBullet extends EntityShootable implements IEntityAdditionalSp
             for (final BulletHit bulletHit : hits) {
                 if (bulletHit instanceof DriveableHit) {
                     if (this.type.entityHitSoundEnable) {
-                        PacketPlaySound.sendSoundPacket(this.field_70165_t, this.field_70163_u, this.field_70161_v, this.type.hitSoundRange, this.field_71093_bK, this.type.hitSound, true);
+                        PacketPlaySound.sendSoundPacket(this.posX, this.posY, this.posZ, this.type.hitSoundRange, this.dimension, this.type.hitSound, true);
                     }
-                    if (this.field_70170_p.field_72995_K && this.owner instanceof EntityPlayer && FlansMod.proxy.isThePlayer((EntityPlayer)this.owner)) {
+                    if (this.worldObj.isRemote && this.owner instanceof EntityPlayer && FlansMod.proxy.isThePlayer((EntityPlayer)this.owner)) {
                         EntityBullet.hitCrossHair = true;
                     }
                     final DriveableHit driveableHit = (DriveableHit)bulletHit;
@@ -581,27 +581,27 @@ public class EntityBullet extends EntityShootable implements IEntityAdditionalSp
                         driveableHit.driveable.setEntityMarker(200);
                     }
                     if (FlansMod.DEBUG) {
-                        this.field_70170_p.func_72838_d((Entity)new EntityDebugDot(this.field_70170_p, new Vector3f(this.field_70165_t + this.field_70159_w * driveableHit.intersectTime, this.field_70163_u + this.field_70181_x * driveableHit.intersectTime, this.field_70161_v + this.field_70179_y * driveableHit.intersectTime), 1000, 0.0f, 0.0f, 1.0f));
+                        this.worldObj.spawnEntityInWorld((Entity)new EntityDebugDot(this.worldObj, new Vector3f(this.posX + this.motionX * driveableHit.intersectTime, this.posY + this.motionY * driveableHit.intersectTime, this.posZ + this.motionZ * driveableHit.intersectTime), 1000, 0.0f, 0.0f, 1.0f));
                     }
                 }
                 else if (bulletHit instanceof PlayerBulletHit) {
                     if (this.type.entityHitSoundEnable) {
-                        PacketPlaySound.sendSoundPacket(this.field_70165_t, this.field_70163_u, this.field_70161_v, this.type.hitSoundRange, this.field_71093_bK, this.type.hitSound, true);
+                        PacketPlaySound.sendSoundPacket(this.posX, this.posY, this.posZ, this.type.hitSoundRange, this.dimension, this.type.hitSound, true);
                     }
-                    if (this.field_70170_p.field_72995_K && this.owner instanceof EntityPlayer && FlansMod.proxy.isThePlayer((EntityPlayer)this.owner) && !this.evilBullet) {
+                    if (this.worldObj.isRemote && this.owner instanceof EntityPlayer && FlansMod.proxy.isThePlayer((EntityPlayer)this.owner) && !this.evilBullet) {
                         EntityBullet.hitCrossHair = true;
                     }
                     final PlayerBulletHit playerHit = (PlayerBulletHit)bulletHit;
                     this.penetratingPower = playerHit.hitbox.hitByBullet(this, this.penetratingPower);
                     if (FlansMod.DEBUG) {
-                        this.field_70170_p.func_72838_d((Entity)new EntityDebugDot(this.field_70170_p, new Vector3f(this.field_70165_t + this.field_70159_w * playerHit.intersectTime, this.field_70163_u + this.field_70181_x * playerHit.intersectTime, this.field_70161_v + this.field_70179_y * playerHit.intersectTime), 1000, 1.0f, 0.0f, 0.0f));
+                        this.worldObj.spawnEntityInWorld((Entity)new EntityDebugDot(this.worldObj, new Vector3f(this.posX + this.motionX * playerHit.intersectTime, this.posY + this.motionY * playerHit.intersectTime, this.posZ + this.motionZ * playerHit.intersectTime), 1000, 1.0f, 0.0f, 0.0f));
                     }
                 }
                 else if (bulletHit instanceof EntityHit) {
                     if (this.type.entityHitSoundEnable) {
-                        PacketPlaySound.sendSoundPacket(this.field_70165_t, this.field_70163_u, this.field_70161_v, this.type.hitSoundRange, this.field_71093_bK, this.type.hitSound, true);
+                        PacketPlaySound.sendSoundPacket(this.posX, this.posY, this.posZ, this.type.hitSoundRange, this.dimension, this.type.hitSound, true);
                     }
-                    if (this.field_70170_p.field_72995_K && this.owner instanceof EntityPlayer && FlansMod.proxy.isThePlayer((EntityPlayer)this.owner) && !this.evilBullet) {
+                    if (this.worldObj.isRemote && this.owner instanceof EntityPlayer && FlansMod.proxy.isThePlayer((EntityPlayer)this.owner) && !this.evilBullet) {
                         EntityBullet.hitCrossHair = true;
                         EntityBullet.penAmount = 1.0f;
                         EntityBullet.headshot = false;
@@ -609,139 +609,139 @@ public class EntityBullet extends EntityShootable implements IEntityAdditionalSp
                     final EntityHit entityHit = (EntityHit)bulletHit;
                     float d = this.damage;
                     if (entityHit.entity instanceof EntityLivingBase) {
-                        if (this.field_70173_aa > this.type.dynamicBulletDelay) {
+                        if (this.ticksExisted > this.type.dynamicBulletDelay) {
                             d *= this.type.dynamicDamage;
                         }
                         else {
                             d *= this.type.damageVsLiving;
                         }
                         if (entityHit.entity != this.owner || !this.evilBullet || entityHit.entity != this.owner) {
-                            FlansMod.getPacketHandler().sendToAllAround(new PacketParticle("flansmod.blood", entityHit.entity.field_70165_t, entityHit.entity.field_70163_u + 1.0, entityHit.entity.field_70161_v, (float)Math.random() * 1.0f, (float)Math.random() * 1.0f, -(float)Math.random() * 1.0f), entityHit.entity.field_70165_t, entityHit.entity.field_70163_u, entityHit.entity.field_70161_v, 150.0f, this.field_71093_bK);
+                            FlansMod.getPacketHandler().sendToAllAround(new PacketParticle("flansmod.blood", entityHit.entity.posX, entityHit.entity.posY + 1.0, entityHit.entity.posZ, (float)Math.random() * 1.0f, (float)Math.random() * 1.0f, -(float)Math.random() * 1.0f), entityHit.entity.posX, entityHit.entity.posY, entityHit.entity.posZ, 150.0f, this.dimension);
                         }
                         if (d > 40.0f) {
-                            PacketPlaySound.sendSoundPacket(entityHit.entity.field_70165_t, entityHit.entity.field_70163_u, entityHit.entity.field_70161_v, 15.0, this.field_71093_bK, "goreDeath", true);
-                            FlansMod.getPacketHandler().sendToAllAround(new PacketParticle("flansmod.overkill", entityHit.entity.field_70165_t, entityHit.entity.field_70163_u - 4.0, entityHit.entity.field_70161_v, (float)Math.random() * 1.0f, (float)Math.random() * 1.0f, -(float)Math.random() * 1.0f), entityHit.entity.field_70165_t, entityHit.entity.field_70163_u, entityHit.entity.field_70161_v, 150.0f, this.field_71093_bK);
+                            PacketPlaySound.sendSoundPacket(entityHit.entity.posX, entityHit.entity.posY, entityHit.entity.posZ, 15.0, this.dimension, "goreDeath", true);
+                            FlansMod.getPacketHandler().sendToAllAround(new PacketParticle("flansmod.overkill", entityHit.entity.posX, entityHit.entity.posY - 4.0, entityHit.entity.posZ, (float)Math.random() * 1.0f, (float)Math.random() * 1.0f, -(float)Math.random() * 1.0f), entityHit.entity.posX, entityHit.entity.posY, entityHit.entity.posZ, 150.0f, this.dimension);
                         }
                     }
                     else {
-                        if (this.field_70173_aa > this.type.dynamicBulletDelay) {
+                        if (this.ticksExisted > this.type.dynamicBulletDelay) {
                             d *= this.type.dynamicDamage;
                         }
                         else {
                             d *= this.type.damageVsEntity;
                         }
                         if (d > 40.0f) {
-                            PacketPlaySound.sendSoundPacket(entityHit.entity.field_70165_t, entityHit.entity.field_70163_u, entityHit.entity.field_70161_v, 15.0, this.field_71093_bK, "goreDeath", true);
-                            FlansMod.getPacketHandler().sendToAllAround(new PacketParticle("flansmod.overkill", entityHit.entity.field_70165_t, entityHit.entity.field_70163_u - 4.0, entityHit.entity.field_70161_v, (float)Math.random() * 1.0f, (float)Math.random() * 1.0f, -(float)Math.random() * 1.0f), entityHit.entity.field_70165_t, entityHit.entity.field_70163_u, entityHit.entity.field_70161_v, 150.0f, this.field_71093_bK);
+                            PacketPlaySound.sendSoundPacket(entityHit.entity.posX, entityHit.entity.posY, entityHit.entity.posZ, 15.0, this.dimension, "goreDeath", true);
+                            FlansMod.getPacketHandler().sendToAllAround(new PacketParticle("flansmod.overkill", entityHit.entity.posX, entityHit.entity.posY - 4.0, entityHit.entity.posZ, (float)Math.random() * 1.0f, (float)Math.random() * 1.0f, -(float)Math.random() * 1.0f), entityHit.entity.posX, entityHit.entity.posY, entityHit.entity.posZ, 150.0f, this.dimension);
                         }
                     }
-                    if (entityHit.entity.func_70097_a(this.getBulletDamage(false), d) && entityHit.entity instanceof EntityLivingBase) {
+                    if (entityHit.entity.attackEntityFrom(this.getBulletDamage(false), d) && entityHit.entity instanceof EntityLivingBase) {
                         final EntityLivingBase living = (EntityLivingBase)entityHit.entity;
                         for (final PotionEffect effect : this.type.hitEffects) {
-                            living.func_70690_d(new PotionEffect(effect));
+                            living.addPotionEffect(new PotionEffect(effect));
                         }
                         final EntityLivingBase entityLivingBase = living;
-                        ++entityLivingBase.field_70720_be;
-                        living.field_70172_ad = living.field_70771_an / 2;
+                        ++entityLivingBase.arrowHitTimer;
+                        living.hurtResistantTime = living.maxHurtResistantTime / 2;
                     }
                     if (this.type.setEntitiesOnFire) {
-                        entityHit.entity.func_70015_d(20);
+                        entityHit.entity.setFire(20);
                     }
                     --this.penetratingPower;
                     if (FlansMod.DEBUG) {
-                        this.field_70170_p.func_72838_d((Entity)new EntityDebugDot(this.field_70170_p, new Vector3f(this.field_70165_t + this.field_70159_w * entityHit.intersectTime, this.field_70163_u + this.field_70181_x * entityHit.intersectTime, this.field_70161_v + this.field_70179_y * entityHit.intersectTime), 1000, 1.0f, 1.0f, 0.0f));
+                        this.worldObj.spawnEntityInWorld((Entity)new EntityDebugDot(this.worldObj, new Vector3f(this.posX + this.motionX * entityHit.intersectTime, this.posY + this.motionY * entityHit.intersectTime, this.posZ + this.motionZ * entityHit.intersectTime), 1000, 1.0f, 1.0f, 0.0f));
                         FlansMod.log(entityHit.entity.toString() + ": d=" + d + ": damage=" + this.damage + ": type.damageVsEntity=" + this.type.damageVsEntity);
                     }
                 }
                 else if (bulletHit instanceof BlockHit) {
                     final BlockHit blockHit = (BlockHit)bulletHit;
                     final MovingObjectPosition raytraceResult = blockHit.raytraceResult;
-                    final int xTile = raytraceResult.field_72311_b;
-                    final int yTile = raytraceResult.field_72312_c;
-                    final int zTile = raytraceResult.field_72309_d;
+                    final int xTile = raytraceResult.blockX;
+                    final int yTile = raytraceResult.blockY;
+                    final int zTile = raytraceResult.blockZ;
                     if (FlansMod.DEBUG) {
-                        this.field_70170_p.func_72838_d((Entity)new EntityDebugDot(this.field_70170_p, new Vector3f(raytraceResult.field_72307_f.field_72450_a, raytraceResult.field_72307_f.field_72448_b, raytraceResult.field_72307_f.field_72449_c), 1000, 0.0f, 1.0f, 0.0f));
+                        this.worldObj.spawnEntityInWorld((Entity)new EntityDebugDot(this.worldObj, new Vector3f(raytraceResult.hitVec.xCoord, raytraceResult.hitVec.yCoord, raytraceResult.hitVec.zCoord), 1000, 0.0f, 1.0f, 0.0f));
                     }
-                    final Block block = this.field_70170_p.func_147439_a(xTile, yTile, zTile);
-                    final Material mat = block.func_149688_o();
-                    if (this.type.breaksGlass && mat == Material.field_151592_s && TeamsManager.canBreakGlass) {
-                        this.field_70170_p.func_147468_f(xTile, yTile, zTile);
-                        FlansMod.proxy.playBlockBreakSound(xTile, yTile, zTile, block, this.field_71093_bK);
+                    final Block block = this.worldObj.getBlock(xTile, yTile, zTile);
+                    final Material mat = block.getMaterial();
+                    if (this.type.breaksGlass && mat == Material.glass && TeamsManager.canBreakGlass) {
+                        this.worldObj.setBlockToAir(xTile, yTile, zTile);
+                        FlansMod.proxy.playBlockBreakSound(xTile, yTile, zTile, block, this.dimension);
                     }
-                    if (this.field_70170_p.field_72995_K && block.func_149688_o() != Material.field_151579_a && this.type.explosionRadius <= 0.0f) {
-                        for (int num = 2 + this.field_70146_Z.nextInt(3), j = 0; j < num; ++j) {
-                            FlansMod.proxy.spawnParticle("blockcrack_" + Block.func_149682_b(block) + "_" + this.field_70170_p.func_72805_g(xTile, yTile, zTile), raytraceResult.field_72307_f.field_72450_a + (this.field_70146_Z.nextFloat() - 0.5) * this.field_70130_N, raytraceResult.field_72307_f.field_72448_b + 0.1, raytraceResult.field_72307_f.field_72449_c + (this.field_70146_Z.nextFloat() - 0.5) * this.field_70130_N, -this.field_70159_w * 4.0, 1.5, -this.field_70179_y * 4.0);
-                            FlansMod.proxy.spawnParticle("explode", raytraceResult.field_72307_f.field_72450_a, raytraceResult.field_72307_f.field_72448_b, raytraceResult.field_72307_f.field_72449_c, 0.0, 0.0, 0.0);
+                    if (this.worldObj.isRemote && block.getMaterial() != Material.air && this.type.explosionRadius <= 0.0f) {
+                        for (int num = 2 + this.rand.nextInt(3), j = 0; j < num; ++j) {
+                            FlansMod.proxy.spawnParticle("blockcrack_" + Block.getIdFromBlock(block) + "_" + this.worldObj.getBlockMetadata(xTile, yTile, zTile), raytraceResult.hitVec.xCoord + (this.rand.nextFloat() - 0.5) * this.width, raytraceResult.hitVec.yCoord + 0.1, raytraceResult.hitVec.zCoord + (this.rand.nextFloat() - 0.5) * this.width, -this.motionX * 4.0, 1.5, -this.motionZ * 4.0);
+                            FlansMod.proxy.spawnParticle("explode", raytraceResult.hitVec.xCoord, raytraceResult.hitVec.yCoord, raytraceResult.hitVec.zCoord, 0.0, 0.0, 0.0);
                         }
                     }
                     if (hit != null) {
-                        this.func_70107_b(hit.field_72307_f.field_72450_a, hit.field_72307_f.field_72448_b, hit.field_72307_f.field_72449_c);
+                        this.setPosition(hit.hitVec.xCoord, hit.hitVec.yCoord, hit.hitVec.zCoord);
                     }
                     if (this.type.hitSoundEnable) {
-                        PacketPlaySound.sendSoundPacket(this.field_70165_t, this.field_70163_u, this.field_70161_v, this.type.hitSoundRange, this.field_71093_bK, this.type.hitSound, true);
+                        PacketPlaySound.sendSoundPacket(this.posX, this.posY, this.posZ, this.type.hitSoundRange, this.dimension, this.type.hitSound, true);
                     }
-                    this.func_70106_y();
+                    this.setDead();
                     break;
                 }
                 if (this.penetratingPower <= 0.0f || (this.type.explodeOnImpact && this.ticksInAir > 1 && !(bulletHit instanceof PlayerBulletHit))) {
-                    this.func_70107_b(this.field_70165_t + this.field_70159_w * bulletHit.intersectTime, this.field_70163_u + this.field_70181_x * bulletHit.intersectTime, this.field_70161_v + this.field_70179_y * bulletHit.intersectTime);
-                    this.func_70106_y();
+                    this.setPosition(this.posX + this.motionX * bulletHit.intersectTime, this.posY + this.motionY * bulletHit.intersectTime, this.posZ + this.motionZ * bulletHit.intersectTime);
+                    this.setDead();
                     break;
                 }
             }
         }
         float drag = this.type.dragInAir;
         final float gravity = 0.02f;
-        if (this.func_70090_H()) {
+        if (this.isInWater()) {
             for (int k = 0; k < 4; ++k) {
                 final float bubbleMotion = 0.25f;
-                this.field_70170_p.func_72869_a("bubble", this.field_70165_t - this.field_70159_w * bubbleMotion, this.field_70163_u - this.field_70181_x * bubbleMotion, this.field_70161_v - this.field_70179_y * bubbleMotion, this.field_70159_w, this.field_70181_x + 0.10000000149011612, this.field_70179_y);
+                this.worldObj.spawnParticle("bubble", this.posX - this.motionX * bubbleMotion, this.posY - this.motionY * bubbleMotion, this.posZ - this.motionZ * bubbleMotion, this.motionX, this.motionY + 0.10000000149011612, this.motionZ);
             }
             drag = this.type.dragInWater;
         }
         if (!this.type.torpedo && !this.type.modernTorpedo) {
-            this.field_70159_w *= drag;
-            this.field_70181_x *= drag;
-            this.field_70179_y *= drag;
-            this.field_70181_x -= gravity * this.type.fallSpeed;
+            this.motionX *= drag;
+            this.motionY *= drag;
+            this.motionZ *= drag;
+            this.motionY -= gravity * this.type.fallSpeed;
             if (this.type.jamiogravity) {
-                this.field_70181_x *= 0.9800000190734863;
+                this.motionY *= 0.9800000190734863;
             }
         }
         if (this.lockedOnTo != null) {
             if (this.lockedOnTo instanceof EntityDriveable) {
                 final EntityDriveable entDriveable = (EntityDriveable)this.lockedOnTo;
-                if (entDriveable.getDriveableType().lockedOnSound != null && this.soundTime <= 0 && !this.field_70170_p.field_72995_K) {
-                    PacketPlaySound.sendSoundPacket(this.lockedOnTo.field_70165_t, this.lockedOnTo.field_70163_u, this.lockedOnTo.field_70161_v, entDriveable.getDriveableType().lockedOnSoundRange, this.field_71093_bK, entDriveable.getDriveableType().lockedOnSound, false);
+                if (entDriveable.getDriveableType().lockedOnSound != null && this.soundTime <= 0 && !this.worldObj.isRemote) {
+                    PacketPlaySound.sendSoundPacket(this.lockedOnTo.posX, this.lockedOnTo.posY, this.lockedOnTo.posZ, entDriveable.getDriveableType().lockedOnSoundRange, this.dimension, entDriveable.getDriveableType().lockedOnSound, false);
                     this.soundTime = entDriveable.getDriveableType().soundTime;
                 }
             }
             else {
-                this.lockedOnTo.getEntityData().func_74757_a("Tracking", true);
+                this.lockedOnTo.getEntityData().setBoolean("Tracking", true);
             }
-            if (this.field_70173_aa > this.type.tickStartHoming) {
-                final double dX = this.lockedOnTo.field_70165_t - this.field_70165_t;
+            if (this.ticksExisted > this.type.tickStartHoming) {
+                final double dX = this.lockedOnTo.posX - this.posX;
                 double dY;
-                if (this.type.isDoTopAttack && Math.abs(this.lockedOnTo.field_70165_t - this.field_70165_t) > 2.0 && Math.abs(this.lockedOnTo.field_70161_v - this.field_70161_v) > 2.0) {
-                    dY = this.lockedOnTo.field_70163_u + 30.0 - this.field_70163_u;
+                if (this.type.isDoTopAttack && Math.abs(this.lockedOnTo.posX - this.posX) > 2.0 && Math.abs(this.lockedOnTo.posZ - this.posZ) > 2.0) {
+                    dY = this.lockedOnTo.posY + 30.0 - this.posY;
                 }
                 else {
-                    dY = this.lockedOnTo.field_70163_u - this.field_70163_u;
+                    dY = this.lockedOnTo.posY - this.posY;
                 }
-                final double dZ = this.lockedOnTo.field_70161_v - this.field_70161_v;
+                final double dZ = this.lockedOnTo.posZ - this.posZ;
                 double dXYZ;
                 if (!this.type.isDoTopAttack) {
-                    dXYZ = this.func_70032_d(this.lockedOnTo);
+                    dXYZ = this.getDistanceToEntity(this.lockedOnTo);
                 }
                 else {
                     dXYZ = Math.sqrt(dX * dX + dY * dY + dZ * dZ);
                 }
                 if (this.owner != null && this.type.enableSACLOS) {
-                    final double dXp = this.lockedOnTo.field_70165_t - this.owner.field_70165_t;
-                    final double dYp = this.lockedOnTo.field_70163_u - this.owner.field_70163_u;
-                    final double dZp = this.lockedOnTo.field_70161_v - this.owner.field_70161_v;
-                    final Vec3 playerVec = this.owner.func_70040_Z();
-                    final Vector3f playerVec3f = new Vector3f(playerVec.field_72450_a, playerVec.field_72448_b, playerVec.field_72449_c);
+                    final double dXp = this.lockedOnTo.posX - this.owner.posX;
+                    final double dYp = this.lockedOnTo.posY - this.owner.posY;
+                    final double dZp = this.lockedOnTo.posZ - this.owner.posZ;
+                    final Vec3 playerVec = this.owner.getLookVec();
+                    final Vector3f playerVec3f = new Vector3f(playerVec.xCoord, playerVec.yCoord, playerVec.zCoord);
                     final double angles = Math.abs(Vector3f.angle(playerVec3f, new Vector3f(dXp, dYp, dZp)));
                     if (angles > Math.toRadians(this.type.maxDegreeOfSACLOS)) {
                         this.lockedOnTo = null;
@@ -753,18 +753,18 @@ public class EntityBullet extends EntityShootable implements IEntityAdditionalSp
                     }
                     this.toggleLock = false;
                 }
-                final double dmotion = Math.sqrt(this.field_70159_w * this.field_70159_w + this.field_70181_x * this.field_70181_x + this.field_70179_y * this.field_70179_y);
+                final double dmotion = Math.sqrt(this.motionX * this.motionX + this.motionY * this.motionY + this.motionZ * this.motionZ);
                 final Vector3f motionVector = new Vector3f(dX * dmotion / dXYZ, dY * dmotion / dXYZ, dZ * dmotion / dXYZ);
                 final double angle = Math.abs(Vector3f.angle(motion, motionVector));
                 if (angle > Math.toRadians(this.type.maxDegreeOfMissile) && !this.type.infiniteAngle && !this.type.antiRadiation && !this.type.modernTorpedo) {
                     this.lockedOnTo = null;
                 }
                 else {
-                    this.field_70159_w = motionVector.x;
-                    this.field_70181_x = motionVector.y;
-                    this.field_70179_y = motionVector.z;
+                    this.motionX = motionVector.x;
+                    this.motionY = motionVector.y;
+                    this.motionZ = motionVector.z;
                 }
-                if (this.field_70173_aa > 4 && dXYZ > this.prevDistanceToEntity) {
+                if (this.ticksExisted > 4 && dXYZ > this.prevDistanceToEntity) {
                     ++this.closeCount;
                     if (this.closeCount > 15) {
                         this.lockedOnTo = null;
@@ -779,22 +779,22 @@ public class EntityBullet extends EntityShootable implements IEntityAdditionalSp
                 final EntityDriveable plane = (EntityDriveable)this.lockedOnTo;
                 if (plane.varFlare || plane.ticksFlareUsing > 0) {
                     this.lockedOnTo = null;
-                    if (this.owner != null && this.owner instanceof EntityPlayer && !this.field_70170_p.field_72995_K) {
+                    if (this.owner != null && this.owner instanceof EntityPlayer && !this.worldObj.isRemote) {
                         final EntityDriveable target = (EntityDriveable)this.lockedOnTo;
                         final EntityPlayer human = (EntityPlayer)this.owner;
-                        human.func_145747_a((IChatComponent)new ChatComponentText("Enemy flares have broken " + this.type.name + "'s lock!"));
+                        human.addChatMessage((IChatComponent)new ChatComponentText("Enemy flares have broken " + this.type.name + "'s lock!"));
                     }
                 }
             }
-            else if (this.lockedOnTo != null && this.lockedOnTo.getEntityData().func_74767_n("FlareUsing")) {
+            else if (this.lockedOnTo != null && this.lockedOnTo.getEntityData().getBoolean("FlareUsing")) {
                 this.lockedOnTo = null;
             }
         }
         if (this.owner != null && this.type.shootForSettingPos && !this.isFirstPositionSetting) {
             if (this.owner instanceof EntityPlayer) {
                 final EntityPlayer entP = (EntityPlayer)this.owner;
-                if (entP.func_71045_bC() != null && entP.func_71045_bC().func_77973_b() instanceof ItemGun) {
-                    final ItemGun itemGun = (ItemGun)entP.func_71045_bC().func_77973_b();
+                if (entP.getCurrentEquippedItem() != null && entP.getCurrentEquippedItem().getItem() instanceof ItemGun) {
+                    final ItemGun itemGun = (ItemGun)entP.getCurrentEquippedItem().getItem();
                     this.impactX = itemGun.impactX;
                     this.impactY = itemGun.impactY;
                     this.impactZ = itemGun.impactZ;
@@ -803,167 +803,167 @@ public class EntityBullet extends EntityShootable implements IEntityAdditionalSp
             this.isFirstPositionSetting = true;
         }
         if (this.type.shootForSettingPos && this.isFirstPositionSetting && this.isPositionUpper) {
-            final double motionXa = this.field_70159_w;
-            final double motionYa = this.field_70181_x;
-            final double motionZa = this.field_70179_y;
+            final double motionXa = this.motionX;
+            final double motionYa = this.motionY;
+            final double motionZa = this.motionZ;
             final double motiona = Math.sqrt(motionXa * motionXa + motionYa * motionYa + motionZa * motionZa);
-            this.field_70159_w = 0.0;
-            this.field_70181_x = motiona;
-            this.field_70179_y = 0.0;
-            if (this.field_70163_u - this.type.shootForSettingPosHeight > this.owner.field_70163_u) {
+            this.motionX = 0.0;
+            this.motionY = motiona;
+            this.motionZ = 0.0;
+            if (this.posY - this.type.shootForSettingPosHeight > this.owner.posY) {
                 this.isPositionUpper = false;
             }
         }
         if (this.type.shootForSettingPos && this.isFirstPositionSetting && !this.isPositionUpper) {
-            final double rootx = this.impactX - this.field_70165_t;
-            final double rootz = this.impactZ - this.field_70161_v;
+            final double rootx = this.impactX - this.posX;
+            final double rootz = this.impactZ - this.posZ;
             final double roota = Math.sqrt(rootx * rootx + rootz * rootz);
-            final double motionXa2 = this.field_70159_w;
-            final double motionYa2 = this.field_70181_x;
-            final double motionZa2 = this.field_70179_y;
+            final double motionXa2 = this.motionX;
+            final double motionYa2 = this.motionY;
+            final double motionZa2 = this.motionZ;
             final double motiona2 = Math.sqrt(motionXa2 * motionXa2 + motionYa2 * motionYa2 + motionZa2 * motionZa2);
-            this.field_70159_w = rootx * motiona2 / roota;
-            this.field_70179_y = rootz * motiona2 / roota;
-            if (Math.abs(this.impactX - this.field_70165_t) < 1.0 && Math.abs(this.impactZ - this.field_70161_v) < 1.0) {
-                final double motionXab = this.field_70159_w;
-                final double motionYab = this.field_70181_x;
-                final double motionZab = this.field_70179_y;
+            this.motionX = rootx * motiona2 / roota;
+            this.motionZ = rootz * motiona2 / roota;
+            if (Math.abs(this.impactX - this.posX) < 1.0 && Math.abs(this.impactZ - this.posZ) < 1.0) {
+                final double motionXab = this.motionX;
+                final double motionYab = this.motionY;
+                final double motionZab = this.motionZ;
                 final double motionab = Math.sqrt(motionXa2 * motionXa2 + motionYa2 * motionYa2 + motionZa2 * motionZa2);
-                this.field_70159_w = 0.0;
-                this.field_70181_x = -motionab;
-                this.field_70179_y = 0.0;
+                this.motionX = 0.0;
+                this.motionY = -motionab;
+                this.motionZ = 0.0;
             }
         }
-        this.field_70155_l = 256.0;
+        this.renderDistanceWeight = 256.0;
         if (this.owner != null && this.type.manualGuidance && this.VLSDelay <= 0 && this.lockedOnTo == null) {
-            this.field_70155_l = 256.0;
-            Vector3f lookVec = new Vector3f((float)this.owner.func_70040_Z().field_72450_a, (float)this.owner.func_70040_Z().field_72448_b, (float)this.owner.func_70040_Z().field_72449_c);
-            Vector3f origin2 = new Vector3f(this.owner.field_70165_t, this.owner.field_70163_u, this.owner.field_70161_v);
+            this.renderDistanceWeight = 256.0;
+            Vector3f lookVec = new Vector3f((float)this.owner.getLookVec().xCoord, (float)this.owner.getLookVec().yCoord, (float)this.owner.getLookVec().zCoord);
+            Vector3f origin2 = new Vector3f(this.owner.posX, this.owner.posY, this.owner.posZ);
             if (this.type.fixedDirection) {
                 lookVec = this.lookVector;
                 origin2 = this.initialPos;
             }
-            final float x = (float)(this.field_70165_t - origin2.x);
-            final float y = (float)(this.field_70163_u - origin2.y);
-            final float z = (float)(this.field_70161_v - origin2.z);
+            final float x = (float)(this.posX - origin2.x);
+            final float y = (float)(this.posY - origin2.y);
+            final float z = (float)(this.posZ - origin2.z);
             float d2 = (float)Math.sqrt(x * x + y * y + z * z);
             d2 += this.type.turnRadius;
             lookVec.normalise();
             final Vector3f targetPoint = new Vector3f(origin2.x + lookVec.x * d2, origin2.y + lookVec.y * d2, origin2.z + lookVec.z * d2);
-            final Vector3f diff = Vector3f.sub(targetPoint, new Vector3f(this.field_70165_t, this.field_70163_u, this.field_70161_v), null);
+            final Vector3f diff = Vector3f.sub(targetPoint, new Vector3f(this.posX, this.posY, this.posZ), null);
             final float speed2 = this.type.trackPhaseSpeed;
             float turnSpeed = this.type.trackPhaseTurn;
             diff.normalise();
             turnSpeed = 0.1f;
             final Vector3f targetSpeed = new Vector3f(diff.x * speed2, diff.y * speed2, diff.z * speed2);
-            this.field_70159_w += (targetSpeed.x - this.field_70159_w) * turnSpeed;
-            this.field_70181_x += (targetSpeed.y - this.field_70181_x) * turnSpeed;
-            this.field_70179_y += (targetSpeed.z - this.field_70179_y) * turnSpeed;
+            this.motionX += (targetSpeed.x - this.motionX) * turnSpeed;
+            this.motionY += (targetSpeed.y - this.motionY) * turnSpeed;
+            this.motionZ += (targetSpeed.z - this.motionZ) * turnSpeed;
         }
         if (this.type.torpedo || (this.type.modernTorpedo && this.lockedOnTo == null)) {
-            if (this.func_70090_H()) {
-                final Vector3f motion2 = new Vector3f(this.field_70159_w, this.field_70181_x, this.field_70179_y);
+            if (this.isInWater()) {
+                final Vector3f motion2 = new Vector3f(this.motionX, this.motionY, this.motionZ);
                 final float length = motion.length();
                 motion.normalise();
-                this.field_70159_w = motion.x * 1.0f;
-                this.field_70179_y = motion.z * 1.0f;
+                this.motionX = motion.x * 1.0f;
+                this.motionZ = motion.z * 1.0f;
                 if (!this.type.modernTorpedo) {
-                    this.field_70181_x += 1.5f * gravity * this.type.fallSpeed;
-                    this.field_70181_x *= 0.30000001192092896;
+                    this.motionY += 1.5f * gravity * this.type.fallSpeed;
+                    this.motionY *= 0.30000001192092896;
                 }
             }
             else {
-                this.field_70181_x -= gravity * this.type.fallSpeed * 2.5f;
+                this.motionY -= gravity * this.type.fallSpeed * 2.5f;
             }
         }
         if (this.type.depthCharge) {
-            if (!this.func_70090_H()) {
-                this.field_70181_x -= gravity * this.type.fallSpeed;
-                if (this.field_70181_x > 0.10000000149011612) {
-                    this.field_70181_x *= 0.8999999761581421;
+            if (!this.isInWater()) {
+                this.motionY -= gravity * this.type.fallSpeed;
+                if (this.motionY > 0.10000000149011612) {
+                    this.motionY *= 0.8999999761581421;
                 }
             }
-            if (TeamsManager.seaLevel - this.field_70163_u <= this.type.activationDepth && this.func_70090_H()) {
-                this.field_70181_x -= gravity * this.type.fallSpeed;
-                this.field_70159_w = 0.0;
-                this.field_70179_y = 0.0;
+            if (TeamsManager.seaLevel - this.posY <= this.type.activationDepth && this.isInWater()) {
+                this.motionY -= gravity * this.type.fallSpeed;
+                this.motionX = 0.0;
+                this.motionZ = 0.0;
             }
-            if (TeamsManager.seaLevel - this.field_70163_u > this.type.activationDepth && this.func_70090_H()) {
+            if (TeamsManager.seaLevel - this.posY > this.type.activationDepth && this.isInWater()) {
                 this.detonate();
             }
         }
-        this.func_70107_b(this.field_70165_t + this.field_70159_w, this.field_70163_u + this.field_70181_x, this.field_70161_v + this.field_70179_y);
-        final float motionXZ = MathHelper.func_76133_a(this.field_70159_w * this.field_70159_w + this.field_70179_y * this.field_70179_y);
-        this.field_70177_z = (float)(Math.atan2(this.field_70159_w, this.field_70179_y) * 180.0 / 3.1415927410125732);
-        this.field_70125_A = (float)(Math.atan2(this.field_70181_x, motionXZ) * 180.0 / 3.1415927410125732);
-        while (this.field_70125_A - this.field_70127_C < -180.0f) {
-            this.field_70127_C -= 360.0f;
+        this.setPosition(this.posX + this.motionX, this.posY + this.motionY, this.posZ + this.motionZ);
+        final float motionXZ = MathHelper.sqrt_double(this.motionX * this.motionX + this.motionZ * this.motionZ);
+        this.rotationYaw = (float)(Math.atan2(this.motionX, this.motionZ) * 180.0 / 3.1415927410125732);
+        this.rotationPitch = (float)(Math.atan2(this.motionY, motionXZ) * 180.0 / 3.1415927410125732);
+        while (this.rotationPitch - this.prevRotationPitch < -180.0f) {
+            this.prevRotationPitch -= 360.0f;
         }
-        while (this.field_70125_A - this.field_70127_C >= 180.0f) {
-            this.field_70127_C += 360.0f;
+        while (this.rotationPitch - this.prevRotationPitch >= 180.0f) {
+            this.prevRotationPitch += 360.0f;
         }
-        while (this.field_70177_z - this.field_70126_B < -180.0f) {
-            this.field_70126_B -= 360.0f;
+        while (this.rotationYaw - this.prevRotationYaw < -180.0f) {
+            this.prevRotationYaw -= 360.0f;
         }
-        while (this.field_70177_z - this.field_70126_B >= 180.0f) {
-            this.field_70126_B += 360.0f;
+        while (this.rotationYaw - this.prevRotationYaw >= 180.0f) {
+            this.prevRotationYaw += 360.0f;
         }
-        this.field_70125_A = this.field_70127_C + (this.field_70125_A - this.field_70127_C) * 0.2f;
-        this.field_70177_z = this.field_70126_B + (this.field_70177_z - this.field_70126_B) * 0.2f;
-        if (this.type.trailParticles && this.field_70170_p.field_72995_K && this.ticksInAir > 1) {
+        this.rotationPitch = this.prevRotationPitch + (this.rotationPitch - this.prevRotationPitch) * 0.2f;
+        this.rotationYaw = this.prevRotationYaw + (this.rotationYaw - this.prevRotationYaw) * 0.2f;
+        if (this.type.trailParticles && this.worldObj.isRemote && this.ticksInAir > 1) {
             this.spawnParticles();
         }
-        if (this.field_70173_aa == 3) {
-            this.maxspeed = (float)Math.sqrt(this.field_70159_w * this.field_70159_w + this.field_70181_x * this.field_70181_x + this.field_70179_y * this.field_70179_y);
-            this.initialX = (float)this.field_70159_w;
-            this.initialY = (float)this.field_70181_x;
-            this.initialZ = (float)this.field_70179_y;
+        if (this.ticksExisted == 3) {
+            this.maxspeed = (float)Math.sqrt(this.motionX * this.motionX + this.motionY * this.motionY + this.motionZ * this.motionZ);
+            this.initialX = (float)this.motionX;
+            this.initialY = (float)this.motionY;
+            this.initialZ = (float)this.motionZ;
         }
-        if (this.type.trueManual && this.owner != null && this.owner.func_70115_ae() && (this.owner.field_70154_o instanceof EntitySeat || this.owner.field_70154_o instanceof EntityDriveable)) {
+        if (this.type.trueManual && this.owner != null && this.owner.isRiding() && (this.owner.ridingEntity instanceof EntitySeat || this.owner.ridingEntity instanceof EntityDriveable)) {
             EntityDriveable driverino = null;
-            if (this.owner.field_70154_o instanceof EntitySeat) {
-                final EntitySeat seaterino = (EntitySeat)this.owner.field_70154_o;
+            if (this.owner.ridingEntity instanceof EntitySeat) {
+                final EntitySeat seaterino = (EntitySeat)this.owner.ridingEntity;
                 driverino = seaterino.driveable;
             }
-            else if (this.owner.field_70154_o instanceof EntityDriveable) {
-                driverino = (EntityDriveable)this.owner.field_70154_o;
+            else if (this.owner.ridingEntity instanceof EntityDriveable) {
+                driverino = (EntityDriveable)this.owner.ridingEntity;
             }
             if (driverino != null) {
-                final float cancerZ = -MathHelper.func_76126_a(this.field_70177_z / 180.0f * 3.1415927f) * this.type.joystickSensitivity * MathHelper.func_76134_b(this.field_70125_A / 180.0f * 3.1415927f);
-                final float cancerX = MathHelper.func_76134_b(this.field_70177_z / 180.0f * 3.1415927f) * this.type.joystickSensitivity * MathHelper.func_76134_b(this.field_70125_A / 180.0f * 3.1415927f);
-                final float fakeY = this.initialY - gravity * this.type.fallSpeed * this.field_70173_aa;
-                final Vector3f direction = new Vector3f(this.field_70159_w, this.field_70181_x, this.field_70179_y);
+                final float cancerZ = -MathHelper.sin(this.rotationYaw / 180.0f * 3.1415927f) * this.type.joystickSensitivity * MathHelper.cos(this.rotationPitch / 180.0f * 3.1415927f);
+                final float cancerX = MathHelper.cos(this.rotationYaw / 180.0f * 3.1415927f) * this.type.joystickSensitivity * MathHelper.cos(this.rotationPitch / 180.0f * 3.1415927f);
+                final float fakeY = this.initialY - gravity * this.type.fallSpeed * this.ticksExisted;
+                final Vector3f direction = new Vector3f(this.motionX, this.motionY, this.motionZ);
                 direction.normalise();
                 if ((this.initialX > 0.5f && this.initialX > 0.0f) || (this.initialX < 0.0f && this.initialX > -0.5f && this.initialZ < 0.5f) || (this.initialX > 0.0f && this.initialZ < 0.5f)) {
-                    this.field_70179_y -= driverino.yawSignal / 100.0f * this.type.joystickSensitivity * (1.0f - Math.abs(direction.z));
-                    this.field_70159_w -= driverino.yawSignal / 100.0f * this.type.joystickSensitivity * (1.0f - Math.abs(direction.x));
+                    this.motionZ -= driverino.yawSignal / 100.0f * this.type.joystickSensitivity * (1.0f - Math.abs(direction.z));
+                    this.motionX -= driverino.yawSignal / 100.0f * this.type.joystickSensitivity * (1.0f - Math.abs(direction.x));
                 }
                 else {
-                    this.field_70179_y += driverino.yawSignal / 100.0f * this.type.joystickSensitivity * (1.0f - Math.abs(direction.z));
-                    this.field_70159_w += driverino.yawSignal / 100.0f * this.type.joystickSensitivity * (1.0f - Math.abs(direction.x));
+                    this.motionZ += driverino.yawSignal / 100.0f * this.type.joystickSensitivity * (1.0f - Math.abs(direction.z));
+                    this.motionX += driverino.yawSignal / 100.0f * this.type.joystickSensitivity * (1.0f - Math.abs(direction.x));
                 }
-                this.field_70181_x += driverino.pitchSignal / 120.0f * this.type.joystickSensitivity * (1.0f - Math.abs(direction.y));
+                this.motionY += driverino.pitchSignal / 120.0f * this.type.joystickSensitivity * (1.0f - Math.abs(direction.y));
             }
         }
-        if (this.field_70170_p.field_72995_K) {
-            this.func_70066_B();
+        if (this.worldObj.isRemote) {
+            this.extinguish();
         }
     }
     
     @SideOnly(Side.CLIENT)
     private void spawnParticles() {
-        final double dX = (this.field_70165_t - this.field_70169_q) / 10.0;
-        final double dY = (this.field_70163_u - this.field_70167_r) / 10.0;
-        final double dZ = (this.field_70161_v - this.field_70166_s) / 10.0;
+        final double dX = (this.posX - this.prevPosX) / 10.0;
+        final double dY = (this.posY - this.prevPosY) / 10.0;
+        final double dZ = (this.posZ - this.prevPosZ) / 10.0;
         final float spread = 0.1f;
         if (this.VLSDelay > 0 && this.type.boostPhaseParticle != null) {
             for (int i = 0; i < 10; ++i) {
-                FlansMod.proxy.spawnParticle(this.type.boostPhaseParticle, this.field_70169_q + dX * i + this.field_70146_Z.nextGaussian() * spread, this.field_70167_r + dY * i + this.field_70146_Z.nextGaussian() * spread, this.field_70166_s + dZ * i + this.field_70146_Z.nextGaussian() * spread, 0.0, 0.0, 0.0);
+                FlansMod.proxy.spawnParticle(this.type.boostPhaseParticle, this.prevPosX + dX * i + this.rand.nextGaussian() * spread, this.prevPosY + dY * i + this.rand.nextGaussian() * spread, this.prevPosZ + dZ * i + this.rand.nextGaussian() * spread, 0.0, 0.0, 0.0);
             }
         }
         else if (!this.type.VLS || this.VLSDelay <= 0) {
             for (int i = 0; i < 10; ++i) {
-                FlansMod.proxy.spawnParticle(this.type.trailParticleType, this.field_70169_q + dX * i + this.field_70146_Z.nextGaussian() * spread, this.field_70167_r + dY * i + this.field_70146_Z.nextGaussian() * spread, this.field_70166_s + dZ * i + this.field_70146_Z.nextGaussian() * spread, 0.0, 0.0, 0.0);
+                FlansMod.proxy.spawnParticle(this.type.trailParticleType, this.prevPosX + dX * i + this.rand.nextGaussian() * spread, this.prevPosY + dY * i + this.rand.nextGaussian() * spread, this.prevPosZ + dZ * i + this.rand.nextGaussian() * spread, 0.0, 0.0, 0.0);
             }
         }
     }
@@ -975,73 +975,73 @@ public class EntityBullet extends EntityShootable implements IEntityAdditionalSp
     
     public DamageSource getBulletDamage(final boolean headshot) {
         if (this.owner instanceof EntityPlayer) {
-            return new EntityDamageSourceFlans(this.type.shortName, this, (EntityPlayer)this.owner, this.firedFrom, headshot, false).func_76349_b();
+            return new EntityDamageSourceFlans(this.type.shortName, this, (EntityPlayer)this.owner, this.firedFrom, headshot, false).setProjectile();
         }
-        return new EntityDamageSourceIndirect(this.type.shortName, (Entity)this, this.owner).func_76349_b();
+        return new EntityDamageSourceIndirect(this.type.shortName, (Entity)this, this.owner).setProjectile();
     }
     
     private boolean isPartOfOwner(final Entity entity) {
         if (this.owner == null) {
             return false;
         }
-        if ((entity == this.owner && !this.evilBullet) || (entity == this.owner.field_70153_n && !this.evilBullet) || (entity == this.owner.field_70154_o && !this.evilBullet)) {
+        if ((entity == this.owner && !this.evilBullet) || (entity == this.owner.riddenByEntity && !this.evilBullet) || (entity == this.owner.ridingEntity && !this.evilBullet)) {
             return true;
         }
         if (this.owner instanceof EntityPlayer) {
-            if (PlayerHandler.getPlayerData((EntityPlayer)this.owner, this.field_70170_p.field_72995_K ? Side.CLIENT : Side.SERVER) == null) {
+            if (PlayerHandler.getPlayerData((EntityPlayer)this.owner, this.worldObj.isRemote ? Side.CLIENT : Side.SERVER) == null) {
                 return false;
             }
-            final EntityMG mg = PlayerHandler.getPlayerData((EntityPlayer)this.owner, this.field_70170_p.field_72995_K ? Side.CLIENT : Side.SERVER).mountingGun;
+            final EntityMG mg = PlayerHandler.getPlayerData((EntityPlayer)this.owner, this.worldObj.isRemote ? Side.CLIENT : Side.SERVER).mountingGun;
             if (mg != null && mg == entity) {
                 return true;
             }
         }
-        return this.owner.field_70154_o instanceof EntitySeat && (((EntitySeat)this.owner.field_70154_o).driveable == null || ((EntitySeat)this.owner.field_70154_o).driveable.isPartOfThis(entity));
+        return this.owner.ridingEntity instanceof EntitySeat && (((EntitySeat)this.owner.ridingEntity).driveable == null || ((EntitySeat)this.owner.ridingEntity).driveable.isPartOfThis(entity));
     }
     
-    public void func_70106_y() {
+    public void setDead() {
         try {
-            if (this.owner != null && this.owner instanceof EntityPlayer && this.type.scoutBullet && !this.field_70170_p.field_72995_K) {
-                final float xd = (float)this.owner.field_70165_t - (float)this.field_70165_t;
-                final float yd = (float)this.owner.field_70163_u - (float)this.field_70163_u;
-                final float zd = (float)this.owner.field_70161_v - (float)this.field_70161_v;
+            if (this.owner != null && this.owner instanceof EntityPlayer && this.type.scoutBullet && !this.worldObj.isRemote) {
+                final float xd = (float)this.owner.posX - (float)this.posX;
+                final float yd = (float)this.owner.posY - (float)this.posY;
+                final float zd = (float)this.owner.posZ - (float)this.posZ;
                 final float distance = (float)Math.sqrt(xd * xd + yd * yd + zd * zd);
                 final EntityDriveable target = (EntityDriveable)this.lockedOnTo;
                 final EntityPlayer human = (EntityPlayer)this.owner;
-                human.func_145747_a((IChatComponent)new ChatComponentText(EnumChatFormatting.YELLOW.toString() + "Target coordinates are: "));
-                human.func_145747_a((IChatComponent)new ChatComponentText(EnumChatFormatting.GREEN.toString() + "X: " + EnumChatFormatting.GOLD.toString() + Math.round(this.field_70165_t)));
-                human.func_145747_a((IChatComponent)new ChatComponentText(EnumChatFormatting.GREEN.toString() + "Y: " + EnumChatFormatting.GOLD.toString() + Math.round(this.field_70163_u)));
-                human.func_145747_a((IChatComponent)new ChatComponentText(EnumChatFormatting.GREEN.toString() + "Z: " + EnumChatFormatting.GOLD.toString() + Math.round(this.field_70161_v)));
-                human.func_145747_a((IChatComponent)new ChatComponentText(EnumChatFormatting.YELLOW.toString() + "Distance from Target to your CURRENT Location: " + EnumChatFormatting.GOLD.toString() + distance));
+                human.addChatMessage((IChatComponent)new ChatComponentText(EnumChatFormatting.YELLOW.toString() + "Target coordinates are: "));
+                human.addChatMessage((IChatComponent)new ChatComponentText(EnumChatFormatting.GREEN.toString() + "X: " + EnumChatFormatting.GOLD.toString() + Math.round(this.posX)));
+                human.addChatMessage((IChatComponent)new ChatComponentText(EnumChatFormatting.GREEN.toString() + "Y: " + EnumChatFormatting.GOLD.toString() + Math.round(this.posY)));
+                human.addChatMessage((IChatComponent)new ChatComponentText(EnumChatFormatting.GREEN.toString() + "Z: " + EnumChatFormatting.GOLD.toString() + Math.round(this.posZ)));
+                human.addChatMessage((IChatComponent)new ChatComponentText(EnumChatFormatting.YELLOW.toString() + "Distance from Target to your CURRENT Location: " + EnumChatFormatting.GOLD.toString() + distance));
             }
-            if (this.field_70128_L) {
+            if (this.isDead) {
                 return;
             }
-            super.func_70106_y();
-            if (this.field_70170_p.field_72995_K) {
+            super.setDead();
+            if (this.worldObj.isRemote) {
                 return;
             }
             if (this.type.explosionRadius > 0.0f) {
                 if (this.owner instanceof EntityPlayer) {
-                    final FlansModExplosion flansModExplosion = new FlansModExplosion(this.field_70170_p, this, (EntityPlayer)this.owner, this.type, this.field_70165_t, this.field_70163_u, this.field_70161_v, this.type.explosionRadius, TeamsManager.explosions && this.type.explosionBreaksBlocks, this.type.explosionDamageVsLiving, this.type.explosionDamageVsPlayer, this.type.explosionDamageVsPlane, this.type.explosionDamageVsVehicle, this.type.smokeParticleCount, this.type.debrisParticleCount);
+                    final FlansModExplosion flansModExplosion = new FlansModExplosion(this.worldObj, this, (EntityPlayer)this.owner, this.type, this.posX, this.posY, this.posZ, this.type.explosionRadius, TeamsManager.explosions && this.type.explosionBreaksBlocks, this.type.explosionDamageVsLiving, this.type.explosionDamageVsPlayer, this.type.explosionDamageVsPlane, this.type.explosionDamageVsVehicle, this.type.smokeParticleCount, this.type.debrisParticleCount);
                 }
                 else {
-                    this.field_70170_p.func_72876_a((Entity)this, this.field_70165_t, this.field_70163_u, this.field_70161_v, this.type.explosionRadius, TeamsManager.explosions);
+                    this.worldObj.createExplosion((Entity)this, this.posX, this.posY, this.posZ, this.type.explosionRadius, TeamsManager.explosions);
                 }
             }
             if (this.type.fireRadius > 0.0f) {
                 for (float i = -this.type.fireRadius; i < this.type.fireRadius; ++i) {
                     for (float k = -this.type.fireRadius; k < this.type.fireRadius; ++k) {
                         for (int j = -1; j < 1; ++j) {
-                            if (this.field_70170_p.func_147439_a((int)(this.field_70165_t + i), (int)(this.field_70163_u + j), (int)(this.field_70161_v + k)).func_149688_o() == Material.field_151579_a) {
-                                this.field_70170_p.func_147449_b((int)(this.field_70165_t + i), (int)(this.field_70163_u + j), (int)(this.field_70161_v + k), (Block)Blocks.field_150480_ab);
+                            if (this.worldObj.getBlock((int)(this.posX + i), (int)(this.posY + j), (int)(this.posZ + k)).getMaterial() == Material.air) {
+                                this.worldObj.setBlock((int)(this.posX + i), (int)(this.posY + j), (int)(this.posZ + k), (Block)Blocks.fire);
                             }
                         }
                     }
                 }
             }
             if (this.type.flak > 0) {
-                FlansMod.getPacketHandler().sendToAllAround(new PacketFlak(this.field_70165_t, this.field_70163_u, this.field_70161_v, this.type.flak, this.type.flakParticles), this.field_70165_t, this.field_70163_u, this.field_70161_v, 200.0f, this.field_71093_bK);
+                FlansMod.getPacketHandler().sendToAllAround(new PacketFlak(this.posX, this.posY, this.posZ, this.type.flak, this.type.flakParticles), this.posX, this.posY, this.posZ, 200.0f, this.dimension);
             }
             if (this.type.dropItemOnHit != null) {
                 String itemName = this.type.dropItemOnHit;
@@ -1051,7 +1051,7 @@ public class EntityBullet extends EntityShootable implements IEntityAdditionalSp
                     itemName = itemName.split("\\.")[0];
                 }
                 final ItemStack dropStack = InfoType.getRecipeElement(itemName, damage);
-                this.func_70099_a(dropStack, 1.0f);
+                this.entityDropItem(dropStack, 1.0f);
             }
         }
         catch (final Exception e) {
@@ -1088,42 +1088,42 @@ public class EntityBullet extends EntityShootable implements IEntityAdditionalSp
     }
     
     public void detonate() {
-        if (this.field_70173_aa < this.type.primeDelay) {
+        if (this.ticksExisted < this.type.primeDelay) {
             return;
         }
         if (this.detonated) {
             return;
         }
         this.detonated = true;
-        PacketPlaySound.sendSoundPacket(this.field_70165_t, this.field_70163_u, this.field_70161_v, 50.0, this.field_71093_bK, this.type.detonateSound, true);
-        if (!this.field_70170_p.field_72995_K && this.type.explosionRadius > 0.1f) {
+        PacketPlaySound.sendSoundPacket(this.posX, this.posY, this.posZ, 50.0, this.dimension, this.type.detonateSound, true);
+        if (!this.worldObj.isRemote && this.type.explosionRadius > 0.1f) {
             if (this.owner instanceof EntityPlayer) {
-                new FlansModExplosion(this.field_70170_p, this, (EntityPlayer)this.owner, this.type, this.field_70165_t, this.field_70163_u, this.field_70161_v, this.type.explosionRadius, TeamsManager.explosions && this.type.explosionBreaksBlocks, this.type.explosionDamageVsLiving, this.type.explosionDamageVsPlayer, this.type.explosionDamageVsPlane, this.type.explosionDamageVsVehicle, this.type.smokeParticleCount, this.type.debrisParticleCount);
-                this.field_70128_L = true;
+                new FlansModExplosion(this.worldObj, this, (EntityPlayer)this.owner, this.type, this.posX, this.posY, this.posZ, this.type.explosionRadius, TeamsManager.explosions && this.type.explosionBreaksBlocks, this.type.explosionDamageVsLiving, this.type.explosionDamageVsPlayer, this.type.explosionDamageVsPlane, this.type.explosionDamageVsVehicle, this.type.smokeParticleCount, this.type.debrisParticleCount);
+                this.isDead = true;
             }
             else {
-                this.field_70170_p.func_72876_a((Entity)this, this.field_70165_t, this.field_70163_u, this.field_70161_v, this.type.explosionRadius, TeamsManager.explosions && this.type.explosionBreaksBlocks);
-                this.field_70128_L = true;
+                this.worldObj.createExplosion((Entity)this, this.posX, this.posY, this.posZ, this.type.explosionRadius, TeamsManager.explosions && this.type.explosionBreaksBlocks);
+                this.isDead = true;
             }
         }
-        if (!this.field_70170_p.field_72995_K && this.type.fireRadius > 0.1f) {
+        if (!this.worldObj.isRemote && this.type.fireRadius > 0.1f) {
             for (float i = -this.type.fireRadius; i < this.type.fireRadius; ++i) {
                 for (float j = -this.type.fireRadius; j < this.type.fireRadius; ++j) {
                     for (float k = -this.type.fireRadius; k < this.type.fireRadius; ++k) {
-                        final int x = MathHelper.func_76128_c(i + this.field_70165_t);
-                        final int y = MathHelper.func_76128_c(j + this.field_70163_u);
-                        final int z = MathHelper.func_76128_c(k + this.field_70161_v);
-                        if (i * i + j * j + k * k <= this.type.fireRadius * this.type.fireRadius && this.field_70170_p.func_147439_a(x, y, z) == Blocks.field_150350_a && this.field_70146_Z.nextBoolean()) {
-                            this.field_70170_p.func_147465_d(x, y, z, (Block)Blocks.field_150480_ab, 0, 3);
+                        final int x = MathHelper.floor_double(i + this.posX);
+                        final int y = MathHelper.floor_double(j + this.posY);
+                        final int z = MathHelper.floor_double(k + this.posZ);
+                        if (i * i + j * j + k * k <= this.type.fireRadius * this.type.fireRadius && this.worldObj.getBlock(x, y, z) == Blocks.air && this.rand.nextBoolean()) {
+                            this.worldObj.setBlock(x, y, z, (Block)Blocks.fire, 0, 3);
                         }
                     }
                 }
             }
         }
         for (int l = 0; l < this.type.explodeParticles; ++l) {
-            this.field_70170_p.func_72869_a(this.type.explodeParticleType, this.field_70165_t, this.field_70163_u, this.field_70161_v, this.field_70146_Z.nextGaussian(), this.field_70146_Z.nextGaussian(), this.field_70146_Z.nextGaussian());
+            this.worldObj.spawnParticle(this.type.explodeParticleType, this.posX, this.posY, this.posZ, this.rand.nextGaussian(), this.rand.nextGaussian(), this.rand.nextGaussian());
         }
-        if (!this.field_70170_p.field_72995_K && this.type.dropItemOnDetonate != null) {
+        if (!this.worldObj.isRemote && this.type.dropItemOnDetonate != null) {
             String itemName = this.type.dropItemOnDetonate;
             int damage = 0;
             if (itemName.contains(".")) {
@@ -1131,44 +1131,44 @@ public class EntityBullet extends EntityShootable implements IEntityAdditionalSp
                 itemName = itemName.split("\\.")[0];
             }
             final ItemStack dropStack = InfoType.getRecipeElement(itemName, damage);
-            this.func_70099_a(dropStack, 1.0f);
+            this.entityDropItem(dropStack, 1.0f);
         }
     }
     
-    public void func_70014_b(final NBTTagCompound tag) {
+    public void writeEntityToNBT(final NBTTagCompound tag) {
         if (this.type == null) {
             FlansMod.log("EntityBullet.writeEntityToNBT() Error: BulletType is null (" + this + ")");
-            this.func_70106_y();
+            this.setDead();
             return;
         }
-        tag.func_74778_a("type", this.type.shortName);
+        tag.setString("type", this.type.shortName);
         if (this.owner == null) {
-            tag.func_74778_a("owner", "null");
+            tag.setString("owner", "null");
         }
         else {
-            tag.func_74778_a("owner", this.owner.func_70005_c_());
+            tag.setString("owner", this.owner.getCommandSenderName());
         }
     }
     
-    public void func_70037_a(final NBTTagCompound tag) {
-        final String typeString = tag.func_74779_i("type");
-        final String ownerName = tag.func_74779_i("owner");
+    public void readEntityFromNBT(final NBTTagCompound tag) {
+        final String typeString = tag.getString("type");
+        final String ownerName = tag.getString("owner");
         if (typeString != null) {
             this.type = BulletType.getBullet(typeString);
         }
         if (this.type == null) {
-            this.field_70128_L = true;
+            this.isDead = true;
             return;
         }
         if (this.type.despawnTime <= 0) {
-            this.field_70128_L = true;
+            this.isDead = true;
         }
         if (ownerName != null && !ownerName.equals("null")) {
-            this.owner = (Entity)FMLCommonHandler.instance().getMinecraftServerInstance().func_71203_ab().func_152612_a(ownerName);
+            this.owner = (Entity)FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().getPlayerByUsername(ownerName);
         }
     }
     
-    public float func_70053_R() {
+    public float getShadowSize() {
         return this.type.hitBoxSize;
     }
     
@@ -1180,76 +1180,76 @@ public class EntityBullet extends EntityShootable implements IEntityAdditionalSp
     public void DeploySubmunitions() {
         final ItemShootable itemShootable = (ItemShootable)GameRegistry.findItem("flansmod", this.type.submunition);
         final ShootableType shootType = itemShootable.type;
-        final World world = this.field_70170_p;
+        final World world = this.worldObj;
         final EntityLivingBase entityplayer = (EntityLivingBase)this.owner;
         for (int sm = 0; sm < this.type.numSubmunitions; ++sm) {
-            world.func_72838_d((Entity)itemShootable.getEntity(world, new Vector3f(this.field_70165_t, this.field_70163_u, this.field_70161_v), new Vector3f(this.field_70159_w, this.field_70181_x, this.field_70179_y), entityplayer, this.type.submunitionSpread, this.damage, this.speedA, 0, this.firedFrom));
+            world.spawnEntityInWorld((Entity)itemShootable.getEntity(world, new Vector3f(this.posX, this.posY, this.posZ), new Vector3f(this.motionX, this.motionY, this.motionZ), entityplayer, this.type.submunitionSpread, this.damage, this.speedA, 0, this.firedFrom));
         }
         if (this.type.destroyOnDeploySubmunition) {
             this.detonate();
         }
     }
     
-    public int func_70070_b(final float par1) {
+    public int getBrightnessForRender(final float par1) {
         if (this.type.hasLight) {
             return 15728880;
         }
-        final int i = MathHelper.func_76128_c(this.field_70165_t);
-        final int j = MathHelper.func_76128_c(this.field_70161_v);
-        if (this.field_70170_p.func_72899_e(i, 0, j)) {
-            final double d0 = (this.field_70121_D.field_72337_e - this.field_70121_D.field_72338_b) * 0.66;
-            final int k = MathHelper.func_76128_c(this.field_70163_u - this.field_70129_M + d0);
-            return this.field_70170_p.func_72802_i(i, k, j, 0);
+        final int i = MathHelper.floor_double(this.posX);
+        final int j = MathHelper.floor_double(this.posZ);
+        if (this.worldObj.blockExists(i, 0, j)) {
+            final double d0 = (this.boundingBox.maxY - this.boundingBox.minY) * 0.66;
+            final int k = MathHelper.floor_double(this.posY - this.yOffset + d0);
+            return this.worldObj.getLightBrightnessForSkyBlocks(i, k, j, 0);
         }
         return 0;
     }
     
     public void writeSpawnData(final ByteBuf data) {
-        data.writeDouble(this.field_70159_w);
-        data.writeDouble(this.field_70181_x);
-        data.writeDouble(this.field_70179_y);
+        data.writeDouble(this.motionX);
+        data.writeDouble(this.motionY);
+        data.writeDouble(this.motionZ);
         data.writeInt(this.impactX);
         data.writeInt(this.impactY);
         data.writeInt(this.impactZ);
-        data.writeInt((this.lockedOnTo == null) ? -1 : this.lockedOnTo.func_145782_y());
+        data.writeInt((this.lockedOnTo == null) ? -1 : this.lockedOnTo.getEntityId());
         ByteBufUtils.writeUTF8String(data, this.type.shortName);
         if (this.owner == null) {
             ByteBufUtils.writeUTF8String(data, "null");
         }
         else {
-            ByteBufUtils.writeUTF8String(data, this.owner.func_70005_c_());
+            ByteBufUtils.writeUTF8String(data, this.owner.getCommandSenderName());
         }
     }
     
     public void readSpawnData(final ByteBuf data) {
         try {
-            this.field_70159_w = data.readDouble();
-            this.field_70181_x = data.readDouble();
-            this.field_70179_y = data.readDouble();
+            this.motionX = data.readDouble();
+            this.motionY = data.readDouble();
+            this.motionZ = data.readDouble();
             this.impactX = data.readInt();
             this.impactY = data.readInt();
             this.impactZ = data.readInt();
             final int lockedOnToID = data.readInt();
             if (lockedOnToID != -1) {
-                this.lockedOnTo = this.field_70170_p.func_73045_a(lockedOnToID);
+                this.lockedOnTo = this.worldObj.getEntityByID(lockedOnToID);
             }
             this.type = BulletType.getBullet(ByteBufUtils.readUTF8String(data));
             this.penetratingPower = this.type.penetratingPower;
             final String name = ByteBufUtils.readUTF8String(data);
-            for (final Object obj : this.field_70170_p.field_72996_f) {
-                if (((Entity)obj).func_70005_c_().equals(name)) {
+            for (final Object obj : this.worldObj.loadedEntityList) {
+                if (((Entity)obj).getCommandSenderName().equals(name)) {
                     this.owner = (Entity)obj;
                 }
             }
         }
         catch (final Exception e) {
             FlansMod.log("Failed to read bullet owner from server.");
-            super.func_70106_y();
+            super.setDead();
             e.printStackTrace();
         }
     }
     
-    public boolean func_70027_ad() {
+    public boolean isBurning() {
         return false;
     }
     

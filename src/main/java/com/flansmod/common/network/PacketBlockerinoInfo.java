@@ -25,7 +25,7 @@ public class PacketBlockerinoInfo extends PacketBase
     }
     
     public PacketBlockerinoInfo(final EntityPlayerMP playerEntity, final int lefty, final int righty, final int topy, final int minigun) {
-        this.entityID = playerEntity.func_145782_y();
+        this.entityID = playerEntity.getEntityId();
     }
     
     @Override
@@ -47,7 +47,7 @@ public class PacketBlockerinoInfo extends PacketBase
     
     @Override
     public void handleClientSide(final EntityPlayer clientPlayer) {
-        final Entity entity = clientPlayer.field_70170_p.func_73045_a(this.entityID);
+        final Entity entity = clientPlayer.worldObj.getEntityByID(this.entityID);
         if (entity instanceof EntityPlayer && entity != clientPlayer) {
             final PlayerData data = PlayerHandler.getPlayerData((EntityPlayer)entity, Side.CLIENT);
             data.offHandGunStack = this.gunStack;

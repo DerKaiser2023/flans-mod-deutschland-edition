@@ -36,35 +36,35 @@ public class ItemAttachment extends Item implements IPaintableItem
         this.barisInfrared = false;
         this.type = t;
         this.type.item = this;
-        this.field_77777_bU = t.maxStackSize;
-        this.func_77637_a((CreativeTabs)FlansMod.tabFlanGuns);
+        this.maxStackSize = t.maxStackSize;
+        this.setCreativeTab((CreativeTabs)FlansMod.tabFlanGuns);
         GameRegistry.registerItem((Item)this, this.type.shortName, "flansmod");
         this.barisLaser = t.barisLaser;
         this.barisInfrared = t.barisInfrared;
     }
     
     @SideOnly(Side.CLIENT)
-    public int func_82790_a(final ItemStack par1ItemStack, final int par2) {
+    public int getColorFromItemStack(final ItemStack par1ItemStack, final int par2) {
         return this.type.colour;
     }
     
     @SideOnly(Side.CLIENT)
-    public void func_94581_a(final IIconRegister icon) {
+    public void registerIcons(final IIconRegister icon) {
         this.icons = new IIcon[this.type.paintjobs.size()];
-        this.field_77791_bV = icon.func_94245_a("FlansMod:" + this.type.iconPath);
+        this.itemIcon = icon.registerIcon("FlansMod:" + this.type.iconPath);
         for (int i = 0; i < this.type.paintjobs.size(); ++i) {
-            this.icons[i] = icon.func_94245_a("FlansMod:" + this.type.paintjobs.get(i).iconName);
+            this.icons[i] = icon.registerIcon("FlansMod:" + this.type.paintjobs.get(i).iconName);
         }
     }
     
     @SideOnly(Side.CLIENT)
-    public IIcon func_77650_f(final ItemStack stack) {
-        return this.icons[stack.func_77960_j()];
+    public IIcon getIconIndex(final ItemStack stack) {
+        return this.icons[stack.getMetadata()];
     }
     
-    public void func_77624_a(final ItemStack stack, final EntityPlayer player, final List lines, final boolean b) {
-        if (!this.type.getPaintjob(stack.func_77960_j()).displayName.equals("default")) {
-            lines.add("§b§o" + this.type.getPaintjob(stack.func_77960_j()).displayName);
+    public void addInformation(final ItemStack stack, final EntityPlayer player, final List lines, final boolean b) {
+        if (!this.type.getPaintjob(stack.getMetadata()).displayName.equals("default")) {
+            lines.add("§b§o" + this.type.getPaintjob(stack.getMetadata()).displayName);
         }
         if (!this.type.packName.isEmpty()) {
             lines.add(this.type.packName);
@@ -82,7 +82,7 @@ public class ItemAttachment extends Item implements IPaintableItem
         return this.type;
     }
     
-    public void func_150895_a(final Item item, final CreativeTabs tabs, final List list) {
+    public void getSubItems(final Item item, final CreativeTabs tabs, final List list) {
         final PaintableType type = ((IPaintableItem)item).GetPaintableType();
         if (FlansMod.addAllPaintjobsToCreative) {
             for (final Paintjob paintjob : type.paintjobs) {
@@ -97,7 +97,7 @@ public class ItemAttachment extends Item implements IPaintableItem
     private void addPaintjobToList(final Item item, final PaintableType type, final Paintjob paintjob, final List list) {
         final ItemStack paintableStack = new ItemStack(item, 1, paintjob.ID);
         final NBTTagCompound tags = new NBTTagCompound();
-        paintableStack.func_77982_d(tags);
+        paintableStack.setTagCompound(tags);
         list.add(paintableStack);
     }
 }

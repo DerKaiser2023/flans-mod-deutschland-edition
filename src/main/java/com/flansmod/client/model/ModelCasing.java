@@ -18,7 +18,7 @@ public class ModelCasing extends ModelBase
     public void renderCasing(final float f) {
         for (final ModelRendererTurbo model : this.casingModel) {
             if (model != null) {
-                model.func_78785_a(f);
+                model.render(f);
             }
         }
     }
@@ -26,7 +26,7 @@ public class ModelCasing extends ModelBase
     protected void flipAll() {
         for (final ModelRendererTurbo casing : this.casingModel) {
             casing.doMirror(false, true, true);
-            casing.func_78793_a(casing.field_78800_c, -casing.field_78797_d, -casing.field_78798_e);
+            casing.setRotationPoint(casing.rotationPointX, -casing.rotationPointY, -casing.rotationPointZ);
         }
     }
 }

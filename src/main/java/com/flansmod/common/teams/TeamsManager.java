@@ -166,9 +166,9 @@ public class TeamsManager
             object.tick();
         }
         if (TeamsManager.overrideHunger && this.currentRound != null) {
-            for (final World world : MinecraftServer.func_71276_C().field_71305_c) {
-                for (final Object player : world.field_73010_i) {
-                    ((EntityPlayer)player).func_71024_bL().func_75122_a(20, 10.0f);
+            for (final World world : MinecraftServer.getServer().worldServers) {
+                for (final Object player : world.playerEntities) {
+                    ((EntityPlayer)player).getFoodStats().addStats(20, 10.0f);
                 }
             }
         }
@@ -404,8 +404,8 @@ public class TeamsManager
     
     @SubscribeEvent
     public void onPlayerInteract(final EntityInteractEvent event) {
-        if (event.entityPlayer.field_71071_by.func_70448_g() != null && event.entityPlayer.field_71071_by.func_70448_g().func_77973_b() instanceof ItemOpStick) {
-            ((ItemOpStick)event.entityPlayer.field_71071_by.func_70448_g().func_77973_b()).clickedEntity(event.entityPlayer.field_70170_p, event.entityPlayer, event.target);
+        if (event.entityPlayer.inventory.getCurrentItem() != null && event.entityPlayer.inventory.getCurrentItem().getItem() instanceof ItemOpStick) {
+            ((ItemOpStick)event.entityPlayer.inventory.getCurrentItem().getItem()).clickedEntity(event.entityPlayer.worldObj, event.entityPlayer, event.target);
         }
     }
     
@@ -418,12 +418,12 @@ public class TeamsManager
             final EntityPlayerMP player = (EntityPlayerMP)event.entity;
             final PlayerData data = PlayerHandler.getPlayerData((EntityPlayer)player);
             final DamageSource source = event.source;
-            if (data.team == Team.spectators && source != DamageSource.field_76377_j) {
+            if (data.team == Team.spectators && source != DamageSource.generic) {
                 event.setCanceled(true);
                 return;
             }
-            if (source instanceof EntityDamageSource && source.func_76346_g() instanceof EntityPlayerMP) {
-                final EntityPlayerMP attacker = (EntityPlayerMP)source.func_76346_g();
+            if (source instanceof EntityDamageSource && source.getEntity() instanceof EntityPlayerMP) {
+                final EntityPlayerMP attacker = (EntityPlayerMP)source.getEntity();
                 final PlayerData attackerData = PlayerHandler.getPlayerData((EntityPlayer)attacker);
                 if (attackerData == null) {
                     return;
@@ -474,16 +474,16 @@ public class TeamsManager
         if (!TeamsManager.enabled) {
             return;
         }
-        if (event.entityPlayer.field_70170_p.field_72995_K) {
+        if (event.entityPlayer.worldObj.isRemote) {
             return;
         }
-        final ItemStack currentItem = event.entityPlayer.func_71045_bC();
-        if (currentItem != null && currentItem.func_77973_b() != null && currentItem.func_77973_b() instanceof ItemOpStick) {
+        final ItemStack currentItem = event.entityPlayer.getCurrentEquippedItem();
+        if (currentItem != null && currentItem.getItem() != null && currentItem.getItem() instanceof ItemOpStick) {
             if (event.target instanceof ITeamObject) {
-                ((ItemOpStick)currentItem.func_77973_b()).clickedObject(event.entityPlayer.field_70170_p, (EntityPlayerMP)event.entityPlayer, (ITeamObject)event.target);
+                ((ItemOpStick)currentItem.getItem()).clickedObject(event.entityPlayer.worldObj, (EntityPlayerMP)event.entityPlayer, (ITeamObject)event.target);
             }
             if (event.target instanceof ITeamBase) {
-                ((ItemOpStick)currentItem.func_77973_b()).clickedBase(event.entityPlayer.field_70170_p, (EntityPlayerMP)event.entityPlayer, (ITeamBase)event.target);
+                ((ItemOpStick)currentItem.getItem()).clickedBase(event.entityPlayer.worldObj, (EntityPlayerMP)event.entityPlayer, (ITeamBase)event.target);
             }
         }
         else if (this.currentRound != null) {
@@ -501,22 +501,22 @@ public class TeamsManager
         if (!TeamsManager.enabled) {
             return;
         }
-        if (event.action == PlayerInteractEvent.Action.LEFT_CLICK_BLOCK && !event.entityPlayer.field_71075_bZ.field_75099_e && !event.entityPlayer.field_71075_bZ.field_75098_d) {
+        if (event.action == PlayerInteractEvent.Action.LEFT_CLICK_BLOCK && !event.entityPlayer.capabilities.allowEdit && !event.entityPlayer.capabilities.isCreativeMode) {
             event.setCanceled(true);
             return;
         }
-        if (event.entityPlayer.field_70170_p.field_72995_K) {
+        if (event.entityPlayer.worldObj.isRemote) {
             return;
         }
-        final TileEntity te = event.entityPlayer.field_70170_p.func_147438_o(event.x, event.y, event.z);
+        final TileEntity te = event.entityPlayer.worldObj.getTileEntity(event.x, event.y, event.z);
         if (te != null) {
-            final ItemStack currentItem = event.entityPlayer.func_71045_bC();
-            if (currentItem != null && currentItem.func_77973_b() != null && currentItem.func_77973_b() instanceof ItemOpStick) {
+            final ItemStack currentItem = event.entityPlayer.getCurrentEquippedItem();
+            if (currentItem != null && currentItem.getItem() != null && currentItem.getItem() instanceof ItemOpStick) {
                 if (te instanceof ITeamObject) {
-                    ((ItemOpStick)currentItem.func_77973_b()).clickedObject(event.entityPlayer.field_70170_p, (EntityPlayerMP)event.entityPlayer, (ITeamObject)te);
+                    ((ItemOpStick)currentItem.getItem()).clickedObject(event.entityPlayer.worldObj, (EntityPlayerMP)event.entityPlayer, (ITeamObject)te);
                 }
                 if (te instanceof ITeamBase) {
-                    ((ItemOpStick)currentItem.func_77973_b()).clickedBase(event.entityPlayer.field_70170_p, (EntityPlayerMP)event.entityPlayer, (ITeamBase)te);
+                    ((ItemOpStick)currentItem.getItem()).clickedBase(event.entityPlayer.worldObj, (EntityPlayerMP)event.entityPlayer, (ITeamBase)te);
                 }
             }
             else if (this.currentRound != null) {
@@ -535,50 +535,50 @@ public class TeamsManager
         final ArrayList<EntityItem> dropsToThrow = new ArrayList<EntityItem>();
         if (TeamsManager.weaponDrops == 2) {
             for (final EntityItem entity : event.drops) {
-                final ItemStack stack = entity.func_92059_d();
-                if (stack != null && stack.func_77973_b() != null && stack.func_77973_b() instanceof ItemGun) {
+                final ItemStack stack = entity.getEntityItem();
+                if (stack != null && stack.getItem() != null && stack.getItem() instanceof ItemGun) {
                     final EntityGunItem gunEntity = new EntityGunItem(entity);
-                    stack.field_77994_a = 0;
+                    stack.stackSize = 0;
                     boolean alreadyAdded = false;
                     for (final EntityItem check : dropsToThrow) {
-                        if (((ItemGun)stack.func_77973_b()).type == ((ItemGun)check.func_92059_d().func_77973_b()).type) {
+                        if (((ItemGun)stack.getItem()).type == ((ItemGun)check.getEntityItem().getItem()).type) {
                             alreadyAdded = true;
                         }
                     }
                     if (alreadyAdded) {
                         continue;
                     }
-                    event.entityPlayer.field_70170_p.func_72838_d((Entity)gunEntity);
+                    event.entityPlayer.worldObj.spawnEntityInWorld((Entity)gunEntity);
                     dropsToThrow.add(gunEntity);
                 }
             }
         }
         for (final EntityItem entity : dropsToThrow) {
             final EntityGunItem gunEntity2 = (EntityGunItem)entity;
-            final GunType gunType = ((ItemGun)gunEntity2.func_92059_d().func_77973_b()).type;
+            final GunType gunType = ((ItemGun)gunEntity2.getEntityItem().getItem()).type;
             for (final EntityItem ammoEntity : event.drops) {
-                final ItemStack ammoItemstack = ammoEntity.func_92059_d();
-                if (ammoItemstack != null && ammoItemstack.func_77973_b() instanceof ItemShootable) {
-                    final ShootableType bulletType = ((ItemShootable)ammoItemstack.func_77973_b()).type;
+                final ItemStack ammoItemstack = ammoEntity.getEntityItem();
+                if (ammoItemstack != null && ammoItemstack.getItem() instanceof ItemShootable) {
+                    final ShootableType bulletType = ((ItemShootable)ammoItemstack.getItem()).type;
                     if (!gunType.isAmmo(bulletType)) {
                         continue;
                     }
-                    gunEntity2.ammoStacks.add(ammoItemstack.func_77946_l());
-                    ammoItemstack.field_77994_a = 0;
+                    gunEntity2.ammoStacks.add(ammoItemstack.copy());
+                    ammoItemstack.stackSize = 0;
                 }
             }
         }
         for (final EntityItem entity : event.drops) {
-            final ItemStack stack = entity.func_92059_d();
-            if (stack != null && stack.func_77973_b() != null && stack.field_77994_a > 0) {
-                if (stack.func_77973_b() instanceof ItemGun || stack.func_77973_b() instanceof ItemPlane || stack.func_77973_b() instanceof ItemVehicle || stack.func_77973_b() instanceof ItemAAGun || stack.func_77973_b() instanceof ItemBullet) {
+            final ItemStack stack = entity.getEntityItem();
+            if (stack != null && stack.getItem() != null && stack.stackSize > 0) {
+                if (stack.getItem() instanceof ItemGun || stack.getItem() instanceof ItemPlane || stack.getItem() instanceof ItemVehicle || stack.getItem() instanceof ItemAAGun || stack.getItem() instanceof ItemBullet) {
                     if (TeamsManager.weaponDrops == 1) {
                         continue;
                     }
                     dropsToThrow.add(entity);
                 }
                 else {
-                    if (!(stack.func_77973_b() instanceof ItemTeamArmour) || TeamsManager.armourDrops) {
+                    if (!(stack.getItem() instanceof ItemTeamArmour) || TeamsManager.armourDrops) {
                         continue;
                     }
                     dropsToThrow.add(entity);
@@ -591,7 +591,7 @@ public class TeamsManager
     @SubscribeEvent
     public void playerLoot(final EntityItemPickupEvent event) {
         if (event.entity instanceof EntityPlayer) {
-            final ItemStack itemStack = event.item.func_92059_d();
+            final ItemStack itemStack = event.item.getEntityItem();
             final PlayerData data = PlayerHandler.getPlayerData(event.entityPlayer);
             if (TeamsManager.enabled && this.currentRound != null && data != null && (data.team == Team.spectators || !this.currentRound.gametype.playerCanLoot(itemStack, InfoType.getType(itemStack), event.entityPlayer, data.team))) {
                 event.setCanceled(true);
@@ -630,7 +630,7 @@ public class TeamsManager
     }
     
     public void respawnPlayer(final EntityPlayer player, final boolean firstSpawn) {
-        if (player.field_70170_p.field_72995_K) {
+        if (player.worldObj.isRemote) {
             return;
         }
         if (!TeamsManager.enabled || this.currentRound == null) {
@@ -644,19 +644,19 @@ public class TeamsManager
         if (firstSpawn) {
             final Vec3 spawnPoint = this.currentRound.gametype.getSpawnPoint(playerMP);
             if (spawnPoint != null) {
-                player.func_70634_a(spawnPoint.field_72450_a, spawnPoint.field_72448_b, spawnPoint.field_72449_c);
+                player.setPositionAndUpdate(spawnPoint.xCoord, spawnPoint.yCoord, spawnPoint.zCoord);
             }
         }
         this.setPlayersNextSpawnpoint(playerMP);
         if (TeamsManager.forceAdventureMode) {
-            player.func_71033_a(WorldSettings.GameType.ADVENTURE);
+            player.setGameType(WorldSettings.GameType.ADVENTURE);
         }
         this.resetInventory(player);
         this.currentRound.gametype.playerRespawned((EntityPlayerMP)player);
     }
     
     private static void setPlayersNextSpawnpoint(final EntityPlayerMP player, final ChunkCoordinates coords) {
-        player.func_71063_a(coords, true);
+        player.setSpawnChunk(coords, true);
     }
     
     private void setPlayersNextSpawnpoint(final EntityPlayerMP player) {
@@ -666,7 +666,7 @@ public class TeamsManager
         final PlayerData data = PlayerHandler.getPlayerData((EntityPlayer)player);
         final Vec3 spawnPoint = this.currentRound.gametype.getSpawnPoint(player);
         if (spawnPoint != null) {
-            setPlayersNextSpawnpoint(player, new ChunkCoordinates(MathHelper.func_76128_c(spawnPoint.field_72450_a), MathHelper.func_76128_c(spawnPoint.field_72448_b) + 1, MathHelper.func_76128_c(spawnPoint.field_72449_c)));
+            setPlayersNextSpawnpoint(player, new ChunkCoordinates(MathHelper.floor_double(spawnPoint.xCoord), MathHelper.floor_double(spawnPoint.yCoord) + 1, MathHelper.floor_double(spawnPoint.zCoord)));
         }
         else {
             FlansMod.log("Could not find spawn point for " + player.getDisplayName() + " on team " + ((data.newTeam == null) ? "null" : data.newTeam.name));
@@ -677,11 +677,11 @@ public class TeamsManager
         if (this.playerIsOp((EntityPlayer)player) && PlayerHandler.getPlayerData((EntityPlayer)player).builder) {
             return;
         }
-        player.field_71071_by.field_70460_b = new ItemStack[4];
-        player.field_71071_by.field_70462_a = new ItemStack[36];
-        player.func_70691_i(9001.0f);
+        player.inventory.armorInventory = new ItemStack[4];
+        player.inventory.mainInventory = new ItemStack[36];
+        player.heal(9001.0f);
         if (TeamsManager.forceAdventureMode) {
-            player.func_71033_a(WorldSettings.GameType.ADVENTURE);
+            player.setGameType(WorldSettings.GameType.ADVENTURE);
         }
         this.respawnPlayer((EntityPlayer)player, true);
     }
@@ -695,7 +695,7 @@ public class TeamsManager
             return;
         }
         final Team[] availableTeams = this.currentRound.gametype.getTeamsCanSpawnAs(this.currentRound, (EntityPlayer)player);
-        final boolean playerIsOp = MinecraftServer.func_71276_C().func_71203_ab().func_152596_g(player.func_146103_bH());
+        final boolean playerIsOp = MinecraftServer.getServer().getConfigurationManager().canSendCommands(player.getGameProfile());
         final Team[] allAvailableTeams = new Team[availableTeams.length + (playerIsOp ? 2 : 1)];
         System.arraycopy(availableTeams, 0, allAvailableTeams, 0, availableTeams.length);
         allAvailableTeams[availableTeams.length] = Team.spectators;
@@ -713,7 +713,7 @@ public class TeamsManager
     }
     
     public boolean playerIsOp(final EntityPlayer player) {
-        return MinecraftServer.func_71276_C().func_71203_ab().func_152596_g(player.func_146103_bH());
+        return MinecraftServer.getServer().getConfigurationManager().canSendCommands(player.getGameProfile());
     }
     
     public boolean autoBalance() {
@@ -747,12 +747,12 @@ public class TeamsManager
             }
         }
         if (!isValid) {
-            player.func_145747_a((IChatComponent)new ChatComponentText("You may not join " + selectedTeam.name + " for it is invalid. Please try again"));
-            FlansMod.log(player.func_70005_c_() + " tried to spawn on an invalid team : " + selectedTeam.name);
+            player.addChatMessage((IChatComponent)new ChatComponentText("You may not join " + selectedTeam.name + " for it is invalid. Please try again"));
+            FlansMod.log(player.getCommandSenderName() + " tried to spawn on an invalid team : " + selectedTeam.name);
             selectedTeam = Team.spectators;
         }
         if (selectedTeam == Team.spectators) {
-            messageAll(player.func_70005_c_() + " joined §" + selectedTeam.textColour + selectedTeam.name);
+            messageAll(player.getCommandSenderName() + " joined §" + selectedTeam.textColour + selectedTeam.name);
             if (data.team != null) {
                 data.team.removePlayer((EntityPlayer)player);
             }
@@ -761,16 +761,16 @@ public class TeamsManager
             final Team spectators = Team.spectators;
             playerData2.team = spectators;
             playerData.newTeam = spectators;
-            player.field_71071_by.field_70460_b = new ItemStack[4];
-            player.field_71071_by.field_70462_a = new ItemStack[36];
+            player.inventory.armorInventory = new ItemStack[4];
+            player.inventory.mainInventory = new ItemStack[36];
             data.team.addPlayer((EntityPlayer)player);
-            player.func_70691_i(9001.0f);
+            player.heal(9001.0f);
             this.respawnPlayer((EntityPlayer)player, true);
         }
         else {
             final Team otherTeam = this.currentRound.getOtherTeam(selectedTeam);
             if (this.autoBalance() && selectedTeam.members.size() > otherTeam.members.size() + 1) {
-                player.func_145747_a((IChatComponent)new ChatComponentText("You may not join " + selectedTeam.name + " due to imbalance. Please try again"));
+                player.addChatMessage((IChatComponent)new ChatComponentText("You may not join " + selectedTeam.name + " due to imbalance. Please try again"));
                 this.sendTeamsMenuToPlayer(player);
                 return;
             }
@@ -787,20 +787,20 @@ public class TeamsManager
         final PlayerData data = PlayerHandler.getPlayerData((EntityPlayer)player);
         final PlayerClass playerClass = PlayerClass.getClass(className);
         if (!data.newTeam.classes.contains(playerClass)) {
-            player.func_145747_a((IChatComponent)new ChatComponentText("You may not select " + playerClass.name + ". Please try again"));
-            FlansMod.log(player.func_70005_c_() + " tried to pick an invalid class : " + playerClass.name);
+            player.addChatMessage((IChatComponent)new ChatComponentText("You may not select " + playerClass.name + ". Please try again"));
+            FlansMod.log(player.getCommandSenderName() + " tried to pick an invalid class : " + playerClass.name);
             return;
         }
         if (data.team == data.newTeam && data.playerClass != playerClass) {
             this.currentRound.gametype.playerChoseNewClass(player, playerClass);
             data.newPlayerClass = playerClass;
-            player.func_145747_a((IChatComponent)new ChatComponentText("You will respawn with the " + playerClass.name + " class"));
+            player.addChatMessage((IChatComponent)new ChatComponentText("You will respawn with the " + playerClass.name + " class"));
         }
         else if (data.team != null && data.team != data.newTeam) {
-            messageAll(player.func_70005_c_() + " switched to §" + data.newTeam.textColour + data.newTeam.name);
+            messageAll(player.getCommandSenderName() + " switched to §" + data.newTeam.textColour + data.newTeam.name);
             this.currentRound.gametype.playerDefected(player, data.team, data.newTeam);
             this.setPlayersNextSpawnpoint(player);
-            player.func_70097_a(DamageSource.field_76377_j, 10000.0f);
+            player.attackEntityFrom(DamageSource.generic, 10000.0f);
             if (data.team != null) {
                 data.team.removePlayer((EntityPlayer)player);
             }
@@ -809,7 +809,7 @@ public class TeamsManager
             data.newPlayerClass = playerClass;
         }
         else if (data.team == null) {
-            messageAll(player.func_70005_c_() + " joined §" + data.newTeam.textColour + data.newTeam.name);
+            messageAll(player.getCommandSenderName() + " joined §" + data.newTeam.textColour + data.newTeam.name);
             this.currentRound.gametype.playerEnteredTheGame(player, data.newTeam, playerClass);
             data.newTeam.addPlayer((EntityPlayer)player);
             data.team = data.newTeam;
@@ -825,42 +825,42 @@ public class TeamsManager
         if (team == null) {
             return;
         }
-        player.field_71071_by.field_70460_b = new ItemStack[4];
-        player.field_71071_by.field_70462_a = new ItemStack[36];
+        player.inventory.armorInventory = new ItemStack[4];
+        player.inventory.mainInventory = new ItemStack[36];
         if (team.hat != null) {
-            player.field_71071_by.field_70460_b[3] = team.hat.func_77946_l();
+            player.inventory.armorInventory[3] = team.hat.copy();
         }
         if (team.chest != null) {
-            player.field_71071_by.field_70460_b[2] = team.chest.func_77946_l();
+            player.inventory.armorInventory[2] = team.chest.copy();
         }
         if (team.legs != null) {
-            player.field_71071_by.field_70460_b[1] = team.legs.func_77946_l();
+            player.inventory.armorInventory[1] = team.legs.copy();
         }
         if (team.shoes != null) {
-            player.field_71071_by.field_70460_b[0] = team.shoes.func_77946_l();
+            player.inventory.armorInventory[0] = team.shoes.copy();
         }
         if (playerClass == null) {
             return;
         }
         if (playerClass.hat != null) {
-            player.field_71071_by.field_70460_b[3] = playerClass.hat.func_77946_l();
+            player.inventory.armorInventory[3] = playerClass.hat.copy();
         }
         if (playerClass.chest != null) {
-            player.field_71071_by.field_70460_b[2] = playerClass.chest.func_77946_l();
+            player.inventory.armorInventory[2] = playerClass.chest.copy();
         }
         if (playerClass.legs != null) {
-            player.field_71071_by.field_70460_b[1] = playerClass.legs.func_77946_l();
+            player.inventory.armorInventory[1] = playerClass.legs.copy();
         }
         if (playerClass.shoes != null) {
-            player.field_71071_by.field_70460_b[0] = playerClass.shoes.func_77946_l();
+            player.inventory.armorInventory[0] = playerClass.shoes.copy();
         }
         for (final ItemStack stack : playerClass.startingItems) {
-            player.field_71071_by.func_70441_a(stack.func_77946_l());
+            player.inventory.addItemStackToInventory(stack.copy());
         }
-        for (int i = 0; i < player.field_71071_by.func_70302_i_(); ++i) {
-            final ItemStack stack = player.field_71071_by.func_70301_a(i);
-            if (stack != null && stack.func_77973_b() instanceof ItemGun) {
-                ((ItemGun)stack.func_77973_b()).reload(stack, ((ItemGun)stack.func_77973_b()).type, player.field_70170_p, player, true, false);
+        for (int i = 0; i < player.inventory.getSizeInventory(); ++i) {
+            final ItemStack stack = player.inventory.getStackInSlot(i);
+            if (stack != null && stack.getItem() instanceof ItemGun) {
+                ((ItemGun)stack.getItem()).reload(stack, ((ItemGun)stack.getItem()).type, player.worldObj, player, true, false);
             }
         }
     }
@@ -868,7 +868,7 @@ public class TeamsManager
     @SubscribeEvent
     public void chunkLoaded(final ChunkDataEvent event) {
         final Chunk chunk = event.getChunk();
-        for (final List<Entity> list : chunk.field_76645_j) {
+        for (final List<Entity> list : chunk.entityLists) {
             for (final Entity entity : list) {
                 if (entity instanceof ITeamBase) {
                     this.bases.add((ITeamBase)entity);
@@ -886,7 +886,7 @@ public class TeamsManager
     
     @SubscribeEvent
     public void worldData(final WorldEvent event) {
-        if (event.world.field_72995_K) {
+        if (event.world.isRemote) {
             return;
         }
         if (event instanceof WorldEvent.Load) {
@@ -900,45 +900,45 @@ public class TeamsManager
     
     private void loadPerWorldData(final Event event, final World world) {
         this.reset();
-        final File file = new File(world.func_72860_G().func_75765_b(), "teams_" + world.field_73011_w.func_80007_l() + ".dat");
+        final File file = new File(world.getSaveHandler().getWorldDirectory(), "teams_" + world.provider.getDimensionName() + ".dat");
         if (!checkFileExists(file)) {
             return;
         }
         try {
-            final NBTTagCompound tags = CompressedStreamTools.func_74794_a(new DataInputStream(new FileInputStream(file)));
-            this.nextBaseID = tags.func_74762_e("NextBaseID");
-            for (int i = 0; i < tags.func_74762_e("NumberOfMaps"); ++i) {
-                final TeamsMap map = new TeamsMap(world, tags.func_74775_l("Map_" + i));
+            final NBTTagCompound tags = CompressedStreamTools.read(new DataInputStream(new FileInputStream(file)));
+            this.nextBaseID = tags.getInteger("NextBaseID");
+            for (int i = 0; i < tags.getInteger("NumberOfMaps"); ++i) {
+                final TeamsMap map = new TeamsMap(world, tags.getCompoundTag("Map_" + i));
                 this.maps.put(map.shortName, map);
             }
             if (this.maps.size() == 0) {
-                this.maps.put("default" + world.func_72912_H().func_76076_i(), new TeamsMap(world, "default" + world.func_72912_H().func_76076_i(), "Default " + world.func_72912_H().func_76065_j()));
+                this.maps.put("default" + world.getWorldInfo().getDimension(), new TeamsMap(world, "default" + world.getWorldInfo().getDimension(), "Default " + world.getWorldInfo().getWorldName()));
             }
-            for (int i = 0; i < tags.func_74762_e("RoundsSize"); ++i) {
-                final TeamsRound round = new TeamsRound(tags.func_74775_l("Round_" + i));
+            for (int i = 0; i < tags.getInteger("RoundsSize"); ++i) {
+                final TeamsRound round = new TeamsRound(tags.getCompoundTag("Round_" + i));
                 this.rounds.add(round);
             }
-            TeamsManager.enabled = tags.func_74767_n("Enabled");
-            TeamsManager.voting = tags.func_74767_n("Voting");
-            TeamsManager.votingTime = tags.func_74762_e("VotingTime");
-            TeamsManager.scoreDisplayTime = tags.func_74762_e("ScoreTime");
-            TeamsManager.bombsEnabled = tags.func_74767_n("Bombs");
-            TeamsManager.bulletsEnabled = tags.func_74767_n("Bullets");
-            TeamsManager.explosions = tags.func_74767_n("Explosions");
-            TeamsManager.raiding = tags.func_74767_n("Raiding");
-            TeamsManager.violence = tags.func_74767_n("Violence");
-            TeamsManager.forceAdventureMode = tags.func_74767_n("ForceAdventure");
-            TeamsManager.canBreakGuns = tags.func_74767_n("CanBreakGuns");
-            TeamsManager.canBreakGlass = tags.func_74767_n("CanBreakGlass");
-            TeamsManager.armourDrops = tags.func_74767_n("ArmourDrops");
-            TeamsManager.weaponDrops = tags.func_74762_e("WeaponDrops");
-            TeamsManager.vehiclesNeedFuel = tags.func_74767_n("NeedFuel");
-            TeamsManager.mgLife = tags.func_74762_e("MGLife");
-            TeamsManager.aaLife = tags.func_74762_e("AALife");
-            TeamsManager.vehicleLife = tags.func_74762_e("VehicleLife");
-            TeamsManager.seaLevel = tags.func_74762_e("SeaLevel");
-            TeamsManager.mechaLove = tags.func_74762_e("MechaLove");
-            TeamsManager.planeLife = tags.func_74762_e("PlaneLife");
+            TeamsManager.enabled = tags.getBoolean("Enabled");
+            TeamsManager.voting = tags.getBoolean("Voting");
+            TeamsManager.votingTime = tags.getInteger("VotingTime");
+            TeamsManager.scoreDisplayTime = tags.getInteger("ScoreTime");
+            TeamsManager.bombsEnabled = tags.getBoolean("Bombs");
+            TeamsManager.bulletsEnabled = tags.getBoolean("Bullets");
+            TeamsManager.explosions = tags.getBoolean("Explosions");
+            TeamsManager.raiding = tags.getBoolean("Raiding");
+            TeamsManager.violence = tags.getBoolean("Violence");
+            TeamsManager.forceAdventureMode = tags.getBoolean("ForceAdventure");
+            TeamsManager.canBreakGuns = tags.getBoolean("CanBreakGuns");
+            TeamsManager.canBreakGlass = tags.getBoolean("CanBreakGlass");
+            TeamsManager.armourDrops = tags.getBoolean("ArmourDrops");
+            TeamsManager.weaponDrops = tags.getInteger("WeaponDrops");
+            TeamsManager.vehiclesNeedFuel = tags.getBoolean("NeedFuel");
+            TeamsManager.mgLife = tags.getInteger("MGLife");
+            TeamsManager.aaLife = tags.getInteger("AALife");
+            TeamsManager.vehicleLife = tags.getInteger("VehicleLife");
+            TeamsManager.seaLevel = tags.getInteger("SeaLevel");
+            TeamsManager.mechaLove = tags.getInteger("MechaLove");
+            TeamsManager.planeLife = tags.getInteger("PlaneLife");
             TeamsManager.driveablesBreakBlocks = false;
             if (TeamsManager.enabled && this.rounds.size() > 0) {
                 this.start();
@@ -954,64 +954,64 @@ public class TeamsManager
     }
     
     private void savePerWorldData(final Event event, final World world) {
-        final File file = new File(world.func_72860_G().func_75765_b(), "teams_" + world.field_73011_w.func_80007_l() + ".dat");
+        final File file = new File(world.getSaveHandler().getWorldDirectory(), "teams_" + world.provider.getDimensionName() + ".dat");
         checkFileExists(file);
         try {
             final NBTTagCompound tags = new NBTTagCompound();
-            tags.func_74768_a("NextBaseID", this.nextBaseID);
-            tags.func_74768_a("NumberOfMaps", this.maps.size());
+            tags.setInteger("NextBaseID", this.nextBaseID);
+            tags.setInteger("NumberOfMaps", this.maps.size());
             if (this.maps != null) {
                 int i = 0;
                 for (final TeamsMap map : this.maps.values()) {
                     final NBTTagCompound mapTags = new NBTTagCompound();
                     map.writeToNBT(mapTags);
-                    tags.func_74782_a("Map_" + i, (NBTBase)mapTags);
+                    tags.setTag("Map_" + i, (NBTBase)mapTags);
                     ++i;
                 }
             }
             if (this.rounds != null) {
-                tags.func_74768_a("RoundsSize", this.rounds.size());
+                tags.setInteger("RoundsSize", this.rounds.size());
                 for (int i = 0; i < this.rounds.size(); ++i) {
                     final TeamsRound entry = this.rounds.get(i);
                     if (entry != null) {
                         final NBTTagCompound roundTags = new NBTTagCompound();
                         entry.writeToNBT(roundTags);
-                        tags.func_74782_a("Round_" + i, (NBTBase)roundTags);
+                        tags.setTag("Round_" + i, (NBTBase)roundTags);
                     }
                 }
             }
             else {
-                tags.func_74768_a("RoundsSize", 0);
+                tags.setInteger("RoundsSize", 0);
             }
             if (this.currentRound != null) {
-                tags.func_74768_a("CurrentRound", this.rounds.indexOf(this.currentRound));
+                tags.setInteger("CurrentRound", this.rounds.indexOf(this.currentRound));
             }
             for (final Gametype gametype : Gametype.gametypes.values()) {
                 gametype.saveToNBT(tags);
             }
-            tags.func_74757_a("Enabled", TeamsManager.enabled);
-            tags.func_74757_a("Voting", TeamsManager.voting);
-            tags.func_74768_a("VotingTime", TeamsManager.votingTime);
-            tags.func_74768_a("ScoreTime", TeamsManager.scoreDisplayTime);
-            tags.func_74757_a("Bombs", TeamsManager.bombsEnabled);
-            tags.func_74757_a("Bullets", TeamsManager.bulletsEnabled);
-            tags.func_74757_a("Explosions", TeamsManager.explosions);
-            tags.func_74757_a("Raiding", TeamsManager.raiding);
-            tags.func_74757_a("Violence", TeamsManager.violence);
-            tags.func_74757_a("ForceAdventure", TeamsManager.forceAdventureMode);
-            tags.func_74757_a("CanBreakGuns", TeamsManager.canBreakGuns);
-            tags.func_74757_a("CanBreakGlass", TeamsManager.canBreakGlass);
-            tags.func_74757_a("ArmourDrops", TeamsManager.armourDrops);
-            tags.func_74768_a("WeaponDrops", TeamsManager.weaponDrops);
-            tags.func_74757_a("NeedFuel", TeamsManager.vehiclesNeedFuel);
-            tags.func_74768_a("MGLife", TeamsManager.mgLife);
-            tags.func_74768_a("AALife", TeamsManager.aaLife);
-            tags.func_74768_a("VehicleLife", TeamsManager.vehicleLife);
-            tags.func_74776_a("SeaLevel", (float)TeamsManager.seaLevel);
-            tags.func_74768_a("MechaLove", TeamsManager.mechaLove);
-            tags.func_74768_a("PlaneLife", TeamsManager.planeLife);
-            tags.func_74757_a("BreakBlocks", false);
-            CompressedStreamTools.func_74800_a(tags, (DataOutput)new DataOutputStream(new FileOutputStream(file)));
+            tags.setBoolean("Enabled", TeamsManager.enabled);
+            tags.setBoolean("Voting", TeamsManager.voting);
+            tags.setInteger("VotingTime", TeamsManager.votingTime);
+            tags.setInteger("ScoreTime", TeamsManager.scoreDisplayTime);
+            tags.setBoolean("Bombs", TeamsManager.bombsEnabled);
+            tags.setBoolean("Bullets", TeamsManager.bulletsEnabled);
+            tags.setBoolean("Explosions", TeamsManager.explosions);
+            tags.setBoolean("Raiding", TeamsManager.raiding);
+            tags.setBoolean("Violence", TeamsManager.violence);
+            tags.setBoolean("ForceAdventure", TeamsManager.forceAdventureMode);
+            tags.setBoolean("CanBreakGuns", TeamsManager.canBreakGuns);
+            tags.setBoolean("CanBreakGlass", TeamsManager.canBreakGlass);
+            tags.setBoolean("ArmourDrops", TeamsManager.armourDrops);
+            tags.setInteger("WeaponDrops", TeamsManager.weaponDrops);
+            tags.setBoolean("NeedFuel", TeamsManager.vehiclesNeedFuel);
+            tags.setInteger("MGLife", TeamsManager.mgLife);
+            tags.setInteger("AALife", TeamsManager.aaLife);
+            tags.setInteger("VehicleLife", TeamsManager.vehicleLife);
+            tags.setFloat("SeaLevel", (float)TeamsManager.seaLevel);
+            tags.setInteger("MechaLove", TeamsManager.mechaLove);
+            tags.setInteger("PlaneLife", TeamsManager.planeLife);
+            tags.setBoolean("BreakBlocks", false);
+            CompressedStreamTools.write(tags, (DataOutput)new DataOutputStream(new FileOutputStream(file)));
         }
         catch (final Exception e) {
             FlansMod.log("Failed to save to teams.dat");
@@ -1068,7 +1068,7 @@ public class TeamsManager
     }
     
     public EntityPlayerMP getPlayer(final String username) {
-        return MinecraftServer.func_71276_C().func_71203_ab().func_152612_a(username);
+        return MinecraftServer.getServer().getConfigurationManager().getPlayerByUsername(username);
     }
     
     public static void log(final String s) {
@@ -1076,13 +1076,13 @@ public class TeamsManager
     }
     
     public static void messagePlayer(final EntityPlayerMP player, final String s) {
-        player.func_146105_b((IChatComponent)new ChatComponentText(s));
+        player.addChatComponentMessage((IChatComponent)new ChatComponentText(s));
     }
     
     public static void messageAll(final String s) {
         FlansMod.log("Teams Announcement : " + s);
-        for (final EntityPlayerMP player : MinecraftServer.func_71276_C().func_71203_ab().field_72404_b) {
-            player.func_146105_b((IChatComponent)new ChatComponentText(s));
+        for (final Object player : MinecraftServer.getServer().getConfigurationManager().playerEntityList) {
+            ((EntityPlayerMP)player).addChatComponentMessage((IChatComponent)new ChatComponentText(s));
         }
     }
     
@@ -1091,7 +1091,7 @@ public class TeamsManager
     }
     
     public static List<EntityPlayer> getPlayers() {
-        return MinecraftServer.func_71276_C().func_71203_ab().field_72404_b;
+        return MinecraftServer.getServer().getConfigurationManager().playerEntityList;
     }
     
     public Team getTeam(final int spawnerTeamID) {

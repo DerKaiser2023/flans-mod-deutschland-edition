@@ -7,7 +7,9 @@ package com.flansmod.common.guns;
 import java.util.ArrayList;
 import net.minecraft.util.MovingObjectPosition;
 import cpw.mods.fml.common.network.ByteBufUtils;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTBase;
 import com.flansmod.common.teams.EntityGunItem;
 import java.util.Arrays;
 import com.flansmod.common.teams.Team;
@@ -56,83 +58,83 @@ public class EntityMG extends Entity implements IEntityAdditionalSpawnData
         super(world);
         this.wasShooting = false;
         this.ticksSinceUsed = 0;
-        this.func_70105_a(1.0f, 1.0f);
-        this.field_70158_ak = true;
+        this.setSize(1.0f, 1.0f);
+        this.ignoreFrustumCheck = true;
     }
     
     public EntityMG(final World world, final int x, final int y, final int z, final int dir, final GunType gunType) {
         super(world);
         this.wasShooting = false;
         this.ticksSinceUsed = 0;
-        this.func_70105_a(1.0f, 1.0f);
+        this.setSize(1.0f, 1.0f);
         this.blockX = x;
         this.blockY = y;
         this.blockZ = z;
-        this.field_70169_q = x + 0.5;
-        this.field_70167_r = y;
-        this.field_70166_s = z + 0.5;
-        this.func_70107_b(x + 0.5, (double)y, z + 0.5);
+        this.prevPosX = x + 0.5;
+        this.prevPosY = y;
+        this.prevPosZ = z + 0.5;
+        this.setPosition(x + 0.5, (double)y, z + 0.5);
         this.direction = dir;
-        this.field_70177_z = 0.0f;
-        this.field_70125_A = -60.0f;
+        this.rotationYaw = 0.0f;
+        this.rotationPitch = -60.0f;
         this.type = gunType;
-        this.field_70158_ak = true;
+        this.ignoreFrustumCheck = true;
         EntityMG.mgs.add(this);
     }
     
-    public boolean func_70067_L() {
-        return !this.field_70128_L;
+    public boolean canBeCollidedWith() {
+        return !this.isDead;
     }
     
-    public void func_70071_h_() {
-        super.func_70071_h_();
+    public void onUpdate() {
+        super.onUpdate();
         if (this.type == null) {
             FlansMod.log("EntityMG.onUpdate() Error: GunType is null (" + this + ")");
-            this.func_70106_y();
+            this.setDead();
             return;
         }
         ++this.ticksSinceUsed;
         if (TeamsManager.mgLife > 0 && this.ticksSinceUsed > TeamsManager.mgLife * 20) {
-            this.func_70106_y();
+            this.setDead();
         }
-        if (this.field_70170_p.func_147439_a(this.blockX, this.blockY - 1, this.blockZ) == null && !this.field_70170_p.field_72995_K) {
-            this.func_70106_y();
+        if (this.worldObj.getBlock(this.blockX, this.blockY - 1, this.blockZ) == null && !this.worldObj.isRemote) {
+            this.setDead();
         }
-        this.field_70126_B = this.field_70177_z;
-        this.field_70127_C = this.field_70125_A;
+        this.prevRotationYaw = this.rotationYaw;
+        this.prevRotationPitch = this.rotationPitch;
         if (this.gunner != null) {
             this.ticksSinceUsed = 0;
-            this.field_70177_z = this.gunner.field_70177_z - this.direction * 90;
-            while (this.field_70177_z < -180.0f) {
-                this.field_70177_z += 360.0f;
+            this.rotationYaw = this.gunner.rotationYaw - this.direction * 90;
+            while (this.rotationYaw < -180.0f) {
+                this.rotationYaw += 360.0f;
             }
-            while (this.field_70177_z > 180.0f) {
-                this.field_70177_z -= 360.0f;
+            while (this.rotationYaw > 180.0f) {
+                this.rotationYaw -= 360.0f;
             }
-            this.field_70125_A = this.gunner.field_70125_A;
-            if (this.field_70177_z > this.type.sideViewLimit) {
+            this.rotationPitch = this.gunner.rotationPitch;
+            if (this.rotationYaw > this.type.sideViewLimit) {
                 final float sideViewLimit = this.type.sideViewLimit;
-                this.field_70177_z = sideViewLimit;
-                this.field_70126_B = sideViewLimit;
+                this.rotationYaw = sideViewLimit;
+                this.prevRotationYaw = sideViewLimit;
             }
-            if (this.field_70177_z < -this.type.sideViewLimit) {
+            if (this.rotationYaw < -this.type.sideViewLimit) {
                 final float n = -this.type.sideViewLimit;
-                this.field_70177_z = n;
-                this.field_70126_B = n;
+                this.rotationYaw = n;
+                this.prevRotationYaw = n;
             }
-            final float angle = this.direction * 90.0f + this.field_70177_z;
+            final float angle = this.direction * 90.0f + this.rotationYaw;
             final double dX = this.type.standBackDist * Math.sin(angle * 3.1415927f / 180.0f);
             final double dZ = -(this.type.standBackDist * Math.cos(angle * 3.1415927f / 180.0f));
-            this.gunner.func_70107_b(this.blockX + 0.5 + dX, this.blockY + this.gunner.func_70033_W() - 0.5, this.blockZ + 0.5 + dZ);
+            this.gunner.setPosition(this.blockX + 0.5 + dX, this.blockY + this.gunner.getYOffset() - 0.5, this.blockZ + 0.5 + dZ);
         }
         else {
-            --this.field_70125_A;
+            --this.rotationPitch;
         }
-        if (this.field_70125_A < this.type.topViewLimit) {
-            this.field_70125_A = this.type.topViewLimit;
+        if (this.rotationPitch < this.type.topViewLimit) {
+            this.rotationPitch = this.type.topViewLimit;
         }
-        if (this.field_70125_A > this.type.bottomViewLimit) {
-            this.field_70125_A = this.type.bottomViewLimit;
+        if (this.rotationPitch > this.type.bottomViewLimit) {
+            this.rotationPitch = this.type.bottomViewLimit;
         }
         if (this.shootDelay > 0) {
             --this.shootDelay;
@@ -140,39 +142,39 @@ public class EntityMG extends Entity implements IEntityAdditionalSpawnData
         if (this.reloadTimer > 0) {
             --this.reloadTimer;
         }
-        if (this.ammo != null && this.ammo.func_77960_j() == this.ammo.func_77958_k()) {
+        if (this.ammo != null && this.ammo.getMetadata() == this.ammo.getMaxDurability()) {
             this.ammo = null;
         }
         if (this.ammo == null && this.gunner != null) {
             final int slot = this.findAmmo(this.gunner);
             if (slot >= 0) {
-                this.ammo = this.gunner.field_71071_by.func_70301_a(slot);
-                if (!this.gunner.field_71075_bZ.field_75098_d) {
-                    this.gunner.field_71071_by.func_70299_a(slot, (ItemStack)null);
+                this.ammo = this.gunner.inventory.getStackInSlot(slot);
+                if (!this.gunner.capabilities.isCreativeMode) {
+                    this.gunner.inventory.setInventorySlotContents(slot, (ItemStack)null);
                 }
                 this.reloadTimer = this.type.reloadTime;
-                PacketPlaySound.sendSoundPacket(this.field_70165_t, this.field_70163_u, this.field_70161_v, 50.0, this.field_71093_bK, this.type.reloadSound, false);
+                PacketPlaySound.sendSoundPacket(this.posX, this.posY, this.posZ, 50.0, this.dimension, this.type.reloadSound, false);
             }
         }
-        if (this.field_70170_p.field_72995_K && this.gunner != null && this.gunner == FMLClientHandler.instance().getClient().field_71439_g && this.type.mode == EnumFireMode.FULLAUTO) {
+        if (this.worldObj.isRemote && this.gunner != null && this.gunner == FMLClientHandler.instance().getClient().thePlayer && this.type.mode == EnumFireMode.FULLAUTO) {
             this.checkForShooting();
         }
-        if (!this.field_70170_p.field_72995_K && this.isShooting) {
-            if (this.gunner == null || this.gunner.field_70128_L) {
+        if (!this.worldObj.isRemote && this.isShooting) {
+            if (this.gunner == null || this.gunner.isDead) {
                 this.isShooting = false;
             }
             if (this.ammo == null || this.reloadTimer > 0 || this.shootDelay > 0) {
                 return;
             }
-            final BulletType bullet = BulletType.getBullet(this.ammo.func_77973_b());
-            if (this.gunner != null && !this.gunner.field_71075_bZ.field_75098_d) {
-                this.ammo.func_77972_a(1, (EntityLivingBase)this.gunner);
+            final BulletType bullet = BulletType.getBullet(this.ammo.getItem());
+            if (this.gunner != null && !this.gunner.capabilities.isCreativeMode) {
+                this.ammo.damageItem(1, (EntityLivingBase)this.gunner);
             }
             this.shootDelay = (int)this.type.shootDelay;
-            this.field_70170_p.func_72838_d((Entity)((ItemBullet)this.ammo.func_77973_b()).getEntity(this.field_70170_p, Vec3.func_72443_a(this.blockX + 0.5, (double)(this.blockY + this.type.pivotHeight), this.blockZ + 0.5), this.direction * 90.0f + this.field_70177_z, this.field_70125_A, (EntityLivingBase)this.gunner, this.type.bulletSpread, this.type.damage, this.ammo.func_77960_j(), this.type));
+            this.worldObj.spawnEntityInWorld((Entity)((ItemBullet)this.ammo.getItem()).getEntity(this.worldObj, Vec3.createVectorHelper(this.blockX + 0.5, (double)(this.blockY + this.type.pivotHeight), this.blockZ + 0.5), this.direction * 90.0f + this.rotationYaw, this.rotationPitch, (EntityLivingBase)this.gunner, this.type.bulletSpread, this.type.damage, this.ammo.getMetadata(), this.type));
             if (this.soundDelay <= 0) {
                 this.soundDelay = this.type.shootSoundLength;
-                PacketPlaySound.sendSoundPacket(this.field_70165_t, this.field_70163_u, this.field_70161_v, 50.0, this.field_71093_bK, this.type.shootSound, this.type.distortSound);
+                PacketPlaySound.sendSoundPacket(this.posX, this.posY, this.posZ, 50.0, this.dimension, this.type.shootSound, this.type.distortSound);
             }
         }
         if (this.soundDelay > 0) {
@@ -196,9 +198,9 @@ public class EntityMG extends Entity implements IEntityAdditionalSpawnData
         this.isShooting = held;
     }
     
-    public boolean func_70097_a(final DamageSource damagesource, final float i) {
-        if (damagesource.field_76373_n.equals("player")) {
-            final Entity player = damagesource.func_76346_g();
+    public boolean attackEntityFrom(final DamageSource damagesource, final float i) {
+        if (damagesource.damageType.equals("player")) {
+            final Entity player = damagesource.getEntity();
             if (player == this.gunner) {
                 if (this.type.mode == EnumFireMode.FULLAUTO) {
                     return true;
@@ -206,43 +208,43 @@ public class EntityMG extends Entity implements IEntityAdditionalSpawnData
                 if (this.ammo == null || this.reloadTimer > 0 || this.shootDelay > 0) {
                     return true;
                 }
-                final BulletType bullet = BulletType.getBullet(this.ammo.func_77973_b());
-                if (this.gunner != null && !this.gunner.field_71075_bZ.field_75098_d) {
-                    this.ammo.func_77972_a(1, (EntityLivingBase)player);
+                final BulletType bullet = BulletType.getBullet(this.ammo.getItem());
+                if (this.gunner != null && !this.gunner.capabilities.isCreativeMode) {
+                    this.ammo.damageItem(1, (EntityLivingBase)player);
                 }
                 this.shootDelay = (int)this.type.shootDelay;
-                if (!this.field_70170_p.field_72995_K) {
-                    this.field_70170_p.func_72838_d(((ItemBullet)this.ammo.func_77973_b()).getEntity(this.field_70170_p, (EntityLivingBase)player, this.type.bulletSpread, this.type.damage, this.type.bulletSpeed, false, this.ammo.func_77960_j(), this.type, new Vector3f(0.0f, 0.0f, 0.0f)));
+                if (!this.worldObj.isRemote) {
+                    this.worldObj.spawnEntityInWorld(((ItemBullet)this.ammo.getItem()).getEntity(this.worldObj, (EntityLivingBase)player, this.type.bulletSpread, this.type.damage, this.type.bulletSpeed, false, this.ammo.getMetadata(), this.type, new Vector3f(0.0f, 0.0f, 0.0f)));
                 }
                 if (this.soundDelay <= 0) {
-                    final float distortion = this.type.distortSound ? (1.0f / (this.field_70146_Z.nextFloat() * 0.4f + 0.8f)) : 1.0f;
-                    PacketPlaySound.sendSoundPacket(this.field_70165_t, this.field_70163_u, this.field_70161_v, 50.0, this.field_71093_bK, this.type.shootSound, this.type.distortSound);
+                    final float distortion = this.type.distortSound ? (1.0f / (this.rand.nextFloat() * 0.4f + 0.8f)) : 1.0f;
+                    PacketPlaySound.sendSoundPacket(this.posX, this.posY, this.posZ, 50.0, this.dimension, this.type.shootSound, this.type.distortSound);
                     this.soundDelay = this.type.shootSoundLength;
                 }
             }
             else {
                 if (this.gunner != null) {
-                    return this.gunner.func_70097_a(damagesource, i);
+                    return this.gunner.attackEntityFrom(damagesource, i);
                 }
                 if (TeamsManager.canBreakGuns) {
-                    this.func_70106_y();
+                    this.setDead();
                 }
             }
         }
         return true;
     }
     
-    public boolean func_130002_c(final EntityPlayer player) {
+    public boolean interactFirst(final EntityPlayer player) {
         if (this.gunner != null && this.gunner instanceof EntityPlayer && this.gunner != player) {
             return true;
         }
-        if (!this.field_70170_p.field_72995_K) {
+        if (!this.worldObj.isRemote) {
             if (this.gunner == player) {
                 this.mountGun(player, false);
-                FlansMod.getPacketHandler().sendToAllAround(new PacketMGMount(player, this, false), this.field_70165_t, this.field_70163_u, this.field_70161_v, FlansMod.driveableUpdateRange, this.field_71093_bK);
+                FlansMod.getPacketHandler().sendToAllAround(new PacketMGMount(player, this, false), this.posX, this.posY, this.posZ, FlansMod.driveableUpdateRange, this.dimension);
                 return true;
             }
-            if (PlayerHandler.getPlayerData(player).mountingGun != null && !PlayerHandler.getPlayerData(player).mountingGun.field_70128_L) {
+            if (PlayerHandler.getPlayerData(player).mountingGun != null && !PlayerHandler.getPlayerData(player).mountingGun.isDead) {
                 PlayerHandler.getPlayerData(player).mountingGun.mountGun(player, false);
                 return true;
             }
@@ -250,14 +252,14 @@ public class EntityMG extends Entity implements IEntityAdditionalSpawnData
                 return true;
             }
             this.mountGun(player, true);
-            FlansMod.getPacketHandler().sendToAllAround(new PacketMGMount(player, this, true), this.field_70165_t, this.field_70163_u, this.field_70161_v, FlansMod.driveableUpdateRange, this.field_71093_bK);
+            FlansMod.getPacketHandler().sendToAllAround(new PacketMGMount(player, this, true), this.posX, this.posY, this.posZ, FlansMod.driveableUpdateRange, this.dimension);
             if (this.ammo == null) {
                 final int slot = this.findAmmo(player);
                 if (slot >= 0) {
-                    this.ammo = player.field_71071_by.func_70301_a(slot);
-                    player.field_71071_by.func_70299_a(slot, (ItemStack)null);
+                    this.ammo = player.inventory.getStackInSlot(slot);
+                    player.inventory.setInventorySlotContents(slot, (ItemStack)null);
                     this.reloadTimer = this.type.reloadTime;
-                    this.field_70170_p.func_72956_a((Entity)this, this.type.reloadSound, 1.0f, 1.0f / (this.field_70146_Z.nextFloat() * 0.4f + 0.8f));
+                    this.worldObj.playSoundAtEntity((Entity)this, this.type.reloadSound, 1.0f, 1.0f / (this.rand.nextFloat() * 0.4f + 0.8f));
                 }
             }
         }
@@ -268,7 +270,7 @@ public class EntityMG extends Entity implements IEntityAdditionalSpawnData
         if (player == null) {
             return;
         }
-        final Side side = this.field_70170_p.field_72995_K ? Side.CLIENT : Side.SERVER;
+        final Side side = this.worldObj.isRemote ? Side.CLIENT : Side.SERVER;
         if (PlayerHandler.getPlayerData(player, side) == null) {
             return;
         }
@@ -283,8 +285,8 @@ public class EntityMG extends Entity implements IEntityAdditionalSpawnData
     }
     
     public int findAmmo(final EntityPlayer player) {
-        for (int i = 0; i < player.field_71071_by.func_70302_i_(); ++i) {
-            final ItemStack stack = player.field_71071_by.func_70301_a(i);
+        for (int i = 0; i < player.inventory.getSizeInventory(); ++i) {
+            final ItemStack stack = player.inventory.getStackInSlot(i);
             if (this.type.isAmmo(stack)) {
                 return i;
             }
@@ -292,17 +294,17 @@ public class EntityMG extends Entity implements IEntityAdditionalSpawnData
         return -1;
     }
     
-    public void func_70106_y() {
+    public void setDead() {
         try {
-            if (!this.field_70170_p.field_72995_K) {
+            if (!this.worldObj.isRemote) {
                 if (TeamsManager.weaponDrops == 2) {
-                    final EntityGunItem gunEntity = new EntityGunItem(this.field_70170_p, this.field_70165_t, this.field_70163_u, this.field_70161_v, new ItemStack(this.type.getItem()), Arrays.asList(this.ammo));
-                    this.field_70170_p.func_72838_d((Entity)gunEntity);
+                    final EntityGunItem gunEntity = new EntityGunItem(this.worldObj, this.posX, this.posY, this.posZ, new ItemStack(this.type.getItem()), Arrays.asList(this.ammo));
+                    this.worldObj.spawnEntityInWorld((Entity)gunEntity);
                 }
                 else if (TeamsManager.weaponDrops == 1) {
-                    this.func_145779_a(this.type.getItem(), 1);
+                    this.dropItem(this.type.getItem(), 1);
                     if (this.ammo != null) {
-                        this.func_70099_a(this.ammo, 0.5f);
+                        this.entityDropItem(this.ammo, 0.5f);
                     }
                 }
             }
@@ -315,45 +317,45 @@ public class EntityMG extends Entity implements IEntityAdditionalSpawnData
                 e.printStackTrace();
             }
         }
-        super.func_70106_y();
+        super.setDead();
     }
     
-    protected void func_70014_b(final NBTTagCompound nbttagcompound) {
+    protected void writeEntityToNBT(final NBTTagCompound nbttagcompound) {
         if (this.type == null) {
             FlansMod.log("EntityMG.writeEntityToNBT() Error: GunType is null (" + this + ")");
-            this.func_70106_y();
+            this.setDead();
             return;
         }
-        nbttagcompound.func_74778_a("Type", this.type.shortName);
+        nbttagcompound.setString("Type", this.type.shortName);
         if (this.ammo != null) {
-            nbttagcompound.func_74782_a("Ammo", (NBTBase)this.ammo.writeToNBT(new NBTTagCompound()));
+            nbttagcompound.setTag("Ammo", (NBTBase)this.ammo.writeToNBT(new NBTTagCompound()));
         }
-        nbttagcompound.func_74768_a("BlockX", this.blockX);
-        nbttagcompound.func_74768_a("BlockY", this.blockY);
-        nbttagcompound.func_74768_a("BlockZ", this.blockZ);
-        nbttagcompound.func_74774_a("Dir", (byte)this.direction);
+        nbttagcompound.setInteger("BlockX", this.blockX);
+        nbttagcompound.setInteger("BlockY", this.blockY);
+        nbttagcompound.setInteger("BlockZ", this.blockZ);
+        nbttagcompound.setByte("Dir", (byte)this.direction);
     }
     
-    protected void func_70037_a(final NBTTagCompound nbttagcompound) {
-        this.type = GunType.getGun(nbttagcompound.func_74779_i("Type"));
+    protected void readEntityFromNBT(final NBTTagCompound nbttagcompound) {
+        this.type = GunType.getGun(nbttagcompound.getString("Type"));
         if (this.type == null) {
             FlansMod.log("EntityMG.readEntityFromNBT() Error: GunType is null (" + this + ")");
-            this.func_70106_y();
+            this.setDead();
             return;
         }
-        this.blockX = nbttagcompound.func_74762_e("BlockX");
-        this.blockY = nbttagcompound.func_74762_e("BlockY");
-        this.blockZ = nbttagcompound.func_74762_e("BlockZ");
-        this.direction = nbttagcompound.func_74771_c("Dir");
+        this.blockX = nbttagcompound.getInteger("BlockX");
+        this.blockY = nbttagcompound.getInteger("BlockY");
+        this.blockZ = nbttagcompound.getInteger("BlockZ");
+        this.direction = nbttagcompound.getByte("Dir");
         try {
-            this.ammo = ItemStack.loadItemStackFromNBT(nbttagcompound.func_74775_l("Ammo"));
+            this.ammo = ItemStack.loadItemStackFromNBT(nbttagcompound.getCompoundTag("Ammo"));
         }
         catch (final Exception e) {
             e.printStackTrace();
         }
     }
     
-    protected void func_70088_a() {
+    protected void entityInit() {
     }
     
     public void writeSpawnData(final ByteBuf data) {
@@ -376,7 +378,7 @@ public class EntityMG extends Entity implements IEntityAdditionalSpawnData
         }
         catch (final Exception e) {
             FlansMod.log("Failed to retreive gun type from server.");
-            super.func_70106_y();
+            super.setDead();
             e.printStackTrace();
         }
     }

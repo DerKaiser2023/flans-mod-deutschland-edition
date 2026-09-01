@@ -29,8 +29,8 @@ public class PlayerDeathEventListener
     @Mod.EventHandler
     @SubscribeEvent
     public void PlayerDied(final LivingDeathEvent DamageEvent) {
-        final Entity souceEntity = DamageEvent.source.func_76364_f();
-        if (DamageEvent.source.func_76355_l().equalsIgnoreCase("explosion") && (souceEntity instanceof EntityGrenade || souceEntity instanceof EntityBullet) && DamageEvent.entityLiving instanceof EntityPlayer) {
+        final Entity souceEntity = DamageEvent.source.getSourceOfDamage();
+        if (DamageEvent.source.getDamageType().equalsIgnoreCase("explosion") && (souceEntity instanceof EntityGrenade || souceEntity instanceof EntityBullet) && DamageEvent.entityLiving instanceof EntityPlayer) {
             EntityPlayer killer = null;
             final EntityPlayer killed = (EntityPlayer)DamageEvent.entityLiving;
             InfoType info;
@@ -50,22 +50,22 @@ public class PlayerDeathEventListener
             PlayerHandler.getPlayerData(killed).minorBleed = 0;
             PlayerHandler.getPlayerData(killed).Bleed = 0;
             PlayerHandler.getPlayerData(killed).hemorrhaging = 0;
-            FlansMod.getPacketHandler().sendToDimension(new PacketKillMessage(false, info, killer.func_70694_bm().func_77960_j(), ((killedTeam == null) ? "f" : Character.valueOf(killedTeam.textColour)) + killed.getDisplayName(), ((killedTeam == null) ? "f" : Character.valueOf(killedTeam.textColour)) + killer.getDisplayName(), killed.func_70032_d((Entity)killer)), DamageEvent.entityLiving.field_71093_bK);
-            System.out.println(killer.getDisplayName() + " has killed " + killed.getDisplayName() + " with " + info.name + ". TickExisted:" + killed.field_70173_aa / 20 + " KilledPos(X:" + (int)killed.field_70165_t + " Y:" + (int)killed.field_70163_u + " Z:" + (int)killed.field_70161_v + ") KillerPos(X:" + (int)killer.field_70165_t + " Y:" + (int)killer.field_70163_u + " Z:" + (int)killer.field_70161_v + ")");
-            if (killed.func_82169_q(2) != null) {
-                System.out.println("KilledPlayer:" + killed + " wear a " + killed.func_82169_q(2).func_77977_a());
+            FlansMod.getPacketHandler().sendToDimension(new PacketKillMessage(false, info, killer.getHeldItem().getMetadata(), ((killedTeam == null) ? "f" : Character.valueOf(killedTeam.textColour)) + killed.getDisplayName(), ((killedTeam == null) ? "f" : Character.valueOf(killedTeam.textColour)) + killer.getDisplayName(), killed.getDistanceToEntity((Entity)killer)), DamageEvent.entityLiving.dimension);
+            System.out.println(killer.getDisplayName() + " has killed " + killed.getDisplayName() + " with " + info.name + ". TickExisted:" + killed.ticksExisted / 20 + " KilledPos(X:" + (int)killed.posX + " Y:" + (int)killed.posY + " Z:" + (int)killed.posZ + ") KillerPos(X:" + (int)killer.posX + " Y:" + (int)killer.posY + " Z:" + (int)killer.posZ + ")");
+            if (killed.getCurrentArmor(2) != null) {
+                System.out.println("KilledPlayer:" + killed + " wear a " + killed.getCurrentArmor(2).getUnlocalizedName());
             }
             else {
                 System.out.println("KilledPlayer:" + killed + " wear nothing.");
             }
-            if (killer.func_82169_q(2) != null) {
-                System.out.println("Killer:" + killer + " wear a " + killer.func_82169_q(2).func_77977_a());
+            if (killer.getCurrentArmor(2) != null) {
+                System.out.println("Killer:" + killer + " wear a " + killer.getCurrentArmor(2).getUnlocalizedName());
             }
             else {
                 System.out.println("Killer:" + killer + " wear nothing.");
             }
-            if (killed.field_70173_aa / 20 < FlansMod.noticeSpawnKillTime) {
-                System.out.println("Warning! PlayerName:" + killer.func_70005_c_() + " may do SPAWN KILL. Time:" + killed.field_70173_aa / 20 + " " + killed.func_70005_c_() + " was killed.");
+            if (killed.ticksExisted / 20 < FlansMod.noticeSpawnKillTime) {
+                System.out.println("Warning! PlayerName:" + killer.getCommandSenderName() + " may do SPAWN KILL. Time:" + killed.ticksExisted / 20 + " " + killed.getCommandSenderName() + " was killed.");
             }
         }
     }

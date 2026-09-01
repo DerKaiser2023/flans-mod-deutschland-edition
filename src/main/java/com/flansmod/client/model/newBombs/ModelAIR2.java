@@ -43,60 +43,60 @@ public class ModelAIR2 extends ModelBase
         this.air2Model[23] = new ModelRendererTurbo(this, 145, 1, this.textureX, this.textureY);
         this.air2Model[24] = new ModelRendererTurbo(this, 153, 1, this.textureX, this.textureY);
         this.air2Model[0].addShapeBox(0.0f, 0.0f, 0.0f, 4, 37, 12, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.air2Model[0].func_78793_a(-2.0f, -27.0f, -6.0f);
+        this.air2Model[0].setRotationPoint(-2.0f, -27.0f, -6.0f);
         this.air2Model[1].addShapeBox(0.0f, 0.0f, 0.0f, 4, 37, 12, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -4.0f, 0.0f, 0.0f, -4.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -4.0f, 0.0f, 0.0f, -4.0f, 0.0f, 0.0f, 0.0f);
-        this.air2Model[1].func_78793_a(2.0f, -27.0f, -6.0f);
+        this.air2Model[1].setRotationPoint(2.0f, -27.0f, -6.0f);
         this.air2Model[2].addShapeBox(0.0f, 0.0f, 0.0f, 4, 37, 12, 0.0f, 0.0f, 0.0f, -4.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -4.0f, 0.0f, 0.0f, -4.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -4.0f);
-        this.air2Model[2].func_78793_a(-6.0f, -27.0f, -6.0f);
+        this.air2Model[2].setRotationPoint(-6.0f, -27.0f, -6.0f);
         this.air2Model[3].addShapeBox(0.0f, 0.0f, 0.0f, 4, 12, 12, 0.0f, 0.0f, 0.0f, -4.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -4.0f, -5.0f, 0.0f, -5.0f, 1.0f, 0.0f, -5.0f, 1.0f, 0.0f, -5.0f, -5.0f, 0.0f, -5.0f);
-        this.air2Model[3].func_78793_a(-6.0f, 10.0f, -6.0f);
+        this.air2Model[3].setRotationPoint(-6.0f, 10.0f, -6.0f);
         this.air2Model[4].addShapeBox(0.0f, 0.0f, 0.0f, 4, 12, 12, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, -5.0f, -1.0f, 0.0f, -5.0f, -1.0f, 0.0f, -5.0f, -1.0f, 0.0f, -5.0f);
-        this.air2Model[4].func_78793_a(-2.0f, 10.0f, -6.0f);
+        this.air2Model[4].setRotationPoint(-2.0f, 10.0f, -6.0f);
         this.air2Model[5].addShapeBox(0.0f, 0.0f, 0.0f, 4, 12, 12, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -4.0f, 0.0f, 0.0f, -4.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, -5.0f, -5.0f, 0.0f, -5.0f, -5.0f, 0.0f, -5.0f, 1.0f, 0.0f, -5.0f);
-        this.air2Model[5].func_78793_a(2.0f, 10.0f, -6.0f);
+        this.air2Model[5].setRotationPoint(2.0f, 10.0f, -6.0f);
         this.air2Model[6].addShapeBox(0.0f, 0.0f, 0.0f, 4, 16, 12, 0.0f, -3.0f, 0.0f, -5.0f, 1.0f, 0.0f, -3.0f, 1.0f, 0.0f, -3.0f, -3.0f, 0.0f, -5.0f, 0.0f, 0.0f, -4.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -4.0f);
-        this.air2Model[6].func_78793_a(-6.0f, -43.0f, -6.0f);
+        this.air2Model[6].setRotationPoint(-6.0f, -43.0f, -6.0f);
         this.air2Model[7].addShapeBox(0.0f, 0.0f, 0.0f, 4, 16, 12, 0.0f, -1.0f, 0.0f, -3.0f, -1.0f, 0.0f, -3.0f, -1.0f, 0.0f, -3.0f, -1.0f, 0.0f, -3.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.air2Model[7].func_78793_a(-2.0f, -43.0f, -6.0f);
+        this.air2Model[7].setRotationPoint(-2.0f, -43.0f, -6.0f);
         this.air2Model[8].addShapeBox(0.0f, 0.0f, 0.0f, 4, 16, 12, 0.0f, 1.0f, 0.0f, -3.0f, -3.0f, 0.0f, -5.0f, -3.0f, 0.0f, -5.0f, 1.0f, 0.0f, -3.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -4.0f, 0.0f, 0.0f, -4.0f, 0.0f, 0.0f, 0.0f);
-        this.air2Model[8].func_78793_a(2.0f, -43.0f, -6.0f);
+        this.air2Model[8].setRotationPoint(2.0f, -43.0f, -6.0f);
         this.air2Model[9].addShapeBox(0.0f, 0.0f, 0.0f, 1, 24, 7, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -19.0f, 0.0f, 0.0f, -19.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.air2Model[9].func_78793_a(-0.5f, -44.0f, -10.0f);
+        this.air2Model[9].setRotationPoint(-0.5f, -44.0f, -10.0f);
         this.air2Model[10].addShapeBox(0.0f, 0.0f, 0.0f, 1, 6, 2, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.air2Model[10].func_78793_a(-0.5f, -50.0f, -10.0f);
+        this.air2Model[10].setRotationPoint(-0.5f, -50.0f, -10.0f);
         this.air2Model[11].addShapeBox(0.0f, 0.0f, 0.0f, 1, 4, 2, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.air2Model[11].func_78793_a(-0.5f, -48.0f, -7.0f);
+        this.air2Model[11].setRotationPoint(-0.5f, -48.0f, -7.0f);
         this.air2Model[12].addShapeBox(0.0f, 0.0f, 0.0f, 1, 2, 1, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.air2Model[12].func_78793_a(-0.5f, -46.0f, -4.0f);
+        this.air2Model[12].setRotationPoint(-0.5f, -46.0f, -4.0f);
         this.air2Model[13].addShapeBox(0.0f, 0.0f, 0.0f, 1, 2, 1, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.air2Model[13].func_78793_a(-0.5f, -46.0f, 3.0f);
+        this.air2Model[13].setRotationPoint(-0.5f, -46.0f, 3.0f);
         this.air2Model[14].addShapeBox(0.0f, 0.0f, 0.0f, 1, 24, 7, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -19.0f, 0.0f, 0.0f, -19.0f, 0.0f);
-        this.air2Model[14].func_78793_a(-0.5f, -44.0f, 3.0f);
+        this.air2Model[14].setRotationPoint(-0.5f, -44.0f, 3.0f);
         this.air2Model[15].addShapeBox(0.0f, 0.0f, 0.0f, 1, 4, 2, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.air2Model[15].func_78793_a(-0.5f, -48.0f, 5.0f);
+        this.air2Model[15].setRotationPoint(-0.5f, -48.0f, 5.0f);
         this.air2Model[16].addShapeBox(0.0f, 0.0f, 0.0f, 1, 6, 2, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.air2Model[16].func_78793_a(-0.5f, -50.0f, 8.0f);
+        this.air2Model[16].setRotationPoint(-0.5f, -50.0f, 8.0f);
         this.air2Model[17].addShapeBox(0.0f, 0.0f, 0.0f, 7, 24, 1, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -19.0f, 0.0f, 0.0f, -19.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.air2Model[17].func_78793_a(3.0f, -44.0f, -0.5f);
+        this.air2Model[17].setRotationPoint(3.0f, -44.0f, -0.5f);
         this.air2Model[18].addShapeBox(0.0f, 0.0f, 0.0f, 2, 6, 1, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.air2Model[18].func_78793_a(8.0f, -50.0f, -0.5f);
+        this.air2Model[18].setRotationPoint(8.0f, -50.0f, -0.5f);
         this.air2Model[19].addShapeBox(0.0f, 0.0f, 0.0f, 2, 4, 1, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.air2Model[19].func_78793_a(5.0f, -48.0f, -0.5f);
+        this.air2Model[19].setRotationPoint(5.0f, -48.0f, -0.5f);
         this.air2Model[20].addShapeBox(0.0f, 0.0f, 0.0f, 1, 2, 1, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.air2Model[20].func_78793_a(3.0f, -46.0f, -0.5f);
+        this.air2Model[20].setRotationPoint(3.0f, -46.0f, -0.5f);
         this.air2Model[21].addShapeBox(0.0f, 0.0f, 0.0f, 7, 24, 1, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -19.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -19.0f, 0.0f);
-        this.air2Model[21].func_78793_a(-10.0f, -44.0f, -0.5f);
+        this.air2Model[21].setRotationPoint(-10.0f, -44.0f, -0.5f);
         this.air2Model[22].addShapeBox(0.0f, 0.0f, 0.0f, 2, 6, 1, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.air2Model[22].func_78793_a(-10.0f, -50.0f, -0.5f);
+        this.air2Model[22].setRotationPoint(-10.0f, -50.0f, -0.5f);
         this.air2Model[23].addShapeBox(0.0f, 0.0f, 0.0f, 2, 4, 1, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.air2Model[23].func_78793_a(-7.0f, -48.0f, -0.5f);
+        this.air2Model[23].setRotationPoint(-7.0f, -48.0f, -0.5f);
         this.air2Model[24].addShapeBox(0.0f, 0.0f, 0.0f, 1, 2, 1, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.air2Model[24].func_78793_a(-4.0f, -46.0f, -0.5f);
+        this.air2Model[24].setRotationPoint(-4.0f, -46.0f, -0.5f);
     }
     
-    public void func_78088_a(final Entity entity, final float f, final float f1, final float f2, final float f3, final float f4, final float f5) {
+    public void render(final Entity entity, final float f, final float f1, final float f2, final float f3, final float f4, final float f5) {
         for (int i = 0; i < 25; ++i) {
-            this.air2Model[i].func_78785_a(f5);
+            this.air2Model[i].render(f5);
         }
     }
     

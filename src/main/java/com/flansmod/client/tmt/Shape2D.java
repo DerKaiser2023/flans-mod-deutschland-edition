@@ -35,7 +35,7 @@ public class Shape2D
         final PositionTransformVertex[] vertsTop = new PositionTransformVertex[this.coords.size()];
         final PositionTransformVertex[] vertsBottom = new PositionTransformVertex[this.coords.size()];
         final TexturedPolygon[] poly = new TexturedPolygon[this.coords.size() + 2];
-        final Vec3 extrudeVector = Vec3.func_72443_a(0.0, 0.0, (double)depth);
+        final Vec3 extrudeVector = Vec3.createVectorHelper(0.0, 0.0, (double)depth);
         this.setVectorRotations(extrudeVector, rotX, rotY, rotZ);
         if (faceLengths != null && faceLengths.length < this.coords.size()) {
             faceLengths = null;
@@ -47,10 +47,10 @@ public class Shape2D
             final float texU1 = (curCoord.uCoord + u) / textureWidth;
             final float texU2 = (shapeTextureWidth * 2 - curCoord.uCoord + u) / textureWidth;
             final float texV = (curCoord.vCoord + v) / textureHeight;
-            final Vec3 vecCoord = Vec3.func_72443_a(curCoord.xCoord, curCoord.yCoord, 0.0);
+            final Vec3 vecCoord = Vec3.createVectorHelper(curCoord.xCoord, curCoord.yCoord, 0.0);
             this.setVectorRotations(vecCoord, rotX, rotY, rotZ);
-            verts[idx] = new PositionTransformVertex(x + (float)vecCoord.field_72450_a, y + (float)vecCoord.field_72448_b, z + (float)vecCoord.field_72449_c, texU1, texV);
-            verts[idx + this.coords.size()] = new PositionTransformVertex(x + (float)vecCoord.field_72450_a - (float)extrudeVector.field_72450_a, y + (float)vecCoord.field_72448_b - (float)extrudeVector.field_72448_b, z + (float)vecCoord.field_72449_c - (float)extrudeVector.field_72449_c, texU2, texV);
+            verts[idx] = new PositionTransformVertex(x + (float)vecCoord.xCoord, y + (float)vecCoord.yCoord, z + (float)vecCoord.zCoord, texU1, texV);
+            verts[idx + this.coords.size()] = new PositionTransformVertex(x + (float)vecCoord.xCoord - (float)extrudeVector.xCoord, y + (float)vecCoord.yCoord - (float)extrudeVector.yCoord, z + (float)vecCoord.zCoord - (float)extrudeVector.zCoord, texU2, texV);
             vertsTop[idx] = new PositionTransformVertex(verts[idx]);
             vertsBottom[this.coords.size() - idx - 1] = new PositionTransformVertex(verts[idx + this.coords.size()]);
             if (faceLengths != null) {
@@ -87,15 +87,15 @@ public class Shape2D
         final float x = xRot;
         final float y = yRot;
         final float z = zRot;
-        final float xC = MathHelper.func_76134_b(x);
-        final float xS = MathHelper.func_76126_a(x);
-        final float yC = MathHelper.func_76134_b(y);
-        final float yS = MathHelper.func_76126_a(y);
-        final float zC = MathHelper.func_76134_b(z);
-        final float zS = MathHelper.func_76126_a(z);
-        double xVec = vector.field_72450_a;
-        double yVec = vector.field_72448_b;
-        double zVec = vector.field_72449_c;
+        final float xC = MathHelper.cos(x);
+        final float xS = MathHelper.sin(x);
+        final float yC = MathHelper.cos(y);
+        final float yS = MathHelper.sin(y);
+        final float zC = MathHelper.cos(z);
+        final float zS = MathHelper.sin(z);
+        double xVec = vector.xCoord;
+        double yVec = vector.yCoord;
+        double zVec = vector.zCoord;
         final double xy = xC * yVec - xS * zVec;
         final double xz = xC * zVec + xS * yVec;
         final double yz = yC * xz - yS * xVec;
@@ -105,8 +105,8 @@ public class Shape2D
         xVec = zx;
         yVec = zy;
         zVec = yz;
-        vector.field_72450_a = xVec;
-        vector.field_72448_b = yVec;
-        vector.field_72449_c = zVec;
+        vector.xCoord = xVec;
+        vector.yCoord = yVec;
+        vector.zCoord = zVec;
     }
 }

@@ -35,26 +35,26 @@ public class ModelChinaBuckler extends ModelGun
         this.gunModel[9] = new ModelRendererTurbo(this, 49, 1, this.textureX, this.textureY);
         this.gunModel[10] = new ModelRendererTurbo(this, 17, 17, this.textureX, this.textureY);
         this.gunModel[0].addShapeBox(0.0f, 0.0f, 0.0f, 1, 3, 3, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.5f, 0.0f, 0.0f, 0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.gunModel[0].func_78793_a(1.0f, -4.0f, -3.0f);
+        this.gunModel[0].setRotationPoint(1.0f, -4.0f, -3.0f);
         this.gunModel[1].addShapeBox(0.0f, 0.0f, 0.0f, 1, 3, 3, 0.0f, 0.0f, 0.5f, 0.0f, 0.0f, 0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.gunModel[1].func_78793_a(1.0f, -4.0f, 0.0f);
+        this.gunModel[1].setRotationPoint(1.0f, -4.0f, 0.0f);
         this.gunModel[2].addShapeBox(0.0f, 0.0f, 0.0f, 1, 2, 6, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.5f, 0.0f, 0.0f, 0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.gunModel[2].func_78793_a(1.0f, -1.0f, -3.0f);
+        this.gunModel[2].setRotationPoint(1.0f, -1.0f, -3.0f);
         this.gunModel[3].addShapeBox(0.0f, 0.0f, 0.0f, 1, 4, 6, 0.0f, 0.0f, 0.0f, 0.0f, 0.5f, 0.0f, 0.0f, 0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.gunModel[3].func_78793_a(1.0f, 1.0f, -3.0f);
+        this.gunModel[3].setRotationPoint(1.0f, 1.0f, -3.0f);
         this.gunModel[4].addShapeBox(0.0f, 0.5f, 0.0f, 5, 1, 1, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -0.45f, -0.45f, 0.0f, -0.45f, -0.45f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -0.45f, -0.45f, 0.0f, -0.45f, -0.45f, 0.0f, 0.0f, 0.0f);
-        this.gunModel[4].func_78793_a(1.0f, -1.0f, -0.5f);
+        this.gunModel[4].setRotationPoint(1.0f, -1.0f, -0.5f);
         this.gunModel[5].addShapeBox(0.0f, 0.0f, 0.0f, 1, 8, 1, 0.0f, -0.2f, 0.0f, -0.2f, -0.2f, 0.0f, -0.2f, -0.2f, 0.0f, -0.2f, -0.2f, 0.0f, -0.2f, -0.2f, 0.0f, -0.2f, -0.2f, 0.0f, -0.2f, -0.2f, 0.0f, -0.2f, -0.2f, 0.0f, -0.2f);
-        this.gunModel[5].func_78793_a(1.0f, -11.0f, -0.5f);
+        this.gunModel[5].setRotationPoint(1.0f, -11.0f, -0.5f);
         this.gunModel[6].addShapeBox(0.0f, 0.0f, 0.0f, 1, 8, 1, 0.0f, -0.2f, 0.0f, -0.2f, -0.2f, 0.0f, -0.2f, -0.2f, 0.0f, -0.2f, -0.2f, 0.0f, -0.2f, -0.2f, 0.0f, -0.2f, -0.2f, 0.0f, -0.2f, -0.2f, 0.0f, -0.2f, -0.2f, 0.0f, -0.2f);
-        this.gunModel[6].func_78793_a(1.0f, 5.0f, -0.5f);
+        this.gunModel[6].setRotationPoint(1.0f, 5.0f, -0.5f);
         this.gunModel[7].addShapeBox(0.0f, 0.5f, 0.0f, 3, 1, 1, 0.0f, 0.0f, -0.2f, -0.2f, 0.0f, -0.45f, -0.45f, 0.0f, -0.45f, -0.45f, 0.0f, -0.2f, -0.2f, 0.0f, -0.2f, -0.2f, 0.0f, -0.45f, -0.45f, 0.0f, -0.45f, -0.45f, 0.0f, -0.2f, -0.2f);
-        this.gunModel[7].func_78793_a(3.0f, -14.0f, -0.5f);
+        this.gunModel[7].setRotationPoint(3.0f, -14.0f, -0.5f);
         this.gunModel[8].addShapeBox(0.0f, 0.5f, 0.0f, 3, 1, 1, 0.0f, 0.0f, -0.2f, -0.2f, 0.0f, -0.45f, -0.45f, 0.0f, -0.45f, -0.45f, 0.0f, -0.2f, -0.2f, 0.0f, -0.2f, -0.2f, 0.0f, -0.45f, -0.45f, 0.0f, -0.45f, -0.45f, 0.0f, -0.2f, -0.2f);
-        this.gunModel[8].func_78793_a(3.0f, 14.0f, -0.5f);
+        this.gunModel[8].setRotationPoint(3.0f, 14.0f, -0.5f);
         this.gunModel[9].addShapeBox(0.0f, 0.0f, 0.0f, 1, 2, 1, 0.0f, -0.2f, 0.0f, -0.2f, -0.2f, 0.0f, -0.2f, -0.2f, 0.0f, -0.2f, -0.2f, 0.0f, -0.2f, -2.0f, 0.2f, -0.2f, 1.0f, -0.2f, -0.2f, 1.0f, -0.2f, -0.2f, -2.0f, 0.2f, -0.2f);
-        this.gunModel[9].func_78793_a(1.0f, 13.0f, -0.5f);
+        this.gunModel[9].setRotationPoint(1.0f, 13.0f, -0.5f);
         this.gunModel[10].addShapeBox(0.0f, 0.0f, 0.0f, 1, 2, 1, 0.0f, -2.0f, 0.2f, -0.2f, 1.0f, -0.2f, -0.2f, 1.0f, -0.2f, -0.2f, -2.0f, 0.2f, -0.2f, -0.2f, 0.0f, -0.2f, -0.2f, 0.0f, -0.2f, -0.2f, 0.0f, -0.2f, -0.2f, 0.0f, -0.2f);
-        this.gunModel[10].func_78793_a(1.0f, -13.0f, -0.5f);
+        this.gunModel[10].setRotationPoint(1.0f, -13.0f, -0.5f);
     }
 }

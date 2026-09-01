@@ -268,50 +268,50 @@ public class ModelVehicle extends ModelDriveable
             }
             for (final ModelRendererTurbo aSteeringWheelModel : this.steeringWheelModel) {
                 if (!vehicle.hugeBoat) {
-                    aSteeringWheelModel.field_78795_f = vehicle.wheelsYaw * 3.1415927f / 180.0f * 3.0f;
+                    aSteeringWheelModel.rotateAngleX = vehicle.wheelsYaw * 3.1415927f / 180.0f * 3.0f;
                 }
                 else {
-                    aSteeringWheelModel.field_78795_f = -vehicle.wheelsYaw * 3.1415927f / 180.0f * 3.0f;
+                    aSteeringWheelModel.rotateAngleX = -vehicle.wheelsYaw * 3.1415927f / 180.0f * 3.0f;
                 }
                 aSteeringWheelModel.render(f5, this.oldRotateOrder);
             }
         }
         if (vehicle.isPartIntact(EnumDriveablePart.backLeftWheel)) {
             for (final ModelRendererTurbo aLeftBackWheelModel : this.leftBackWheelModel) {
-                aLeftBackWheelModel.field_78808_h = (rotateWheels ? (-vehicle.wheelsAngle) : 0.0f);
+                aLeftBackWheelModel.rotateAngleZ = (rotateWheels ? (-vehicle.wheelsAngle) : 0.0f);
                 aLeftBackWheelModel.render(f5, this.oldRotateOrder);
             }
         }
         if (vehicle.isPartIntact(EnumDriveablePart.backRightWheel)) {
             for (final ModelRendererTurbo aRightBackWheelModel : this.rightBackWheelModel) {
-                aRightBackWheelModel.field_78808_h = (rotateWheels ? (-vehicle.wheelsAngle) : 0.0f);
+                aRightBackWheelModel.rotateAngleZ = (rotateWheels ? (-vehicle.wheelsAngle) : 0.0f);
                 aRightBackWheelModel.render(f5, this.oldRotateOrder);
             }
         }
         if (vehicle.isPartIntact(EnumDriveablePart.frontLeftWheel)) {
             for (final ModelRendererTurbo aLeftFrontWheelModel : this.leftFrontWheelModel) {
-                aLeftFrontWheelModel.field_78808_h = (rotateWheels ? (-vehicle.wheelsAngle) : 0.0f);
-                aLeftFrontWheelModel.field_78796_g = -vehicle.wheelsYaw * 3.1415927f / 180.0f * 3.0f;
+                aLeftFrontWheelModel.rotateAngleZ = (rotateWheels ? (-vehicle.wheelsAngle) : 0.0f);
+                aLeftFrontWheelModel.rotateAngleY = -vehicle.wheelsYaw * 3.1415927f / 180.0f * 3.0f;
                 aLeftFrontWheelModel.render(f5, this.oldRotateOrder);
             }
         }
         if (vehicle.isPartIntact(EnumDriveablePart.frontRightWheel)) {
             for (final ModelRendererTurbo aRightFrontWheelModel : this.rightFrontWheelModel) {
-                aRightFrontWheelModel.field_78808_h = (rotateWheels ? (-vehicle.wheelsAngle) : 0.0f);
-                aRightFrontWheelModel.field_78796_g = -vehicle.wheelsYaw * 3.1415927f / 180.0f * 3.0f;
+                aRightFrontWheelModel.rotateAngleZ = (rotateWheels ? (-vehicle.wheelsAngle) : 0.0f);
+                aRightFrontWheelModel.rotateAngleY = -vehicle.wheelsYaw * 3.1415927f / 180.0f * 3.0f;
                 aRightFrontWheelModel.render(f5, this.oldRotateOrder);
             }
         }
         if (vehicle.isPartIntact(EnumDriveablePart.frontWheel)) {
             for (final ModelRendererTurbo aFrontWheelModel : this.frontWheelModel) {
-                aFrontWheelModel.field_78808_h = (rotateWheels ? (-vehicle.wheelsAngle) : 0.0f);
-                aFrontWheelModel.field_78796_g = -vehicle.wheelsYaw * 3.1415927f / 180.0f * 3.0f;
+                aFrontWheelModel.rotateAngleZ = (rotateWheels ? (-vehicle.wheelsAngle) : 0.0f);
+                aFrontWheelModel.rotateAngleY = -vehicle.wheelsYaw * 3.1415927f / 180.0f * 3.0f;
                 aFrontWheelModel.render(f5, this.oldRotateOrder);
             }
         }
         if (vehicle.isPartIntact(EnumDriveablePart.backWheel)) {
             for (final ModelRendererTurbo aBackWheelModel : this.backWheelModel) {
-                aBackWheelModel.field_78808_h = (rotateWheels ? (-vehicle.wheelsAngle) : 0.0f);
+                aBackWheelModel.rotateAngleZ = (rotateWheels ? (-vehicle.wheelsAngle) : 0.0f);
                 aBackWheelModel.render(f5, this.oldRotateOrder);
             }
         }
@@ -320,7 +320,7 @@ public class ModelVehicle extends ModelDriveable
                 aLeftTrackModel.render(f5, this.oldRotateOrder);
             }
             for (final ModelRendererTurbo leftTrackWheelModel : this.leftTrackWheelModels) {
-                leftTrackWheelModel.field_78808_h = (rotateWheels ? (-vehicle.wheelsAngle) : 0.0f);
+                leftTrackWheelModel.rotateAngleZ = (rotateWheels ? (-vehicle.wheelsAngle) : 0.0f);
                 leftTrackWheelModel.render(f5, this.oldRotateOrder);
             }
             if (vehicle.animFrameLeft == 0) {
@@ -351,7 +351,7 @@ public class ModelVehicle extends ModelDriveable
                 aRightTrackModel.render(f5, this.oldRotateOrder);
             }
             for (final ModelRendererTurbo rightTrackWheelModel : this.rightTrackWheelModels) {
-                rightTrackWheelModel.field_78808_h = (rotateWheels ? (-vehicle.wheelsAngle) : 0.0f);
+                rightTrackWheelModel.rotateAngleZ = (rotateWheels ? (-vehicle.wheelsAngle) : 0.0f);
                 rightTrackWheelModel.render(f5, this.oldRotateOrder);
             }
             if (vehicle.animFrameRight == 0) {
@@ -390,21 +390,21 @@ public class ModelVehicle extends ModelDriveable
                 for (final ModelRendererTurbo gunModelPart : gunModel[0]) {
                     GL11.glPushMatrix();
                     GL11.glScalef(vehicle.getVehicleType().vehicleGunModelScale, vehicle.getVehicleType().vehicleGunModelScale, vehicle.getVehicleType().vehicleGunModelScale);
-                    gunModelPart.field_78796_g = -yaw * 3.1415927f / 180.0f;
-                    gunModelPart.func_78785_a(f5);
+                    gunModelPart.rotateAngleY = -yaw * 3.1415927f / 180.0f;
+                    gunModelPart.render(f5);
                     GL11.glPopMatrix();
                 }
                 GL11.glPushMatrix();
                 GL11.glScalef(vehicle.getVehicleType().vehicleGunModelScale, vehicle.getVehicleType().vehicleGunModelScale, vehicle.getVehicleType().vehicleGunModelScale);
                 for (final ModelRendererTurbo gunModelPart : gunModel[1]) {
-                    gunModelPart.field_78796_g = -yaw * 3.1415927f / 180.0f;
-                    gunModelPart.field_78808_h = -pitch * 3.1415927f / 180.0f;
-                    gunModelPart.func_78785_a(f5);
+                    gunModelPart.rotateAngleY = -yaw * 3.1415927f / 180.0f;
+                    gunModelPart.rotateAngleZ = -pitch * 3.1415927f / 180.0f;
+                    gunModelPart.render(f5);
                 }
                 for (final ModelRendererTurbo gunModelPart : gunModel[2]) {
-                    gunModelPart.field_78796_g = -yaw * 3.1415927f / 180.0f;
-                    gunModelPart.field_78808_h = -pitch * 3.1415927f / 180.0f;
-                    gunModelPart.func_78785_a(f5);
+                    gunModelPart.rotateAngleY = -yaw * 3.1415927f / 180.0f;
+                    gunModelPart.rotateAngleZ = -pitch * 3.1415927f / 180.0f;
+                    gunModelPart.render(f5);
                 }
                 GL11.glPopMatrix();
             }
@@ -414,7 +414,7 @@ public class ModelVehicle extends ModelDriveable
     public void renderDoor(final EntityVehicle vehicle, final float f5) {
         if (vehicle.isPartIntact(EnumDriveablePart.core)) {
             for (final ModelRendererTurbo aDoorAnimModel : this.doorAnimModel) {
-                aDoorAnimModel.func_78785_a(f5);
+                aDoorAnimModel.render(f5);
             }
         }
     }
@@ -422,7 +422,7 @@ public class ModelVehicle extends ModelDriveable
     public void renderDoor2(final EntityVehicle vehicle, final float f5) {
         if (vehicle.isPartIntact(EnumDriveablePart.core)) {
             for (final ModelRendererTurbo aDoor2AnimModel : this.door2AnimModel) {
-                aDoor2AnimModel.func_78785_a(f5);
+                aDoor2AnimModel.render(f5);
             }
         }
     }
@@ -445,12 +445,12 @@ public class ModelVehicle extends ModelDriveable
         final float dPitch = vehicle.seats[0].looking.getPitch() - vehicle.seats[0].prevLooking.getPitch();
         final float aPitch = vehicle.seats[0].prevLooking.getPitch() + dPitch * dt;
         for (final ModelRendererTurbo aTurretModel : this.turretModel) {
-            if (Minecraft.func_71410_x().field_71474_y.field_74320_O != 0 || vehicle.seats[0].field_70153_n != Minecraft.func_71410_x().field_71439_g || vehicle.alwaysShowTurret) {
+            if (Minecraft.getMinecraft().gameSettings.thirdPersonView != 0 || vehicle.seats[0].riddenByEntity != Minecraft.getMinecraft().thePlayer || vehicle.alwaysShowTurret) {
                 aTurretModel.render(f5, this.oldRotateOrder);
             }
         }
         for (final ModelRendererTurbo aBarrelModel : this.barrelModel) {
-            aBarrelModel.field_78808_h = -(aPitch * 3.1415927f / 180.0f);
+            aBarrelModel.rotateAngleZ = -(aPitch * 3.1415927f / 180.0f);
             aBarrelModel.render(f5, this.oldRotateOrder);
         }
         GL11.glPushMatrix();
@@ -463,7 +463,7 @@ public class ModelVehicle extends ModelDriveable
         for (int i = 0; i < this.ammoModel.length; ++i) {
             if (i >= type.numMissileSlots || vehicle.getDriveableData().missiles[i] != null) {
                 for (int j = 0; j < this.ammoModel[i].length; ++j) {
-                    this.ammoModel[i][j].field_78808_h = -pitch * 3.1415927f / 180.0f;
+                    this.ammoModel[i][j].rotateAngleZ = -pitch * 3.1415927f / 180.0f;
                     this.ammoModel[i][j].render(f5, this.oldRotateOrder);
                 }
             }
@@ -527,17 +527,17 @@ public class ModelVehicle extends ModelDriveable
                 final float effectiveYaw = yaw2 - driverYaw;
                 final ModelRendererTurbo[][] gunModel = this.gunModels.get(seat.seatInfo.gunName);
                 for (final ModelRendererTurbo gunModelPart : gunModel[0]) {
-                    gunModelPart.field_78796_g = -effectiveYaw * 3.1415927f / 180.0f;
+                    gunModelPart.rotateAngleY = -effectiveYaw * 3.1415927f / 180.0f;
                     gunModelPart.render(f5, this.oldRotateOrder);
                 }
                 for (final ModelRendererTurbo gunModelPart : gunModel[1]) {
-                    gunModelPart.field_78796_g = -effectiveYaw * 3.1415927f / 180.0f;
-                    gunModelPart.field_78808_h = -pitch2 * 3.1415927f / 180.0f;
+                    gunModelPart.rotateAngleY = -effectiveYaw * 3.1415927f / 180.0f;
+                    gunModelPart.rotateAngleZ = -pitch2 * 3.1415927f / 180.0f;
                     gunModelPart.render(f5, this.oldRotateOrder);
                 }
                 for (final ModelRendererTurbo gunModelPart : gunModel[2]) {
-                    gunModelPart.field_78796_g = -effectiveYaw * 3.1415927f / 180.0f;
-                    gunModelPart.field_78808_h = -pitch2 * 3.1415927f / 180.0f;
+                    gunModelPart.rotateAngleY = -effectiveYaw * 3.1415927f / 180.0f;
+                    gunModelPart.rotateAngleZ = -pitch2 * 3.1415927f / 180.0f;
                     gunModelPart.render(f5, this.oldRotateOrder);
                 }
             }
