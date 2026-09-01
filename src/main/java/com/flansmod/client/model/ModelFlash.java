@@ -24,7 +24,7 @@ public class ModelFlash extends ModelBase
     public void render(final ModelRendererTurbo[] flash, final float f) {
         for (final ModelRendererTurbo model : flash) {
             if (model != null) {
-                model.func_78785_a(f);
+                model.render(f);
             }
         }
     }
@@ -34,7 +34,7 @@ public class ModelFlash extends ModelBase
             final ModelRendererTurbo[] model = array;
             for (final ModelRendererTurbo flash : array) {
                 flash.doMirror(false, true, true);
-                flash.func_78793_a(flash.field_78800_c, -flash.field_78797_d, -flash.field_78798_e);
+                flash.setRotationPoint(flash.rotationPointX, -flash.rotationPointY, -flash.rotationPointZ);
             }
         }
     }

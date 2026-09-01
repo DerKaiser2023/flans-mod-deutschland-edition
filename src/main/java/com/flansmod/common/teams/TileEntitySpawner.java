@@ -47,20 +47,20 @@ public class TileEntitySpawner extends TileEntity implements ITeamObject
         TeamsManager.getInstance().registerObject(this);
     }
     
-    public Packet func_145844_m() {
+    public Packet getDescriptionPacket() {
         final NBTTagCompound tags = new NBTTagCompound();
-        tags.func_74774_a("TeamID", (byte)((this.base == null) ? 0 : ((byte)this.base.getOwnerID())));
-        tags.func_74778_a("Map", (this.base == null || this.base.getMap() == null) ? "" : this.base.getMap().shortName);
-        return (Packet)new S35PacketUpdateTileEntity(this.field_145851_c, this.field_145848_d, this.field_145849_e, 1, tags);
+        tags.setByte("TeamID", (byte)((this.base == null) ? 0 : ((byte)this.base.getOwnerID())));
+        tags.setString("Map", (this.base == null || this.base.getMap() == null) ? "" : this.base.getMap().shortName);
+        return (Packet)new S35PacketUpdateTileEntity(this.xCoord, this.yCoord, this.zCoord, 1, tags);
     }
     
     public void onDataPacket(final NetworkManager net, final S35PacketUpdateTileEntity packet) {
-        this.teamID = packet.func_148857_g().func_74771_c("TeamID");
-        this.map = packet.func_148857_g().func_74779_i("Map");
+        this.teamID = packet.getNbtCompound().getByte("TeamID");
+        this.map = packet.getNbtCompound().getString("Map");
     }
     
-    public void func_145845_h() {
-        if (this.field_145850_b.field_72995_K) {
+    public void updateEntity() {
+        if (this.worldObj.isRemote) {
             return;
         }
         if (this.baseID >= 0 && this.base == null) {
@@ -70,15 +70,15 @@ public class TileEntitySpawner extends TileEntity implements ITeamObject
                 newBase.addObject(this);
             }
         }
-        if (this.field_145850_b.func_147439_a(this.field_145851_c, this.field_145848_d, this.field_145849_e) != FlansMod.spawner) {
+        if (this.worldObj.getBlock(this.xCoord, this.yCoord, this.zCoord) != FlansMod.spawner) {
             this.destroy();
             return;
         }
-        if (this.field_145850_b.func_72805_g(this.field_145851_c, this.field_145848_d, this.field_145849_e) == 1) {
+        if (this.worldObj.getBlockMetadata(this.xCoord, this.yCoord, this.zCoord) == 1) {
             return;
         }
         for (int i = this.itemEntities.size() - 1; i >= 0; --i) {
-            if (this.itemEntities.get(i).field_70128_L) {
+            if (this.itemEntities.get(i).isDead) {
                 this.itemEntities.remove(i);
             }
         }
@@ -88,57 +88,57 @@ public class TileEntitySpawner extends TileEntity implements ITeamObject
         if (this.currentDelay == 0) {
             this.currentDelay = ((this.spawnDelay > 0) ? this.spawnDelay : 20);
             for (int i = 0; i < this.stacksToSpawn.size(); ++i) {
-                if (this.field_145850_b.func_72805_g(this.field_145851_c, this.field_145848_d, this.field_145849_e) == 2) {
-                    if (this.spawnedEntity == null || this.spawnedEntity.field_70128_L) {
+                if (this.worldObj.getBlockMetadata(this.xCoord, this.yCoord, this.zCoord) == 2) {
+                    if (this.spawnedEntity == null || this.spawnedEntity.isDead) {
                         final ItemStack stack = this.stacksToSpawn.get(i);
-                        if (stack != null && stack.func_77973_b() instanceof ItemPlane) {
-                            this.spawnedEntity = ((ItemPlane)stack.func_77973_b()).spawnPlane(this.field_145850_b, this.field_145851_c + 0.5f, this.field_145848_d + 0.5f, this.field_145849_e + 0.5f, stack);
+                        if (stack != null && stack.getItem() instanceof ItemPlane) {
+                            this.spawnedEntity = ((ItemPlane)stack.getItem()).spawnPlane(this.worldObj, this.xCoord + 0.5f, this.yCoord + 0.5f, this.zCoord + 0.5f, stack);
                         }
-                        if (stack != null && stack.func_77973_b() instanceof ItemVehicle) {
-                            this.spawnedEntity = ((ItemVehicle)stack.func_77973_b()).spawnVehicle(this.field_145850_b, this.field_145851_c + 0.5f, this.field_145848_d + 0.5f, this.field_145849_e + 0.5f, stack);
+                        if (stack != null && stack.getItem() instanceof ItemVehicle) {
+                            this.spawnedEntity = ((ItemVehicle)stack.getItem()).spawnVehicle(this.worldObj, this.xCoord + 0.5f, this.yCoord + 0.5f, this.zCoord + 0.5f, stack);
                         }
-                        if (stack != null && stack.func_77973_b() instanceof ItemAAGun) {
-                            this.spawnedEntity = ((ItemAAGun)stack.func_77973_b()).spawnAAGun(this.field_145850_b, this.field_145851_c + 0.5f, this.field_145848_d, this.field_145849_e + 0.5f, stack);
+                        if (stack != null && stack.getItem() instanceof ItemAAGun) {
+                            this.spawnedEntity = ((ItemAAGun)stack.getItem()).spawnAAGun(this.worldObj, this.xCoord + 0.5f, this.yCoord, this.zCoord + 0.5f, stack);
                         }
                     }
                 }
                 else {
                     final EntityTeamItem itemEntity = new EntityTeamItem(this, i);
-                    this.field_145850_b.func_72838_d((Entity)itemEntity);
+                    this.worldObj.spawnEntityInWorld((Entity)itemEntity);
                 }
             }
         }
     }
     
-    public void func_145841_b(final NBTTagCompound nbt) {
-        super.func_145841_b(nbt);
-        nbt.func_74768_a("delay", this.spawnDelay);
-        nbt.func_74768_a("Base", this.baseID);
-        nbt.func_74768_a("dim", this.field_145850_b.field_73011_w.field_76574_g);
-        nbt.func_74768_a("numStacks", this.stacksToSpawn.size());
+    public void writeToNBT(final NBTTagCompound nbt) {
+        super.writeToNBT(nbt);
+        nbt.setInteger("delay", this.spawnDelay);
+        nbt.setInteger("Base", this.baseID);
+        nbt.setInteger("dim", this.worldObj.provider.dimensionId);
+        nbt.setInteger("numStacks", this.stacksToSpawn.size());
         for (int i = 0; i < this.stacksToSpawn.size(); ++i) {
             final NBTTagCompound stackNBT = ((ItemStack)this.stacksToSpawn.get(i)).writeToNBT(new NBTTagCompound());
-            nbt.func_74782_a("stack" + i, (NBTBase)stackNBT);
+            nbt.setTag("stack" + i, (NBTBase)stackNBT);
         }
     }
     
-    public void func_145839_a(final NBTTagCompound nbt) {
-        super.func_145839_a(nbt);
-        final int func_74762_e = nbt.func_74762_e("delay");
-        this.spawnDelay = func_74762_e;
-        this.currentDelay = func_74762_e;
+    public void readFromNBT(final NBTTagCompound nbt) {
+        super.readFromNBT(nbt);
+        final int getInteger = nbt.getInteger("delay");
+        this.spawnDelay = getInteger;
+        this.currentDelay = getInteger;
         if (this.currentDelay < 20) {
             this.currentDelay = 20;
         }
-        this.baseID = nbt.func_74762_e("Base");
-        this.dimension = nbt.func_74762_e("dim");
+        this.baseID = nbt.getInteger("Base");
+        this.dimension = nbt.getInteger("dim");
         this.setBase(TeamsManager.getInstance().getBase(this.baseID));
         if (this.base != null) {
             this.base.addObject(this);
         }
-        for (int i = 0; i < nbt.func_74762_e("numStacks"); ++i) {
+        for (int i = 0; i < nbt.getInteger("numStacks"); ++i) {
             try {
-                this.stacksToSpawn.add(ItemStack.loadItemStackFromNBT(nbt.func_74775_l("stack" + i)));
+                this.stacksToSpawn.add(ItemStack.loadItemStackFromNBT(nbt.getCompoundTag("stack" + i)));
             }
             catch (final Exception e) {
                 e.printStackTrace();
@@ -151,14 +151,14 @@ public class TileEntitySpawner extends TileEntity implements ITeamObject
     }
     
     public int getTeamID() {
-        if (this.field_145850_b.field_72995_K) {
+        if (this.worldObj.isRemote) {
             return this.teamID;
         }
         return (this.base == null) ? 0 : this.base.getOwnerID();
     }
     
     public void onBaseSet(final int newTeamID) {
-        FlansMod.packetHandler.sendToDimension(this.func_145844_m(), (this.field_145850_b == null) ? this.dimension : this.field_145850_b.field_73011_w.field_76574_g);
+        FlansMod.packetHandler.sendToDimension(this.getDescriptionPacket(), (this.worldObj == null) ? this.dimension : this.worldObj.provider.dimensionId);
     }
     
     public void onBaseCapture(final int newTeamID) {
@@ -170,30 +170,30 @@ public class TileEntitySpawner extends TileEntity implements ITeamObject
         if (b != null) {
             this.baseID = b.getBaseID();
         }
-        FlansMod.packetHandler.sendToDimension(this.func_145844_m(), (this.field_145850_b == null) ? this.dimension : this.field_145850_b.field_73011_w.field_76574_g);
+        FlansMod.packetHandler.sendToDimension(this.getDescriptionPacket(), (this.worldObj == null) ? this.dimension : this.worldObj.provider.dimensionId);
     }
     
     public void tick() {
     }
     
     public void destroy() {
-        this.field_145850_b.func_147449_b(this.field_145851_c, this.field_145848_d, this.field_145849_e, Blocks.field_150350_a);
+        this.worldObj.setBlock(this.xCoord, this.yCoord, this.zCoord, Blocks.air);
     }
     
     public double getPosX() {
-        return this.field_145851_c + 0.5f;
+        return this.xCoord + 0.5f;
     }
     
     public double getPosY() {
-        return this.field_145848_d + 0.5f;
+        return this.yCoord + 0.5f;
     }
     
     public double getPosZ() {
-        return this.field_145849_e + 0.5f;
+        return this.zCoord + 0.5f;
     }
     
     public boolean isSpawnPoint() {
-        final int metadata = this.field_145850_b.func_72805_g(this.field_145851_c, this.field_145848_d, this.field_145849_e);
+        final int metadata = this.worldObj.getBlockMetadata(this.xCoord, this.yCoord, this.zCoord);
         return metadata == 1;
     }
     

@@ -40,20 +40,20 @@ public class Matrix3f
     }
     
     public static Matrix3f getMatrixRotX(final float r) {
-        final float sn = MathHelper.func_76126_a(r);
-        final float cs = MathHelper.func_76134_b(r);
+        final float sn = MathHelper.sin(r);
+        final float cs = MathHelper.cos(r);
         return new Matrix3f(new float[][] { { 1.0f, 0.0f, 0.0f }, { 0.0f, cs, -sn }, { 0.0f, sn, cs } });
     }
     
     public static Matrix3f getMatrixRotY(final float r) {
-        final float sn = MathHelper.func_76126_a(r);
-        final float cs = MathHelper.func_76134_b(r);
+        final float sn = MathHelper.sin(r);
+        final float cs = MathHelper.cos(r);
         return new Matrix3f(new float[][] { { cs, 0.0f, sn }, { 0.0f, 1.0f, 0.0f }, { -sn, 0.0f, cs } });
     }
     
     public static Matrix3f getMatrixRotZ(final float r) {
-        final float sn = MathHelper.func_76126_a(r);
-        final float cs = MathHelper.func_76134_b(r);
+        final float sn = MathHelper.sin(r);
+        final float cs = MathHelper.cos(r);
         return new Matrix3f(new float[][] { { cs, -sn, 0.0f }, { sn, cs, 0.0f }, { 0.0f, 0.0f, 1.0f } });
     }
     
@@ -62,14 +62,14 @@ public class Matrix3f
         final float[] retVec = new float[3];
         for (int i = 0; i < 3; ++i) {
             final float[] row = { m.matrix[i][0], m.matrix[i][1], m.matrix[i][2] };
-            final float[] column = { (float)vec.field_72450_a, (float)vec.field_72448_b, (float)vec.field_72449_c };
+            final float[] column = { (float)vec.xCoord, (float)vec.yCoord, (float)vec.zCoord };
             for (int sm = 0; sm < 3; ++sm) {
                 final float[] array = retVec;
                 final int n = i;
                 array[n] += row[sm] * column[sm];
             }
         }
-        return Vec3.func_72443_a((double)retVec[0], (double)retVec[1], (double)retVec[2]);
+        return Vec3.createVectorHelper((double)retVec[0], (double)retVec[1], (double)retVec[2]);
     }
     
     public static Matrix3f multMatrix(final Matrix3f m1, final Matrix3f m2) {

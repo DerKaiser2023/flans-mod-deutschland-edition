@@ -33,16 +33,16 @@ public class ItemGrenade extends ItemShootable implements IFlanItem
     public ItemGrenade(final GrenadeType t) {
         super(t);
         this.type = t;
-        ((ItemGrenade)(this.type.item = this)).func_77637_a((CreativeTabs)FlansMod.tabFlanGuns);
+        ((ItemGrenade)(this.type.item = this)).setCreativeTab((CreativeTabs)FlansMod.tabFlanGuns);
     }
     
     public Multimap getAttributeModifiers(final ItemStack stack) {
         final Multimap multimap = super.getAttributeModifiers(stack);
-        multimap.put((Object)SharedMonsterAttributes.field_111264_e.func_111108_a(), (Object)new AttributeModifier(ItemGrenade.field_111210_e, "Weapon modifier", (double)this.type.meleeDamage, 0));
+        multimap.put((Object)SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName(), (Object)new AttributeModifier(ItemGrenade.itemModifierUUID, "Weapon modifier", (double)this.type.meleeDamage, 0));
         return multimap;
     }
     
-    public boolean func_77662_d() {
+    public boolean isFull3D() {
         return true;
     }
     
@@ -50,19 +50,19 @@ public class ItemGrenade extends ItemShootable implements IFlanItem
         return this.type.meleeDamage == 0;
     }
     
-    public ItemStack func_77659_a(final ItemStack stack, final World world, final EntityPlayer player) {
-        final PlayerData data = PlayerHandler.getPlayerData(player, world.field_72995_K ? Side.CLIENT : Side.SERVER);
+    public ItemStack onItemRightClick(final ItemStack stack, final World world, final EntityPlayer player) {
+        final PlayerData data = PlayerHandler.getPlayerData(player, world.isRemote ? Side.CLIENT : Side.SERVER);
         if (this.type.canThrow && data != null && data.shootTimeRight <= 0.0f && data.shootTimeLeft <= 0.0f && !TeamsManager.violence) {
             data.shootTimeRight = (float)this.type.throwDelay;
             final EntityGrenade grenade = new EntityGrenade(world, this.type, (EntityLivingBase)player);
-            if (!world.field_72995_K) {
-                world.func_72838_d((Entity)grenade);
+            if (!world.isRemote) {
+                world.spawnEntityInWorld((Entity)grenade);
             }
             if (this.type.remote) {
                 data.remoteExplosives.add(grenade);
             }
-            if (!player.field_71075_bZ.field_75098_d) {
-                --stack.field_77994_a;
+            if (!player.capabilities.isCreativeMode) {
+                --stack.stackSize;
             }
             if (this.type.dropItemOnThrow != null) {
                 String itemName = this.type.dropItemOnDetonate;
@@ -72,20 +72,20 @@ public class ItemGrenade extends ItemShootable implements IFlanItem
                     itemName = itemName.split("\\.")[0];
                 }
                 final ItemStack dropStack = InfoType.getRecipeElement(itemName, damage);
-                world.func_72838_d((Entity)new EntityItem(world, player.field_70165_t, player.field_70163_u, player.field_70161_v, dropStack));
+                world.spawnEntityInWorld((Entity)new EntityItem(world, player.posX, player.posY, player.posZ, dropStack));
             }
         }
         return stack;
     }
     
     @SideOnly(Side.CLIENT)
-    public int func_82790_a(final ItemStack par1ItemStack, final int par2) {
+    public int getColorFromItemStack(final ItemStack par1ItemStack, final int par2) {
         return this.type.colour;
     }
     
     @SideOnly(Side.CLIENT)
-    public void func_94581_a(final IIconRegister icon) {
-        this.field_77791_bV = icon.func_94245_a("FlansMod:" + this.type.iconPath);
+    public void registerIcons(final IIconRegister icon) {
+        this.itemIcon = icon.registerIcon("FlansMod:" + this.type.iconPath);
     }
     
     @Override

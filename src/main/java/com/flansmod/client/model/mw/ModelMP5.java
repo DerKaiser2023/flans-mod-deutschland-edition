@@ -22,8 +22,8 @@ public class ModelMP5 extends ModelGun
         (this.gunModel[3] = new ModelRendererTurbo(this, 26, 0, textureX, textureY)).addBox(11.0f, 3.0f, -0.5f, 1, 1, 1);
         (this.gunModel[5] = new ModelRendererTurbo(this, 26, 0, textureX, textureY)).addBox(10.0f, 5.0f, -0.5f, 1, 1, 1);
         (this.gunModel[4] = new ModelRendererTurbo(this, 0, 9, textureX, textureY)).addBox(-0.75f, -3.0f, -0.75f, 1.5f, 4.0f, 1.5f);
-        this.gunModel[4].func_78793_a(1.0f, 2.0f, 0.0f);
-        this.gunModel[4].field_78808_h = -0.5f;
+        this.gunModel[4].setRotationPoint(1.0f, 2.0f, 0.0f);
+        this.gunModel[4].rotateAngleZ = -0.5f;
         this.ammoModel = new ModelRendererTurbo[2];
         (this.ammoModel[0] = new ModelRendererTurbo(this, 8, 9, textureX, textureY)).addShapeBox(3.5f, 0.0f, -0.5f, 1, 3, 1, 0.0f, -1.0f, 0.0f, 0.0f, 0.8f, -0.2f, 0.0f, 0.8f, -0.2f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
         (this.ammoModel[1] = new ModelRendererTurbo(this, 12, 9, textureX, textureY)).addShapeBox(3.5f, -3.0f, -0.5f, 1, 3, 1, 0.0f, -2.5f, -1.0f, 0.0f, 2.0f, -1.5f, 0.0f, 2.0f, -1.5f, 0.0f, -2.5f, -1.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.8f, 0.2f, 0.0f, 0.8f, 0.2f, 0.0f, -1.0f, 0.0f, 0.0f);

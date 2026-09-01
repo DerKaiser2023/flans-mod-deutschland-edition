@@ -193,7 +193,7 @@ public class AAGunType extends InfoType
     }
     
     public boolean isAmmo(final ItemStack stack) {
-        return stack != null && stack.func_77973_b() instanceof ItemBullet && this.isAmmo(((ItemBullet)stack.func_77973_b()).type);
+        return stack != null && stack.getItem() instanceof ItemBullet && this.isAmmo(((ItemBullet)stack.getItem()).type);
     }
     
     public static AAGunType getAAGun(final String s) {

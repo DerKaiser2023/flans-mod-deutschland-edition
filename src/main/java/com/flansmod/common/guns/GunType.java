@@ -910,10 +910,10 @@ public class GunType extends PaintableType implements IScope
         if (stack == null) {
             return false;
         }
-        if (stack.func_77973_b() instanceof ItemBullet) {
-            return this.isAmmo(((ItemBullet)stack.func_77973_b()).type, stack);
+        if (stack.getItem() instanceof ItemBullet) {
+            return this.isAmmo(((ItemBullet)stack.getItem()).type, stack);
         }
-        return stack.func_77973_b() instanceof ItemGrenade && this.isAmmo(((ItemGrenade)stack.func_77973_b()).type, stack);
+        return stack.getItem() instanceof ItemGrenade && this.isAmmo(((ItemGrenade)stack.getItem()).type, stack);
     }
     
     @Override
@@ -949,8 +949,8 @@ public class GunType extends PaintableType implements IScope
     public ArrayList<AttachmentType> getCurrentAttachments(final ItemStack gun) {
         this.checkForTags(gun);
         final ArrayList<AttachmentType> attachments = new ArrayList<AttachmentType>();
-        final NBTTagCompound attachmentTags = gun.field_77990_d.func_74775_l("attachments");
-        final NBTTagList genericsList = attachmentTags.func_150295_c("generics", 10);
+        final NBTTagCompound attachmentTags = gun.stackTagCompound.getCompoundTag("attachments");
+        final NBTTagList genericsList = attachmentTags.getTagList("generics", 10);
         for (int i = 0; i < this.numGenericAttachmentSlots; ++i) {
             this.appendToList(gun, "generic_" + i, attachments);
         }
@@ -1046,13 +1046,13 @@ public class GunType extends PaintableType implements IScope
     
     public AttachmentType getAttachment(final ItemStack gun, final String name) {
         this.checkForTags(gun);
-        return AttachmentType.getFromNBT(gun.field_77990_d.func_74775_l("attachments").func_74775_l(name));
+        return AttachmentType.getFromNBT(gun.stackTagCompound.getCompoundTag("attachments").getCompoundTag(name));
     }
     
     public ItemStack getAttachmentItemStack(final ItemStack gun, final String name) {
         this.checkForTags(gun);
         try {
-            return ItemStack.loadItemStackFromNBT(gun.field_77990_d.func_74775_l("attachments").func_74775_l(name));
+            return ItemStack.loadItemStackFromNBT(gun.stackTagCompound.getCompoundTag("attachments").getCompoundTag(name));
         }
         catch (final Exception e) {
             e.printStackTrace();
@@ -1061,23 +1061,23 @@ public class GunType extends PaintableType implements IScope
     }
     
     private void checkForTags(final ItemStack gun) {
-        if (!gun.func_77942_o()) {
-            gun.field_77990_d = new NBTTagCompound();
+        if (!gun.hasTagCompound()) {
+            gun.stackTagCompound = new NBTTagCompound();
         }
-        if (!gun.field_77990_d.func_74764_b("attachments")) {
+        if (!gun.stackTagCompound.hasKey("attachments")) {
             final NBTTagCompound attachmentTags = new NBTTagCompound();
             for (int i = 0; i < this.numGenericAttachmentSlots; ++i) {
-                attachmentTags.func_74782_a("generic_" + i, (NBTBase)new NBTTagCompound());
+                attachmentTags.setTag("generic_" + i, (NBTBase)new NBTTagCompound());
             }
-            attachmentTags.func_74782_a("barrel", (NBTBase)new NBTTagCompound());
-            attachmentTags.func_74782_a("scope", (NBTBase)new NBTTagCompound());
-            attachmentTags.func_74782_a("stock", (NBTBase)new NBTTagCompound());
-            attachmentTags.func_74782_a("grip", (NBTBase)new NBTTagCompound());
-            attachmentTags.func_74782_a("gadget", (NBTBase)new NBTTagCompound());
-            attachmentTags.func_74782_a("slide", (NBTBase)new NBTTagCompound());
-            attachmentTags.func_74782_a("pump", (NBTBase)new NBTTagCompound());
-            attachmentTags.func_74782_a("accessory", (NBTBase)new NBTTagCompound());
-            gun.field_77990_d.func_74782_a("attachments", (NBTBase)attachmentTags);
+            attachmentTags.setTag("barrel", (NBTBase)new NBTTagCompound());
+            attachmentTags.setTag("scope", (NBTBase)new NBTTagCompound());
+            attachmentTags.setTag("stock", (NBTBase)new NBTTagCompound());
+            attachmentTags.setTag("grip", (NBTBase)new NBTTagCompound());
+            attachmentTags.setTag("gadget", (NBTBase)new NBTTagCompound());
+            attachmentTags.setTag("slide", (NBTBase)new NBTTagCompound());
+            attachmentTags.setTag("pump", (NBTBase)new NBTTagCompound());
+            attachmentTags.setTag("accessory", (NBTBase)new NBTTagCompound());
+            gun.stackTagCompound.setTag("attachments", (NBTBase)attachmentTags);
         }
     }
     
@@ -1207,14 +1207,14 @@ public class GunType extends PaintableType implements IScope
     }
     
     public void setFireMode(final ItemStack stack, final int fireMode) {
-        if (!stack.func_77942_o()) {
-            stack.func_77982_d(new NBTTagCompound());
+        if (!stack.hasTagCompound()) {
+            stack.setTagCompound(new NBTTagCompound());
         }
         if (fireMode < EnumFireMode.values().length) {
-            stack.func_77978_p().func_74774_a("GunMode", (byte)fireMode);
+            stack.getTagCompound().setByte("GunMode", (byte)fireMode);
         }
         else {
-            stack.func_77978_p().func_74774_a("GunMode", (byte)this.mode.ordinal());
+            stack.getTagCompound().setByte("GunMode", (byte)this.mode.ordinal());
         }
     }
     
@@ -1227,8 +1227,8 @@ public class GunType extends PaintableType implements IScope
                 return attachment.modeOverride;
             }
         }
-        if (stack.func_77942_o() && stack.func_77978_p().func_74764_b("GunMode")) {
-            final int gm = stack.func_77978_p().func_74771_c("GunMode");
+        if (stack.hasTagCompound() && stack.getTagCompound().hasKey("GunMode")) {
+            final int gm = stack.getTagCompound().getByte("GunMode");
             if (gm < EnumFireMode.values().length) {
                 for (int i = 0; i < this.submode.length; ++i) {
                     if (gm == this.submode[i].ordinal()) {
@@ -1242,21 +1242,21 @@ public class GunType extends PaintableType implements IScope
     }
     
     public void setSecondaryFire(final ItemStack stack, final boolean mode) {
-        if (!stack.func_77942_o()) {
-            stack.func_77982_d(new NBTTagCompound());
+        if (!stack.hasTagCompound()) {
+            stack.setTagCompound(new NBTTagCompound());
         }
-        stack.field_77990_d.func_74757_a("secondaryFire", mode);
+        stack.stackTagCompound.setBoolean("secondaryFire", mode);
     }
     
     public boolean getSecondaryFire(final ItemStack stack) {
-        if (!stack.func_77942_o()) {
-            stack.func_77982_d(new NBTTagCompound());
+        if (!stack.hasTagCompound()) {
+            stack.setTagCompound(new NBTTagCompound());
         }
-        if (!stack.func_77978_p().func_74764_b("secondaryFire")) {
-            stack.field_77990_d.func_74757_a("secondaryFire", false);
-            return stack.func_77978_p().func_74767_n("secondaryFire");
+        if (!stack.getTagCompound().hasKey("secondaryFire")) {
+            stack.stackTagCompound.setBoolean("secondaryFire", false);
+            return stack.getTagCompound().getBoolean("secondaryFire");
         }
-        return stack.func_77978_p().func_74767_n("secondaryFire");
+        return stack.getTagCompound().getBoolean("secondaryFire");
     }
     
     public int getNumAmmoItemsInGun(final ItemStack stack) {

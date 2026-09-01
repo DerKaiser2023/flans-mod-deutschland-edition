@@ -37,11 +37,11 @@ public class TransformGroupBone extends TransformGroup
     }
     
     public Vec3 getBaseVector() {
-        return Vec3.func_72443_a(this.baseVector.field_72450_a, this.baseVector.field_72448_b, this.baseVector.field_72449_c);
+        return Vec3.createVectorHelper(this.baseVector.xCoord, this.baseVector.yCoord, this.baseVector.zCoord);
     }
     
     public Vec3 getTransformVector() {
-        return this.baseVector.func_72444_a(this.attachedBone.getPosition());
+        return this.baseVector.subtract(this.attachedBone.getPosition());
     }
     
     public Vec3 getCurrentVector() {
@@ -61,8 +61,8 @@ public class TransformGroupBone extends TransformGroup
     
     @Override
     public Vec3 doTransformation(final PositionTransformVertex vertex) {
-        Vec3 vector = Vec3.func_72443_a(vertex.neutralVector.field_72450_a, vertex.neutralVector.field_72448_b, vertex.neutralVector.field_72449_c);
-        vector = this.getBaseVector().func_72444_a(vector);
+        Vec3 vector = Vec3.createVectorHelper(vertex.neutralVector.xCoord, vertex.neutralVector.yCoord, vertex.neutralVector.zCoord);
+        vector = this.getBaseVector().subtract(vector);
         final Angle3D angle = this.getTransformAngle();
         this.setVectorRotations(vector, angle.angleX, angle.angleY, angle.angleZ);
         return vector;
@@ -72,15 +72,15 @@ public class TransformGroupBone extends TransformGroup
         final float x = xRot;
         final float y = yRot;
         final float z = zRot;
-        final float xC = MathHelper.func_76134_b(x);
-        final float xS = MathHelper.func_76126_a(x);
-        final float yC = MathHelper.func_76134_b(y);
-        final float yS = MathHelper.func_76126_a(y);
-        final float zC = MathHelper.func_76134_b(z);
-        final float zS = MathHelper.func_76126_a(z);
-        double xVec = vector.field_72450_a;
-        double yVec = vector.field_72448_b;
-        double zVec = vector.field_72449_c;
+        final float xC = MathHelper.cos(x);
+        final float xS = MathHelper.sin(x);
+        final float yC = MathHelper.cos(y);
+        final float yS = MathHelper.sin(y);
+        final float zC = MathHelper.cos(z);
+        final float zS = MathHelper.sin(z);
+        double xVec = vector.xCoord;
+        double yVec = vector.yCoord;
+        double zVec = vector.zCoord;
         final double xy = xC * yVec - xS * zVec;
         final double xz = xC * zVec + xS * yVec;
         final double yz = yC * xz - yS * xVec;
@@ -90,8 +90,8 @@ public class TransformGroupBone extends TransformGroup
         xVec = zx;
         yVec = zy;
         zVec = yz;
-        vector.field_72450_a = xVec;
-        vector.field_72448_b = yVec;
-        vector.field_72449_c = zVec;
+        vector.xCoord = xVec;
+        vector.yCoord = yVec;
+        vector.zCoord = zVec;
     }
 }

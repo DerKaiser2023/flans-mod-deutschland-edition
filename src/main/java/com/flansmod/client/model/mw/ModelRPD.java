@@ -24,8 +24,8 @@ public class ModelRPD extends ModelGun
         (this.gunModel[5] = new ModelRendererTurbo(this, 36, 0, textureX, textureY)).addBox(12.5f, 3.0f, -0.5f, 1, 2, 1);
         (this.gunModel[6] = new ModelRendererTurbo(this, 40, 0, textureX, textureY)).addBox(17.5f, 4.0f, -0.5f, 1, 2, 1);
         (this.gunModel[7] = new ModelRendererTurbo(this, 0, 6, textureX, textureY)).addBox(-1.0f, -4.0f, -0.75f, 2.0f, 5.0f, 1.5f);
-        this.gunModel[7].func_78793_a(1.0f, 3.0f, 0.0f);
-        this.gunModel[7].field_78808_h = -0.5f;
+        this.gunModel[7].setRotationPoint(1.0f, 3.0f, 0.0f);
+        this.gunModel[7].rotateAngleZ = -0.5f;
         this.ammoModel = new ModelRendererTurbo[3];
         (this.ammoModel[0] = new ModelRendererTurbo(this, 8, 6, textureX, textureY)).addBox(4.0f, -1.0f, -1.0f, 2, 5, 2);
         (this.ammoModel[1] = new ModelRendererTurbo(this, 24, 6, textureX, textureY)).addShapeBox(4.0f, -1.0f, -3.0f, 2, 5, 2, 0.0f, 0.0f, -1.5f, -0.5f, 0.0f, -1.5f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.5f, -0.5f, 0.0f, -1.5f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);

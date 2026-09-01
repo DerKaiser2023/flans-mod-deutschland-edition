@@ -58,7 +58,7 @@ public class PlayerHitbox
     public void renderHitbox(final World world, final Vector3f pos) {
         final Vector3f boxOrigin = new Vector3f(pos.x + this.rP.x, pos.y + this.rP.y, pos.z + this.rP.z);
         if (this.type != EnumHitboxType.NEARBY && (PlayerHandler.getPlayerData(this.player).shieldHit > 0 || FlansMod.DEBUG)) {
-            world.func_72838_d((Entity)new EntityDebugAABB(world, boxOrigin, this.d, 2, 1.0f, 1.0f, 0.0f, this.axes.getYaw(), this.axes.getPitch(), this.axes.getRoll(), this.o, PlayerHandler.getPlayerData(this.player).shieldHit));
+            world.spawnEntityInWorld((Entity)new EntityDebugAABB(world, boxOrigin, this.d, 2, 1.0f, 1.0f, 0.0f, this.axes.getYaw(), this.axes.getPitch(), this.axes.getRoll(), this.o, PlayerHandler.getPlayerData(this.player).shieldHit));
         }
     }
     
@@ -125,37 +125,37 @@ public class PlayerHitbox
     
     public float hitByBullet(final EntityBullet bullet, final float penetratingPower) {
         if (bullet.type.setEntitiesOnFire) {
-            this.player.func_70015_d(20);
+            this.player.setFire(20);
         }
         float damageModifier = (bullet.type.penetratingPower < 0.1f) ? (penetratingPower / bullet.type.penetratingPower) : 1.0f;
         float trueBodyArmorPen = bullet.type.bodyarmorPen;
-        if (bullet.field_70173_aa > bullet.type.dynamicBulletDelay) {
+        if (bullet.ticksExisted > bullet.type.dynamicBulletDelay) {
             trueBodyArmorPen = bullet.type.dynamicBodyarmorPen;
         }
         switch (this.type) {
             case BODY: {
                 for (int i = 0; i < 5; ++i) {
-                    final ItemStack stack = this.player.func_71124_b(i);
-                    if (stack != null && stack.func_77973_b() instanceof ItemTeamArmour) {
-                        PlayerHandler.getPlayerData(this.player).pouchMultiplier = ((ItemTeamArmour)stack.func_77973_b()).type.pouchMultiplier;
-                        if ((!((ItemTeamArmour)stack.func_77973_b()).type.smokeProtection && bullet.type.smokeProtectable) || !bullet.type.smokeProtectable) {
+                    final ItemStack stack = this.player.getEquipmentInSlot(i);
+                    if (stack != null && stack.getItem() instanceof ItemTeamArmour) {
+                        PlayerHandler.getPlayerData(this.player).pouchMultiplier = ((ItemTeamArmour)stack.getItem()).type.pouchMultiplier;
+                        if ((!((ItemTeamArmour)stack.getItem()).type.smokeProtection && bullet.type.smokeProtectable) || !bullet.type.smokeProtectable) {
                             for (final PotionEffect effect : bullet.type.hitEffects) {
-                                this.player.func_70690_d(new PotionEffect(effect));
+                                this.player.addPotionEffect(new PotionEffect(effect));
                             }
                         }
-                        if (trueBodyArmorPen >= ((ItemTeamArmour)stack.func_77973_b()).secretBody * 0.85f && trueBodyArmorPen <= ((ItemTeamArmour)stack.func_77973_b()).secretBody) {
+                        if (trueBodyArmorPen >= ((ItemTeamArmour)stack.getItem()).secretBody * 0.85f && trueBodyArmorPen <= ((ItemTeamArmour)stack.getItem()).secretBody) {
                             damageModifier *= bullet.type.barelypenPenalty;
                             if (damageModifier <= 0.1f) {
-                                stack.func_77964_b(stack.func_77960_j() + 1);
+                                stack.setMetadata(stack.getMetadata() + 1);
                             }
-                            PacketPlaySound.sendSoundPacket(this.player.field_70165_t, this.player.field_70163_u, this.player.field_70161_v, 5.0, this.player.field_71093_bK, "armorDeflect", true);
-                            FlansMod.getPacketHandler().sendToAllAround(new PacketFlak(this.player.field_70165_t, this.player.field_70163_u, this.player.field_70161_v, 25, "crit"), this.player.field_70165_t, this.player.field_70163_u, this.player.field_70161_v, 5.0f, this.player.field_71093_bK);
+                            PacketPlaySound.sendSoundPacket(this.player.posX, this.player.posY, this.player.posZ, 5.0, this.player.dimension, "armorDeflect", true);
+                            FlansMod.getPacketHandler().sendToAllAround(new PacketFlak(this.player.posX, this.player.posY, this.player.posZ, 25, "crit"), this.player.posX, this.player.posY, this.player.posZ, 5.0f, this.player.dimension);
                         }
-                        else if (trueBodyArmorPen < ((ItemTeamArmour)stack.func_77973_b()).secretBody * 0.85f) {
-                            stack.func_77964_b(stack.func_77960_j() + 1);
+                        else if (trueBodyArmorPen < ((ItemTeamArmour)stack.getItem()).secretBody * 0.85f) {
+                            stack.setMetadata(stack.getMetadata() + 1);
                             damageModifier *= bullet.type.nonpenPenalty;
-                            PacketPlaySound.sendSoundPacket(this.player.field_70165_t, this.player.field_70163_u, this.player.field_70161_v, 5.0, this.player.field_71093_bK, "armorDeflect", true);
-                            FlansMod.getPacketHandler().sendToAllAround(new PacketFlak(this.player.field_70165_t, this.player.field_70163_u, this.player.field_70161_v, 25, "crit"), this.player.field_70165_t, this.player.field_70163_u, this.player.field_70161_v, 5.0f, this.player.field_71093_bK);
+                            PacketPlaySound.sendSoundPacket(this.player.posX, this.player.posY, this.player.posZ, 5.0, this.player.dimension, "armorDeflect", true);
+                            FlansMod.getPacketHandler().sendToAllAround(new PacketFlak(this.player.posX, this.player.posY, this.player.posZ, 25, "crit"), this.player.posX, this.player.posY, this.player.posZ, 5.0f, this.player.dimension);
                         }
                     }
                     else {
@@ -167,22 +167,22 @@ public class PlayerHitbox
             case BACK: {
                 damageModifier *= 1.0f;
                 for (int i = 0; i < 5; ++i) {
-                    final ItemStack stack = this.player.func_71124_b(i);
-                    if (stack != null && stack.func_77973_b() instanceof ItemTeamArmour) {
-                        if ((!((ItemTeamArmour)stack.func_77973_b()).type.smokeProtection && bullet.type.smokeProtectable) || !bullet.type.smokeProtectable) {
+                    final ItemStack stack = this.player.getEquipmentInSlot(i);
+                    if (stack != null && stack.getItem() instanceof ItemTeamArmour) {
+                        if ((!((ItemTeamArmour)stack.getItem()).type.smokeProtection && bullet.type.smokeProtectable) || !bullet.type.smokeProtectable) {
                             for (final PotionEffect effect : bullet.type.hitEffects) {
-                                this.player.func_70690_d(new PotionEffect(effect));
+                                this.player.addPotionEffect(new PotionEffect(effect));
                             }
                         }
-                        if (((ItemTeamArmour)stack.func_77973_b()).secretBack * 0.8500000238418579 > trueBodyArmorPen) {
+                        if (((ItemTeamArmour)stack.getItem()).secretBack * 0.8500000238418579 > trueBodyArmorPen) {
                             damageModifier *= bullet.type.nonpenPenalty;
-                            PacketPlaySound.sendSoundPacket(this.player.field_70165_t, this.player.field_70163_u, this.player.field_70161_v, 5.0, this.player.field_71093_bK, "armorDeflect", true);
-                            FlansMod.getPacketHandler().sendToAllAround(new PacketFlak(this.player.field_70165_t, this.player.field_70163_u, this.player.field_70161_v, 25, "crit"), this.player.field_70165_t, this.player.field_70163_u, this.player.field_70161_v, 5.0f, this.player.field_71093_bK);
+                            PacketPlaySound.sendSoundPacket(this.player.posX, this.player.posY, this.player.posZ, 5.0, this.player.dimension, "armorDeflect", true);
+                            FlansMod.getPacketHandler().sendToAllAround(new PacketFlak(this.player.posX, this.player.posY, this.player.posZ, 25, "crit"), this.player.posX, this.player.posY, this.player.posZ, 5.0f, this.player.dimension);
                         }
-                        else if (((ItemTeamArmour)stack.func_77973_b()).secretBack > trueBodyArmorPen) {
+                        else if (((ItemTeamArmour)stack.getItem()).secretBack > trueBodyArmorPen) {
                             damageModifier *= bullet.type.barelypenPenalty;
-                            PacketPlaySound.sendSoundPacket(this.player.field_70165_t, this.player.field_70163_u, this.player.field_70161_v, 5.0, this.player.field_71093_bK, "armorDeflect", true);
-                            FlansMod.getPacketHandler().sendToAllAround(new PacketFlak(this.player.field_70165_t, this.player.field_70163_u, this.player.field_70161_v, 25, "crit"), this.player.field_70165_t, this.player.field_70163_u, this.player.field_70161_v, 5.0f, this.player.field_71093_bK);
+                            PacketPlaySound.sendSoundPacket(this.player.posX, this.player.posY, this.player.posZ, 5.0, this.player.dimension, "armorDeflect", true);
+                            FlansMod.getPacketHandler().sendToAllAround(new PacketFlak(this.player.posX, this.player.posY, this.player.posZ, 25, "crit"), this.player.posX, this.player.posY, this.player.posZ, 5.0f, this.player.dimension);
                         }
                     }
                 }
@@ -191,22 +191,22 @@ public class PlayerHitbox
             case NAPE: {
                 damageModifier *= 3.5f;
                 for (int i = 0; i < 5; ++i) {
-                    final ItemStack stack = this.player.func_71124_b(i);
-                    if (stack != null && stack.func_77973_b() instanceof ItemTeamArmour) {
-                        if ((!((ItemTeamArmour)stack.func_77973_b()).type.smokeProtection && bullet.type.smokeProtectable) || !bullet.type.smokeProtectable) {
+                    final ItemStack stack = this.player.getEquipmentInSlot(i);
+                    if (stack != null && stack.getItem() instanceof ItemTeamArmour) {
+                        if ((!((ItemTeamArmour)stack.getItem()).type.smokeProtection && bullet.type.smokeProtectable) || !bullet.type.smokeProtectable) {
                             for (final PotionEffect effect : bullet.type.hitEffects) {
-                                this.player.func_70690_d(new PotionEffect(effect));
+                                this.player.addPotionEffect(new PotionEffect(effect));
                             }
                         }
-                        if (((ItemTeamArmour)stack.func_77973_b()).secretNape * 0.85 > trueBodyArmorPen) {
+                        if (((ItemTeamArmour)stack.getItem()).secretNape * 0.85 > trueBodyArmorPen) {
                             damageModifier *= bullet.type.nonpenPenalty;
-                            PacketPlaySound.sendSoundPacket(this.player.field_70165_t, this.player.field_70163_u, this.player.field_70161_v, 5.0, this.player.field_71093_bK, "armorDeflect", true);
-                            FlansMod.getPacketHandler().sendToAllAround(new PacketFlak(this.player.field_70165_t, this.player.field_70163_u, this.player.field_70161_v, 25, "crit"), this.player.field_70165_t, this.player.field_70163_u, this.player.field_70161_v, 5.0f, this.player.field_71093_bK);
+                            PacketPlaySound.sendSoundPacket(this.player.posX, this.player.posY, this.player.posZ, 5.0, this.player.dimension, "armorDeflect", true);
+                            FlansMod.getPacketHandler().sendToAllAround(new PacketFlak(this.player.posX, this.player.posY, this.player.posZ, 25, "crit"), this.player.posX, this.player.posY, this.player.posZ, 5.0f, this.player.dimension);
                         }
-                        else if (((ItemTeamArmour)stack.func_77973_b()).secretNape > trueBodyArmorPen) {
+                        else if (((ItemTeamArmour)stack.getItem()).secretNape > trueBodyArmorPen) {
                             damageModifier *= bullet.type.barelypenPenalty;
-                            PacketPlaySound.sendSoundPacket(this.player.field_70165_t, this.player.field_70163_u, this.player.field_70161_v, 5.0, this.player.field_71093_bK, "armorDeflect", true);
-                            FlansMod.getPacketHandler().sendToAllAround(new PacketFlak(this.player.field_70165_t, this.player.field_70163_u, this.player.field_70161_v, 25, "crit"), this.player.field_70165_t, this.player.field_70163_u, this.player.field_70161_v, 5.0f, this.player.field_71093_bK);
+                            PacketPlaySound.sendSoundPacket(this.player.posX, this.player.posY, this.player.posZ, 5.0, this.player.dimension, "armorDeflect", true);
+                            FlansMod.getPacketHandler().sendToAllAround(new PacketFlak(this.player.posX, this.player.posY, this.player.posZ, 25, "crit"), this.player.posX, this.player.posY, this.player.posZ, 5.0f, this.player.dimension);
                         }
                     }
                 }
@@ -215,22 +215,22 @@ public class PlayerHitbox
             case CRANIUM: {
                 damageModifier *= 2.0f;
                 for (int i = 0; i < 5; ++i) {
-                    final ItemStack stack = this.player.func_71124_b(i);
-                    if (stack != null && stack.func_77973_b() instanceof ItemTeamArmour) {
-                        if ((!((ItemTeamArmour)stack.func_77973_b()).type.smokeProtection && bullet.type.smokeProtectable) || !bullet.type.smokeProtectable) {
+                    final ItemStack stack = this.player.getEquipmentInSlot(i);
+                    if (stack != null && stack.getItem() instanceof ItemTeamArmour) {
+                        if ((!((ItemTeamArmour)stack.getItem()).type.smokeProtection && bullet.type.smokeProtectable) || !bullet.type.smokeProtectable) {
                             for (final PotionEffect effect : bullet.type.hitEffects) {
-                                this.player.func_70690_d(new PotionEffect(effect));
+                                this.player.addPotionEffect(new PotionEffect(effect));
                             }
                         }
-                        if (((ItemTeamArmour)stack.func_77973_b()).secretHead * 0.85 > trueBodyArmorPen) {
+                        if (((ItemTeamArmour)stack.getItem()).secretHead * 0.85 > trueBodyArmorPen) {
                             damageModifier *= bullet.type.nonpenPenalty;
-                            PacketPlaySound.sendSoundPacket(this.player.field_70165_t, this.player.field_70163_u, this.player.field_70161_v, 5.0, this.player.field_71093_bK, "armorDeflect", true);
-                            FlansMod.getPacketHandler().sendToAllAround(new PacketFlak(this.player.field_70165_t, this.player.field_70163_u, this.player.field_70161_v, 25, "crit"), this.player.field_70165_t, this.player.field_70163_u, this.player.field_70161_v, 5.0f, this.player.field_71093_bK);
+                            PacketPlaySound.sendSoundPacket(this.player.posX, this.player.posY, this.player.posZ, 5.0, this.player.dimension, "armorDeflect", true);
+                            FlansMod.getPacketHandler().sendToAllAround(new PacketFlak(this.player.posX, this.player.posY, this.player.posZ, 25, "crit"), this.player.posX, this.player.posY, this.player.posZ, 5.0f, this.player.dimension);
                         }
-                        else if (((ItemTeamArmour)stack.func_77973_b()).secretHead > trueBodyArmorPen) {
+                        else if (((ItemTeamArmour)stack.getItem()).secretHead > trueBodyArmorPen) {
                             damageModifier *= bullet.type.barelypenPenalty;
-                            PacketPlaySound.sendSoundPacket(this.player.field_70165_t, this.player.field_70163_u, this.player.field_70161_v, 5.0, this.player.field_71093_bK, "armorDeflect", true);
-                            FlansMod.getPacketHandler().sendToAllAround(new PacketFlak(this.player.field_70165_t, this.player.field_70163_u, this.player.field_70161_v, 25, "crit"), this.player.field_70165_t, this.player.field_70163_u, this.player.field_70161_v, 5.0f, this.player.field_71093_bK);
+                            PacketPlaySound.sendSoundPacket(this.player.posX, this.player.posY, this.player.posZ, 5.0, this.player.dimension, "armorDeflect", true);
+                            FlansMod.getPacketHandler().sendToAllAround(new PacketFlak(this.player.posX, this.player.posY, this.player.posZ, 25, "crit"), this.player.posX, this.player.posY, this.player.posZ, 5.0f, this.player.dimension);
                         }
                     }
                 }
@@ -239,22 +239,22 @@ public class PlayerHitbox
             case FACE: {
                 damageModifier *= 1.5f;
                 for (int i = 0; i < 5; ++i) {
-                    final ItemStack stack = this.player.func_71124_b(i);
-                    if (stack != null && stack.func_77973_b() instanceof ItemTeamArmour) {
-                        if ((!((ItemTeamArmour)stack.func_77973_b()).type.smokeProtection && bullet.type.smokeProtectable) || !bullet.type.smokeProtectable) {
+                    final ItemStack stack = this.player.getEquipmentInSlot(i);
+                    if (stack != null && stack.getItem() instanceof ItemTeamArmour) {
+                        if ((!((ItemTeamArmour)stack.getItem()).type.smokeProtection && bullet.type.smokeProtectable) || !bullet.type.smokeProtectable) {
                             for (final PotionEffect effect : bullet.type.hitEffects) {
-                                this.player.func_70690_d(new PotionEffect(effect));
+                                this.player.addPotionEffect(new PotionEffect(effect));
                             }
                         }
-                        if (((ItemTeamArmour)stack.func_77973_b()).secretFace * 0.85 > trueBodyArmorPen) {
+                        if (((ItemTeamArmour)stack.getItem()).secretFace * 0.85 > trueBodyArmorPen) {
                             damageModifier *= bullet.type.nonpenPenalty;
-                            PacketPlaySound.sendSoundPacket(this.player.field_70165_t, this.player.field_70163_u, this.player.field_70161_v, 5.0, this.player.field_71093_bK, "armorDeflect", true);
-                            FlansMod.getPacketHandler().sendToAllAround(new PacketFlak(this.player.field_70165_t, this.player.field_70163_u, this.player.field_70161_v, 25, "crit"), this.player.field_70165_t, this.player.field_70163_u, this.player.field_70161_v, 5.0f, this.player.field_71093_bK);
+                            PacketPlaySound.sendSoundPacket(this.player.posX, this.player.posY, this.player.posZ, 5.0, this.player.dimension, "armorDeflect", true);
+                            FlansMod.getPacketHandler().sendToAllAround(new PacketFlak(this.player.posX, this.player.posY, this.player.posZ, 25, "crit"), this.player.posX, this.player.posY, this.player.posZ, 5.0f, this.player.dimension);
                         }
-                        else if (((ItemTeamArmour)stack.func_77973_b()).secretFace > trueBodyArmorPen) {
+                        else if (((ItemTeamArmour)stack.getItem()).secretFace > trueBodyArmorPen) {
                             damageModifier *= bullet.type.barelypenPenalty;
-                            PacketPlaySound.sendSoundPacket(this.player.field_70165_t, this.player.field_70163_u, this.player.field_70161_v, 5.0, this.player.field_71093_bK, "armorDeflect", true);
-                            FlansMod.getPacketHandler().sendToAllAround(new PacketFlak(this.player.field_70165_t, this.player.field_70163_u, this.player.field_70161_v, 25, "crit"), this.player.field_70165_t, this.player.field_70163_u, this.player.field_70161_v, 5.0f, this.player.field_71093_bK);
+                            PacketPlaySound.sendSoundPacket(this.player.posX, this.player.posY, this.player.posZ, 5.0, this.player.dimension, "armorDeflect", true);
+                            FlansMod.getPacketHandler().sendToAllAround(new PacketFlak(this.player.posX, this.player.posY, this.player.posZ, 25, "crit"), this.player.posX, this.player.posY, this.player.posZ, 5.0f, this.player.dimension);
                         }
                     }
                 }
@@ -263,22 +263,22 @@ public class PlayerHitbox
             case LEFTARM: {
                 damageModifier *= 0.6f;
                 for (int i = 0; i < 5; ++i) {
-                    final ItemStack stack = this.player.func_71124_b(i);
-                    if (stack != null && stack.func_77973_b() instanceof ItemTeamArmour) {
-                        if ((!((ItemTeamArmour)stack.func_77973_b()).type.smokeProtection && bullet.type.smokeProtectable) || !bullet.type.smokeProtectable) {
+                    final ItemStack stack = this.player.getEquipmentInSlot(i);
+                    if (stack != null && stack.getItem() instanceof ItemTeamArmour) {
+                        if ((!((ItemTeamArmour)stack.getItem()).type.smokeProtection && bullet.type.smokeProtectable) || !bullet.type.smokeProtectable) {
                             for (final PotionEffect effect : bullet.type.hitEffects) {
-                                this.player.func_70690_d(new PotionEffect(effect));
+                                this.player.addPotionEffect(new PotionEffect(effect));
                             }
                         }
-                        if (((ItemTeamArmour)stack.func_77973_b()).secretArm * 0.85 > trueBodyArmorPen) {
+                        if (((ItemTeamArmour)stack.getItem()).secretArm * 0.85 > trueBodyArmorPen) {
                             damageModifier *= bullet.type.nonpenPenalty;
-                            PacketPlaySound.sendSoundPacket(this.player.field_70165_t, this.player.field_70163_u, this.player.field_70161_v, 5.0, this.player.field_71093_bK, "armorDeflect", true);
-                            FlansMod.getPacketHandler().sendToAllAround(new PacketFlak(this.player.field_70165_t, this.player.field_70163_u, this.player.field_70161_v, 25, "crit"), this.player.field_70165_t, this.player.field_70163_u, this.player.field_70161_v, 5.0f, this.player.field_71093_bK);
+                            PacketPlaySound.sendSoundPacket(this.player.posX, this.player.posY, this.player.posZ, 5.0, this.player.dimension, "armorDeflect", true);
+                            FlansMod.getPacketHandler().sendToAllAround(new PacketFlak(this.player.posX, this.player.posY, this.player.posZ, 25, "crit"), this.player.posX, this.player.posY, this.player.posZ, 5.0f, this.player.dimension);
                         }
-                        else if (((ItemTeamArmour)stack.func_77973_b()).secretArm > trueBodyArmorPen) {
+                        else if (((ItemTeamArmour)stack.getItem()).secretArm > trueBodyArmorPen) {
                             damageModifier *= bullet.type.barelypenPenalty;
-                            PacketPlaySound.sendSoundPacket(this.player.field_70165_t, this.player.field_70163_u, this.player.field_70161_v, 5.0, this.player.field_71093_bK, "armorDeflect", true);
-                            FlansMod.getPacketHandler().sendToAllAround(new PacketFlak(this.player.field_70165_t, this.player.field_70163_u, this.player.field_70161_v, 25, "crit"), this.player.field_70165_t, this.player.field_70163_u, this.player.field_70161_v, 5.0f, this.player.field_71093_bK);
+                            PacketPlaySound.sendSoundPacket(this.player.posX, this.player.posY, this.player.posZ, 5.0, this.player.dimension, "armorDeflect", true);
+                            FlansMod.getPacketHandler().sendToAllAround(new PacketFlak(this.player.posX, this.player.posY, this.player.posZ, 25, "crit"), this.player.posX, this.player.posY, this.player.posZ, 5.0f, this.player.dimension);
                         }
                     }
                 }
@@ -287,22 +287,22 @@ public class PlayerHitbox
             case RIGHTARM: {
                 damageModifier *= 0.6f;
                 for (int i = 0; i < 5; ++i) {
-                    final ItemStack stack = this.player.func_71124_b(i);
-                    if (stack != null && stack.func_77973_b() instanceof ItemTeamArmour) {
-                        if ((!((ItemTeamArmour)stack.func_77973_b()).type.smokeProtection && bullet.type.smokeProtectable) || !bullet.type.smokeProtectable) {
+                    final ItemStack stack = this.player.getEquipmentInSlot(i);
+                    if (stack != null && stack.getItem() instanceof ItemTeamArmour) {
+                        if ((!((ItemTeamArmour)stack.getItem()).type.smokeProtection && bullet.type.smokeProtectable) || !bullet.type.smokeProtectable) {
                             for (final PotionEffect effect : bullet.type.hitEffects) {
-                                this.player.func_70690_d(new PotionEffect(effect));
+                                this.player.addPotionEffect(new PotionEffect(effect));
                             }
                         }
-                        if (((ItemTeamArmour)stack.func_77973_b()).secretArm * 0.85 > trueBodyArmorPen) {
+                        if (((ItemTeamArmour)stack.getItem()).secretArm * 0.85 > trueBodyArmorPen) {
                             damageModifier *= bullet.type.nonpenPenalty;
-                            PacketPlaySound.sendSoundPacket(this.player.field_70165_t, this.player.field_70163_u, this.player.field_70161_v, 5.0, this.player.field_71093_bK, "armorDeflect", true);
-                            FlansMod.getPacketHandler().sendToAllAround(new PacketFlak(this.player.field_70165_t, this.player.field_70163_u, this.player.field_70161_v, 25, "crit"), this.player.field_70165_t, this.player.field_70163_u, this.player.field_70161_v, 5.0f, this.player.field_71093_bK);
+                            PacketPlaySound.sendSoundPacket(this.player.posX, this.player.posY, this.player.posZ, 5.0, this.player.dimension, "armorDeflect", true);
+                            FlansMod.getPacketHandler().sendToAllAround(new PacketFlak(this.player.posX, this.player.posY, this.player.posZ, 25, "crit"), this.player.posX, this.player.posY, this.player.posZ, 5.0f, this.player.dimension);
                         }
-                        else if (((ItemTeamArmour)stack.func_77973_b()).secretArm > trueBodyArmorPen) {
+                        else if (((ItemTeamArmour)stack.getItem()).secretArm > trueBodyArmorPen) {
                             damageModifier *= bullet.type.barelypenPenalty;
-                            PacketPlaySound.sendSoundPacket(this.player.field_70165_t, this.player.field_70163_u, this.player.field_70161_v, 5.0, this.player.field_71093_bK, "armorDeflect", true);
-                            FlansMod.getPacketHandler().sendToAllAround(new PacketFlak(this.player.field_70165_t, this.player.field_70163_u, this.player.field_70161_v, 25, "crit"), this.player.field_70165_t, this.player.field_70163_u, this.player.field_70161_v, 5.0f, this.player.field_71093_bK);
+                            PacketPlaySound.sendSoundPacket(this.player.posX, this.player.posY, this.player.posZ, 5.0, this.player.dimension, "armorDeflect", true);
+                            FlansMod.getPacketHandler().sendToAllAround(new PacketFlak(this.player.posX, this.player.posY, this.player.posZ, 25, "crit"), this.player.posX, this.player.posY, this.player.posZ, 5.0f, this.player.dimension);
                         }
                     }
                 }
@@ -311,22 +311,22 @@ public class PlayerHitbox
             case LEGS: {
                 damageModifier *= 0.6f;
                 for (int i = 0; i < 5; ++i) {
-                    final ItemStack stack = this.player.func_71124_b(i);
-                    if (stack != null && stack.func_77973_b() instanceof ItemTeamArmour) {
-                        if ((!((ItemTeamArmour)stack.func_77973_b()).type.smokeProtection && bullet.type.smokeProtectable) || !bullet.type.smokeProtectable) {
+                    final ItemStack stack = this.player.getEquipmentInSlot(i);
+                    if (stack != null && stack.getItem() instanceof ItemTeamArmour) {
+                        if ((!((ItemTeamArmour)stack.getItem()).type.smokeProtection && bullet.type.smokeProtectable) || !bullet.type.smokeProtectable) {
                             for (final PotionEffect effect : bullet.type.hitEffects) {
-                                this.player.func_70690_d(new PotionEffect(effect));
+                                this.player.addPotionEffect(new PotionEffect(effect));
                             }
                         }
-                        if (((ItemTeamArmour)stack.func_77973_b()).secretLeg * 0.85 > trueBodyArmorPen) {
+                        if (((ItemTeamArmour)stack.getItem()).secretLeg * 0.85 > trueBodyArmorPen) {
                             damageModifier *= bullet.type.nonpenPenalty;
-                            PacketPlaySound.sendSoundPacket(this.player.field_70165_t, this.player.field_70163_u, this.player.field_70161_v, 5.0, this.player.field_71093_bK, "armorDeflect", true);
-                            FlansMod.getPacketHandler().sendToAllAround(new PacketFlak(this.player.field_70165_t, this.player.field_70163_u, this.player.field_70161_v, 25, "crit"), this.player.field_70165_t, this.player.field_70163_u, this.player.field_70161_v, 5.0f, this.player.field_71093_bK);
+                            PacketPlaySound.sendSoundPacket(this.player.posX, this.player.posY, this.player.posZ, 5.0, this.player.dimension, "armorDeflect", true);
+                            FlansMod.getPacketHandler().sendToAllAround(new PacketFlak(this.player.posX, this.player.posY, this.player.posZ, 25, "crit"), this.player.posX, this.player.posY, this.player.posZ, 5.0f, this.player.dimension);
                         }
-                        else if (((ItemTeamArmour)stack.func_77973_b()).secretLeg > trueBodyArmorPen) {
+                        else if (((ItemTeamArmour)stack.getItem()).secretLeg > trueBodyArmorPen) {
                             damageModifier *= bullet.type.barelypenPenalty;
-                            PacketPlaySound.sendSoundPacket(this.player.field_70165_t, this.player.field_70163_u, this.player.field_70161_v, 5.0, this.player.field_71093_bK, "armorDeflect", true);
-                            FlansMod.getPacketHandler().sendToAllAround(new PacketFlak(this.player.field_70165_t, this.player.field_70163_u, this.player.field_70161_v, 25, "crit"), this.player.field_70165_t, this.player.field_70163_u, this.player.field_70161_v, 5.0f, this.player.field_71093_bK);
+                            PacketPlaySound.sendSoundPacket(this.player.posX, this.player.posY, this.player.posZ, 5.0, this.player.dimension, "armorDeflect", true);
+                            FlansMod.getPacketHandler().sendToAllAround(new PacketFlak(this.player.posX, this.player.posY, this.player.posZ, 25, "crit"), this.player.posX, this.player.posY, this.player.posZ, 5.0f, this.player.dimension);
                         }
                     }
                 }
@@ -335,10 +335,10 @@ public class PlayerHitbox
             case NEARBY: {
                 damageModifier *= 0.0f;
                 if (!bullet.type.swordEnergy) {
-                    PacketPlaySound.sendSoundPacket(this.player.field_70165_t, this.player.field_70163_u, this.player.field_70161_v, 8.0, this.player.field_71093_bK, bullet.missNoise, true);
+                    PacketPlaySound.sendSoundPacket(this.player.posX, this.player.posY, this.player.posZ, 8.0, this.player.dimension, bullet.missNoise, true);
                 }
-                if (!this.player.func_70115_ae() && !this.player.field_70170_p.field_72995_K) {
-                    this.player.func_70690_d(new PotionEffect(Potion.field_76440_q.field_76415_H, bullet.type.suppression));
+                if (!this.player.isRiding() && !this.player.worldObj.isRemote) {
+                    this.player.addPotionEffect(new PotionEffect(Potion.blindness.id, bullet.type.suppression));
                     break;
                 }
                 break;
@@ -347,18 +347,18 @@ public class PlayerHitbox
                 final PlayerData data = PlayerHandler.getPlayerData(this.player);
                 if (data.offHandGunSlot != 0) {
                     ItemStack leftHandStack = null;
-                    if (this.player.field_70170_p.field_72995_K && !FlansMod.proxy.isThePlayer(this.player)) {
+                    if (this.player.worldObj.isRemote && !FlansMod.proxy.isThePlayer(this.player)) {
                         leftHandStack = data.offHandGunStack;
                     }
                     else {
-                        leftHandStack = this.player.field_71071_by.func_70301_a(data.offHandGunSlot - 1);
+                        leftHandStack = this.player.inventory.getStackInSlot(data.offHandGunSlot - 1);
                     }
-                    if (leftHandStack != null && leftHandStack.func_77973_b() instanceof ItemGun) {
-                        final GunType leftGunType = ((ItemGun)leftHandStack.func_77973_b()).type;
+                    if (leftHandStack != null && leftHandStack.getItem() instanceof ItemGun) {
+                        final GunType leftGunType = ((ItemGun)leftHandStack.getItem()).type;
                         if (trueBodyArmorPen < leftGunType.shieldDamageAbsorption) {
                             damageModifier *= 0.001f;
-                            bullet.func_70106_y();
-                            PacketPlaySound.sendSoundPacket(this.player.field_70165_t, this.player.field_70163_u, this.player.field_70161_v, 5.0, this.player.field_71093_bK, "shield_metal", true);
+                            bullet.setDead();
+                            PacketPlaySound.sendSoundPacket(this.player.posX, this.player.posY, this.player.posZ, 5.0, this.player.dimension, "shield_metal", true);
                         }
                     }
                     break;
@@ -366,13 +366,13 @@ public class PlayerHitbox
                 break;
             }
             case RIGHTITEM: {
-                final ItemStack currentStack = this.player.func_71045_bC();
-                if (currentStack != null && currentStack.func_77973_b() instanceof ItemGun) {
-                    final GunType gunType = ((ItemGun)currentStack.func_77973_b()).type;
+                final ItemStack currentStack = this.player.getCurrentEquippedItem();
+                if (currentStack != null && currentStack.getItem() instanceof ItemGun) {
+                    final GunType gunType = ((ItemGun)currentStack.getItem()).type;
                     if (trueBodyArmorPen < gunType.shieldDamageAbsorption) {
                         damageModifier *= 0.001f;
-                        bullet.func_70106_y();
-                        PacketPlaySound.sendSoundPacket(this.player.field_70165_t, this.player.field_70163_u, this.player.field_70161_v, 5.0, this.player.field_71093_bK, "shield_metal", true);
+                        bullet.setDead();
+                        PacketPlaySound.sendSoundPacket(this.player.posX, this.player.posY, this.player.posZ, 5.0, this.player.dimension, "shield_metal", true);
                     }
                     break;
                 }
@@ -391,43 +391,43 @@ public class PlayerHitbox
             case LEFTITEM:
             case RIGHTITEM: {
                 float hitDamage = bullet.damage * bullet.type.dynamicDamage * damageModifier;
-                if (bullet.field_70173_aa < bullet.type.dynamicBulletDelay) {
+                if (bullet.ticksExisted < bullet.type.dynamicBulletDelay) {
                     hitDamage = bullet.damage * bullet.type.damageVsPlayer * damageModifier;
                 }
                 final PlayerData data2 = PlayerHandler.getPlayerData(this.player);
-                if (hitDamage < this.player.func_110143_aJ() && !this.player.getEntityData().func_74779_i("lastClowder").equals("SAFEZONE") && TeamsManager.bleeding) {
+                if (hitDamage < this.player.getHealth() && !this.player.getEntityData().getString("lastClowder").equals("SAFEZONE") && TeamsManager.bleeding) {
                     final PlayerData playerData = data2;
                     playerData.minorBleed += (int)(hitDamage * bullet.type.bleedMultiplier);
                 }
                 if (bullet.type.entityHitSoundEnable) {
-                    PacketPlaySound.sendSoundPacket(this.player.field_70165_t, this.player.field_70163_u, this.player.field_70161_v, bullet.type.hitSoundRange, this.player.field_71093_bK, bullet.type.hitSound, true);
+                    PacketPlaySound.sendSoundPacket(this.player.posX, this.player.posY, this.player.posZ, bullet.type.hitSoundRange, this.player.dimension, bullet.type.hitSound, true);
                 }
-                if (hitDamage > 40.0f && !this.player.getEntityData().func_74779_i("lastClowder").equals("SAFEZONE")) {
-                    FlansMod.proxy.spawnParticle("flansmod.overkill", this.player.field_70165_t, this.player.field_70163_u - 4.0, this.player.field_70161_v, 0.0, 0.10000000149011612, 0.0);
-                    PacketPlaySound.sendSoundPacket(this.player.field_70165_t, this.player.field_70163_u, this.player.field_70161_v, 15.0, this.player.field_71093_bK, "goreDeath", true);
-                    FlansMod.getPacketHandler().sendToAllAround(new PacketParticle("flansmod.overkill", this.player.field_70165_t, this.player.field_70163_u - 4.0, this.player.field_70161_v, (float)Math.random() * 1.0f, (float)Math.random() * 1.0f, -(float)Math.random() * 1.0f), this.player.field_70165_t, this.player.field_70163_u, this.player.field_70161_v, 150.0f, this.player.field_71093_bK);
+                if (hitDamage > 40.0f && !this.player.getEntityData().getString("lastClowder").equals("SAFEZONE")) {
+                    FlansMod.proxy.spawnParticle("flansmod.overkill", this.player.posX, this.player.posY - 4.0, this.player.posZ, 0.0, 0.10000000149011612, 0.0);
+                    PacketPlaySound.sendSoundPacket(this.player.posX, this.player.posY, this.player.posZ, 15.0, this.player.dimension, "goreDeath", true);
+                    FlansMod.getPacketHandler().sendToAllAround(new PacketParticle("flansmod.overkill", this.player.posX, this.player.posY - 4.0, this.player.posZ, (float)Math.random() * 1.0f, (float)Math.random() * 1.0f, -(float)Math.random() * 1.0f), this.player.posX, this.player.posY, this.player.posZ, 150.0f, this.player.dimension);
                     if (hitDamage > 123.0f) {
-                        PacketPlaySound.sendSoundPacket(this.player.field_70165_t, this.player.field_70163_u, this.player.field_70161_v, 15.0, this.player.field_71093_bK, "deathOverkillLong", false);
+                        PacketPlaySound.sendSoundPacket(this.player.posX, this.player.posY, this.player.posZ, 15.0, this.player.dimension, "deathOverkillLong", false);
                     }
                     else if (hitDamage > 69.0f) {
-                        PacketPlaySound.sendSoundPacket(this.player.field_70165_t, this.player.field_70163_u, this.player.field_70161_v, 15.0, this.player.field_71093_bK, "deathOverkill", false);
+                        PacketPlaySound.sendSoundPacket(this.player.posX, this.player.posY, this.player.posZ, 15.0, this.player.dimension, "deathOverkill", false);
                     }
                     else {
-                        PacketPlaySound.sendSoundPacket(this.player.field_70165_t, this.player.field_70163_u, this.player.field_70161_v, 15.0, this.player.field_71093_bK, "deathOverkillTom", false);
+                        PacketPlaySound.sendSoundPacket(this.player.posX, this.player.posY, this.player.posZ, 15.0, this.player.dimension, "deathOverkillTom", false);
                     }
                 }
-                if (hitDamage > 10.0f && !this.player.getEntityData().func_74779_i("lastClowder").equals("SAFEZONE")) {
-                    FlansMod.proxy.spawnParticle("flansmod.blood", this.player.field_70165_t, this.player.field_70163_u - 4.0, this.player.field_70161_v, 0.0, 0.10000000149011612, 0.0);
-                    FlansMod.getPacketHandler().sendToAllAround(new PacketParticle("flansmod.blood", this.player.field_70165_t, this.player.field_70163_u - 4.0, this.player.field_70161_v, (float)Math.random() * 1.0f, (float)Math.random() * 1.0f, -(float)Math.random() * 1.0f), this.player.field_70165_t, this.player.field_70163_u, this.player.field_70161_v, 150.0f, this.player.field_71093_bK);
+                if (hitDamage > 10.0f && !this.player.getEntityData().getString("lastClowder").equals("SAFEZONE")) {
+                    FlansMod.proxy.spawnParticle("flansmod.blood", this.player.posX, this.player.posY - 4.0, this.player.posZ, 0.0, 0.10000000149011612, 0.0);
+                    FlansMod.getPacketHandler().sendToAllAround(new PacketParticle("flansmod.blood", this.player.posX, this.player.posY - 4.0, this.player.posZ, (float)Math.random() * 1.0f, (float)Math.random() * 1.0f, -(float)Math.random() * 1.0f), this.player.posX, this.player.posY, this.player.posZ, 150.0f, this.player.dimension);
                 }
-                final DamageSource damagesource = (bullet.owner == null) ? DamageSource.field_76377_j : bullet.getBulletDamage(this.type == EnumHitboxType.NAPE || this.type == EnumHitboxType.CRANIUM);
-                if (!this.player.field_70170_p.field_72995_K && hitDamage == 0.0f && TeamsManager.getInstance().currentRound != null) {
+                final DamageSource damagesource = (bullet.owner == null) ? DamageSource.generic : bullet.getBulletDamage(this.type == EnumHitboxType.NAPE || this.type == EnumHitboxType.CRANIUM);
+                if (!this.player.worldObj.isRemote && hitDamage == 0.0f && TeamsManager.getInstance().currentRound != null) {
                     TeamsManager.getInstance().currentRound.gametype.playerAttacked((EntityPlayerMP)this.player, damagesource);
                 }
-                if (this.player.func_70097_a(damagesource, hitDamage)) {
+                if (this.player.attackEntityFrom(damagesource, hitDamage)) {
                     final EntityPlayer player = this.player;
-                    ++player.field_70720_be;
-                    this.player.field_70172_ad = this.player.field_70771_an / 2;
+                    ++player.arrowHitTimer;
+                    this.player.hurtResistantTime = this.player.maxHurtResistantTime / 2;
                 }
                 return penetratingPower - 1.0f;
             }

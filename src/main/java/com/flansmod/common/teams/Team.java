@@ -193,7 +193,7 @@ public class Team extends InfoType
     }
     
     public void removePlayer(final EntityPlayer player) {
-        this.removePlayer(player.func_70005_c_());
+        this.removePlayer(player.getCommandSenderName());
     }
     
     public String removePlayer(final String username) {
@@ -205,7 +205,7 @@ public class Team extends InfoType
     }
     
     public EntityPlayer addPlayer(final EntityPlayer player) {
-        this.addPlayer(player.func_70005_c_());
+        this.addPlayer(player.getCommandSenderName());
         return player;
     }
     

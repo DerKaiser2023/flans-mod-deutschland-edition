@@ -28,11 +28,11 @@ public class ModelChinook extends ModelPlane
         for (int i = 0; i < 2; ++i) {
             for (int j = 0; j < 2; ++j) {
                 (this.bodyWheelModel[3 * i + 6 * j] = new ModelRendererTurbo(this, 624, 32, textureX, textureY)).addBox(0.0f, -8.0f, -2.0f, 4, 16, 4);
-                this.bodyWheelModel[3 * i + 6 * j].func_78793_a(-80.0f * ((i == 0) ? 1 : -1), 0.0f, -24.0f * ((j == 0) ? 1 : -1));
+                this.bodyWheelModel[3 * i + 6 * j].setRotationPoint(-80.0f * ((i == 0) ? 1 : -1), 0.0f, -24.0f * ((j == 0) ? 1 : -1));
                 (this.bodyWheelModel[1 + 3 * i + 6 * j] = new ModelRendererTurbo(this, 640, 12, textureX, textureY)).addBox(-6.0f, -14.0f, -4.0f, 16, 16, 3);
-                this.bodyWheelModel[1 + 3 * i + 6 * j].func_78793_a(-80.0f * ((i == 0) ? 1 : -1), 0.0f, -24.0f * ((j == 0) ? 1 : -1));
+                this.bodyWheelModel[1 + 3 * i + 6 * j].setRotationPoint(-80.0f * ((i == 0) ? 1 : -1), 0.0f, -24.0f * ((j == 0) ? 1 : -1));
                 (this.bodyWheelModel[2 + 3 * i + 6 * j] = new ModelRendererTurbo(this, 640, 12, textureX, textureY)).addBox(-6.0f, -14.0f, 1.0f, 16, 16, 3);
-                this.bodyWheelModel[2 + 3 * i + 6 * j].func_78793_a(-80.0f * ((i == 0) ? 1 : -1), 0.0f, -24.0f * ((j == 0) ? 1 : -1));
+                this.bodyWheelModel[2 + 3 * i + 6 * j].setRotationPoint(-80.0f * ((i == 0) ? 1 : -1), 0.0f, -24.0f * ((j == 0) ? 1 : -1));
             }
         }
         this.noseModel = new ModelRendererTurbo[17];
@@ -61,16 +61,16 @@ public class ModelChinook extends ModelPlane
             (this.heliMainRotorModels[k][0] = new ModelRendererTurbo(this, 624, 0, textureX, textureY)).addBox(-2.0f, 124.0f, -2.0f, 4, 8, 4);
             for (int l = 0; l < 3; ++l) {
                 (this.heliMainRotorModels[k][l * 2 + 1] = new ModelRendererTurbo(this, 640, 0, textureX, textureY)).addBox(0.0f, 132.0f, -2.0f, 8, 1, 4);
-                this.heliMainRotorModels[k][l * 2 + 1].field_78796_g = 1.0471976f * l * 2.0f;
+                this.heliMainRotorModels[k][l * 2 + 1].rotateAngleY = 1.0471976f * l * 2.0f;
                 (this.heliMainRotorModels[k][l * 2 + 2] = new ModelRendererTurbo(this, 664, 0, textureX, textureY)).addBox(8.0f, 132.0f, -2.0f, 128, 1, 8);
-                this.heliMainRotorModels[k][l * 2 + 2].field_78796_g = 1.0471976f * l * 2.0f;
+                this.heliMainRotorModels[k][l * 2 + 2].rotateAngleY = 1.0471976f * l * 2.0f;
             }
         }
         for (int i = 0; i < 7; ++i) {
-            this.heliMainRotorModels[0][i].func_78793_a(-84.0f, -24.0f, 0.0f);
+            this.heliMainRotorModels[0][i].setRotationPoint(-84.0f, -24.0f, 0.0f);
         }
         for (int i = 0; i < 7; ++i) {
-            this.heliMainRotorModels[1][i].func_78793_a(128.0f, 0.0f, 0.0f);
+            this.heliMainRotorModels[1][i].setRotationPoint(128.0f, 0.0f, 0.0f);
         }
         this.heliMainRotorOrigins = new Vector3f[] { new Vector3f(-5.25f, 3.0f, 0.0f), new Vector3f(8.0f, 3.0f, 0.0f) };
         this.heliRotorSpeeds = new float[] { 1.0f, 1.0f };

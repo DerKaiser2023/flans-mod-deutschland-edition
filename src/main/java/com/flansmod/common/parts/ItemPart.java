@@ -23,33 +23,33 @@ public class ItemPart extends Item implements IFlanItem
     
     public ItemPart(final PartType type1) {
         this.type = type1;
-        this.func_77625_d(this.type.stackSize);
+        this.setMaxStackSize(this.type.stackSize);
         if (this.type.category == 9) {
-            this.func_77656_e(this.type.fuel);
-            this.func_77627_a(true);
+            this.setMaxDurability(this.type.fuel);
+            this.setHasSubtypes(true);
         }
-        ((ItemPart)(this.type.item = this)).func_111206_d("FlansMod:" + this.type.iconPath);
-        this.func_77637_a((CreativeTabs)FlansMod.tabFlanParts);
+        ((ItemPart)(this.type.item = this)).setTextureName("FlansMod:" + this.type.iconPath);
+        this.setCreativeTab((CreativeTabs)FlansMod.tabFlanParts);
         GameRegistry.registerItem((Item)this, this.type.shortName, "flansmod");
     }
     
-    public void func_77624_a(final ItemStack par1ItemStack, final EntityPlayer par2EntityPlayer, final List par3List, final boolean par4) {
+    public void addInformation(final ItemStack par1ItemStack, final EntityPlayer par2EntityPlayer, final List par3List, final boolean par4) {
         if (!this.type.packName.isEmpty()) {
             par3List.add(this.type.packName);
         }
         if (this.type.category == 9) {
-            par3List.add("Fuel Stored: " + (this.type.fuel - par1ItemStack.func_77960_j()) + " / " + this.type.fuel);
+            par3List.add("Fuel Stored: " + (this.type.fuel - par1ItemStack.getMetadata()) + " / " + this.type.fuel);
         }
     }
     
     @SideOnly(Side.CLIENT)
-    public int func_82790_a(final ItemStack par1ItemStack, final int par2) {
+    public int getColorFromItemStack(final ItemStack par1ItemStack, final int par2) {
         return this.type.colour;
     }
     
     @SideOnly(Side.CLIENT)
-    public void func_94581_a(final IIconRegister icon) {
-        this.field_77791_bV = icon.func_94245_a("FlansMod:" + this.type.iconPath);
+    public void registerIcons(final IIconRegister icon) {
+        this.itemIcon = icon.registerIcon("FlansMod:" + this.type.iconPath);
     }
     
     public InfoType getInfoType() {

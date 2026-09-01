@@ -45,22 +45,22 @@ public class RenderMecha extends Render implements IItemRenderer
     private static final ItemRenderer renderer;
     
     public RenderMecha() {
-        this.field_76989_e = 1.5f;
+        this.shadowSize = 1.5f;
     }
     
     public void render(final EntityMecha mecha, final double d, final double d1, final double d2, final float f, final float f1) {
-        this.func_110777_b((Entity)mecha);
+        this.bindEntityTexture((Entity)mecha);
         final float scale = 0.0625f;
         final MechaType type = mecha.getMechaType();
         GL11.glPushMatrix();
         GL11.glTranslatef((float)d, (float)d1, (float)d2);
         float dYaw;
-        for (dYaw = mecha.axes.getYaw() - mecha.field_70126_B; dYaw > 180.0f; dYaw -= 360.0f) {}
+        for (dYaw = mecha.axes.getYaw() - mecha.prevRotationYaw; dYaw > 180.0f; dYaw -= 360.0f) {}
         while (dYaw <= -180.0f) {
             dYaw += 360.0f;
         }
         float dPitch;
-        for (dPitch = mecha.axes.getPitch() - mecha.field_70127_C; dPitch > 180.0f; dPitch -= 360.0f) {}
+        for (dPitch = mecha.axes.getPitch() - mecha.prevRotationPitch; dPitch > 180.0f; dPitch -= 360.0f) {}
         while (dPitch <= -180.0f) {
             dPitch += 360.0f;
         }
@@ -69,8 +69,8 @@ public class RenderMecha extends Render implements IItemRenderer
         while (dRoll <= -180.0f) {
             dRoll += 360.0f;
         }
-        GL11.glRotatef(-mecha.field_70126_B - dYaw * f1, 0.0f, 1.0f, 0.0f);
-        GL11.glRotatef(mecha.field_70127_C + dPitch * f1, 0.0f, 0.0f, 1.0f);
+        GL11.glRotatef(-mecha.prevRotationYaw - dYaw * f1, 0.0f, 1.0f, 0.0f);
+        GL11.glRotatef(mecha.prevRotationPitch + dPitch * f1, 0.0f, 0.0f, 1.0f);
         GL11.glRotatef(mecha.prevRotationRoll + dRoll * f1, 1.0f, 0.0f, 0.0f);
         final float modelScale = mecha.getMechaType().modelScale;
         final ModelMecha model = (ModelMecha)type.model;
@@ -80,22 +80,22 @@ public class RenderMecha extends Render implements IItemRenderer
             model.render(mecha, f1);
         }
         final ItemStack hipsSlot = mecha.inventory.getStackInSlot(EnumMechaSlotType.hips);
-        if (hipsSlot != null && hipsSlot.func_77973_b() instanceof ItemMechaAddon) {
-            final MechaItemType hipsAddon = ((ItemMechaAddon)hipsSlot.func_77973_b()).type;
+        if (hipsSlot != null && hipsSlot.getItem() instanceof ItemMechaAddon) {
+            final MechaItemType hipsAddon = ((ItemMechaAddon)hipsSlot.getItem()).type;
             if (hipsAddon.model != null) {
                 if (model != null) {
                     GL11.glTranslatef(model.hipsAttachmentPoint.x, model.hipsAttachmentPoint.y, model.hipsAttachmentPoint.z);
                 }
                 GL11.glScalef(type.heldItemScale, type.heldItemScale, type.heldItemScale);
                 if (hipsAddon.texture != null) {
-                    this.func_110776_a(FlansModResourceHandler.getTexture(hipsAddon));
+                    this.bindTexture(FlansModResourceHandler.getTexture(hipsAddon));
                 }
                 hipsAddon.model.render(mecha, f1);
             }
         }
         GL11.glPopMatrix();
         if (mecha.isPartIntact(EnumDriveablePart.leftArm)) {
-            this.func_110777_b((Entity)mecha);
+            this.bindEntityTexture((Entity)mecha);
             GL11.glPushMatrix();
             float smoothedPitch = 0.0f;
             if (mecha.seats[0] != null) {
@@ -130,7 +130,7 @@ public class RenderMecha extends Render implements IItemRenderer
             GL11.glPopMatrix();
         }
         if (mecha.isPartIntact(EnumDriveablePart.rightArm)) {
-            this.func_110777_b((Entity)mecha);
+            this.bindEntityTexture((Entity)mecha);
             GL11.glPushMatrix();
             float smoothedPitch = 0.0f;
             if (mecha.seats[0] != null) {
@@ -173,15 +173,15 @@ public class RenderMecha extends Render implements IItemRenderer
                 if (part.box == null) {
                     continue;
                 }
-                func_76980_a(AxisAlignedBB.func_72330_a((double)(part.box.x / 16.0f), (double)(part.box.y / 16.0f), (double)(part.box.z / 16.0f), (double)((part.box.x + part.box.w) / 16.0f), (double)((part.box.y + part.box.h) / 16.0f), (double)((part.box.z + part.box.d) / 16.0f)));
+                renderAABB(AxisAlignedBB.getBoundingBox((double)(part.box.x / 16.0f), (double)(part.box.y / 16.0f), (double)(part.box.z / 16.0f), (double)((part.box.x + part.box.w) / 16.0f), (double)((part.box.y + part.box.h) / 16.0f), (double)((part.box.z + part.box.d) / 16.0f)));
             }
             GL11.glColor4f(0.0f, 0.0f, 1.0f, 0.3f);
             for (final ShootPoint point : type.shootPointsPrimary) {
-                func_76980_a(AxisAlignedBB.func_72330_a((double)(point.rootPos.position.x - 0.25f), (double)(point.rootPos.position.y - 0.25f), (double)(point.rootPos.position.z - 0.25f), (double)(point.rootPos.position.x + 0.25f), (double)(point.rootPos.position.y + 0.25f), (double)(point.rootPos.position.z + 0.25f)));
+                renderAABB(AxisAlignedBB.getBoundingBox((double)(point.rootPos.position.x - 0.25f), (double)(point.rootPos.position.y - 0.25f), (double)(point.rootPos.position.z - 0.25f), (double)(point.rootPos.position.x + 0.25f), (double)(point.rootPos.position.y + 0.25f), (double)(point.rootPos.position.z + 0.25f)));
             }
             GL11.glColor4f(0.0f, 1.0f, 0.0f, 0.3f);
             for (final ShootPoint point : type.shootPointsSecondary) {
-                func_76980_a(AxisAlignedBB.func_72330_a((double)(point.rootPos.position.x - 0.25f), (double)(point.rootPos.position.y - 0.25f), (double)(point.rootPos.position.z - 0.25f), (double)(point.rootPos.position.x + 0.25f), (double)(point.rootPos.position.y + 0.25f), (double)(point.rootPos.position.z + 0.25f)));
+                renderAABB(AxisAlignedBB.getBoundingBox((double)(point.rootPos.position.x - 0.25f), (double)(point.rootPos.position.y - 0.25f), (double)(point.rootPos.position.z - 0.25f), (double)(point.rootPos.position.x + 0.25f), (double)(point.rootPos.position.y + 0.25f), (double)(point.rootPos.position.z + 0.25f)));
             }
             GL11.glEnable(3553);
             GL11.glEnable(2929);
@@ -190,7 +190,7 @@ public class RenderMecha extends Render implements IItemRenderer
         }
         GL11.glPopMatrix();
         if (mecha.isPartIntact(EnumDriveablePart.hips)) {
-            this.func_110777_b((Entity)mecha);
+            this.bindEntityTexture((Entity)mecha);
             GL11.glPushMatrix();
             GL11.glTranslatef((float)d, (float)d1, (float)d2);
             for (dYaw = mecha.legAxes.getYaw() - mecha.prevLegsYaw; dYaw > 180.0f; dYaw -= 360.0f) {}
@@ -198,7 +198,7 @@ public class RenderMecha extends Render implements IItemRenderer
                 dYaw += 360.0f;
             }
             GL11.glRotatef(-dYaw * f1 - mecha.prevLegsYaw, 0.0f, 1.0f, 0.0f);
-            GL11.glRotatef(mecha.field_70127_C + dPitch * f1, 0.0f, 0.0f, 1.0f);
+            GL11.glRotatef(mecha.prevRotationPitch + dPitch * f1, 0.0f, 0.0f, 1.0f);
             GL11.glRotatef(mecha.prevRotationRoll + dRoll * f1, 1.0f, 0.0f, 0.0f);
             GL11.glScalef(modelScale, modelScale, modelScale);
             if (model != null) {
@@ -215,7 +215,7 @@ public class RenderMecha extends Render implements IItemRenderer
                 final float rightLegLowerRot = (float)Math.toRadians(mecha.prevRightLegLowerAngle + dRLLR * f1);
                 final float leftFootRot = (float)Math.toRadians(mecha.prevLeftFootAngle + dLFR * f1);
                 final float rightFootRot = (float)Math.toRadians(mecha.rightFootAngle + dRFR * f1);
-                final float legsYaw = (float)Math.sin((mecha.field_70173_aa + f1) / type.legSwingTime) * mecha.legSwing;
+                final float legsYaw = (float)Math.sin((mecha.ticksExisted + f1) / type.legSwingTime) * mecha.legSwing;
                 final float footH = (float)Math.sin(legsYaw) * legLength;
                 final float footV = (float)Math.cos(legsYaw) * legLength;
                 model.renderHips(scale, mecha, f1);
@@ -285,7 +285,7 @@ public class RenderMecha extends Render implements IItemRenderer
         }
     }
     
-    public void func_76986_a(final Entity entity, final double d0, final double d1, final double d2, final float f, final float f1) {
+    public void doRender(final Entity entity, final double d0, final double d1, final double d2, final float f, final float f1) {
         this.render((EntityMecha)entity, d0, d1, d2, f, f1);
     }
     
@@ -300,7 +300,7 @@ public class RenderMecha extends Render implements IItemRenderer
         return position;
     }
     
-    protected ResourceLocation func_110775_a(final Entity entity) {
+    protected ResourceLocation getEntityTexture(final Entity entity) {
         final DriveableType type = ((EntityDriveable)entity).getDriveableType();
         final Paintjob paintjob = type.getPaintjob(((EntityDriveable)entity).getDriveableData().paintjobID);
         return FlansModResourceHandler.getPaintjobTexture(paintjob);
@@ -308,19 +308,19 @@ public class RenderMecha extends Render implements IItemRenderer
     
     private void renderItem(final EntityMecha mecha, final ItemStack stack, final int par3, final boolean leftHand, final float dT) {
         GL11.glPushMatrix();
-        final TextureManager texturemanager = Minecraft.func_71410_x().func_110434_K();
-        final Item item = stack.func_77973_b();
+        final TextureManager texturemanager = Minecraft.getMinecraft().getTextureManager();
+        final Item item = stack.getItem();
         if (item instanceof ItemMechaAddon) {
             GL11.glRotatef(-90.0f, 0.0f, 0.0f, 1.0f);
             GL11.glTranslatef(0.0f, 0.0f, 0.0f);
             final ItemMechaAddon toolItem = (ItemMechaAddon)item;
             final MechaItemType toolType = toolItem.type;
-            this.func_110776_a(FlansModResourceHandler.getTexture(toolType));
+            this.bindTexture(FlansModResourceHandler.getTexture(toolType));
             if (toolType.model != null) {
                 toolType.model.render(mecha, dT);
                 GL11.glPushMatrix();
                 if ((leftHand && mecha.leftMouseHeld) || (!leftHand && mecha.rightMouseHeld)) {
-                    GL11.glRotatef(25.0f * mecha.field_70173_aa, 1.0f, 0.0f, 0.0f);
+                    GL11.glRotatef(25.0f * mecha.ticksExisted, 1.0f, 0.0f, 0.0f);
                 }
                 toolType.model.renderDrill(mecha, dT);
                 GL11.glPopMatrix();
@@ -331,22 +331,22 @@ public class RenderMecha extends Render implements IItemRenderer
             final GunType gunType = ((ItemGun)item).type;
             final ModelGun model = gunType.model;
             GL11.glRotatef(-90.0f, 0.0f, 0.0f, 1.0f);
-            texturemanager.func_110577_a(FlansModResourceHandler.getTexture(gunType));
+            texturemanager.bindTexture(FlansModResourceHandler.getTexture(gunType));
             final IItemRenderer.ItemRenderType type = IItemRenderer.ItemRenderType.ENTITY;
             ClientProxy.gunRenderer.renderGun(stack, gunType, 0.0625f, model, leftHand ? mecha.leftAnimations : mecha.rightAnimations, 0.0f, type);
         }
         else {
-            final IIcon icon = stack.func_77954_c();
+            final IIcon icon = stack.getIconIndex();
             if (icon == null) {
                 GL11.glPopMatrix();
                 return;
             }
-            texturemanager.func_110577_a(texturemanager.func_130087_a(stack.func_94608_d()));
-            final Tessellator tessellator = Tessellator.field_78398_a;
-            final float f = icon.func_94209_e();
-            final float f2 = icon.func_94212_f();
-            final float f3 = icon.func_94206_g();
-            final float f4 = icon.func_94210_h();
+            texturemanager.bindTexture(texturemanager.getResourceLocation(stack.getItemSpriteNumber()));
+            final Tessellator tessellator = Tessellator.instance;
+            final float f = icon.getMinU();
+            final float f2 = icon.getMaxU();
+            final float f3 = icon.getMinV();
+            final float f4 = icon.getMaxV();
             final float f5 = 0.0f;
             final float f6 = 0.3f;
             GL11.glEnable(32826);
@@ -357,11 +357,11 @@ public class RenderMecha extends Render implements IItemRenderer
             GL11.glRotatef(0.0f, 0.0f, 1.0f, 0.0f);
             GL11.glRotatef(-133.0f, 0.0f, 0.0f, 1.0f);
             final ItemRenderer renderer = RenderMecha.renderer;
-            ItemRenderer.func_78439_a(tessellator, f2, f3, f, f4, icon.func_94211_a(), icon.func_94216_b(), 0.0625f);
+            ItemRenderer.renderItemIn2D(tessellator, f2, f3, f, f4, icon.getIconWidth(), icon.getIconHeight(), 0.0625f);
             if (stack.hasEffect(par3)) {
                 GL11.glDepthFunc(514);
                 GL11.glDisable(2896);
-                texturemanager.func_110577_a(RenderMecha.RES_ITEM_GLINT);
+                texturemanager.bindTexture(RenderMecha.RES_ITEM_GLINT);
                 GL11.glEnable(3042);
                 GL11.glBlendFunc(768, 1);
                 final float f8 = 0.76f;
@@ -370,19 +370,19 @@ public class RenderMecha extends Render implements IItemRenderer
                 GL11.glPushMatrix();
                 final float f9 = 0.125f;
                 GL11.glScalef(f9, f9, f9);
-                float f10 = Minecraft.func_71386_F() % 3000L / 3000.0f * 8.0f;
+                float f10 = Minecraft.getSystemTime() % 3000L / 3000.0f * 8.0f;
                 GL11.glTranslatef(f10, 0.0f, 0.0f);
                 GL11.glRotatef(-50.0f, 0.0f, 0.0f, 1.0f);
                 final ItemRenderer renderer2 = RenderMecha.renderer;
-                ItemRenderer.func_78439_a(tessellator, 0.0f, 0.0f, 1.0f, 1.0f, 256, 256, 0.0625f);
+                ItemRenderer.renderItemIn2D(tessellator, 0.0f, 0.0f, 1.0f, 1.0f, 256, 256, 0.0625f);
                 GL11.glPopMatrix();
                 GL11.glPushMatrix();
                 GL11.glScalef(f9, f9, f9);
-                f10 = Minecraft.func_71386_F() % 4873L / 4873.0f * 8.0f;
+                f10 = Minecraft.getSystemTime() % 4873L / 4873.0f * 8.0f;
                 GL11.glTranslatef(-f10, 0.0f, 0.0f);
                 GL11.glRotatef(10.0f, 0.0f, 0.0f, 1.0f);
                 final ItemRenderer renderer3 = RenderMecha.renderer;
-                ItemRenderer.func_78439_a(tessellator, 0.0f, 0.0f, 1.0f, 1.0f, 256, 256, 0.0625f);
+                ItemRenderer.renderItemIn2D(tessellator, 0.0f, 0.0f, 1.0f, 1.0f, 256, 256, 0.0625f);
                 GL11.glPopMatrix();
                 GL11.glMatrixMode(5888);
                 GL11.glDisable(3042);
@@ -399,7 +399,7 @@ public class RenderMecha extends Render implements IItemRenderer
             case EQUIPPED:
             case EQUIPPED_FIRST_PERSON:
             case ENTITY: {
-                return Minecraft.func_71410_x().field_71474_y.field_74347_j && item != null && item.func_77973_b() instanceof ItemMecha && ((ItemMecha)item.func_77973_b()).type.model != null;
+                return Minecraft.getMinecraft().gameSettings.fancyGraphics && item != null && item.getItem() instanceof ItemMecha && ((ItemMecha)item.getItem()).type.model != null;
             }
             default: {
                 return false;
@@ -413,14 +413,14 @@ public class RenderMecha extends Render implements IItemRenderer
     
     public void renderItem(final IItemRenderer.ItemRenderType type, final ItemStack item, final Object... data) {
         GL11.glPushMatrix();
-        if (item != null && item.func_77973_b() instanceof ItemMecha) {
-            final MechaType mechaType = ((ItemMecha)item.func_77973_b()).type;
+        if (item != null && item.getItem() instanceof ItemMecha) {
+            final MechaType mechaType = ((ItemMecha)item.getItem()).type;
             if (mechaType.model != null) {
                 float scale = 0.5f;
                 switch (type) {
                     case ENTITY: {
                         scale = 1.5f;
-                        GL11.glRotatef((float)((EntityItem)data[1]).field_70173_aa, 0.0f, 1.0f, 0.0f);
+                        GL11.glRotatef((float)((EntityItem)data[1]).ticksExisted, 0.0f, 1.0f, 0.0f);
                         break;
                     }
                     case EQUIPPED: {
@@ -440,7 +440,7 @@ public class RenderMecha extends Render implements IItemRenderer
                     }
                 }
                 GL11.glScalef(scale / mechaType.cameraDistance, scale / mechaType.cameraDistance, scale / mechaType.cameraDistance);
-                Minecraft.func_71410_x().field_71446_o.func_110577_a(FlansModResourceHandler.getTexture(mechaType));
+                Minecraft.getMinecraft().renderEngine.bindTexture(FlansModResourceHandler.getTexture(mechaType));
                 final ModelDriveable model = mechaType.model;
                 model.render(mechaType);
             }
@@ -450,6 +450,6 @@ public class RenderMecha extends Render implements IItemRenderer
     
     static {
         RES_ITEM_GLINT = new ResourceLocation("textures/misc/enchanted_item_glint.png");
-        renderer = new ItemRenderer(Minecraft.func_71410_x());
+        renderer = new ItemRenderer(Minecraft.getMinecraft());
     }
 }

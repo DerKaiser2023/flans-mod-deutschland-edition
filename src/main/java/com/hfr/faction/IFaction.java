@@ -14,4 +14,6 @@ public interface IFaction {
     Collection<String> getMembersOfRankAndAbove(PermLevel level);
 
     void removeTransportVehicle(Object entity);
+
+    void addTransportVehicle(Object entity, Object name);
 }

@@ -25,7 +25,7 @@ public class PacketSeatCheck extends PacketBase
     }
     
     public PacketSeatCheck(final EntitySeat seat) {
-        this.entityId = seat.func_145782_y();
+        this.entityId = seat.getEntityId();
         this.checkCount = 3;
     }
     
@@ -46,13 +46,13 @@ public class PacketSeatCheck extends PacketBase
         log("handleServerSide", (EntityPlayer)playerEntity);
         if (this.checkCount <= 0) {
             final ChatComponentText cct1 = new ChatComponentText("[FlansMod] " + playerEntity.getDisplayName() + " was recovering from a fall. id=" + this.entityId);
-            cct1.func_150256_b().func_150238_a(EnumChatFormatting.YELLOW);
+            cct1.getChatStyle().setColor(EnumChatFormatting.YELLOW);
             final ChatComponentText cct2 = new ChatComponentText("[FlansMod]================================================");
-            cct2.func_150256_b().func_150238_a(EnumChatFormatting.RED);
+            cct2.getChatStyle().setColor(EnumChatFormatting.RED);
         }
         else {
-            if (playerEntity.field_70154_o instanceof EntitySeat) {
-                this.entityId = playerEntity.field_70154_o.func_145782_y();
+            if (playerEntity.ridingEntity instanceof EntitySeat) {
+                this.entityId = playerEntity.ridingEntity.getEntityId();
             }
             else {
                 this.entityId = -1;
@@ -62,23 +62,23 @@ public class PacketSeatCheck extends PacketBase
     }
     
     private static void log(final String s, final EntityPlayer player) {
-        final Entity re = player.field_70154_o;
+        final Entity re = player.ridingEntity;
     }
     
     @SideOnly(Side.CLIENT)
     @Override
     public void handleClientSide(final EntityPlayer clientPlayer) {
         log("handleClientSide", clientPlayer);
-        if (clientPlayer.field_70154_o == null && this.entityId != -1) {
+        if (clientPlayer.ridingEntity == null && this.entityId != -1) {
             if (this.checkCount > 1) {
                 --this.checkCount;
             }
             else {
                 --this.checkCount;
-                final Entity entity = clientPlayer.field_70170_p.func_73045_a(this.entityId);
+                final Entity entity = clientPlayer.worldObj.getEntityByID(this.entityId);
                 if (entity instanceof EntitySeat) {
                     System.out.println("mount seat :" + clientPlayer.getDisplayName() + " : seatEntityId=" + this.entityId + " : check=" + this.checkCount);
-                    clientPlayer.func_70078_a(entity);
+                    clientPlayer.mountEntity(entity);
                 }
             }
             FlansMod.getPacketHandler().sendToServer(this);

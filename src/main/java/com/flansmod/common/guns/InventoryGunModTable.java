@@ -22,22 +22,22 @@ public class InventoryGunModTable extends InventoryBasic
         this.busy = false;
     }
     
-    public void func_70296_d() {
+    public void markDirty() {
         if (this.busy) {
             return;
         }
-        final ItemStack gunStack = this.func_70301_a(0);
-        if (gunStack == null || !(gunStack.func_77973_b() instanceof ItemGun)) {
+        final ItemStack gunStack = this.getStackInSlot(0);
+        if (gunStack == null || !(gunStack.getItem() instanceof ItemGun)) {
             return;
         }
-        this.gunType = ((ItemGun)gunStack.func_77973_b()).type;
+        this.gunType = ((ItemGun)gunStack.getItem()).type;
         final String[] tags = { "barrel", "scope", "stock", "grip", "gadget", "slide", "pump", "accessory" };
         if (gunStack != this.lastGunStack) {
             this.busy = true;
-            final NBTTagCompound attachmentTags = gunStack.field_77990_d.func_74775_l("attachments");
+            final NBTTagCompound attachmentTags = gunStack.stackTagCompound.getCompoundTag("attachments");
             for (int i = 0; i < 8; ++i) {
                 try {
-                    this.func_70299_a(i + 1, ItemStack.loadItemStackFromNBT(attachmentTags.func_74775_l(tags[i])));
+                    this.setInventorySlotContents(i + 1, ItemStack.loadItemStackFromNBT(attachmentTags.getCompoundTag(tags[i])));
                 }
                 catch (final Exception e) {
                     e.printStackTrace();
@@ -46,7 +46,7 @@ public class InventoryGunModTable extends InventoryBasic
             this.genericScroll = 0;
             for (int i = 0; i < Math.min(this.gunType.numGenericAttachmentSlots, 8); ++i) {
                 try {
-                    this.func_70299_a(tags.length + i + 1, ItemStack.loadItemStackFromNBT(attachmentTags.func_74775_l("generic_" + i)));
+                    this.setInventorySlotContents(tags.length + i + 1, ItemStack.loadItemStackFromNBT(attachmentTags.getCompoundTag("generic_" + i)));
                 }
                 catch (final Exception e) {
                     e.printStackTrace();
@@ -56,24 +56,24 @@ public class InventoryGunModTable extends InventoryBasic
         }
         else {
             final NBTTagCompound gunTags = new NBTTagCompound();
-            gunTags.func_74782_a("ammo", this.func_70301_a(0).field_77990_d.func_74781_a("ammo"));
-            if (this.func_70301_a(0).field_77990_d.func_74781_a("Paint") != null) {
-                gunTags.func_74782_a("Paint", this.func_70301_a(0).field_77990_d.func_74781_a("Paint"));
+            gunTags.setTag("ammo", this.getStackInSlot(0).stackTagCompound.getTag("ammo"));
+            if (this.getStackInSlot(0).stackTagCompound.getTag("Paint") != null) {
+                gunTags.setTag("Paint", this.getStackInSlot(0).stackTagCompound.getTag("Paint"));
             }
             final NBTTagCompound attachmentTags2 = new NBTTagCompound();
             for (int j = 0; j < 8; ++j) {
-                this.writeAttachmentTags(attachmentTags2, this.func_70301_a(j + 1), tags[j]);
+                this.writeAttachmentTags(attachmentTags2, this.getStackInSlot(j + 1), tags[j]);
             }
             for (int j = 0; j < this.gunType.numGenericAttachmentSlots; ++j) {
                 if (j >= this.genericScroll * 4 && j < this.genericScroll * 4 + 8) {
-                    this.writeAttachmentTags(attachmentTags2, this.func_70301_a(j - this.genericScroll * 4 + tags.length + 1), "generic_" + j);
+                    this.writeAttachmentTags(attachmentTags2, this.getStackInSlot(j - this.genericScroll * 4 + tags.length + 1), "generic_" + j);
                 }
                 else {
-                    attachmentTags2.func_74782_a("generic_" + j, this.func_70301_a(0).field_77990_d.func_74781_a("generic_" + j));
+                    attachmentTags2.setTag("generic_" + j, this.getStackInSlot(0).stackTagCompound.getTag("generic_" + j));
                 }
             }
-            gunTags.func_74782_a("attachments", (NBTBase)attachmentTags2);
-            gunStack.field_77990_d = gunTags;
+            gunTags.setTag("attachments", (NBTBase)attachmentTags2);
+            gunStack.stackTagCompound = gunTags;
         }
         this.lastGunStack = gunStack;
     }
@@ -83,10 +83,10 @@ public class InventoryGunModTable extends InventoryBasic
         if (attachmentStack != null) {
             tags = attachmentStack.writeToNBT(new NBTTagCompound());
         }
-        attachmentTags.func_74782_a(attachmentName, (NBTBase)tags);
+        attachmentTags.setTag(attachmentName, (NBTBase)tags);
     }
     
-    public boolean func_94041_b(final int i, final ItemStack itemstack) {
+    public boolean isItemValidForSlot(final int i, final ItemStack itemstack) {
         return false;
     }
 }

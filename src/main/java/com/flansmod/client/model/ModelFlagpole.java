@@ -18,25 +18,25 @@ public class ModelFlagpole extends ModelBase
         (this.poleModel = new ModelRenderer[3])[0] = new ModelRenderer((ModelBase)this, 0, 16);
         this.poleModel[1] = new ModelRenderer((ModelBase)this, 0, 16);
         this.poleModel[2] = new ModelRenderer((ModelBase)this, 0, 20);
-        this.poleModel[0].func_78790_a(-48.0f, -1.0f, -1.0f, 24, 2, 2, 0.0f);
-        this.poleModel[1].func_78790_a(-24.0f, -1.0f, -1.0f, 24, 2, 2, 0.0f);
-        this.poleModel[2].func_78790_a(-2.0f, -2.0f, -2.0f, 4, 2, 4, 0.0f);
-        this.poleModel[0].field_78808_h = 1.5707964f;
-        this.poleModel[1].field_78808_h = 1.5707964f;
+        this.poleModel[0].addBox(-48.0f, -1.0f, -1.0f, 24, 2, 2, 0.0f);
+        this.poleModel[1].addBox(-24.0f, -1.0f, -1.0f, 24, 2, 2, 0.0f);
+        this.poleModel[2].addBox(-2.0f, -2.0f, -2.0f, 4, 2, 4, 0.0f);
+        this.poleModel[0].rotateAngleZ = 1.5707964f;
+        this.poleModel[1].rotateAngleZ = 1.5707964f;
         this.flagModel = new ModelRenderer[1];
-        (this.flagModel[0] = new ModelRenderer((ModelBase)this, 0, 0)).func_78790_a(-8.0f, -16.0f, 0.0f, 16, 16, 0, 0.0f);
-        this.flagModel[0].func_78793_a(8.0f, 0.0f, 0.0f);
+        (this.flagModel[0] = new ModelRenderer((ModelBase)this, 0, 0)).addBox(-8.0f, -16.0f, 0.0f, 16, 16, 0, 0.0f);
+        this.flagModel[0].setRotationPoint(8.0f, 0.0f, 0.0f);
     }
     
     public void renderPole(final float f, final float f1, final float f2, final float f3, final float f4, final float f5, final EntityFlagpole entityflag) {
         for (final ModelRenderer model : this.poleModel) {
-            model.func_78785_a(f5);
+            model.render(f5);
         }
     }
     
     public void renderFlag(final float f, final float f1, final float f2, final float f3, final float f4, final float f5, final EntityFlag entityflag) {
         for (final ModelRenderer model : this.flagModel) {
-            model.func_78785_a(f5);
+            model.render(f5);
         }
     }
     

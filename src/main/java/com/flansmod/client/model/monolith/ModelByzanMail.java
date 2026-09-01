@@ -42,21 +42,21 @@ public class ModelByzanMail extends ModelCustomArmour
         this.bodyModel[6] = new ModelRendererTurbo((ModelBase)this, 25, 1, this.textureX, this.textureY);
         this.bodyModel[7] = new ModelRendererTurbo((ModelBase)this, 25, 1, this.textureX, this.textureY);
         this.bodyModel[0].addShapeBox(-4.0f, 8.6f, -2.0f, 8, 1, 4, 0.0f, 0.6f, 0.1f, 0.8f, 0.6f, 0.1f, 0.8f, 0.6f, 0.1f, 0.8f, 0.6f, 0.1f, 0.8f, 0.6f, 0.1f, 0.8f, 0.6f, 0.1f, 0.8f, 0.6f, 0.1f, 0.8f, 0.6f, 0.1f, 0.8f);
-        this.bodyModel[0].func_78793_a(0.0f, 0.0f, 0.0f);
+        this.bodyModel[0].setRotationPoint(0.0f, 0.0f, 0.0f);
         this.bodyModel[1].addShapeBox(-4.0f, 10.3f, -2.0f, 8, 5, 4, 0.0f, 0.3f, 0.1f, 0.1f, 0.3f, 0.1f, 0.1f, 0.3f, 0.1f, 0.1f, 0.3f, 0.1f, 0.1f, 0.8f, 0.5f, 0.5f, 0.8f, 0.5f, 0.5f, 0.8f, 0.5f, 0.5f, 0.8f, 0.5f, 0.5f);
-        this.bodyModel[1].func_78793_a(0.0f, 0.0f, 0.0f);
+        this.bodyModel[1].setRotationPoint(0.0f, 0.0f, 0.0f);
         this.bodyModel[2].addShapeBox(-4.0f, 7.7f, -2.0f, 16, 2, 4, 0.0f, 0.7f, -0.1f, 0.7f, -7.3f, -0.1f, 0.7f, -7.3f, -0.1f, 0.7f, 0.7f, -0.1f, 0.7f, 0.5f, -1.1f, 0.5f, -7.3f, -1.1f, 0.5f, -7.3f, -1.1f, 0.5f, 0.5f, -1.1f, 0.5f);
-        this.bodyModel[2].func_78793_a(0.0f, 0.0f, 0.0f);
+        this.bodyModel[2].setRotationPoint(0.0f, 0.0f, 0.0f);
         this.bodyModel[3].addShapeBox(-4.0f, -0.2f, -2.0f, 16, 16, 4, 0.0f, 0.7f, 0.1f, 0.7f, -7.2f, 0.1f, 0.7f, -7.2f, 0.1f, 0.7f, 0.7f, 0.1f, 0.7f, 0.7f, -8.0f, 0.7f, -7.2f, -8.0f, 0.7f, -7.2f, -8.0f, 0.7f, 0.7f, -8.0f, 0.7f);
-        this.bodyModel[3].func_78793_a(0.0f, 0.0f, 0.0f);
+        this.bodyModel[3].setRotationPoint(0.0f, 0.0f, 0.0f);
         this.bodyModel[4].addShapeBox(-4.0f, 8.5f, -2.0f, 16, 2, 4, 0.0f, 0.5f, -1.1f, 0.5f, -7.3f, -1.1f, 0.5f, -7.3f, -1.1f, 0.5f, 0.5f, -1.1f, 0.5f, 0.7f, -0.1f, 0.7f, -7.3f, -0.1f, 0.7f, -7.3f, -0.1f, 0.7f, 0.7f, -0.1f, 0.7f);
-        this.bodyModel[4].func_78793_a(0.0f, 0.0f, 0.0f);
+        this.bodyModel[4].setRotationPoint(0.0f, 0.0f, 0.0f);
         this.bodyModel[5].addShapeBox(-4.0f, 3.0f, -2.0f, 8, 1, 4, 0.0f, 0.8f, 0.1f, 0.8f, 0.8f, 0.1f, 0.8f, 0.8f, 0.1f, 0.8f, 0.8f, 0.1f, 0.8f, 0.8f, 0.1f, 0.8f, 0.8f, 0.1f, 0.8f, 0.8f, 0.1f, 0.8f, 0.8f, 0.1f, 0.8f);
-        this.bodyModel[5].func_78793_a(0.0f, 0.0f, 0.0f);
+        this.bodyModel[5].setRotationPoint(0.0f, 0.0f, 0.0f);
         this.bodyModel[6].addShapeBox(-6.5f, 1.0f, -2.0f, 8, 1, 4, 0.0f, -2.5f, 1.4f, 0.8f, -4.5f, 1.5f, 0.8f, -4.5f, 1.5f, 0.8f, -2.5f, 1.4f, 0.8f, -3.5f, 1.7f, 0.8f, -3.5f, 1.7f, 0.8f, -3.5f, 1.7f, 0.8f, -3.5f, 1.7f, 0.8f);
-        this.bodyModel[6].func_78793_a(0.0f, 0.0f, 0.0f);
+        this.bodyModel[6].setRotationPoint(0.0f, 0.0f, 0.0f);
         this.bodyModel[7].addShapeBox(-1.5f, 1.0f, -2.0f, 8, 1, 4, 0.0f, -4.5f, 1.5f, 0.8f, -2.5f, 1.4f, 0.8f, -2.5f, 1.4f, 0.8f, -4.5f, 1.5f, 0.8f, -3.5f, 1.7f, 0.8f, -3.5f, 1.7f, 0.8f, -3.5f, 1.7f, 0.8f, -3.5f, 1.7f, 0.8f);
-        this.bodyModel[7].func_78793_a(0.0f, 0.0f, 0.0f);
+        this.bodyModel[7].setRotationPoint(0.0f, 0.0f, 0.0f);
     }
     
     private void initleftArmModel_1() {
@@ -64,11 +64,11 @@ public class ModelByzanMail extends ModelCustomArmour
         this.leftArmModel[1] = new ModelRendererTurbo((ModelBase)this, 1, 105, this.textureX, this.textureY);
         this.leftArmModel[2] = new ModelRendererTurbo((ModelBase)this, 89, 57, this.textureX, this.textureY);
         this.leftArmModel[0].addShapeBox(-1.0f, -2.0f, -2.0f, 4, 11, 4, 0.0f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f);
-        this.leftArmModel[0].func_78793_a(0.0f, 0.0f, 0.0f);
+        this.leftArmModel[0].setRotationPoint(0.0f, 0.0f, 0.0f);
         this.leftArmModel[1].addShapeBox(-1.0f, -2.0f, -2.0f, 4, 5, 4, 0.0f, 0.4f, 0.2f, 0.4f, 0.4f, 0.2f, 0.4f, 0.4f, 0.2f, 0.4f, 0.4f, 0.2f, 0.4f, 0.4f, 1.0f, 0.4f, 0.4f, 1.0f, 0.4f, 0.4f, 1.0f, 0.4f, 0.4f, 1.0f, 0.4f);
-        this.leftArmModel[1].func_78793_a(0.0f, 0.0f, 0.0f);
+        this.leftArmModel[1].setRotationPoint(0.0f, 0.0f, 0.0f);
         this.leftArmModel[2].addShapeBox(-5.0f, -2.0f, -2.0f, 8, 6, 8, 0.0f, -3.5f, 0.3f, 0.5f, 0.5f, 0.3f, 0.5f, 0.5f, 0.3f, -3.5f, -3.5f, 0.3f, -3.5f, -3.5f, -2.0f, 0.5f, 0.5f, -2.0f, 0.5f, 0.5f, -2.0f, -3.5f, -3.5f, -2.0f, -3.5f);
-        this.leftArmModel[2].func_78793_a(0.0f, 0.0f, 0.0f);
+        this.leftArmModel[2].setRotationPoint(0.0f, 0.0f, 0.0f);
     }
     
     private void initrightArmModel_1() {
@@ -76,11 +76,11 @@ public class ModelByzanMail extends ModelCustomArmour
         this.rightArmModel[1] = new ModelRendererTurbo((ModelBase)this, 1, 73, this.textureX, this.textureY);
         this.rightArmModel[2] = new ModelRendererTurbo((ModelBase)this, 57, 49, this.textureX, this.textureY);
         this.rightArmModel[0].addShapeBox(-3.0f, -2.0f, -2.0f, 4, 11, 4, 0.0f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f);
-        this.rightArmModel[0].func_78793_a(0.0f, 0.0f, 0.0f);
+        this.rightArmModel[0].setRotationPoint(0.0f, 0.0f, 0.0f);
         this.rightArmModel[1].addShapeBox(-3.0f, -2.0f, -2.0f, 4, 5, 4, 0.0f, 0.4f, 0.2f, 0.4f, 0.4f, 0.2f, 0.4f, 0.4f, 0.2f, 0.4f, 0.4f, 0.2f, 0.4f, 0.4f, 1.0f, 0.4f, 0.4f, 1.0f, 0.4f, 0.4f, 1.0f, 0.4f, 0.4f, 1.0f, 0.4f);
-        this.rightArmModel[1].func_78793_a(0.0f, 0.0f, 0.0f);
+        this.rightArmModel[1].setRotationPoint(0.0f, 0.0f, 0.0f);
         this.rightArmModel[2].addShapeBox(-7.0f, -2.0f, -2.0f, 8, 6, 8, 0.0f, -3.5f, 0.3f, 0.5f, 0.5f, 0.3f, 0.5f, 0.5f, 0.3f, -3.5f, -3.5f, 0.3f, -3.5f, -3.5f, -2.0f, 0.5f, 0.5f, -2.0f, 0.5f, 0.5f, -2.0f, -3.5f, -3.5f, -2.0f, -3.5f);
-        this.rightArmModel[2].func_78793_a(0.0f, 0.0f, 0.0f);
+        this.rightArmModel[2].setRotationPoint(0.0f, 0.0f, 0.0f);
     }
     
     private void initleftLegModel_1() {
@@ -90,15 +90,15 @@ public class ModelByzanMail extends ModelCustomArmour
         this.leftLegModel[3] = new ModelRendererTurbo((ModelBase)this, 1, 57, this.textureX, this.textureY);
         this.leftLegModel[4] = new ModelRendererTurbo((ModelBase)this, 25, 89, this.textureX, this.textureY);
         this.leftLegModel[0].addShapeBox(-2.0f, 1.0f, -2.0f, 4, 6, 4, 0.0f, 0.3f, 0.0f, 0.3f, 0.3f, 0.0f, 0.3f, 0.3f, 0.0f, 0.3f, 0.3f, 0.0f, 0.3f, 0.3f, 0.0f, 0.3f, 0.3f, 0.0f, 0.3f, 0.3f, 0.0f, 0.3f, 0.3f, 0.0f, 0.3f);
-        this.leftLegModel[0].func_78793_a(0.0f, 0.0f, 0.0f);
+        this.leftLegModel[0].setRotationPoint(0.0f, 0.0f, 0.0f);
         this.leftLegModel[1].addShapeBox(-2.0f, 7.0f, -2.0f, 4, 1, 4, 0.0f, 0.3f, 0.0f, 0.3f, 0.3f, 0.0f, 0.3f, 0.3f, 0.0f, 0.3f, 0.3f, 0.0f, 0.3f, 0.0f, -0.5f, 0.0f, 0.0f, -0.5f, 0.0f, 0.0f, -0.5f, 0.0f, 0.0f, -0.5f, 0.0f);
-        this.leftLegModel[1].func_78793_a(0.0f, 0.0f, 0.0f);
+        this.leftLegModel[1].setRotationPoint(0.0f, 0.0f, 0.0f);
         this.leftLegModel[2].addShapeBox(-2.0f, 7.4f, -2.0f, 4, 4, 4, 0.0f, 0.1f, 0.0f, 0.1f, 0.1f, 0.0f, 0.1f, 0.1f, 0.0f, 0.1f, 0.1f, 0.0f, 0.1f, 0.1f, 0.0f, 0.1f, 0.1f, 0.0f, 0.1f, 0.1f, 0.0f, 0.1f, 0.1f, 0.0f, 0.1f);
-        this.leftLegModel[2].func_78793_a(0.0f, 0.0f, 0.0f);
+        this.leftLegModel[2].setRotationPoint(0.0f, 0.0f, 0.0f);
         this.leftLegModel[3].addShapeBox(-2.0f, 10.1f, -2.0f, 4, 2, 4, 0.0f, 0.1f, 0.0f, 0.7f, 0.1f, 0.0f, 0.7f, 0.1f, 0.0f, 0.1f, 0.1f, 0.0f, 0.1f, 0.1f, 0.0f, 0.7f, 0.1f, 0.0f, 0.7f, 0.1f, 0.0f, 0.1f, 0.1f, 0.0f, 0.1f);
-        this.leftLegModel[3].func_78793_a(0.0f, 0.0f, 0.0f);
+        this.leftLegModel[3].setRotationPoint(0.0f, 0.0f, 0.0f);
         this.leftLegModel[4].addShapeBox(-2.0f, -1.7f, -2.0f, 4, 8, 4, 0.0f, 0.5f, -0.1f, 0.4f, 0.5f, -0.1f, 0.5f, 0.5f, -0.1f, 0.5f, 0.5f, -0.1f, 0.4f, -0.3f, -0.3f, 0.8f, 1.2f, -0.5f, 0.7f, 1.2f, -0.5f, 0.7f, -0.3f, -0.3f, 0.8f);
-        this.leftLegModel[4].func_78793_a(0.0f, 0.0f, 0.0f);
+        this.leftLegModel[4].setRotationPoint(0.0f, 0.0f, 0.0f);
     }
     
     private void initrightLegModel_1() {
@@ -108,24 +108,24 @@ public class ModelByzanMail extends ModelCustomArmour
         this.rightLegModel[3] = new ModelRendererTurbo((ModelBase)this, 17, 41, this.textureX, this.textureY);
         this.rightLegModel[4] = new ModelRendererTurbo((ModelBase)this, 1, 89, this.textureX, this.textureY);
         this.rightLegModel[0].addShapeBox(-2.0f, 7.4f, -2.0f, 4, 4, 4, 0.0f, 0.1f, 0.0f, 0.1f, 0.1f, 0.0f, 0.1f, 0.1f, 0.0f, 0.1f, 0.1f, 0.0f, 0.1f, 0.1f, 0.0f, 0.1f, 0.1f, 0.0f, 0.1f, 0.1f, 0.0f, 0.1f, 0.1f, 0.0f, 0.1f);
-        this.rightLegModel[0].func_78793_a(0.0f, 0.0f, 0.0f);
+        this.rightLegModel[0].setRotationPoint(0.0f, 0.0f, 0.0f);
         this.rightLegModel[1].addShapeBox(-2.0f, 1.0f, -2.0f, 4, 6, 4, 0.0f, 0.3f, 0.0f, 0.3f, 0.3f, 0.0f, 0.3f, 0.3f, 0.0f, 0.3f, 0.3f, 0.0f, 0.3f, 0.3f, 0.0f, 0.3f, 0.3f, 0.0f, 0.3f, 0.3f, 0.0f, 0.3f, 0.3f, 0.0f, 0.3f);
-        this.rightLegModel[1].func_78793_a(0.0f, 0.0f, 0.0f);
+        this.rightLegModel[1].setRotationPoint(0.0f, 0.0f, 0.0f);
         this.rightLegModel[2].addShapeBox(-2.0f, 7.0f, -2.0f, 4, 1, 4, 0.0f, 0.3f, 0.0f, 0.3f, 0.3f, 0.0f, 0.3f, 0.3f, 0.0f, 0.3f, 0.3f, 0.0f, 0.3f, 0.0f, -0.5f, 0.0f, 0.0f, -0.5f, 0.0f, 0.0f, -0.5f, 0.0f, 0.0f, -0.5f, 0.0f);
-        this.rightLegModel[2].func_78793_a(0.0f, 0.0f, 0.0f);
+        this.rightLegModel[2].setRotationPoint(0.0f, 0.0f, 0.0f);
         this.rightLegModel[3].addShapeBox(-2.0f, 10.1f, -2.0f, 4, 2, 4, 0.0f, 0.1f, 0.0f, 0.7f, 0.1f, 0.0f, 0.7f, 0.1f, 0.0f, 0.1f, 0.1f, 0.0f, 0.1f, 0.1f, 0.0f, 0.7f, 0.1f, 0.0f, 0.7f, 0.1f, 0.0f, 0.1f, 0.1f, 0.0f, 0.1f);
-        this.rightLegModel[3].func_78793_a(0.0f, 0.0f, 0.0f);
+        this.rightLegModel[3].setRotationPoint(0.0f, 0.0f, 0.0f);
         this.rightLegModel[4].addShapeBox(-2.0f, -1.7f, -2.0f, 4, 8, 4, 0.0f, 0.5f, -0.1f, 0.5f, 0.5f, -0.1f, 0.5f, 0.5f, -0.1f, 0.5f, 0.5f, -0.1f, 0.5f, 1.2f, -0.5f, 0.7f, -0.3f, -0.3f, 0.9f, -0.3f, -0.3f, 0.9f, 1.2f, -0.5f, 0.7f);
-        this.rightLegModel[4].func_78793_a(0.0f, 0.0f, 0.0f);
+        this.rightLegModel[4].setRotationPoint(0.0f, 0.0f, 0.0f);
     }
     
     private void initskirtFrontModel_1() {
         (this.skirtFrontModel[0] = new ModelRendererTurbo((ModelBase)this, 65, 9, this.textureX, this.textureY)).addShapeBox(-4.0f, -1.5f, -3.0f, 16, 16, 4, 0.0f, 0.7f, 0.1f, -0.3f, -7.2f, 0.1f, -0.3f, -7.2f, 0.1f, -0.3f, 0.7f, 0.1f, -0.3f, 1.2f, -10.0f, 0.0f, -6.5f, -10.0f, 0.0f, -6.5f, -10.0f, 0.0f, 1.2f, -10.0f, 0.0f);
-        this.skirtFrontModel[0].func_78793_a(0.0f, 0.0f, 0.0f);
+        this.skirtFrontModel[0].setRotationPoint(0.0f, 0.0f, 0.0f);
     }
     
     private void initskirtRearModel_1() {
         (this.skirtRearModel[0] = new ModelRendererTurbo((ModelBase)this, 65, 9, this.textureX, this.textureY)).addShapeBox(-4.0f, -1.5f, -1.0f, 16, 16, 4, 0.0f, 0.7f, 0.1f, -0.3f, -7.2f, 0.1f, -0.3f, -7.2f, 0.1f, -0.3f, 0.7f, 0.1f, -0.3f, 1.2f, -10.0f, 0.0f, -6.5f, -10.0f, 0.0f, -6.5f, -10.0f, 0.0f, 1.2f, -10.0f, 0.0f);
-        this.skirtRearModel[0].func_78793_a(0.0f, 0.0f, 0.0f);
+        this.skirtRearModel[0].setRotationPoint(0.0f, 0.0f, 0.0f);
     }
 }

@@ -39,16 +39,16 @@ public class EntityFlagpole extends Entity implements ITeamBase
         this.name = "Default Name";
         this.uninitialized = true;
         this.loadDistance = 1;
-        this.func_70105_a(1.0f, 2.0f);
-        this.field_70155_l = 100.0;
+        this.setSize(1.0f, 2.0f);
+        this.renderDistanceWeight = 100.0;
     }
     
     public EntityFlagpole(final World world, final double x, final double y, final double z) {
         this(world);
-        this.func_70107_b(x, y, z);
-        this.flag = new EntityFlag(this.field_70170_p, this);
+        this.setPosition(x, y, z);
+        this.flag = new EntityFlag(this.worldObj, this);
         this.objects.add(this.flag);
-        this.field_70170_p.func_72838_d((Entity)this.flag);
+        this.worldObj.spawnEntityInWorld((Entity)this.flag);
         if (EntityFlagpole.teamsManager.maps.size() > 0) {
             this.map = EntityFlagpole.teamsManager.maps.values().iterator().next();
         }
@@ -58,32 +58,32 @@ public class EntityFlagpole extends Entity implements ITeamBase
         this(world, x + 0.5, y, z + 0.5);
     }
     
-    public AxisAlignedBB func_70046_E() {
+    public AxisAlignedBB getBoundingBox() {
         return null;
     }
     
-    public boolean func_70067_L() {
+    public boolean canBeCollidedWith() {
         return true;
     }
     
-    protected void func_70088_a() {
+    protected void entityInit() {
     }
     
-    protected void func_70037_a(final NBTTagCompound tags) {
-        this.setBaseID(tags.func_74762_e("ID"));
-        final int func_74762_e = tags.func_74762_e("TeamID");
-        this.defaultTeamID = func_74762_e;
-        this.currentTeamID = func_74762_e;
-        this.map = EntityFlagpole.teamsManager.maps.get(tags.func_74779_i("Map"));
-        this.name = tags.func_74779_i("Name");
+    protected void readEntityFromNBT(final NBTTagCompound tags) {
+        this.setBaseID(tags.getInteger("ID"));
+        final int getInteger = tags.getInteger("TeamID");
+        this.defaultTeamID = getInteger;
+        this.currentTeamID = getInteger;
+        this.map = EntityFlagpole.teamsManager.maps.get(tags.getString("Map"));
+        this.name = tags.getString("Name");
         this.setMap(this.map);
     }
     
-    protected void func_70014_b(final NBTTagCompound tags) {
-        tags.func_74768_a("TeamID", this.defaultTeamID);
-        tags.func_74778_a("Map", (this.map == null) ? "" : this.map.shortName);
-        tags.func_74768_a("ID", this.getBaseID());
-        tags.func_74778_a("Name", this.name);
+    protected void writeEntityToNBT(final NBTTagCompound tags) {
+        tags.setInteger("TeamID", this.defaultTeamID);
+        tags.setString("Map", (this.map == null) ? "" : this.map.shortName);
+        tags.setInteger("ID", this.getBaseID());
+        tags.setString("Name", this.name);
     }
     
     public TeamsMap getMap() {
@@ -136,7 +136,7 @@ public class EntityFlagpole extends Entity implements ITeamBase
     }
     
     public void destroy() {
-        this.func_70106_y();
+        this.setDead();
     }
     
     public Entity getEntity() {
@@ -144,19 +144,19 @@ public class EntityFlagpole extends Entity implements ITeamBase
     }
     
     public double getPosX() {
-        return this.field_70165_t;
+        return this.posX;
     }
     
     public double getPosY() {
-        return this.field_70163_u;
+        return this.posY;
     }
     
     public double getPosZ() {
-        return this.field_70161_v;
+        return this.posZ;
     }
     
     public World getWorld() {
-        return this.field_70170_p;
+        return this.worldObj;
     }
     
     public void roundCleanup() {
@@ -169,32 +169,32 @@ public class EntityFlagpole extends Entity implements ITeamBase
         return this.flag;
     }
     
-    public void func_70071_h_() {
-        super.func_70071_h_();
-        if (!this.field_70170_p.field_72995_K) {
+    public void onUpdate() {
+        super.onUpdate();
+        if (!this.worldObj.isRemote) {
             if (this.flag == null) {
-                this.flag = new EntityFlag(this.field_70170_p, this);
+                this.flag = new EntityFlag(this.worldObj, this);
                 this.objects.add(this.flag);
             }
-            if (!this.flag.field_70175_ag) {
-                this.field_70170_p.func_72838_d((Entity)this.flag);
+            if (!this.flag.addedToChunk) {
+                this.worldObj.spawnEntityInWorld((Entity)this.flag);
             }
             if (this.flag.isHome) {
-                this.flag.func_70107_b(this.field_70165_t, this.field_70163_u + 2.0, this.field_70161_v);
+                this.flag.setPosition(this.posX, this.posY + 2.0, this.posZ);
             }
         }
-        if (this.field_70170_p.field_72995_K) {
-            this.func_70066_B();
+        if (this.worldObj.isRemote) {
+            this.extinguish();
         }
     }
     
-    public void func_70106_y() {
-        super.func_70106_y();
+    public void setDead() {
+        super.setDead();
     }
     
-    public boolean func_130002_c(final EntityPlayer player) {
+    public boolean interactFirst(final EntityPlayer player) {
         final PlayerData data = PlayerHandler.getPlayerData(player);
-        if (!this.field_70170_p.field_72995_K && data.team == null && TeamsManager.getInstance().playerIsOp(player) && (player.func_71045_bC() == null || !(player.func_71045_bC().func_77973_b() instanceof ItemOpStick))) {
+        if (!this.worldObj.isRemote && data.team == null && TeamsManager.getInstance().playerIsOp(player) && (player.getCurrentEquippedItem() == null || !(player.getCurrentEquippedItem().getItem() instanceof ItemOpStick))) {
             ItemOpStick.openBaseEditGUI(this, (EntityPlayerMP)player);
         }
         return false;
@@ -233,7 +233,7 @@ public class EntityFlagpole extends Entity implements ITeamBase
         this.currentTeamID = id;
     }
     
-    public boolean func_70027_ad() {
+    public boolean isBurning() {
         return false;
     }
     

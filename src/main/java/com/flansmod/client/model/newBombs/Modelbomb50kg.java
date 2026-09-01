@@ -30,37 +30,37 @@ public class Modelbomb50kg extends ModelBase
         this.bomb50kgModel[10] = new ModelRendererTurbo(this, 33, 17, this.textureX, this.textureY);
         this.bomb50kgModel[11] = new ModelRendererTurbo(this, 41, 17, this.textureX, this.textureY);
         this.bomb50kgModel[12] = new ModelRendererTurbo(this, 49, 17, this.textureX, this.textureY);
-        this.bomb50kgModel[0].func_78790_a(0.0f, 0.0f, 0.0f, 1, 6, 3, 0.0f);
-        this.bomb50kgModel[0].func_78793_a(0.0f, 0.0f, 0.0f);
+        this.bomb50kgModel[0].addBox(0.0f, 0.0f, 0.0f, 1, 6, 3, 0.0f);
+        this.bomb50kgModel[0].setRotationPoint(0.0f, 0.0f, 0.0f);
         this.bomb50kgModel[1].addShapeBox(0.0f, 0.0f, 0.0f, 1, 6, 3, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f);
-        this.bomb50kgModel[1].func_78793_a(1.0f, 0.0f, 0.0f);
+        this.bomb50kgModel[1].setRotationPoint(1.0f, 0.0f, 0.0f);
         this.bomb50kgModel[2].addShapeBox(0.0f, 0.0f, 0.0f, 1, 6, 3, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f);
-        this.bomb50kgModel[2].func_78793_a(-1.0f, 0.0f, 0.0f);
+        this.bomb50kgModel[2].setRotationPoint(-1.0f, 0.0f, 0.0f);
         this.bomb50kgModel[3].addShapeBox(0.0f, 0.0f, 0.0f, 1, 5, 3, 0.0f, -0.5f, 0.0f, -1.5f, -0.5f, 0.0f, -1.5f, -0.5f, 0.0f, -1.5f, -0.5f, 0.0f, -1.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.bomb50kgModel[3].func_78793_a(0.0f, -5.0f, 0.0f);
+        this.bomb50kgModel[3].setRotationPoint(0.0f, -5.0f, 0.0f);
         this.bomb50kgModel[4].addShapeBox(0.0f, 0.0f, 0.0f, 1, 5, 3, 0.0f, 0.5f, 0.0f, -1.5f, -1.5f, 0.0f, -1.5f, -1.5f, 0.0f, -1.5f, 0.5f, 0.0f, -1.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f);
-        this.bomb50kgModel[4].func_78793_a(1.0f, -5.0f, 0.0f);
+        this.bomb50kgModel[4].setRotationPoint(1.0f, -5.0f, 0.0f);
         this.bomb50kgModel[5].addShapeBox(0.0f, 0.0f, 0.0f, 1, 5, 3, 0.0f, -1.5f, 0.0f, -1.5f, 0.5f, 0.0f, -1.5f, 0.5f, 0.0f, -1.5f, -1.5f, 0.0f, -1.5f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f);
-        this.bomb50kgModel[5].func_78793_a(-1.0f, -5.0f, 0.0f);
+        this.bomb50kgModel[5].setRotationPoint(-1.0f, -5.0f, 0.0f);
         this.bomb50kgModel[6].addShapeBox(0.0f, 0.0f, 0.0f, 1, 1, 3, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, -1.0f, 0.0f, -1.0f, -1.0f, 0.0f, -1.0f, 0.0f, 0.0f, -1.0f);
-        this.bomb50kgModel[6].func_78793_a(1.0f, 6.0f, 0.0f);
+        this.bomb50kgModel[6].setRotationPoint(1.0f, 6.0f, 0.0f);
         this.bomb50kgModel[7].addShapeBox(0.0f, 0.0f, 0.0f, 1, 1, 3, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, -1.0f);
-        this.bomb50kgModel[7].func_78793_a(0.0f, 6.0f, 0.0f);
+        this.bomb50kgModel[7].setRotationPoint(0.0f, 6.0f, 0.0f);
         this.bomb50kgModel[8].addShapeBox(0.0f, 0.0f, 0.0f, 1, 1, 3, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, -1.0f, 0.0f, -1.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, -1.0f, -1.0f, 0.0f, -1.0f);
-        this.bomb50kgModel[8].func_78793_a(-1.0f, 6.0f, 0.0f);
+        this.bomb50kgModel[8].setRotationPoint(-1.0f, 6.0f, 0.0f);
         this.bomb50kgModel[9].addShapeBox(0.0f, 0.0f, 0.0f, 1, 6, 2, 0.0f, -0.4f, 0.0f, 0.0f, -0.4f, 0.0f, 0.0f, -0.4f, 0.0f, 0.0f, -0.4f, 0.0f, 0.0f, -0.4f, 2.0f, 0.0f, -0.4f, 2.0f, 0.0f, -0.4f, 0.0f, 0.0f, -0.4f, 0.0f, 0.0f);
-        this.bomb50kgModel[9].func_78793_a(0.0f, -7.0f, 1.5f);
+        this.bomb50kgModel[9].setRotationPoint(0.0f, -7.0f, 1.5f);
         this.bomb50kgModel[10].addShapeBox(0.0f, 0.0f, 0.0f, 1, 6, 2, 0.0f, -0.4f, 0.0f, 0.0f, -0.4f, 0.0f, 0.0f, -0.4f, 0.0f, 0.0f, -0.4f, 0.0f, 0.0f, -0.4f, 0.0f, 0.0f, -0.4f, 0.0f, 0.0f, -0.4f, 2.0f, 0.0f, -0.4f, 2.0f, 0.0f);
-        this.bomb50kgModel[10].func_78793_a(0.0f, -7.0f, -0.5f);
+        this.bomb50kgModel[10].setRotationPoint(0.0f, -7.0f, -0.5f);
         this.bomb50kgModel[11].addShapeBox(0.0f, 0.0f, 0.0f, 2, 6, 1, 0.0f, 0.0f, 0.0f, -0.4f, 0.0f, 0.0f, -0.4f, 0.0f, 0.0f, -0.4f, 0.0f, 0.0f, -0.4f, 0.0f, 2.0f, -0.4f, 0.0f, 0.0f, -0.4f, 0.0f, 0.0f, -0.4f, 0.0f, 2.0f, -0.4f);
-        this.bomb50kgModel[11].func_78793_a(0.5f, -7.0f, 1.0f);
+        this.bomb50kgModel[11].setRotationPoint(0.5f, -7.0f, 1.0f);
         this.bomb50kgModel[12].addShapeBox(0.0f, 0.0f, 0.0f, 2, 6, 1, 0.0f, 0.0f, 0.0f, -0.4f, 0.0f, 0.0f, -0.4f, 0.0f, 0.0f, -0.4f, 0.0f, 0.0f, -0.4f, 0.0f, 0.0f, -0.4f, 0.0f, 2.0f, -0.4f, 0.0f, 2.0f, -0.4f, 0.0f, 0.0f, -0.4f);
-        this.bomb50kgModel[12].func_78793_a(-1.5f, -7.0f, 1.0f);
+        this.bomb50kgModel[12].setRotationPoint(-1.5f, -7.0f, 1.0f);
     }
     
-    public void func_78088_a(final Entity entity, final float f, final float f1, final float f2, final float f3, final float f4, final float f5) {
+    public void render(final Entity entity, final float f, final float f1, final float f2, final float f3, final float f4, final float f5) {
         for (int i = 0; i < 13; ++i) {
-            this.bomb50kgModel[i].func_78785_a(f5);
+            this.bomb50kgModel[i].render(f5);
         }
     }
     

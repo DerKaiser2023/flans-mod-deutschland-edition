@@ -26,7 +26,7 @@ public class ModelHercules extends ModelVehicle
     
     private void initturretModel_1() {
         (this.turretModel[0] = new ModelRendererTurbo(this, 1, 113, this.textureX, this.textureY)).addShapeBox(0.0f, 0.0f, 0.0f, 150, 10, 24, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.turretModel[0].func_78793_a(-50.0f, 0.0f, -12.0f);
+        this.turretModel[0].setRotationPoint(-50.0f, 0.0f, -12.0f);
     }
     
     private void initbarrelModel_1() {
@@ -51,44 +51,44 @@ public class ModelHercules extends ModelVehicle
         this.barrelModel[18] = new ModelRendererTurbo(this, 1, 89, this.textureX, this.textureY);
         this.barrelModel[19] = new ModelRendererTurbo(this, 113, 97, this.textureX, this.textureY);
         this.barrelModel[0].addShapeBox(99.0f, -29.0f, -5.0f, 58, 10, 10, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.barrelModel[0].func_78793_a(-40.0f, 2.0f, 0.0f);
+        this.barrelModel[0].setRotationPoint(-40.0f, 2.0f, 0.0f);
         this.barrelModel[1].addShapeBox(157.0f, -29.0f, -5.0f, 30, 10, 10, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -4.8f, -4.8f, 0.0f, -4.8f, -4.8f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -4.8f, -4.8f, 0.0f, -4.8f, -4.8f, 0.0f, 0.0f, 0.0f);
-        this.barrelModel[1].func_78793_a(-40.0f, 2.0f, 0.0f);
+        this.barrelModel[1].setRotationPoint(-40.0f, 2.0f, 0.0f);
         this.barrelModel[2].addShapeBox(15.0f, -31.0f, -7.0f, 46, 6, 6, 0.0f, 0.0f, 0.5f, 0.5f, 0.0f, 0.5f, 0.5f, 0.0f, 0.5f, 0.5f, 0.0f, 0.5f, 0.5f, 0.0f, 0.5f, 0.5f, 0.0f, 0.5f, 0.5f, 0.0f, 0.5f, 0.5f, 0.0f, 0.5f, 0.5f);
-        this.barrelModel[2].func_78793_a(-40.0f, 2.0f, 0.0f);
+        this.barrelModel[2].setRotationPoint(-40.0f, 2.0f, 0.0f);
         this.barrelModel[3].addShapeBox(-5.0f, -31.0f, -7.0f, 20, 14, 14, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.barrelModel[3].func_78793_a(-40.0f, 2.0f, 0.0f);
+        this.barrelModel[3].setRotationPoint(-40.0f, 2.0f, 0.0f);
         this.barrelModel[4].addShapeBox(-7.0f, -51.5f, -28.0f, 24, 20, 1, 0.0f, 0.0f, 0.0f, 0.0f, -15.0f, 0.0f, 0.0f, -15.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -20.0f, 0.0f, 0.0f, -20.0f, 0.0f, 0.0f, 20.0f, 0.0f, 0.0f, 20.0f);
-        this.barrelModel[4].func_78793_a(-40.0f, 2.0f, 0.0f);
+        this.barrelModel[4].setRotationPoint(-40.0f, 2.0f, 0.0f);
         this.barrelModel[5].addShapeBox(-7.0f, -51.5f, 27.0f, 24, 20, 1, 0.0f, 0.0f, 0.0f, 0.0f, -15.0f, 0.0f, 0.0f, -15.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 20.0f, 0.0f, 0.0f, 20.0f, 0.0f, 0.0f, -20.0f, 0.0f, 0.0f, -20.0f);
-        this.barrelModel[5].func_78793_a(-40.0f, 2.0f, 0.0f);
+        this.barrelModel[5].setRotationPoint(-40.0f, 2.0f, 0.0f);
         this.barrelModel[6].addShapeBox(-7.0f, -16.5f, 27.0f, 24, 20, 1, 0.0f, 0.0f, 0.0f, 20.0f, 0.0f, 0.0f, 20.0f, 0.0f, 0.0f, -20.0f, 0.0f, 0.0f, -20.0f, 0.0f, 0.0f, 0.0f, -15.0f, 0.0f, 0.0f, -15.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.barrelModel[6].func_78793_a(-40.0f, 2.0f, 0.0f);
+        this.barrelModel[6].setRotationPoint(-40.0f, 2.0f, 0.0f);
         this.barrelModel[7].addShapeBox(-7.0f, -16.5f, -28.0f, 24, 20, 1, 0.0f, 0.0f, 0.0f, -20.0f, 0.0f, 0.0f, -20.0f, 0.0f, 0.0f, 20.0f, 0.0f, 0.0f, 20.0f, 0.0f, 0.0f, 0.0f, -15.0f, 0.0f, 0.0f, -15.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.barrelModel[7].func_78793_a(-40.0f, 2.0f, 0.0f);
+        this.barrelModel[7].setRotationPoint(-40.0f, 2.0f, 0.0f);
         this.barrelModel[8].addShapeBox(80.0f, -20.5f, -20.0f, 65, 16, 1, 0.0f, 0.0f, 0.0f, -16.0f, 0.0f, 0.0f, -16.0f, 0.0f, 0.0f, 16.0f, 0.0f, 0.0f, 16.0f, 0.0f, 0.0f, 0.0f, -55.0f, 0.0f, 0.0f, -55.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.barrelModel[8].func_78793_a(-40.0f, 2.0f, 0.0f);
+        this.barrelModel[8].setRotationPoint(-40.0f, 2.0f, 0.0f);
         this.barrelModel[9].addShapeBox(80.0f, -43.5f, -20.0f, 65, 16, 1, 0.0f, 0.0f, 0.0f, 0.0f, -55.0f, 0.0f, 0.0f, -55.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -16.0f, 0.0f, 0.0f, -16.0f, 0.0f, 0.0f, 16.0f, 0.0f, 0.0f, 16.0f);
-        this.barrelModel[9].func_78793_a(-40.0f, 2.0f, 0.0f);
+        this.barrelModel[9].setRotationPoint(-40.0f, 2.0f, 0.0f);
         this.barrelModel[10].addShapeBox(80.0f, -43.5f, 19.0f, 65, 16, 1, 0.0f, 0.0f, 0.0f, 0.0f, -55.0f, 0.0f, 0.0f, -55.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 16.0f, 0.0f, 0.0f, 16.0f, 0.0f, 0.0f, -16.0f, 0.0f, 0.0f, -16.0f);
-        this.barrelModel[10].func_78793_a(-40.0f, 2.0f, 0.0f);
+        this.barrelModel[10].setRotationPoint(-40.0f, 2.0f, 0.0f);
         this.barrelModel[11].addShapeBox(80.0f, -20.5f, 19.0f, 65, 16, 1, 0.0f, 0.0f, 0.0f, 16.0f, 0.0f, 0.0f, 16.0f, 0.0f, 0.0f, -16.0f, 0.0f, 0.0f, -16.0f, 0.0f, 0.0f, 0.0f, -55.0f, 0.0f, 0.0f, -55.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.barrelModel[11].func_78793_a(-40.0f, 2.0f, 0.0f);
+        this.barrelModel[11].setRotationPoint(-40.0f, 2.0f, 0.0f);
         this.barrelModel[12].addShapeBox(61.0f, -31.0f, -7.0f, 16, 14, 14, 0.0f, 0.0f, 0.5f, 0.5f, 0.0f, -1.0f, -1.0f, 0.0f, -1.0f, -1.0f, 0.0f, 0.5f, 0.5f, 0.0f, 0.5f, 0.5f, 0.0f, -1.0f, -1.0f, 0.0f, -1.0f, -1.0f, 0.0f, 0.5f, 0.5f);
-        this.barrelModel[12].func_78793_a(-40.0f, 2.0f, 0.0f);
+        this.barrelModel[12].setRotationPoint(-40.0f, 2.0f, 0.0f);
         this.barrelModel[13].addShapeBox(77.0f, -29.0f, -5.0f, 22, 10, 10, 0.0f, 0.0f, -1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, -1.0f, 0.0f, -1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, -1.0f);
-        this.barrelModel[13].func_78793_a(-40.0f, 2.0f, 0.0f);
+        this.barrelModel[13].setRotationPoint(-40.0f, 2.0f, 0.0f);
         this.barrelModel[14].addShapeBox(15.0f, -31.0f, 1.0f, 46, 6, 6, 0.0f, 0.0f, 0.5f, 0.5f, 0.0f, 0.5f, 0.5f, 0.0f, 0.5f, 0.5f, 0.0f, 0.5f, 0.5f, 0.0f, 0.5f, 0.5f, 0.0f, 0.5f, 0.5f, 0.0f, 0.5f, 0.5f, 0.0f, 0.5f, 0.5f);
-        this.barrelModel[14].func_78793_a(-40.0f, 2.0f, 0.0f);
+        this.barrelModel[14].setRotationPoint(-40.0f, 2.0f, 0.0f);
         this.barrelModel[15].addShapeBox(15.0f, -23.0f, 1.0f, 46, 6, 6, 0.0f, 0.0f, 0.5f, 0.5f, 0.0f, 0.5f, 0.5f, 0.0f, 0.5f, 0.5f, 0.0f, 0.5f, 0.5f, 0.0f, 0.5f, 0.5f, 0.0f, 0.5f, 0.5f, 0.0f, 0.5f, 0.5f, 0.0f, 0.5f, 0.5f);
-        this.barrelModel[15].func_78793_a(-40.0f, 2.0f, 0.0f);
+        this.barrelModel[15].setRotationPoint(-40.0f, 2.0f, 0.0f);
         this.barrelModel[16].addShapeBox(15.0f, -23.0f, -7.0f, 46, 6, 6, 0.0f, 0.0f, 0.5f, 0.5f, 0.0f, 0.5f, 0.5f, 0.0f, 0.5f, 0.5f, 0.0f, 0.5f, 0.5f, 0.0f, 0.5f, 0.5f, 0.0f, 0.5f, 0.5f, 0.0f, 0.5f, 0.5f, 0.0f, 0.5f, 0.5f);
-        this.barrelModel[16].func_78793_a(-40.0f, 2.0f, 0.0f);
+        this.barrelModel[16].setRotationPoint(-40.0f, 2.0f, 0.0f);
         this.barrelModel[17].addShapeBox(0.0f, -17.0f, -6.0f, 124, 8, 12, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.barrelModel[17].func_78793_a(-40.0f, 2.0f, 0.0f);
+        this.barrelModel[17].setRotationPoint(-40.0f, 2.0f, 0.0f);
         this.barrelModel[18].addShapeBox(0.0f, -6.0f, -5.0f, 50, 5, 10, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.barrelModel[18].func_78793_a(-40.0f, 2.0f, 0.0f);
+        this.barrelModel[18].setRotationPoint(-40.0f, 2.0f, 0.0f);
         this.barrelModel[19].addShapeBox(50.0f, -6.0f, -5.0f, 40, 5, 10, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 8.0f, 0.0f, 0.0f, 8.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -8.0f, 0.0f, 0.0f, -8.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.barrelModel[19].func_78793_a(-40.0f, 2.0f, 0.0f);
+        this.barrelModel[19].setRotationPoint(-40.0f, 2.0f, 0.0f);
     }
 }

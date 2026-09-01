@@ -26,12 +26,12 @@ public class ModelHighlanderHat extends ModelCustomArmour
         this.headModel[2] = new ModelRendererTurbo((ModelBase)this, 0, 12, this.textureX, this.textureY);
         this.headModel[3] = new ModelRendererTurbo((ModelBase)this, 0, 1, this.textureX, this.textureY);
         this.headModel[0].addShapeBox(-4.0f, -5.5f, -3.9f, 8, 3, 8, 0.0f, 0.4f, 1.7f, 0.4f, 0.4f, 1.7f, 0.4f, 0.4f, 0.7f, 0.5f, 0.4f, 0.7f, 0.5f, 0.5f, -2.5f, 0.3f, 0.5f, -2.5f, 0.3f, 0.5f, -1.7f, 0.1f, 0.5f, -1.7f, 0.1f);
-        this.headModel[0].func_78793_a(0.0f, 0.0f, 0.0f);
+        this.headModel[0].setRotationPoint(0.0f, 0.0f, 0.0f);
         this.headModel[1].addShapeBox(-4.0f, -8.5f, -3.9f, 8, 1, 8, 0.0f, 1.2f, -0.2f, 1.5f, 1.2f, -0.2f, 1.5f, 1.2f, -1.5f, 2.0f, 1.2f, -1.5f, 2.0f, 0.4f, 0.3f, 0.4f, 0.4f, 0.3f, 0.4f, 0.4f, 1.3f, 0.5f, 0.4f, 1.3f, 0.5f);
-        this.headModel[1].func_78793_a(0.0f, 0.0f, 0.0f);
+        this.headModel[1].setRotationPoint(0.0f, 0.0f, 0.0f);
         this.headModel[2].addShapeBox(-4.0f, -9.2f, -3.9f, 8, 2, 8, 0.0f, -1.3f, 1.0f, -2.0f, -1.3f, 1.0f, -2.0f, -1.3f, 0.6f, -1.0f, -1.3f, 0.6f, -1.0f, 1.2f, -1.1f, 1.5f, 1.2f, -1.1f, 1.5f, 1.2f, 0.2f, 2.0f, 1.2f, 0.2f, 2.0f);
-        this.headModel[2].func_78793_a(0.0f, 0.0f, 0.0f);
+        this.headModel[2].setRotationPoint(0.0f, 0.0f, 0.0f);
         this.headModel[3].addShapeBox(-1.0f, -12.0f, -0.3f, 2, 2, 2, 0.0f, 0.0f, 0.0f, -0.2f, 0.0f, 0.0f, -0.2f, 0.0f, -0.2f, 0.2f, 0.0f, -0.2f, 0.2f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.headModel[3].func_78793_a(0.0f, 0.0f, 0.0f);
+        this.headModel[3].setRotationPoint(0.0f, 0.0f, 0.0f);
     }
 }

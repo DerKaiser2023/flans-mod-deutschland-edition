@@ -31,18 +31,18 @@ public class ModelDaneAxe extends ModelGun
         this.gunModel[5] = new ModelRendererTurbo(this, 17, 9, this.textureX, this.textureY);
         this.gunModel[6] = new ModelRendererTurbo(this, 17, 9, this.textureX, this.textureY);
         this.gunModel[0].addShapeBox(0.0f, 0.0f, 0.0f, 1, 30, 1, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.gunModel[0].func_78793_a(0.0f, -17.0f, 0.0f);
+        this.gunModel[0].setRotationPoint(0.0f, -17.0f, 0.0f);
         this.gunModel[1].addShapeBox(0.0f, 0.0f, 0.0f, 1, 1, 1, 0.0f, -0.1f, 0.0f, 0.1f, 0.1f, 0.0f, 0.1f, 0.1f, 0.0f, 0.1f, -0.1f, 0.0f, 0.1f, -0.1f, 0.0f, 0.1f, 0.1f, 0.0f, 0.1f, 0.1f, 0.0f, 0.1f, -0.1f, 0.0f, 0.1f);
-        this.gunModel[1].func_78793_a(0.0f, -16.5f, 0.0f);
+        this.gunModel[1].setRotationPoint(0.0f, -16.5f, 0.0f);
         this.gunModel[2].addShapeBox(0.0f, 0.0f, 0.0f, 1, 1, 1, 0.0f, 0.3f, 0.0f, -0.1f, -0.1f, 0.0f, -0.3f, -0.1f, 0.0f, -0.3f, 0.3f, 0.0f, -0.1f, 0.3f, 0.0f, -0.1f, -0.1f, 0.4f, -0.3f, -0.1f, 0.4f, -0.3f, 0.3f, 0.0f, -0.1f);
-        this.gunModel[2].func_78793_a(1.2f, -16.5f, 0.0f);
+        this.gunModel[2].setRotationPoint(1.2f, -16.5f, 0.0f);
         this.gunModel[3].addShapeBox(0.0f, 0.0f, 0.0f, 1, 1, 1, 0.0f, 0.1f, 0.4f, -0.3f, -0.1f, 0.7f, -0.3f, -0.1f, 0.7f, -0.3f, 0.1f, 0.4f, -0.3f, 0.1f, 0.0f, -0.3f, -0.1f, 1.2f, -0.3f, -0.1f, 1.2f, -0.3f, 0.1f, 0.0f, -0.3f);
-        this.gunModel[3].func_78793_a(2.2f, -16.0f, 0.0f);
+        this.gunModel[3].setRotationPoint(2.2f, -16.0f, 0.0f);
         this.gunModel[4].addShapeBox(0.0f, 0.0f, 0.0f, 1, 1, 1, 0.0f, 0.1f, 0.7f, -0.3f, 0.9f, 1.5f, -0.3f, 0.9f, 1.5f, -0.3f, 0.1f, 0.7f, -0.3f, 0.1f, 1.2f, -0.3f, -0.299f, 2.1f, -0.3f, -0.299f, 2.1f, -0.3f, 0.1f, 1.2f, -0.3f);
-        this.gunModel[4].func_78793_a(3.2f, -16.0f, 0.0f);
+        this.gunModel[4].setRotationPoint(3.2f, -16.0f, 0.0f);
         this.gunModel[5].addShapeBox(0.0f, 0.0f, 0.0f, 1, 1, 1, 0.0f, -0.9f, 0.5f, -0.3f, 1.5f, 1.5f, -0.5f, 1.5f, 1.5f, -0.5f, -0.9f, 0.5f, -0.3f, -0.35f, 0.0f, -0.3f, 0.8f, 1.0f, -0.5f, 0.8f, 1.0f, -0.5f, -0.35f, 0.0f, -0.3f);
-        this.gunModel[5].func_78793_a(4.2f, -17.0f, 0.0f);
+        this.gunModel[5].setRotationPoint(4.2f, -17.0f, 0.0f);
         this.gunModel[6].addShapeBox(0.0f, 0.0f, 0.0f, 1, 1, 1, 0.0f, -0.35f, 0.0f, -0.3f, 0.8f, -1.0f, -0.5f, 0.8f, -1.0f, -0.5f, -0.35f, 0.0f, -0.3f, 0.3f, 2.1f, -0.3f, -0.6f, 2.8f, -0.5f, -0.6f, 2.8f, -0.5f, 0.3f, 2.1f, -0.3f);
-        this.gunModel[6].func_78793_a(4.2f, -16.0f, 0.0f);
+        this.gunModel[6].setRotationPoint(4.2f, -16.0f, 0.0f);
     }
 }

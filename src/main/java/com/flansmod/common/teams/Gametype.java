@@ -127,7 +127,7 @@ public abstract class Gametype
     }
     
     public EntityPlayerMP getPlayer(final String username) {
-        return MinecraftServer.func_71276_C().func_71203_ab().func_152612_a(username);
+        return MinecraftServer.getServer().getConfigurationManager().getPlayerByUsername(username);
     }
     
     public static PlayerData getPlayerData(final EntityPlayerMP player) {
@@ -139,11 +139,11 @@ public abstract class Gametype
     }
     
     public static String[] getPlayerNames() {
-        return MinecraftServer.func_71276_C().func_71213_z();
+        return MinecraftServer.getServer().getAllUsernames();
     }
     
     public static List<EntityPlayer> getPlayers() {
-        return MinecraftServer.func_71276_C().func_71203_ab().field_72404_b;
+        return MinecraftServer.getServer().getConfigurationManager().playerEntityList;
     }
     
     public static void givePoints(final EntityPlayerMP player, final int points) {
@@ -158,8 +158,8 @@ public abstract class Gametype
     
     public static EntityPlayerMP getPlayerFromDamageSource(final DamageSource source) {
         EntityPlayerMP attacker = null;
-        if (source instanceof EntityDamageSource && source.func_76346_g() instanceof EntityPlayerMP) {
-            attacker = (EntityPlayerMP)source.func_76346_g();
+        if (source instanceof EntityDamageSource && source.getEntity() instanceof EntityPlayerMP) {
+            attacker = (EntityPlayerMP)source.getEntity();
         }
         return attacker;
     }

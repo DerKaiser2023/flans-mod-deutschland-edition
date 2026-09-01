@@ -22,7 +22,7 @@ public class ModelStinger extends ModelGun
         (this.gunModel[3] = new ModelRendererTurbo(this, 0, 10, textureX, textureY)).addBox(0.0f, -0.5f, -0.5f, 1, 3, 1);
         (this.gunModel[4] = new ModelRendererTurbo(this, 4, 10, textureX, textureY)).addBox(3.0f, -0.5f, -1.0f, 6, 3, 2);
         for (int i = 0; i < 5; ++i) {
-            this.gunModel[i].func_78793_a(0.0f, 0.0f, 2.0f);
+            this.gunModel[i].setRotationPoint(0.0f, 0.0f, 2.0f);
         }
         this.scopeAttachPoint = new Vector3f(0.09375f, 0.3125f, 0.0f);
         this.barrelAttachPoint = new Vector3f(1.125f, 0.25f, 0.0f);
@@ -32,8 +32,8 @@ public class ModelStinger extends ModelGun
         (this.ammoModel[1] = new ModelRendererTurbo(this, 55, 0, textureX, textureY)).addBox(-1.0f, -10.0f, 0.0f, 2, 1, 0);
         (this.ammoModel[2] = new ModelRendererTurbo(this, 55, 2, textureX, textureY)).addBox(0.0f, -10.0f, -1.0f, 0, 1, 2);
         for (int i = 0; i < 3; ++i) {
-            this.ammoModel[i].func_78793_a(0.0f, 3.5f, 2.0f);
-            this.ammoModel[i].field_78808_h = -1.5707964f;
+            this.ammoModel[i].setRotationPoint(0.0f, 3.5f, 2.0f);
+            this.ammoModel[i].rotateAngleZ = -1.5707964f;
         }
         this.gunSlideDistance = 0.5f;
         this.animationType = EnumAnimationType.END_LOADED;

@@ -18,26 +18,26 @@ public class MovingSoundDriveable extends MovingSound
         super(sound);
         this.field_147669_l = 0.0f;
         this.driveable = driveable;
-        this.field_147659_g = true;
-        this.field_147665_h = 0;
+        this.repeat = true;
+        this.repeatDelay = 0;
     }
     
-    public void func_73660_a() {
-        if (this.driveable.field_70128_L) {
-            this.field_147668_j = true;
+    public void update() {
+        if (this.driveable.isDead) {
+            this.donePlaying = true;
         }
         else {
-            this.field_147660_d = (float)this.driveable.field_70165_t;
-            this.field_147661_e = (float)this.driveable.field_70163_u;
-            this.field_147658_f = (float)this.driveable.field_70161_v;
-            final float f = MathHelper.func_76133_a(this.driveable.field_70159_w * this.driveable.field_70159_w + this.driveable.field_70179_y * this.driveable.field_70179_y);
+            this.xPosF = (float)this.driveable.posX;
+            this.yPosF = (float)this.driveable.posY;
+            this.zPosF = (float)this.driveable.posZ;
+            final float f = MathHelper.sqrt_double(this.driveable.motionX * this.driveable.motionX + this.driveable.motionZ * this.driveable.motionZ);
             if (f >= 0.01) {
-                this.field_147669_l = MathHelper.func_76131_a(this.field_147669_l + 0.0025f, 0.0f, 1.0f);
-                this.field_147662_b = 0.0f + MathHelper.func_76131_a(f, 0.0f, 0.5f) * 0.7f;
+                this.field_147669_l = MathHelper.clamp_float(this.field_147669_l + 0.0025f, 0.0f, 1.0f);
+                this.volume = 0.0f + MathHelper.clamp_float(f, 0.0f, 0.5f) * 0.7f;
             }
             else {
                 this.field_147669_l = 0.0f;
-                this.field_147662_b = 0.0f;
+                this.volume = 0.0f;
             }
         }
     }

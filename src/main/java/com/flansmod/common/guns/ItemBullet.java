@@ -32,19 +32,19 @@ public class ItemBullet extends ItemShootable implements IFlanItem
     public ItemBullet(final BulletType infoType) {
         super(infoType);
         this.type = infoType;
-        this.func_77625_d(this.type.maxStackSize);
-        this.func_77627_a(true);
+        this.setMaxStackSize(this.type.maxStackSize);
+        this.setHasSubtypes(true);
         this.type.item = this;
         switch (this.type.weaponType) {
             case SHELL:
             case BOMB:
             case MINE:
             case MISSILE: {
-                this.func_77637_a((CreativeTabs)FlansMod.tabFlanDriveables);
+                this.setCreativeTab((CreativeTabs)FlansMod.tabFlanDriveables);
                 break;
             }
             default: {
-                this.func_77637_a((CreativeTabs)FlansMod.tabFlanGuns);
+                this.setCreativeTab((CreativeTabs)FlansMod.tabFlanGuns);
                 break;
             }
         }
@@ -55,17 +55,17 @@ public class ItemBullet extends ItemShootable implements IFlanItem
     }
     
     @SideOnly(Side.CLIENT)
-    public int func_82790_a(final ItemStack par1ItemStack, final int par2) {
+    public int getColorFromItemStack(final ItemStack par1ItemStack, final int par2) {
         return this.type.colour;
     }
     
     @SideOnly(Side.CLIENT)
-    public void func_94581_a(final IIconRegister icon) {
-        this.field_77791_bV = icon.func_94245_a("FlansMod:" + this.type.iconPath);
+    public void registerIcons(final IIconRegister icon) {
+        this.itemIcon = icon.registerIcon("FlansMod:" + this.type.iconPath);
     }
     
-    public void func_77624_a(final ItemStack stack, final EntityPlayer player, final List lines, final boolean b) {
-        final KeyBinding shift = Minecraft.func_71410_x().field_71474_y.field_74311_E;
+    public void addInformation(final ItemStack stack, final EntityPlayer player, final List lines, final boolean b) {
+        final KeyBinding shift = Minecraft.getMinecraft().gameSettings.keyBindSneak;
         if (!this.type.packName.isEmpty()) {
             lines.add(this.type.packName);
         }
@@ -93,8 +93,8 @@ public class ItemBullet extends ItemShootable implements IFlanItem
         if (this.type.HEAT) {
             lines.add("Has Shaped-Charge (Weak Against Composite armor)");
         }
-        if (!GameSettings.func_100015_a(shift) && this.type.dynamicBulletDelay < 8999) {
-            lines.add("Hold §b§o" + GameSettings.func_74298_c(shift.func_151463_i()) + "§r§7 for long range details");
+        if (!GameSettings.isKeyDown(shift) && this.type.dynamicBulletDelay < 8999) {
+            lines.add("Hold §b§o" + GameSettings.getKeyDisplayString(shift.getKeyCode()) + "§r§7 for long range details");
         }
         else if (this.type.dynamicBulletDelay < 8999) {
             lines.add("");

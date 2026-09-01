@@ -93,10 +93,10 @@ public class GametypeCTF extends Gametype
         }
         final PlayerData playerData5 = Gametype.getPlayerData(player);
         ++playerData5.deaths;
-        if (player.field_70153_n instanceof EntityFlag) {
-            final Team flagTeam = GametypeCTF.teamsManager.getTeam(((EntityFlag)player.field_70153_n).getBase().getOwnerID());
-            player.field_70153_n.func_70078_a((Entity)null);
-            TeamsManager.messageAll("§f" + player.func_70005_c_() + " dropped the §" + flagTeam.textColour + flagTeam.name + "§f flag");
+        if (player.riddenByEntity instanceof EntityFlag) {
+            final Team flagTeam = GametypeCTF.teamsManager.getTeam(((EntityFlag)player.riddenByEntity).getBase().getOwnerID());
+            player.riddenByEntity.mountEntity((Entity)null);
+            TeamsManager.messageAll("§f" + player.getCommandSenderName() + " dropped the §" + flagTeam.textColour + flagTeam.name + "§f flag");
         }
     }
     
@@ -128,7 +128,7 @@ public class GametypeCTF extends Gametype
                 final Team flagTeam = GametypeCTF.teamsManager.getTeam(flag.getBase().getOwnerID());
                 if (playerTeam != null && playerTeam != Team.spectators && flag.getBase().getMap() == GametypeCTF.teamsManager.currentRound.map) {
                     if (playerTeam == flagTeam) {
-                        if (flag.field_70154_o == null && !flag.isHome) {
+                        if (flag.ridingEntity == null && !flag.isHome) {
                             flag.reset();
                             final PlayerData playerData2 = playerData;
                             playerData2.score += 2;
@@ -136,10 +136,10 @@ public class GametypeCTF extends Gametype
                             ++playerData3.shekels;
                             final PlayerData playerData4 = Gametype.getPlayerData(player);
                             ++playerData4.shekels;
-                            TeamsManager.messageAll("§f" + player.func_70005_c_() + " returned the §" + flagTeam.textColour + flagTeam.name + "§f flag");
+                            TeamsManager.messageAll("§f" + player.getCommandSenderName() + " returned the §" + flagTeam.textColour + flagTeam.name + "§f flag");
                         }
-                        else if (player.field_70153_n instanceof EntityFlag) {
-                            final EntityFlag otherFlag = (EntityFlag)player.field_70153_n;
+                        else if (player.riddenByEntity instanceof EntityFlag) {
+                            final EntityFlag otherFlag = (EntityFlag)player.riddenByEntity;
                             final Team otherFlagTeam = GametypeCTF.teamsManager.getTeam(otherFlag.getBase().getOwnerID());
                             if (otherFlagTeam != null && otherFlagTeam != Team.spectators && otherFlagTeam != flagTeam && flag.isHome) {
                                 final Team team = playerTeam;
@@ -159,15 +159,15 @@ public class GametypeCTF extends Gametype
                                 final PlayerData playerData11 = Gametype.getPlayerData(player);
                                 ++playerData11.shekels;
                                 otherFlag.reset();
-                                TeamsManager.messageAll("§f" + player.func_70005_c_() + " captured the §" + otherFlagTeam.textColour + otherFlagTeam.name + "§f flag");
+                                TeamsManager.messageAll("§f" + player.getCommandSenderName() + " captured the §" + otherFlagTeam.textColour + otherFlagTeam.name + "§f flag");
                             }
                         }
                     }
-                    else if (flag.field_70154_o == player) {
-                        flag.func_70078_a(null);
-                        TeamsManager.messageAll("§f" + player.func_70005_c_() + " dropped the §" + flagTeam.textColour + flagTeam.name + "§f flag");
+                    else if (flag.ridingEntity == player) {
+                        flag.mountEntity(null);
+                        TeamsManager.messageAll("§f" + player.getCommandSenderName() + " dropped the §" + flagTeam.textColour + flagTeam.name + "§f flag");
                     }
-                    else if (flag.field_70154_o == null) {
+                    else if (flag.ridingEntity == null) {
                         if (flag.isHome) {
                             final PlayerData playerData12 = playerData;
                             playerData12.score += 3;
@@ -176,8 +176,8 @@ public class GametypeCTF extends Gametype
                         ++playerData13.shekels;
                         final PlayerData playerData14 = Gametype.getPlayerData(player);
                         ++playerData14.shekels;
-                        flag.func_70078_a((Entity)player);
-                        TeamsManager.messageAll("§f" + player.func_70005_c_() + " picked up the §" + flagTeam.textColour + flagTeam.name + "§f flag");
+                        flag.mountEntity((Entity)player);
+                        TeamsManager.messageAll("§f" + player.getCommandSenderName() + " picked up the §" + flagTeam.textColour + flagTeam.name + "§f flag");
                         flag.isHome = false;
                     }
                 }
@@ -208,7 +208,7 @@ public class GametypeCTF extends Gametype
         }
         if (validSpawnPoints.size() > 0) {
             final ITeamObject spawnPoint = validSpawnPoints.get(GametypeCTF.rand.nextInt(validSpawnPoints.size()));
-            return Vec3.func_72443_a(spawnPoint.getPosX(), spawnPoint.getPosY(), spawnPoint.getPosZ());
+            return Vec3.createVectorHelper(spawnPoint.getPosX(), spawnPoint.getPosY(), spawnPoint.getPosZ());
         }
         return null;
     }
@@ -236,16 +236,16 @@ public class GametypeCTF extends Gametype
     
     @Override
     public void readFromNBT(final NBTTagCompound tags) {
-        this.friendlyFire = tags.func_74767_n("CTFFriendlyFire");
-        this.autoBalance = tags.func_74767_n("CTFAutoBalance");
-        this.flagReturnTime = tags.func_74762_e("CTFFlagTime");
+        this.friendlyFire = tags.getBoolean("CTFFriendlyFire");
+        this.autoBalance = tags.getBoolean("CTFAutoBalance");
+        this.flagReturnTime = tags.getInteger("CTFFlagTime");
     }
     
     @Override
     public void saveToNBT(final NBTTagCompound tags) {
-        tags.func_74757_a("CTFFriendlyFire", this.friendlyFire);
-        tags.func_74757_a("CTFAutoBalance", this.autoBalance);
-        tags.func_74768_a("CTFFlagTime", this.flagReturnTime);
+        tags.setBoolean("CTFFriendlyFire", this.friendlyFire);
+        tags.setBoolean("CTFAutoBalance", this.autoBalance);
+        tags.setInteger("CTFFlagTime", this.flagReturnTime);
     }
     
     @Override

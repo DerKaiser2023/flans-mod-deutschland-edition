@@ -32,24 +32,24 @@ public class ModelNgob extends ModelCustomArmour
         this.headModel[8] = new ModelRendererTurbo((ModelBase)this, 49, 33, this.textureX, this.textureY);
         this.headModel[9] = new ModelRendererTurbo((ModelBase)this, 25, 41, this.textureX, this.textureY);
         this.headModel[0].addShapeBox(-4.0f, -9.0f, -4.0f, 8, 3, 8, 0.0f, 0.0f, 0.9f, 0.1f, 0.0f, 0.9f, 0.1f, 0.0f, 0.5f, 0.1f, 0.0f, 0.5f, 0.1f, 0.9f, -0.7f, 0.9f, 0.9f, -0.7f, 0.9f, 0.9f, -0.3f, 0.9f, 0.9f, -0.3f, 0.9f);
-        this.headModel[0].func_78793_a(0.0f, 0.0f, 0.0f);
+        this.headModel[0].setRotationPoint(0.0f, 0.0f, 0.0f);
         this.headModel[1].addShapeBox(-4.0f, -7.0f, -4.0f, 8, 3, 8, 0.0f, 0.9f, -0.3f, 0.9f, 0.9f, -0.3f, 0.9f, 0.9f, -0.7f, 0.9f, 0.9f, -0.7f, 0.9f, 1.9f, -0.7f, 1.9f, 1.9f, -0.7f, 1.9f, 1.9f, -0.3f, 1.9f, 1.9f, -0.3f, 1.9f);
-        this.headModel[1].func_78793_a(0.0f, 0.0f, 0.0f);
+        this.headModel[1].setRotationPoint(0.0f, 0.0f, 0.0f);
         this.headModel[2].addShapeBox(-5.0f, -5.5f, 4.8f, 10, 2, 4, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.5f, 0.0f, 0.0f, -1.5f, 0.0f, 0.0f, -1.3f, 0.0f, 0.0f, -1.3f, 0.0f, 0.0f, -0.3f, 0.0f, 0.0f, -0.3f, 0.0f);
-        this.headModel[2].func_78793_a(0.0f, 0.0f, 0.0f);
+        this.headModel[2].setRotationPoint(0.0f, 0.0f, 0.0f);
         this.headModel[3].addShapeBox(-8.9f, -5.9f, -4.8f, 4, 2, 10, 0.0f, 0.0f, -1.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -0.4f, -0.3f, 0.0f, -1.9f, -0.3f, 0.0f, -0.3f, 0.0f, 0.0f, -1.3f, 0.0f, 0.0f, -0.9f, -0.3f, 0.0f, 0.1f, -0.3f);
-        this.headModel[3].func_78793_a(0.0f, 0.0f, 0.0f);
+        this.headModel[3].setRotationPoint(0.0f, 0.0f, 0.0f);
         this.headModel[4].addShapeBox(-8.01f, -5.9f, -7.8f, 3, 2, 3, 0.0f, 0.0f, -1.5f, 0.0f, 0.0f, -1.5f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, -1.5f, 0.0f, 0.0f, -0.3f, 0.0f, 0.0f, -0.3f, 1.0f, 0.0f, -0.8f, 0.0f, 1.0f, -0.3f, 0.0f);
-        this.headModel[4].func_78793_a(0.0f, 0.0f, 0.0f);
+        this.headModel[4].setRotationPoint(0.0f, 0.0f, 0.0f);
         this.headModel[5].addShapeBox(-8.01f, -5.5f, 4.91f, 3, 2, 3, 0.0f, 1.0f, -1.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.5f, 1.0f, 0.0f, -1.5f, 0.0f, 1.0f, -0.3f, 0.0f, 0.0f, -0.8f, 0.0f, 0.0f, -0.3f, 1.0f, 0.0f, -0.3f, 0.0f);
-        this.headModel[5].func_78793_a(0.0f, 0.0f, 0.0f);
+        this.headModel[5].setRotationPoint(0.0f, 0.0f, 0.0f);
         this.headModel[6].addShapeBox(-5.0f, -5.9f, -8.8f, 10, 2, 4, 0.0f, 0.0f, -1.5f, 0.0f, 0.0f, -1.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -0.3f, 0.0f, 0.0f, -0.3f, 0.0f, 0.0f, -1.3f, 0.0f, 0.0f, -1.3f, 0.0f);
-        this.headModel[6].func_78793_a(0.0f, 0.0f, 0.0f);
+        this.headModel[6].setRotationPoint(0.0f, 0.0f, 0.0f);
         this.headModel[7].addShapeBox(4.9f, -5.9f, -4.8f, 4, 2, 10, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.5f, 0.0f, 0.0f, -1.9f, -0.3f, 0.0f, -0.4f, -0.3f, 0.0f, -1.3f, 0.0f, 0.0f, -0.3f, 0.0f, 0.0f, 0.1f, -0.3f, 0.0f, -0.9f, -0.3f);
-        this.headModel[7].func_78793_a(0.0f, 0.0f, 0.0f);
+        this.headModel[7].setRotationPoint(0.0f, 0.0f, 0.0f);
         this.headModel[8].addShapeBox(4.9f, -5.5f, 4.91f, 3, 2, 3, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, -1.5f, 0.0f, 0.0f, -1.5f, 0.0f, 0.0f, -1.5f, 1.0f, 0.0f, -0.8f, 0.0f, 1.0f, -0.3f, 0.0f, 0.0f, -0.3f, 0.0f, 0.0f, -0.3f, 1.0f);
-        this.headModel[8].func_78793_a(0.0f, 0.0f, 0.0f);
+        this.headModel[8].setRotationPoint(0.0f, 0.0f, 0.0f);
         this.headModel[9].addShapeBox(4.9f, -5.9f, -7.8f, 3, 2, 3, 0.0f, 0.0f, -1.5f, 1.0f, 0.0f, -1.5f, 0.0f, 1.0f, -1.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -0.3f, 1.0f, 0.0f, -0.3f, 0.0f, 1.0f, -0.3f, 0.0f, 0.0f, -0.8f, 0.0f);
-        this.headModel[9].func_78793_a(0.0f, 0.0f, 0.0f);
+        this.headModel[9].setRotationPoint(0.0f, 0.0f, 0.0f);
     }
 }

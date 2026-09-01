@@ -60,7 +60,7 @@ public class PacketGunRecoil extends PacketBase
     @SideOnly(Side.CLIENT)
     @Override
     public void handleClientSide(final EntityPlayer clientPlayer) {
-        if (!clientPlayer.func_70093_af()) {
+        if (!clientPlayer.isSneaking()) {
             if (FlansModClient.peepee >= 0.0f && FlansModClient.peepee < 20.0f) {
                 FlansModClient.playerRecoilPitch += this.recoilPitch;
                 FlansModClient.playerRecoilYaw += this.recoilYaw;

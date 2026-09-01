@@ -22,32 +22,32 @@ public class TileEntitySpawnerRenderer extends TileEntitySpecialRenderer
 {
     private RenderBlocks blockRenderer;
     
-    public void func_147500_a(final TileEntity te, final double x, final double y, final double z, final float f) {
+    public void renderTileEntityAt(final TileEntity te, final double x, final double y, final double z, final float f) {
         BlockSpawner.colouredPass = true;
-        final Tessellator var10 = Tessellator.field_78398_a;
-        this.func_147499_a(TextureMap.field_110575_b);
-        RenderHelper.func_74518_a();
+        final Tessellator var10 = Tessellator.instance;
+        this.bindTexture(TextureMap.locationBlocksTexture);
+        RenderHelper.disableStandardItemLighting();
         GL11.glBlendFunc(770, 771);
         GL11.glEnable(3042);
         GL11.glDisable(2884);
-        if (Minecraft.func_71379_u()) {
+        if (Minecraft.isAmbientOcclusionEnabled()) {
             GL11.glShadeModel(7425);
         }
         else {
             GL11.glShadeModel(7424);
         }
-        var10.func_78382_b();
-        var10.func_78373_b((double)((float)x - te.field_145851_c), (double)((float)y - te.field_145848_d), (double)((float)z - te.field_145849_e));
-        var10.func_78376_a(1, 1, 1);
+        var10.startDrawingQuads();
+        var10.setTranslation((double)((float)x - te.xCoord), (double)((float)y - te.yCoord), (double)((float)z - te.zCoord));
+        var10.setColorOpaque(1, 1, 1);
         GL11.glColor4f(1.0f, 1.0f, 0.0f, 0.5f);
-        this.blockRenderer.func_147769_a((Block)FlansMod.spawner, te.field_145851_c, te.field_145848_d, te.field_145849_e);
-        var10.func_78373_b(0.0, 0.0, 0.0);
-        var10.func_78381_a();
-        RenderHelper.func_74519_b();
+        this.blockRenderer.renderBlockAllFaces((Block)FlansMod.spawner, te.xCoord, te.yCoord, te.zCoord);
+        var10.setTranslation(0.0, 0.0, 0.0);
+        var10.draw();
+        RenderHelper.enableStandardItemLighting();
         BlockSpawner.colouredPass = false;
     }
     
-    public void func_147496_a(final World par1World) {
+    public void onWorldChange(final World par1World) {
         this.blockRenderer = new RenderBlocks((IBlockAccess)par1World);
     }
 }

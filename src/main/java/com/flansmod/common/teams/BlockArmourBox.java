@@ -28,19 +28,19 @@ public class BlockArmourBox extends Block
     public ArmourBoxType type;
     
     public BlockArmourBox(final ArmourBoxType t) throws Exception {
-        super(Material.field_151575_d);
+        super(Material.wood);
         this.type = t;
-        this.func_149663_c(this.type.shortName);
-        this.func_149711_c(2.0f);
-        this.func_149752_b(4.0f);
-        final Block block = Block.func_149684_b("flansmod:armorBox." + this.type.shortName);
+        this.setUnlocalizedName(this.type.shortName);
+        this.setHardness(2.0f);
+        this.setResistance(4.0f);
+        final Block block = Block.getBlockFromName("flansmod:armorBox." + this.type.shortName);
         if (block != null) {
             throw new Exception("Caught an exception during block registration");
         }
         GameRegistry.registerBlock((Block)this, "armorBox." + this.type.shortName);
-        this.func_149647_a((CreativeTabs)FlansMod.tabFlanTeams);
+        this.setCreativeTab((CreativeTabs)FlansMod.tabFlanTeams);
         this.type.block = this;
-        this.type.item = Item.func_150898_a((Block)this);
+        this.type.item = Item.getItemFromBlock((Block)this);
     }
     
     public void buyArmour(final String shortName, final int piece, final InventoryPlayer inventory) {
@@ -59,12 +59,12 @@ public class BlockArmourBox extends Block
         final ItemStack resultStack = new ItemStack(entryPicked.armours[piece].item);
         final CraftingInstance crafting = new CraftingInstance((IInventory)inventory, entryPicked.requiredStacks[piece], resultStack);
         if (crafting.canCraft()) {
-            crafting.craft(inventory.field_70458_d);
+            crafting.craft(inventory.player);
         }
     }
     
     @SideOnly(Side.CLIENT)
-    public IIcon func_149691_a(final int side, final int metadata) {
+    public IIcon getIcon(final int side, final int metadata) {
         if (this.type == null) {
             return null;
         }
@@ -78,14 +78,14 @@ public class BlockArmourBox extends Block
     }
     
     @SideOnly(Side.CLIENT)
-    public void func_149651_a(final IIconRegister register) {
-        this.type.top = register.func_94245_a("FlansMod:" + this.type.topTexturePath);
-        this.type.side = register.func_94245_a("FlansMod:" + this.type.sideTexturePath);
-        this.type.bottom = register.func_94245_a("FlansMod:" + this.type.bottomTexturePath);
+    public void registerIcons(final IIconRegister register) {
+        this.type.top = register.registerIcon("FlansMod:" + this.type.topTexturePath);
+        this.type.side = register.registerIcon("FlansMod:" + this.type.sideTexturePath);
+        this.type.bottom = register.registerIcon("FlansMod:" + this.type.bottomTexturePath);
     }
     
-    public boolean func_149727_a(final World world, final int i, final int j, final int k, final EntityPlayer entityplayer, final int par6, final float par7, final float par8, final float par9) {
-        if (entityplayer.func_70093_af()) {
+    public boolean onBlockActivated(final World world, final int i, final int j, final int k, final EntityPlayer entityplayer, final int par6, final float par7, final float par8, final float par9) {
+        if (entityplayer.isSneaking()) {
             return false;
         }
         entityplayer.openGui((Object)FlansMod.INSTANCE, 11, world, i, j, k);

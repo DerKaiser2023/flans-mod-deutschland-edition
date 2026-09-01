@@ -24,14 +24,14 @@ public class ModelMechaTool extends ModelBase
     public void render(final EntityMecha mecha, final float f1) {
         final float f2 = 0.0625f;
         for (final ModelRendererTurbo model : this.baseModel) {
-            model.func_78785_a(f2);
+            model.render(f2);
         }
     }
     
     public void renderDrill(final EntityMecha mecha, final float f1) {
         final float f2 = 0.0625f;
         for (final ModelRendererTurbo model : this.drillModel) {
-            model.func_78785_a(f2);
+            model.render(f2);
         }
     }
     
@@ -40,11 +40,11 @@ public class ModelMechaTool extends ModelBase
         for (final ModelRendererTurbo model : this.sawModel) {
             GL11.glPushMatrix();
             if (spin) {
-                GL11.glTranslatef(model.field_78800_c / 16.0f, model.field_78797_d / 16.0f, model.field_78798_e / 16.0f);
-                GL11.glRotatef(25.0f * mecha.field_70173_aa, 0.0f, 1.0f, 0.0f);
-                GL11.glTranslatef(-model.field_78800_c / 16.0f, -model.field_78797_d / 16.0f, -model.field_78798_e / 16.0f);
+                GL11.glTranslatef(model.rotationPointX / 16.0f, model.rotationPointY / 16.0f, model.rotationPointZ / 16.0f);
+                GL11.glRotatef(25.0f * mecha.ticksExisted, 0.0f, 1.0f, 0.0f);
+                GL11.glTranslatef(-model.rotationPointX / 16.0f, -model.rotationPointY / 16.0f, -model.rotationPointZ / 16.0f);
             }
-            model.func_78785_a(f2);
+            model.render(f2);
             GL11.glPopMatrix();
         }
     }

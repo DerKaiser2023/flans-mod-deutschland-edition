@@ -30,10 +30,10 @@ public class ModelMWParachute extends ModelBase
         this.parachuteModel[5].addTrapezoid(-8.0f, 70.0f, -8.0f, 16, 4, 16, 0.0f, -4.0f, 5);
     }
     
-    public void func_78088_a(final Entity entity, final float f, final float f1, final float f2, final float f3, final float f4, final float f5) {
-        this.backpackModel.func_78785_a(f5);
+    public void render(final Entity entity, final float f, final float f1, final float f2, final float f3, final float f4, final float f5) {
+        this.backpackModel.render(f5);
         for (final ModelRendererTurbo part : this.parachuteModel) {
-            part.func_78785_a(f5);
+            part.render(f5);
         }
     }
 }

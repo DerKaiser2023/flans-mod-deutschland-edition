@@ -30,8 +30,8 @@ public class ModelRPG extends ModelGun
         (this.ammoModel[2] = new ModelRendererTurbo(this, 38, 6, textureX, textureY)).addTrapezoid(-2.0f, 4.0f, -2.0f, 4, 3, 4, 0.0f, -1.0f, 5);
         (this.ammoModel[3] = new ModelRendererTurbo(this, 38, 5, textureX, textureY)).addBox(-0.5f, -4.0f, -0.5f, 1, 4, 1);
         for (int i = 0; i < 4; ++i) {
-            this.ammoModel[i].func_78793_a(8.0f, 3.5f, 0.0f);
-            this.ammoModel[i].field_78808_h = -1.5707964f;
+            this.ammoModel[i].setRotationPoint(8.0f, 3.5f, 0.0f);
+            this.ammoModel[i].rotateAngleZ = -1.5707964f;
         }
         this.gunSlideDistance = 0.5f;
         this.animationType = EnumAnimationType.END_LOADED;

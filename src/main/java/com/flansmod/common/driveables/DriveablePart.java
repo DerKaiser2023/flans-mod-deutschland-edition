@@ -153,25 +153,25 @@ public class DriveablePart
     }
     
     public void writeToNBT(final NBTTagCompound tags) {
-        tags.func_74768_a(this.type.getShortName() + "_Health", this.health);
-        tags.func_74768_a(this.type.getShortName() + "_Crew", this.crew);
-        tags.func_74757_a(this.type.getShortName() + "_Fire", this.onFire);
+        tags.setInteger(this.type.getShortName() + "_Health", this.health);
+        tags.setInteger(this.type.getShortName() + "_Crew", this.crew);
+        tags.setBoolean(this.type.getShortName() + "_Fire", this.onFire);
     }
     
     public void readFromNBT(final NBTTagCompound tags) {
-        if (!tags.func_74764_b(this.type.getShortName() + "_Health")) {
+        if (!tags.hasKey(this.type.getShortName() + "_Health")) {
             this.health = this.maxHealth;
             this.onFire = false;
             return;
         }
-        if (!tags.func_74764_b(this.type.getShortName() + "_Crew")) {
+        if (!tags.hasKey(this.type.getShortName() + "_Crew")) {
             this.crew = this.maxCrew;
             this.onFire = false;
             return;
         }
-        this.health = tags.func_74762_e(this.type.getShortName() + "_Health");
-        this.crew = tags.func_74762_e(this.type.getShortName() + "_Crew");
-        this.onFire = tags.func_74767_n(this.type.getShortName() + "_Fire");
+        this.health = tags.getInteger(this.type.getShortName() + "_Health");
+        this.crew = tags.getInteger(this.type.getShortName() + "_Crew");
+        this.onFire = tags.getBoolean(this.type.getShortName() + "_Fire");
     }
     
     public float smashIntoGround(final EntityDriveable driveable, final float damage) {
@@ -268,7 +268,7 @@ public class DriveablePart
         if (tester.didCollide) {
             return new RidingEntityPosition(collisionPoint.x, collisionPoint.y, collisionPoint.z, 1, distance, this.type);
         }
-        final Vector3f pos = new Vector3f(driveable.field_70165_t, driveable.field_70163_u, driveable.field_70161_v);
+        final Vector3f pos = new Vector3f(driveable.posX, driveable.posY, driveable.posZ);
         final RotatedAxes shift = driveable.axes;
         Vector3f p1 = shift.findLocalVectorGlobally(new Vector3f(this.box.x + this.box.w, this.box.y + this.box.h, this.box.z));
         Vector3f p2 = shift.findLocalVectorGlobally(new Vector3f(this.box.x + this.box.w, this.box.y + this.box.h, this.box.z + this.box.d));
@@ -387,10 +387,10 @@ public class DriveablePart
         EntitySeat parkingSeat = null;
         EntitySeat shooterSeat = null;
         if (bullet != null) {
-            if (hit.driveable != null && hit.driveable.func_70115_ae() && hit.driveable.field_70154_o != null && hit.driveable.field_70154_o instanceof EntitySeat) {
-                parkingSeat = (EntitySeat)hit.driveable.field_70154_o;
-                if (bullet.owner != null && bullet.owner.func_70115_ae() && bullet.owner.field_70154_o != null && bullet.owner.field_70154_o instanceof EntitySeat) {
-                    shooterSeat = (EntitySeat)bullet.owner.field_70154_o;
+            if (hit.driveable != null && hit.driveable.isRiding() && hit.driveable.ridingEntity != null && hit.driveable.ridingEntity instanceof EntitySeat) {
+                parkingSeat = (EntitySeat)hit.driveable.ridingEntity;
+                if (bullet.owner != null && bullet.owner.isRiding() && bullet.owner.ridingEntity != null && bullet.owner.ridingEntity instanceof EntitySeat) {
+                    shooterSeat = (EntitySeat)bullet.owner.ridingEntity;
                 }
             }
             if (shooterSeat != null && parkingSeat != null && shooterSeat.driveable != null && parkingSeat.driveable != null && (shooterSeat.driveable == parkingSeat.driveable || shooterSeat.driveable == this.owner)) {
@@ -402,7 +402,7 @@ public class DriveablePart
             }
             else if (hit.driveable.APSdelay <= 0 && bullet.truePen > 30.0f && hit.driveable.APSchecker < 3) {
                 hit.driveable.APSdelay = hit.driveable.APSmax;
-                PacketPlaySound.sendSoundPacket(bullet.field_70165_t, bullet.field_70163_u, bullet.field_70161_v, 25.0, 0, bullet.type.APSsound, true);
+                PacketPlaySound.sendSoundPacket(bullet.posX, bullet.posY, bullet.posZ, 25.0, 0, bullet.type.APSsound, true);
             }
             else if (hit.driveable instanceof EntityPlane) {
                 if (this.type == EnumDriveablePart.shield) {
@@ -413,63 +413,63 @@ public class DriveablePart
                 }
                 else if (this.animal == 2) {
                     this.health -= (int)(bullet.damage * bullet.type.damageVsLiving);
-                    FlansMod.getPacketHandler().sendToAllAround(new PacketFlak(bullet.field_70165_t, bullet.field_70163_u, bullet.field_70161_v, 1, "blood"), bullet.field_70165_t, bullet.field_70163_u, bullet.field_70161_v, 200.0f, 0);
-                    FlansMod.getPacketHandler().sendToAllAround(new PacketParticle("flansmod.blood", bullet.field_70165_t, bullet.field_70163_u + 1.0, bullet.field_70161_v, (float)Math.random() * 1.0f, (float)Math.random() * 1.0f, -(float)Math.random() * 1.0f), bullet.field_70165_t, bullet.field_70163_u, bullet.field_70161_v, 150.0f, 0);
+                    FlansMod.getPacketHandler().sendToAllAround(new PacketFlak(bullet.posX, bullet.posY, bullet.posZ, 1, "blood"), bullet.posX, bullet.posY, bullet.posZ, 200.0f, 0);
+                    FlansMod.getPacketHandler().sendToAllAround(new PacketParticle("flansmod.blood", bullet.posX, bullet.posY + 1.0, bullet.posZ, (float)Math.random() * 1.0f, (float)Math.random() * 1.0f, -(float)Math.random() * 1.0f), bullet.posX, bullet.posY, bullet.posZ, 150.0f, 0);
                 }
                 else if (bullet.truePen < this.armor && 0.9 * this.armor < bullet.truePen && !bullet.isHEAT) {
                     this.health -= (int)(bullet.damage * bullet.type.damageVsVehicles * bullet.type.barelypenPenalty);
                     this.crew -= (int)(hit.driveable.damageVsCrew * bullet.damage * bullet.type.damageVsVehicles * bullet.type.barelypenPenalty);
-                    PacketPlaySound.sendSoundPacket(bullet.field_70165_t, bullet.field_70163_u, bullet.field_70161_v, 35.0, 0, bullet.type.minorPenSound, true);
+                    PacketPlaySound.sendSoundPacket(bullet.posX, bullet.posY, bullet.posZ, 35.0, 0, bullet.type.minorPenSound, true);
                 }
                 else if (bullet.truePen < this.compArmor && 0.9 * this.compArmor < bullet.truePen && bullet.isHEAT) {
                     this.health -= (int)(bullet.damage * bullet.type.damageVsVehicles * bullet.type.barelypenPenalty);
                     this.crew -= (int)(hit.driveable.damageVsCrew * bullet.damage * bullet.type.damageVsVehicles * bullet.type.barelypenPenalty);
-                    PacketPlaySound.sendSoundPacket(bullet.field_70165_t, bullet.field_70163_u, bullet.field_70161_v, 35.0, 0, bullet.type.minorPenSound, true);
+                    PacketPlaySound.sendSoundPacket(bullet.posX, bullet.posY, bullet.posZ, 35.0, 0, bullet.type.minorPenSound, true);
                 }
                 else if (0.9f * this.armor >= bullet.truePen && !bullet.isHEAT) {
-                    PacketPlaySound.sendSoundPacket(bullet.field_70165_t, bullet.field_70163_u, bullet.field_70161_v, 25.0, 0, bullet.type.ricochetSound, true);
+                    PacketPlaySound.sendSoundPacket(bullet.posX, bullet.posY, bullet.posZ, 25.0, 0, bullet.type.ricochetSound, true);
                 }
                 else if (0.9f * this.compArmor >= bullet.truePen && bullet.isHEAT) {
-                    PacketPlaySound.sendSoundPacket(bullet.field_70165_t, bullet.field_70163_u, bullet.field_70161_v, 25.0, 0, bullet.type.ricochetSound, true);
+                    PacketPlaySound.sendSoundPacket(bullet.posX, bullet.posY, bullet.posZ, 25.0, 0, bullet.type.ricochetSound, true);
                 }
                 else if (bullet.truePen > this.armor && 3 * this.armor >= bullet.truePen && !bullet.isHEAT) {
                     this.health -= (int)(bullet.damage * bullet.type.damageVsPlanes);
                     this.crew -= (int)(hit.driveable.damageVsCrew * bullet.damage * bullet.type.damageVsVehicles);
-                    PacketPlaySound.sendSoundPacket(bullet.field_70165_t, bullet.field_70163_u, bullet.field_70161_v, 50.0, 0, bullet.type.penetrateSound, true);
+                    PacketPlaySound.sendSoundPacket(bullet.posX, bullet.posY, bullet.posZ, 50.0, 0, bullet.type.penetrateSound, true);
                 }
                 else if (bullet.truePen > this.compArmor && 3 * this.compArmor >= bullet.truePen && bullet.isHEAT) {
                     this.health -= (int)(bullet.damage * bullet.type.damageVsPlanes);
                     this.crew -= (int)(hit.driveable.damageVsCrew * bullet.damage * bullet.type.damageVsVehicles);
-                    PacketPlaySound.sendSoundPacket(bullet.field_70165_t, bullet.field_70163_u, bullet.field_70161_v, 50.0, 0, bullet.type.penetrateSound, true);
+                    PacketPlaySound.sendSoundPacket(bullet.posX, bullet.posY, bullet.posZ, 50.0, 0, bullet.type.penetrateSound, true);
                 }
                 else if (3 * this.armor < bullet.truePen && !bullet.isHEAT) {
                     this.health -= (int)(bullet.damage * bullet.type.damageVsPlanes * bullet.type.overPenPenalty);
                     this.crew -= (int)(hit.driveable.damageVsCrew * bullet.damage * bullet.type.damageVsVehicles * bullet.type.overPenPenalty);
-                    PacketPlaySound.sendSoundPacket(bullet.field_70165_t, bullet.field_70163_u, bullet.field_70161_v, 50.0, 0, bullet.type.overPenSound, true);
+                    PacketPlaySound.sendSoundPacket(bullet.posX, bullet.posY, bullet.posZ, 50.0, 0, bullet.type.overPenSound, true);
                 }
                 else if (3 * this.compArmor < bullet.truePen && bullet.isHEAT) {
                     this.health -= (int)(bullet.damage * bullet.type.damageVsPlanes * bullet.type.overPenPenalty);
                     this.crew -= (int)(hit.driveable.damageVsCrew * bullet.damage * bullet.type.damageVsVehicles * bullet.type.overPenPenalty);
-                    PacketPlaySound.sendSoundPacket(bullet.field_70165_t, bullet.field_70163_u, bullet.field_70161_v, 50.0, 0, bullet.type.overPenSound, true);
+                    PacketPlaySound.sendSoundPacket(bullet.posX, bullet.posY, bullet.posZ, 50.0, 0, bullet.type.overPenSound, true);
                 }
             }
             else {
                 if (this.type == EnumDriveablePart.shield) {
                     hit.driveable.shieldHitTimer = 10;
-                    FlansMod.getPacketHandler().sendToAllAround(new PacketFlak(bullet.field_70165_t, bullet.field_70163_u, bullet.field_70161_v, 15, "crit"), bullet.field_70165_t, bullet.field_70163_u, bullet.field_70161_v, 200.0f, 0);
+                    FlansMod.getPacketHandler().sendToAllAround(new PacketFlak(bullet.posX, bullet.posY, bullet.posZ, 15, "crit"), bullet.posX, bullet.posY, bullet.posZ, 200.0f, 0);
                 }
                 if (bullet.isSword && this.animal == 1) {
                     this.health -= 0;
                 }
                 else if (this.animal == 2) {
                     this.health -= (int)(bullet.damage * bullet.type.damageVsLiving);
-                    FlansMod.getPacketHandler().sendToAllAround(new PacketFlak(bullet.field_70165_t, bullet.field_70163_u, bullet.field_70161_v, 1, "blood"), bullet.field_70165_t, bullet.field_70163_u, bullet.field_70161_v, 200.0f, 0);
-                    FlansMod.getPacketHandler().sendToAllAround(new PacketParticle("flansmod.blood", bullet.field_70165_t, bullet.field_70163_u + 1.0, bullet.field_70161_v, (float)Math.random() * 1.0f, (float)Math.random() * 1.0f, -(float)Math.random() * 1.0f), bullet.field_70165_t, bullet.field_70163_u, bullet.field_70161_v, 150.0f, 0);
+                    FlansMod.getPacketHandler().sendToAllAround(new PacketFlak(bullet.posX, bullet.posY, bullet.posZ, 1, "blood"), bullet.posX, bullet.posY, bullet.posZ, 200.0f, 0);
+                    FlansMod.getPacketHandler().sendToAllAround(new PacketParticle("flansmod.blood", bullet.posX, bullet.posY + 1.0, bullet.posZ, (float)Math.random() * 1.0f, (float)Math.random() * 1.0f, -(float)Math.random() * 1.0f), bullet.posX, bullet.posY, bullet.posZ, 150.0f, 0);
                 }
                 else if (bullet.truePen < this.armor && 0.9 * this.armor < bullet.truePen && !bullet.isHEAT) {
                     this.health -= (int)(bullet.damage * bullet.type.damageVsVehicles * bullet.type.barelypenPenalty);
                     this.crew -= (int)(hit.driveable.damageVsCrew * bullet.damage * bullet.type.damageVsVehicles * bullet.type.barelypenPenalty);
-                    PacketPlaySound.sendSoundPacket(bullet.field_70165_t, bullet.field_70163_u, bullet.field_70161_v, 35.0, 0, bullet.type.minorPenSound, true);
+                    PacketPlaySound.sendSoundPacket(bullet.posX, bullet.posY, bullet.posZ, 35.0, 0, bullet.type.minorPenSound, true);
                     final float ouch = bullet.damage * bullet.type.damageVsVehicles * bullet.type.barelypenPenalty;
                     if (ouch > 2 * this.maxHealth && hit.driveable.epicShip && this.maxHealth > 1 && hit.driveable.getDriveableData().parts.get(EnumDriveablePart.bow).maxHealth > 1 && hit.driveable.getDriveableData().parts.get(EnumDriveablePart.left).maxHealth > 1 && hit.driveable.getDriveableData().parts.get(EnumDriveablePart.right).maxHealth > 1 && hit.driveable.getDriveableData().parts.get(EnumDriveablePart.stern).maxHealth > 1) {
                         final DriveablePart driveablePart = hit.driveable.getDriveableData().parts.get(EnumDriveablePart.bow);
@@ -480,14 +480,14 @@ public class DriveablePart
                         driveablePart3.health -= (int)(0.4 * ouch);
                         final DriveablePart driveablePart4 = hit.driveable.getDriveableData().parts.get(EnumDriveablePart.stern);
                         driveablePart4.health -= (int)(0.4 * ouch);
-                        FlansMod.proxy.spawnParticle("flansmod.tankDeath", bullet.field_70165_t, bullet.field_70163_u, bullet.field_70161_v, 0.0, 0.0, 0.0);
-                        PacketPlaySound.sendSoundPacket(bullet.field_70165_t, bullet.field_70163_u, bullet.field_70161_v, 250.0, bullet.field_71093_bK, "explcls6", false);
+                        FlansMod.proxy.spawnParticle("flansmod.tankDeath", bullet.posX, bullet.posY, bullet.posZ, 0.0, 0.0, 0.0);
+                        PacketPlaySound.sendSoundPacket(bullet.posX, bullet.posY, bullet.posZ, 250.0, bullet.dimension, "explcls6", false);
                     }
                 }
                 else if (bullet.isHEAT && bullet.truePen < this.compArmor && 0.9 * this.compArmor < bullet.truePen) {
                     this.health -= (int)(bullet.damage * bullet.type.damageVsVehicles * bullet.type.barelypenPenalty);
                     this.crew -= (int)(hit.driveable.damageVsCrew * bullet.damage * bullet.type.damageVsVehicles * bullet.type.barelypenPenalty);
-                    PacketPlaySound.sendSoundPacket(bullet.field_70165_t, bullet.field_70163_u, bullet.field_70161_v, 35.0, 0, bullet.type.minorPenSound, true);
+                    PacketPlaySound.sendSoundPacket(bullet.posX, bullet.posY, bullet.posZ, 35.0, 0, bullet.type.minorPenSound, true);
                     final float ouch = bullet.damage * bullet.type.damageVsVehicles * bullet.type.barelypenPenalty;
                     if (ouch > 2 * this.maxHealth && hit.driveable.epicShip && this.maxHealth > 1 && hit.driveable.getDriveableData().parts.get(EnumDriveablePart.bow).maxHealth > 1 && hit.driveable.getDriveableData().parts.get(EnumDriveablePart.left).maxHealth > 1 && hit.driveable.getDriveableData().parts.get(EnumDriveablePart.right).maxHealth > 1 && hit.driveable.getDriveableData().parts.get(EnumDriveablePart.stern).maxHealth > 1) {
                         final DriveablePart driveablePart5 = hit.driveable.getDriveableData().parts.get(EnumDriveablePart.bow);
@@ -498,22 +498,22 @@ public class DriveablePart
                         driveablePart7.health -= (int)(0.4 * ouch);
                         final DriveablePart driveablePart8 = hit.driveable.getDriveableData().parts.get(EnumDriveablePart.stern);
                         driveablePart8.health -= (int)(0.4 * ouch);
-                        FlansMod.proxy.spawnParticle("flansmod.tankDeath", bullet.field_70165_t, bullet.field_70163_u, bullet.field_70161_v, 0.0, 0.0, 0.0);
-                        PacketPlaySound.sendSoundPacket(bullet.field_70165_t, bullet.field_70163_u, bullet.field_70161_v, 250.0, bullet.field_71093_bK, "explcls6", false);
+                        FlansMod.proxy.spawnParticle("flansmod.tankDeath", bullet.posX, bullet.posY, bullet.posZ, 0.0, 0.0, 0.0);
+                        PacketPlaySound.sendSoundPacket(bullet.posX, bullet.posY, bullet.posZ, 250.0, bullet.dimension, "explcls6", false);
                     }
                 }
                 else if (0.9f * this.armor >= bullet.truePen && !bullet.isHEAT) {
-                    PacketPlaySound.sendSoundPacket(bullet.field_70165_t, bullet.field_70163_u, bullet.field_70161_v, 25.0, 0, bullet.type.ricochetSound, true);
-                    FlansMod.getPacketHandler().sendToAllAround(new PacketFlak(bullet.field_70165_t, bullet.field_70163_u, bullet.field_70161_v, 1, "crit"), bullet.field_70165_t, bullet.field_70163_u, bullet.field_70161_v, 200.0f, 0);
+                    PacketPlaySound.sendSoundPacket(bullet.posX, bullet.posY, bullet.posZ, 25.0, 0, bullet.type.ricochetSound, true);
+                    FlansMod.getPacketHandler().sendToAllAround(new PacketFlak(bullet.posX, bullet.posY, bullet.posZ, 1, "crit"), bullet.posX, bullet.posY, bullet.posZ, 200.0f, 0);
                 }
                 else if (0.9f * this.compArmor >= bullet.truePen && bullet.isHEAT) {
-                    PacketPlaySound.sendSoundPacket(bullet.field_70165_t, bullet.field_70163_u, bullet.field_70161_v, 25.0, 0, bullet.type.ricochetSound, true);
-                    FlansMod.getPacketHandler().sendToAllAround(new PacketFlak(bullet.field_70165_t, bullet.field_70163_u, bullet.field_70161_v, 1, "crit"), bullet.field_70165_t, bullet.field_70163_u, bullet.field_70161_v, 200.0f, 0);
+                    PacketPlaySound.sendSoundPacket(bullet.posX, bullet.posY, bullet.posZ, 25.0, 0, bullet.type.ricochetSound, true);
+                    FlansMod.getPacketHandler().sendToAllAround(new PacketFlak(bullet.posX, bullet.posY, bullet.posZ, 1, "crit"), bullet.posX, bullet.posY, bullet.posZ, 200.0f, 0);
                 }
                 else if (bullet.truePen > this.armor && 3 * this.armor >= bullet.truePen && !bullet.isHEAT) {
                     this.health -= (int)(bullet.damage * bullet.type.damageVsVehicles);
                     this.crew -= (int)(hit.driveable.damageVsCrew * bullet.damage * bullet.type.damageVsVehicles);
-                    PacketPlaySound.sendSoundPacket(bullet.field_70165_t, bullet.field_70163_u, bullet.field_70161_v, 50.0, 0, bullet.type.penetrateSound, true);
+                    PacketPlaySound.sendSoundPacket(bullet.posX, bullet.posY, bullet.posZ, 50.0, 0, bullet.type.penetrateSound, true);
                     final float ouch = bullet.damage * bullet.type.damageVsVehicles;
                     if (ouch > 2 * this.maxHealth && hit.driveable.epicShip && this.maxHealth > 1 && hit.driveable.getDriveableData().parts.get(EnumDriveablePart.bow).maxHealth > 1 && hit.driveable.getDriveableData().parts.get(EnumDriveablePart.left).maxHealth > 1 && hit.driveable.getDriveableData().parts.get(EnumDriveablePart.right).maxHealth > 1 && hit.driveable.getDriveableData().parts.get(EnumDriveablePart.stern).maxHealth > 1) {
                         final DriveablePart driveablePart9 = hit.driveable.getDriveableData().parts.get(EnumDriveablePart.bow);
@@ -524,14 +524,14 @@ public class DriveablePart
                         driveablePart11.health -= (int)(0.4 * ouch);
                         final DriveablePart driveablePart12 = hit.driveable.getDriveableData().parts.get(EnumDriveablePart.stern);
                         driveablePart12.health -= (int)(0.4 * ouch);
-                        FlansMod.proxy.spawnParticle("flansmod.tankDeath", bullet.field_70165_t, bullet.field_70163_u, bullet.field_70161_v, 0.0, 0.0, 0.0);
-                        PacketPlaySound.sendSoundPacket(bullet.field_70165_t, bullet.field_70163_u, bullet.field_70161_v, 250.0, bullet.field_71093_bK, "explcls6", false);
+                        FlansMod.proxy.spawnParticle("flansmod.tankDeath", bullet.posX, bullet.posY, bullet.posZ, 0.0, 0.0, 0.0);
+                        PacketPlaySound.sendSoundPacket(bullet.posX, bullet.posY, bullet.posZ, 250.0, bullet.dimension, "explcls6", false);
                     }
                 }
                 else if (bullet.truePen > this.armor && 3 * this.compArmor >= bullet.truePen && bullet.isHEAT) {
                     this.health -= (int)(bullet.damage * bullet.type.damageVsVehicles);
                     this.crew -= (int)(hit.driveable.damageVsCrew * bullet.damage * bullet.type.damageVsVehicles);
-                    PacketPlaySound.sendSoundPacket(bullet.field_70165_t, bullet.field_70163_u, bullet.field_70161_v, 50.0, 0, bullet.type.penetrateSound, true);
+                    PacketPlaySound.sendSoundPacket(bullet.posX, bullet.posY, bullet.posZ, 50.0, 0, bullet.type.penetrateSound, true);
                     final float ouch = bullet.damage * bullet.type.damageVsVehicles;
                     if (ouch > 2 * this.maxHealth && hit.driveable.epicShip && this.maxHealth > 1 && hit.driveable.getDriveableData().parts.get(EnumDriveablePart.bow).maxHealth > 1 && hit.driveable.getDriveableData().parts.get(EnumDriveablePart.left).maxHealth > 1 && hit.driveable.getDriveableData().parts.get(EnumDriveablePart.right).maxHealth > 1 && hit.driveable.getDriveableData().parts.get(EnumDriveablePart.stern).maxHealth > 1) {
                         final DriveablePart driveablePart13 = hit.driveable.getDriveableData().parts.get(EnumDriveablePart.bow);
@@ -542,14 +542,14 @@ public class DriveablePart
                         driveablePart15.health -= (int)(0.4 * ouch);
                         final DriveablePart driveablePart16 = hit.driveable.getDriveableData().parts.get(EnumDriveablePart.stern);
                         driveablePart16.health -= (int)(0.4 * ouch);
-                        FlansMod.proxy.spawnParticle("flansmod.tankDeath", bullet.field_70165_t, bullet.field_70163_u, bullet.field_70161_v, 0.0, 0.0, 0.0);
-                        PacketPlaySound.sendSoundPacket(bullet.field_70165_t, bullet.field_70163_u, bullet.field_70161_v, 250.0, bullet.field_71093_bK, "explcls6", false);
+                        FlansMod.proxy.spawnParticle("flansmod.tankDeath", bullet.posX, bullet.posY, bullet.posZ, 0.0, 0.0, 0.0);
+                        PacketPlaySound.sendSoundPacket(bullet.posX, bullet.posY, bullet.posZ, 250.0, bullet.dimension, "explcls6", false);
                     }
                 }
                 else if (3 * this.armor < bullet.truePen && !bullet.isHEAT) {
                     this.health -= (int)(bullet.damage * bullet.type.damageVsVehicles * bullet.type.overPenPenalty);
                     this.crew -= (int)(hit.driveable.damageVsCrew * bullet.damage * bullet.type.damageVsVehicles * bullet.type.overPenPenalty);
-                    PacketPlaySound.sendSoundPacket(bullet.field_70165_t, bullet.field_70163_u, bullet.field_70161_v, 50.0, 0, bullet.type.overPenSound, true);
+                    PacketPlaySound.sendSoundPacket(bullet.posX, bullet.posY, bullet.posZ, 50.0, 0, bullet.type.overPenSound, true);
                     final float ouch = bullet.damage * bullet.type.damageVsVehicles * bullet.type.overPenPenalty;
                     if (ouch > 2 * this.maxHealth && hit.driveable.epicShip && this.maxHealth > 1 && hit.driveable.getDriveableData().parts.get(EnumDriveablePart.bow).maxHealth > 1 && hit.driveable.getDriveableData().parts.get(EnumDriveablePart.left).maxHealth > 1 && hit.driveable.getDriveableData().parts.get(EnumDriveablePart.right).maxHealth > 1 && hit.driveable.getDriveableData().parts.get(EnumDriveablePart.stern).maxHealth > 1) {
                         final DriveablePart driveablePart17 = hit.driveable.getDriveableData().parts.get(EnumDriveablePart.bow);
@@ -560,14 +560,14 @@ public class DriveablePart
                         driveablePart19.health -= (int)(0.4 * ouch);
                         final DriveablePart driveablePart20 = hit.driveable.getDriveableData().parts.get(EnumDriveablePart.stern);
                         driveablePart20.health -= (int)(0.4 * ouch);
-                        FlansMod.proxy.spawnParticle("flansmod.tankDeath", bullet.field_70165_t, bullet.field_70163_u, bullet.field_70161_v, 0.0, 0.0, 0.0);
-                        PacketPlaySound.sendSoundPacket(bullet.field_70165_t, bullet.field_70163_u, bullet.field_70161_v, 250.0, bullet.field_71093_bK, "explcls6", false);
+                        FlansMod.proxy.spawnParticle("flansmod.tankDeath", bullet.posX, bullet.posY, bullet.posZ, 0.0, 0.0, 0.0);
+                        PacketPlaySound.sendSoundPacket(bullet.posX, bullet.posY, bullet.posZ, 250.0, bullet.dimension, "explcls6", false);
                     }
                 }
                 else if (3 * this.compArmor < bullet.truePen && bullet.isHEAT) {
                     this.health -= (int)(bullet.damage * bullet.type.damageVsVehicles * bullet.type.overPenPenalty);
                     this.crew -= (int)(hit.driveable.damageVsCrew * bullet.damage * bullet.type.damageVsVehicles * bullet.type.overPenPenalty);
-                    PacketPlaySound.sendSoundPacket(bullet.field_70165_t, bullet.field_70163_u, bullet.field_70161_v, 50.0, 0, bullet.type.overPenSound, true);
+                    PacketPlaySound.sendSoundPacket(bullet.posX, bullet.posY, bullet.posZ, 50.0, 0, bullet.type.overPenSound, true);
                     final float ouch = bullet.damage * bullet.type.damageVsVehicles * bullet.type.overPenPenalty;
                     if (ouch > 2 * this.maxHealth && hit.driveable.epicShip && this.maxHealth > 1 && hit.driveable.getDriveableData().parts.get(EnumDriveablePart.bow).maxHealth > 1 && hit.driveable.getDriveableData().parts.get(EnumDriveablePart.left).maxHealth > 1 && hit.driveable.getDriveableData().parts.get(EnumDriveablePart.right).maxHealth > 1 && hit.driveable.getDriveableData().parts.get(EnumDriveablePart.stern).maxHealth > 1) {
                         final DriveablePart driveablePart21 = hit.driveable.getDriveableData().parts.get(EnumDriveablePart.bow);
@@ -578,8 +578,8 @@ public class DriveablePart
                         driveablePart23.health -= (int)(0.4 * ouch);
                         final DriveablePart driveablePart24 = hit.driveable.getDriveableData().parts.get(EnumDriveablePart.stern);
                         driveablePart24.health -= (int)(0.4 * ouch);
-                        FlansMod.proxy.spawnParticle("flansmod.tankDeath", bullet.field_70165_t, bullet.field_70163_u, bullet.field_70161_v, 0.0, 0.0, 0.0);
-                        PacketPlaySound.sendSoundPacket(bullet.field_70165_t, bullet.field_70163_u, bullet.field_70161_v, 250.0, bullet.field_71093_bK, "explcls6", false);
+                        FlansMod.proxy.spawnParticle("flansmod.tankDeath", bullet.posX, bullet.posY, bullet.posZ, 0.0, 0.0, 0.0);
+                        PacketPlaySound.sendSoundPacket(bullet.posX, bullet.posY, bullet.posZ, 250.0, bullet.dimension, "explcls6", false);
                     }
                 }
             }

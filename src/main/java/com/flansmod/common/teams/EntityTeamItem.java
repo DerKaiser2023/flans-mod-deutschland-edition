@@ -29,13 +29,13 @@ public class EntityTeamItem extends EntityItem implements IEntityAdditionalSpawn
     public int zCoord;
     
     public EntityTeamItem(final TileEntitySpawner te, final int i) {
-        super(te.func_145831_w(), (double)(te.field_145851_c + 0.5f), (double)(te.field_145848_d + 0.5f), (double)(te.field_145849_e + 0.5f), te.stacksToSpawn.get(i).func_77946_l());
+        super(te.getWorld(), (double)(te.xCoord + 0.5f), (double)(te.yCoord + 0.5f), (double)(te.zCoord + 0.5f), te.stacksToSpawn.get(i).copy());
         te.itemEntities.add(this);
         this.angle = i * 3.141592653589793 * 2.0 / te.stacksToSpawn.size();
-        final double field_70159_w = 0.0;
-        this.field_70179_y = field_70159_w;
-        this.field_70181_x = field_70159_w;
-        this.field_70159_w = field_70159_w;
+        final double motionX = 0.0;
+        this.motionZ = motionX;
+        this.motionY = motionX;
+        this.motionX = motionX;
         this.lifespan = 1000000000;
         this.spawner = te;
     }
@@ -44,22 +44,22 @@ public class EntityTeamItem extends EntityItem implements IEntityAdditionalSpawn
         super(world);
     }
     
-    public void func_70056_a(final double x, final double y, final double z, final float yaw, final float pitch, final int i) {
+    public void setPositionAndRotation2(final double x, final double y, final double z, final float yaw, final float pitch, final int i) {
     }
     
-    public void func_70071_h_() {
-        ++this.field_70173_aa;
-        this.field_70169_q = this.field_70165_t;
-        this.field_70167_r = this.field_70163_u;
-        this.field_70166_s = this.field_70161_v;
-        this.field_70126_B = this.field_70177_z;
-        ++this.field_70292_b;
-        if (this.field_70170_p.field_72995_K) {
+    public void onUpdate() {
+        ++this.ticksExisted;
+        this.prevPosX = this.posX;
+        this.prevPosY = this.posY;
+        this.prevPosZ = this.posZ;
+        this.prevRotationYaw = this.rotationYaw;
+        ++this.age;
+        if (this.worldObj.isRemote) {
             this.angle += 0.05;
-            this.func_70107_b(this.xCoord + 0.5f + Math.cos(this.angle) * 0.30000001192092896, (double)(this.yCoord + 0.5f), this.zCoord + 0.5f + Math.sin(this.angle) * 0.30000001192092896);
+            this.setPosition(this.xCoord + 0.5f + Math.cos(this.angle) * 0.30000001192092896, (double)(this.yCoord + 0.5f), this.zCoord + 0.5f + Math.sin(this.angle) * 0.30000001192092896);
         }
-        if (this.field_70170_p.field_72995_K) {
-            this.func_70066_B();
+        if (this.worldObj.isRemote) {
+            this.extinguish();
         }
     }
     
@@ -67,8 +67,8 @@ public class EntityTeamItem extends EntityItem implements IEntityAdditionalSpawn
         return false;
     }
     
-    public void func_70100_b_(final EntityPlayer player) {
-        if (!this.field_70170_p.field_72995_K) {
+    public void onCollideWithPlayer(final EntityPlayer player) {
+        if (!this.worldObj.isRemote) {
             final EntityItemPickupEvent event = new EntityItemPickupEvent(player, (EntityItem)this);
             if (MinecraftForge.EVENT_BUS.post((Event)event)) {
                 return;
@@ -79,14 +79,14 @@ public class EntityTeamItem extends EntityItem implements IEntityAdditionalSpawn
             if (spawnerTeam != null && playerTeam != spawnerTeam) {
                 return;
             }
-            final int var2 = this.func_92059_d().field_77994_a;
-            if (event.getResult() == Event.Result.ALLOW || var2 <= 0 || player.field_71071_by.func_70441_a(this.func_92059_d())) {
+            final int var2 = this.getEntityItem().stackSize;
+            if (event.getResult() == Event.Result.ALLOW || var2 <= 0 || player.inventory.addItemStackToInventory(this.getEntityItem())) {
                 FMLCommonHandler.instance().firePlayerItemPickupEvent(player, (EntityItem)this);
-                this.func_85030_a("random.pop", 0.2f, ((this.field_70146_Z.nextFloat() - this.field_70146_Z.nextFloat()) * 0.7f + 1.0f) * 2.0f);
-                player.func_71001_a((Entity)this, var2);
-                if (this.func_92059_d().field_77994_a <= 0) {
+                this.playSound("random.pop", 0.2f, ((this.rand.nextFloat() - this.rand.nextFloat()) * 0.7f + 1.0f) * 2.0f);
+                player.onItemPickup((Entity)this, var2);
+                if (this.getEntityItem().stackSize <= 0) {
                     this.spawner.itemEntities.remove(this);
-                    this.func_70106_y();
+                    this.setDead();
                 }
             }
         }
@@ -99,12 +99,12 @@ public class EntityTeamItem extends EntityItem implements IEntityAdditionalSpawn
             data.writeInt(0);
         }
         else {
-            data.writeInt(this.spawner.field_145851_c);
-            data.writeInt(this.spawner.field_145848_d);
-            data.writeInt(this.spawner.field_145849_e);
+            data.writeInt(this.spawner.xCoord);
+            data.writeInt(this.spawner.yCoord);
+            data.writeInt(this.spawner.zCoord);
         }
         data.writeDouble(this.angle);
-        final NBTTagCompound tags = this.func_92059_d().writeToNBT(new NBTTagCompound());
+        final NBTTagCompound tags = this.getEntityItem().writeToNBT(new NBTTagCompound());
         ByteBufUtils.writeTag(data, tags);
     }
     
@@ -114,22 +114,22 @@ public class EntityTeamItem extends EntityItem implements IEntityAdditionalSpawn
         this.zCoord = data.readInt();
         this.angle = data.readDouble();
         try {
-            this.func_92058_a(ItemStack.loadItemStackFromNBT(ByteBufUtils.readTag(data)));
+            this.setEntityItemStack(ItemStack.loadItemStackFromNBT(ByteBufUtils.readTag(data)));
         }
         catch (final Exception e) {
             e.printStackTrace();
         }
     }
     
-    public void func_70037_a(final NBTTagCompound tags) {
-        this.func_70106_y();
+    public void readEntityFromNBT(final NBTTagCompound tags) {
+        this.setDead();
     }
     
-    public boolean func_70075_an() {
+    public boolean canAttackWithItem() {
         return false;
     }
     
-    public boolean func_70027_ad() {
+    public boolean isBurning() {
         return false;
     }
 }

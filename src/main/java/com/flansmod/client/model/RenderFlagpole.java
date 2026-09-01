@@ -19,8 +19,8 @@ public class RenderFlagpole extends Render
         this.modelFlagpole = new ModelFlagpole();
     }
     
-    public void func_76986_a(final Entity entity, final double d, final double d1, final double d2, final float f, final float f1) {
-        this.func_110777_b(entity);
+    public void doRender(final Entity entity, final double d, final double d1, final double d2, final float f, final float f1) {
+        this.bindEntityTexture(entity);
         final EntityFlagpole flagpole = (EntityFlagpole)entity;
         GL11.glPushMatrix();
         GL11.glTranslatef((float)d, (float)d1, (float)d2);
@@ -31,7 +31,7 @@ public class RenderFlagpole extends Render
         GL11.glPopMatrix();
     }
     
-    protected ResourceLocation func_110775_a(final Entity entity) {
+    protected ResourceLocation getEntityTexture(final Entity entity) {
         return RenderFlagpole.texture;
     }
     

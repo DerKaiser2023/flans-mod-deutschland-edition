@@ -25,55 +25,55 @@ public class ContainerGunModTable extends Container
         this.inventory = new InventoryGunModTable();
         this.world = w;
         final SlotGun gunSlot = new SlotGun((IInventory)this.inventory, 0, 184, 37, null);
-        this.func_75146_a((Slot)gunSlot);
+        this.addSlotToContainer((Slot)gunSlot);
         for (int k = 0; k < 8; ++k) {
-            this.func_75146_a((Slot)new SlotGun((IInventory)this.inventory, k + 1, 17 + k * 18, 89, gunSlot));
+            this.addSlotToContainer((Slot)new SlotGun((IInventory)this.inventory, k + 1, 17 + k * 18, 89, gunSlot));
         }
         for (int col = 0; col < 8; ++col) {
-            this.func_75146_a((Slot)new SlotGun((IInventory)this.inventory, 9 + col, 17 + col * 18, 115 + col * 18, gunSlot));
+            this.addSlotToContainer((Slot)new SlotGun((IInventory)this.inventory, 9 + col, 17 + col * 18, 115 + col * 18, gunSlot));
         }
         for (int row = 0; row < 3; ++row) {
             for (int col2 = 0; col2 < 9; ++col2) {
-                this.func_75146_a(new Slot((IInventory)this.playerInv, col2 + row * 9 + 9, 8 + col2 * 18, 154 + row * 18));
+                this.addSlotToContainer(new Slot((IInventory)this.playerInv, col2 + row * 9 + 9, 8 + col2 * 18, 154 + row * 18));
             }
         }
         for (int col = 0; col < 9; ++col) {
-            this.func_75146_a(new Slot((IInventory)this.playerInv, col, 8 + col * 18, 212));
+            this.addSlotToContainer(new Slot((IInventory)this.playerInv, col, 8 + col * 18, 212));
         }
     }
     
-    public void func_75134_a(final EntityPlayer player) {
-        if (this.inventory.func_70301_a(0) != null) {
-            player.func_71019_a(this.inventory.func_70301_a(0), false);
+    public void onContainerClosed(final EntityPlayer player) {
+        if (this.inventory.getStackInSlot(0) != null) {
+            player.dropPlayerItemWithRandomChoice(this.inventory.getStackInSlot(0), false);
         }
     }
     
-    public boolean func_75145_c(final EntityPlayer entityplayer) {
+    public boolean canInteractWith(final EntityPlayer entityplayer) {
         return true;
     }
     
-    public ItemStack func_82846_b(final EntityPlayer player, final int slotID) {
+    public ItemStack transferStackInSlot(final EntityPlayer player, final int slotID) {
         ItemStack stack = null;
-        final Slot currentSlot = this.field_75151_b.get(slotID);
-        if (currentSlot != null && currentSlot.func_75216_d()) {
-            final ItemStack slotStack = currentSlot.func_75211_c();
-            stack = slotStack.func_77946_l();
+        final Slot currentSlot = (Slot) this.inventorySlots.get(slotID);
+        if (currentSlot != null && currentSlot.getHasStack()) {
+            final ItemStack slotStack = currentSlot.getStack();
+            stack = slotStack.copy();
             if (slotID >= 17) {
                 return null;
             }
-            if (!this.func_75135_a(slotStack, 17, this.field_75151_b.size(), true)) {
+            if (!this.mergeItemStack(slotStack, 17, this.inventorySlots.size(), true)) {
                 return null;
             }
-            if (slotStack.field_77994_a == 0) {
-                currentSlot.func_75215_d((ItemStack)null);
+            if (slotStack.stackSize == 0) {
+                currentSlot.putStack((ItemStack)null);
             }
             else {
-                currentSlot.func_75218_e();
+                currentSlot.onSlotChanged();
             }
-            if (slotStack.field_77994_a == stack.field_77994_a) {
+            if (slotStack.stackSize == stack.stackSize) {
                 return null;
             }
-            currentSlot.func_82870_a(player, slotStack);
+            currentSlot.onPickupFromSlot(player, slotStack);
         }
         return stack;
     }
@@ -82,25 +82,25 @@ public class ContainerGunModTable extends Container
     }
     
     public void clickPaintjob(final int id) {
-        final ItemStack gunStack = this.inventory.func_70301_a(0);
-        if (gunStack != null && gunStack.func_77973_b() instanceof ItemGun) {
-            final GunType gunType = ((ItemGun)gunStack.func_77973_b()).type;
+        final ItemStack gunStack = this.inventory.getStackInSlot(0);
+        if (gunStack != null && gunStack.getItem() instanceof ItemGun) {
+            final GunType gunType = ((ItemGun)gunStack.getItem()).type;
             this.clickPaintjob(gunType.getPaintjob(id));
         }
     }
     
     public void clickPaintjob(final Paintjob paintjob) {
-        final ItemStack gunStack = this.inventory.func_70301_a(0);
-        if (gunStack != null && gunStack.func_77973_b() instanceof ItemGun) {
-            final GunType gunType = ((ItemGun)gunStack.func_77973_b()).type;
+        final ItemStack gunStack = this.inventory.getStackInSlot(0);
+        if (gunStack != null && gunStack.getItem() instanceof ItemGun) {
+            final GunType gunType = ((ItemGun)gunStack.getItem()).type;
             final int numDyes = paintjob.dyesNeeded.length;
-            if (!this.playerInv.field_70458_d.field_71075_bZ.field_75098_d) {
+            if (!this.playerInv.player.capabilities.isCreativeMode) {
                 for (int n = 0; n < numDyes; ++n) {
-                    int amountNeeded = paintjob.dyesNeeded[n].field_77994_a;
-                    for (int s = 0; s < this.playerInv.func_70302_i_(); ++s) {
-                        final ItemStack stack = this.playerInv.func_70301_a(s);
-                        if (stack != null && stack.func_77973_b() == Items.field_151100_aR && stack.func_77960_j() == paintjob.dyesNeeded[n].func_77960_j()) {
-                            amountNeeded -= stack.field_77994_a;
+                    int amountNeeded = paintjob.dyesNeeded[n].stackSize;
+                    for (int s = 0; s < this.playerInv.getSizeInventory(); ++s) {
+                        final ItemStack stack = this.playerInv.getStackInSlot(s);
+                        if (stack != null && stack.getItem() == Items.dye && stack.getMetadata() == paintjob.dyesNeeded[n].getMetadata()) {
+                            amountNeeded -= stack.stackSize;
                         }
                     }
                     if (amountNeeded > 0) {
@@ -108,19 +108,19 @@ public class ContainerGunModTable extends Container
                     }
                 }
                 for (int n = 0; n < numDyes; ++n) {
-                    int amountNeeded = paintjob.dyesNeeded[n].field_77994_a;
-                    for (int s = 0; s < this.playerInv.func_70302_i_(); ++s) {
+                    int amountNeeded = paintjob.dyesNeeded[n].stackSize;
+                    for (int s = 0; s < this.playerInv.getSizeInventory(); ++s) {
                         if (amountNeeded > 0) {
-                            final ItemStack stack = this.playerInv.func_70301_a(s);
-                            if (stack != null && stack.func_77973_b() == Items.field_151100_aR && stack.func_77960_j() == paintjob.dyesNeeded[n].func_77960_j()) {
-                                final ItemStack consumed = this.playerInv.func_70298_a(s, amountNeeded);
-                                amountNeeded -= consumed.field_77994_a;
+                            final ItemStack stack = this.playerInv.getStackInSlot(s);
+                            if (stack != null && stack.getItem() == Items.dye && stack.getMetadata() == paintjob.dyesNeeded[n].getMetadata()) {
+                                final ItemStack consumed = this.playerInv.decrStackSize(s, amountNeeded);
+                                amountNeeded -= consumed.stackSize;
                             }
                         }
                     }
                 }
             }
-            gunStack.func_77964_b(paintjob.ID);
+            gunStack.setMetadata(paintjob.ID);
         }
     }
 }

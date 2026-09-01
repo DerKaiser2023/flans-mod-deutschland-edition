@@ -184,7 +184,7 @@ public class GametypeSurvival extends Gametype
         }
         if (validSpawnPoints.size() > 0) {
             final ITeamObject spawnPoint = validSpawnPoints.get(GametypeSurvival.rand.nextInt(validSpawnPoints.size()));
-            return Vec3.func_72443_a(spawnPoint.getPosX(), spawnPoint.getPosY(), spawnPoint.getPosZ());
+            return Vec3.createVectorHelper(spawnPoint.getPosX(), spawnPoint.getPosY(), spawnPoint.getPosZ());
         }
         return null;
     }
@@ -201,12 +201,12 @@ public class GametypeSurvival extends Gametype
     
     @Override
     public void readFromNBT(final NBTTagCompound tags) {
-        this.humanPrepTime = tags.func_74762_e("ZOMPrepTime");
+        this.humanPrepTime = tags.getInteger("ZOMPrepTime");
     }
     
     @Override
     public void saveToNBT(final NBTTagCompound tags) {
-        tags.func_74768_a("ZOMPrepTime", this.humanPrepTime);
+        tags.setInteger("ZOMPrepTime", this.humanPrepTime);
     }
     
     @Override

@@ -101,12 +101,12 @@ public class GuiPaintjobTable extends GuiContainer
         this.modelAxes = new RotatedAxes();
         this.prevModelAxes = new RotatedAxes();
         this.inventory = inv;
-        this.field_146999_f = 224;
-        this.field_147000_g = 264;
+        this.xSize = 224;
+        this.ySize = 264;
     }
     
-    public void func_73876_c() {
-        super.func_73876_c();
+    public void updateScreen() {
+        super.updateScreen();
         this.prevModelAxes = this.modelAxes.clone();
         if (this.inCustomMode) {
             this.customModeTransitionTimer = 1.0f - (1.0f - this.customModeTransitionTimer) * this.transitionSpeed;
@@ -118,8 +118,8 @@ public class GuiPaintjobTable extends GuiContainer
         final int xPos = this.GetMainPageX();
         final int dPos = xPos - this.prevMainPageX;
         for (int i = 0; i < 38; ++i) {
-            final Slot func_75139_a = this.field_147002_h.func_75139_a(i);
-            func_75139_a.field_75223_e += dPos;
+            final Slot getSlot = this.inventorySlots.getSlot(i);
+            getSlot.xDisplayPosition += dPos;
         }
         this.prevMainPageX = xPos;
     }
@@ -145,21 +145,21 @@ public class GuiPaintjobTable extends GuiContainer
         return mainPagePosition;
     }
     
-    protected void func_146979_b(final int x, final int y) {
+    protected void drawGuiContainerForegroundLayer(final int x, final int y) {
         if (this.customModeTransitionTimer <= 0.999f) {
-            final int xOrigin = (this.field_146294_l - this.field_146999_f) / 2 + this.GetMainPageX();
-            final int yOrigin = (this.field_146295_m - this.field_147000_g) / 2 + GetMainPageY();
-            this.field_146289_q.func_78276_b("Inventory", this.GetMainPageX() + 8, GetMainPageY() + (this.field_147000_g - 94) + 2, 4210752);
-            this.field_146289_q.func_78276_b("Paintjob Table", this.GetMainPageX() + 8, GetMainPageY() + 6, 4210752);
+            final int xOrigin = (this.width - this.xSize) / 2 + this.GetMainPageX();
+            final int yOrigin = (this.height - this.ySize) / 2 + GetMainPageY();
+            this.fontRendererObj.drawString("Inventory", this.GetMainPageX() + 8, GetMainPageY() + (this.ySize - 94) + 2, 4210752);
+            this.fontRendererObj.drawString("Paintjob Table", this.GetMainPageX() + 8, GetMainPageY() + 6, 4210752);
         }
         final Vector3f renderOrigin = GetRenderOrigin();
-        final ItemStack paintableStack = this.field_147002_h.func_75139_a(0).func_75211_c();
-        if (paintableStack != null && paintableStack.func_77973_b() instanceof IPaintableItem) {
-            final ItemStack tempStack = paintableStack.func_77946_l();
+        final ItemStack paintableStack = this.inventorySlots.getSlot(0).getStack();
+        if (paintableStack != null && paintableStack.getItem() instanceof IPaintableItem) {
+            final ItemStack tempStack = paintableStack.copy();
             if (this.hoveringOver != null) {
-                tempStack.func_77964_b(this.hoveringOver.ID);
+                tempStack.setMetadata(this.hoveringOver.ID);
             }
-            final PaintableType paintableType = ((IPaintableItem)paintableStack.func_77973_b()).GetPaintableType();
+            final PaintableType paintableType = ((IPaintableItem)paintableStack.getItem()).GetPaintableType();
             final EnumType eType = EnumType.getFromObject(paintableType);
             if (paintableType.GetModel() != null) {
                 GL11.glPushMatrix();
@@ -167,7 +167,7 @@ public class GuiPaintjobTable extends GuiContainer
                 GL11.glDisable(2896);
                 GL11.glPushMatrix();
                 GL11.glRotatef(180.0f, 1.0f, 0.0f, 0.0f);
-                RenderHelper.func_74519_b();
+                RenderHelper.enableStandardItemLighting();
                 GL11.glPopMatrix();
                 GL11.glEnable(2977);
                 GL11.glTranslatef(renderOrigin.x, renderOrigin.y, renderOrigin.z);
@@ -181,7 +181,7 @@ public class GuiPaintjobTable extends GuiContainer
                     dYaw += 360.0f;
                 }
                 GL11.glRotatef(this.prevModelAxes.getYaw() + dYaw * RenderGun.smoothing, 0.0f, 1.0f, 0.0f);
-                final Paintjob paintjob = paintableType.paintjobs.get(tempStack.func_77960_j());
+                final Paintjob paintjob = paintableType.paintjobs.get(tempStack.getMetadata());
                 switch (eType) {
                     case gun: {
                         final GunType gunType = (GunType)paintableType;
@@ -189,7 +189,7 @@ public class GuiPaintjobTable extends GuiContainer
                         break;
                     }
                     case attachment: {
-                        this.field_146297_k.field_71446_o.func_110577_a(FlansModResourceHandler.getPaintjobTexture(paintjob));
+                        this.mc.renderEngine.bindTexture(FlansModResourceHandler.getPaintjobTexture(paintjob));
                         final AttachmentType model = (AttachmentType)paintableType;
                         GL11.glScalef(model.modelScale, model.modelScale, model.modelScale);
                         ((ModelAttachment)paintableType.GetModel()).renderAttachment(0.0625f);
@@ -198,7 +198,7 @@ public class GuiPaintjobTable extends GuiContainer
                     case plane:
                     case vehicle:
                     case mecha: {
-                        this.field_146297_k.field_71446_o.func_110577_a(FlansModResourceHandler.getPaintjobTexture(paintjob));
+                        this.mc.renderEngine.bindTexture(FlansModResourceHandler.getPaintjobTexture(paintjob));
                         ((ModelDriveable)paintableType.GetModel()).render((DriveableType)paintableType);
                         break;
                     }
@@ -209,45 +209,45 @@ public class GuiPaintjobTable extends GuiContainer
     }
     
     private static void drawModalRectWithCustomSizedTexture(final int a, final int b, final int c, final int d, final int e, final int f, final int g, final int h) {
-        func_146110_a(a, b, (float)c, (float)d, e, f, (float)g, (float)h);
+        drawModalRectWithCustomSizedTexture(a, b, (float)c, (float)d, e, f, (float)g, (float)h);
     }
     
-    protected void func_146976_a(final float f, final int i, final int j) {
+    protected void drawGuiContainerBackgroundLayer(final float f, final int i, final int j) {
         GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
         GL11.glDisable(2929);
-        this.field_146297_k.field_71446_o.func_110577_a(GuiPaintjobTable.texture);
+        this.mc.renderEngine.bindTexture(GuiPaintjobTable.texture);
         final int textureX = 512;
         final int textureY = 256;
         if (this.customModeTransitionTimer <= 0.999f) {
-            final int xOrigin = (this.field_146294_l - this.field_146999_f) / 2 + this.GetMainPageX();
-            final int yOrigin = (this.field_146295_m - this.field_147000_g) / 2 + GetMainPageY();
-            drawModalRectWithCustomSizedTexture(xOrigin, yOrigin, 0, 0, this.field_146999_f, 114, textureX, textureY);
-            drawModalRectWithCustomSizedTexture(xOrigin, yOrigin + 122, 0, 114, this.field_146999_f, 142, textureX, textureY);
-            final ItemStack gunStack = this.field_147002_h.func_75139_a(0).func_75211_c();
-            if (gunStack != null && gunStack.func_77973_b() instanceof IPaintableItem) {
-                final PaintableType gunType = ((IPaintableItem)gunStack.func_77973_b()).GetPaintableType();
+            final int xOrigin = (this.width - this.xSize) / 2 + this.GetMainPageX();
+            final int yOrigin = (this.height - this.ySize) / 2 + GetMainPageY();
+            drawModalRectWithCustomSizedTexture(xOrigin, yOrigin, 0, 0, this.xSize, 114, textureX, textureY);
+            drawModalRectWithCustomSizedTexture(xOrigin, yOrigin + 122, 0, 114, this.xSize, 142, textureX, textureY);
+            final ItemStack gunStack = this.inventorySlots.getSlot(0).getStack();
+            if (gunStack != null && gunStack.getItem() instanceof IPaintableItem) {
+                final PaintableType gunType = ((IPaintableItem)gunStack.getItem()).GetPaintableType();
                 final int numPaintjobs = gunType.paintjobs.size();
                 for (int numRows = numPaintjobs / 9 + 1, y = 0; y < numRows; ++y) {
                     for (int x = 0; x < 9; ++x) {
                         if (9 * y + x < numPaintjobs) {
                             final Paintjob paintjob = gunType.paintjobs.get(9 * y + x);
-                            final ItemStack stack = gunStack.func_77946_l();
-                            stack.func_77964_b(paintjob.ID);
-                            GuiPaintjobTable.field_146296_j.func_77015_a(this.field_146297_k.field_71466_p, this.field_146297_k.func_110434_K(), stack, xOrigin + 8 + x * 18, yOrigin + 130 + y * 18);
+                            final ItemStack stack = gunStack.copy();
+                            stack.setMetadata(paintjob.ID);
+                            GuiPaintjobTable.itemRender.renderItemIntoGUI(this.mc.fontRendererObj, this.mc.getTextureManager(), stack, xOrigin + 8 + x * 18, yOrigin + 130 + y * 18);
                         }
                     }
                 }
             }
             if (this.hoveringOver != null) {
                 final int numDyes = this.hoveringOver.dyesNeeded.length;
-                if (numDyes != 0 && !this.inventory.field_70458_d.field_71075_bZ.field_75098_d) {
+                if (numDyes != 0 && !this.inventory.player.capabilities.isCreativeMode) {
                     final boolean[] haveDyes = new boolean[numDyes];
                     for (int n = 0; n < numDyes; ++n) {
-                        int amountNeeded = this.hoveringOver.dyesNeeded[n].field_77994_a;
-                        for (int s = 0; s < this.inventory.func_70302_i_(); ++s) {
-                            final ItemStack stack2 = this.inventory.func_70301_a(s);
-                            if (stack2 != null && stack2.func_77973_b() == Items.field_151100_aR && stack2.func_77960_j() == this.hoveringOver.dyesNeeded[n].func_77960_j()) {
-                                amountNeeded -= stack2.field_77994_a;
+                        int amountNeeded = this.hoveringOver.dyesNeeded[n].stackSize;
+                        for (int s = 0; s < this.inventory.getSizeInventory(); ++s) {
+                            final ItemStack stack2 = this.inventory.getStackInSlot(s);
+                            if (stack2 != null && stack2.getItem() == Items.dye && stack2.getMetadata() == this.hoveringOver.dyesNeeded[n].getMetadata()) {
+                                amountNeeded -= stack2.stackSize;
                             }
                         }
                         if (amountNeeded <= 0) {
@@ -256,7 +256,7 @@ public class GuiPaintjobTable extends GuiContainer
                     }
                     GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
                     GL11.glDisable(2896);
-                    this.field_146297_k.field_71446_o.func_110577_a(GuiPaintjobTable.texture);
+                    this.mc.renderEngine.bindTexture(GuiPaintjobTable.texture);
                     final int originX = this.mouseX + 6;
                     final int originY = this.mouseY - 20;
                     if (numDyes == 1) {
@@ -270,16 +270,16 @@ public class GuiPaintjobTable extends GuiContainer
                         drawModalRectWithCustomSizedTexture(originX + 2 + 18 * (numDyes - 1), originY, 296, haveDyes[numDyes - 1] ? 23 : 0, 20, 22, textureX, textureY);
                     }
                     for (int s = 0; s < numDyes; ++s) {
-                        GuiPaintjobTable.field_146296_j.func_77015_a(this.field_146297_k.field_71466_p, this.field_146297_k.func_110434_K(), this.hoveringOver.dyesNeeded[s], originX + 3 + s * 18, originY + 3);
-                        GuiPaintjobTable.field_146296_j.func_94148_a(this.field_146297_k.field_71466_p, this.field_146297_k.func_110434_K(), this.hoveringOver.dyesNeeded[s], originX + 3 + s * 18, originY + 3, (String)null);
+                        GuiPaintjobTable.itemRender.renderItemIntoGUI(this.mc.fontRendererObj, this.mc.getTextureManager(), this.hoveringOver.dyesNeeded[s], originX + 3 + s * 18, originY + 3);
+                        GuiPaintjobTable.itemRender.renderItemOverlayIntoGUI(this.mc.fontRendererObj, this.mc.getTextureManager(), this.hoveringOver.dyesNeeded[s], originX + 3 + s * 18, originY + 3, (String)null);
                     }
                 }
             }
         }
         if (this.customModeTransitionTimer >= 0.001f) {
-            this.field_146297_k.field_71446_o.func_110577_a(GuiPaintjobTable.texture);
-            final int xOrigin = (this.field_146294_l - this.field_146999_f) / 2 + this.GetCustomPageX() - 32;
-            final int yOrigin = (this.field_146295_m - this.field_147000_g) / 2 + GetCustomPageY();
+            this.mc.renderEngine.bindTexture(GuiPaintjobTable.texture);
+            final int xOrigin = (this.width - this.xSize) / 2 + this.GetCustomPageX() - 32;
+            final int yOrigin = (this.height - this.ySize) / 2 + GetCustomPageY();
             drawModalRectWithCustomSizedTexture(xOrigin, yOrigin + 200, 224, 206, 288, 50, textureX, textureY);
             GL11.glDisable(3553);
             for (int x2 = 0; x2 < 18; ++x2) {
@@ -317,12 +317,12 @@ public class GuiPaintjobTable extends GuiContainer
         GL11.glEnable(2929);
     }
     
-    public void func_146274_d() {
-        super.func_146274_d();
-        this.mouseX = Mouse.getEventX() * this.field_146294_l / this.field_146297_k.field_71443_c;
-        this.mouseY = this.field_146295_m - Mouse.getEventY() * this.field_146295_m / this.field_146297_k.field_71440_d - 1;
-        final int mouseXInGUI = this.mouseX - this.field_147003_i;
-        final int mouseYInGUI = this.mouseY - this.field_147009_r;
+    public void handleMouseInput() {
+        super.handleMouseInput();
+        this.mouseX = Mouse.getEventX() * this.width / this.mc.displayWidth;
+        this.mouseY = this.height - Mouse.getEventY() * this.height / this.mc.displayHeight - 1;
+        final int mouseXInGUI = this.mouseX - this.guiLeft;
+        final int mouseYInGUI = this.mouseY - this.guiTop;
         this.hoveringOver = null;
         if (this.inCustomMode) {
             final int xOrigin = this.GetCustomPageX() - 32;
@@ -362,17 +362,17 @@ public class GuiPaintjobTable extends GuiContainer
             }
         }
         else {
-            final ItemStack gunStack = this.field_147002_h.func_75139_a(0).func_75211_c();
-            if (gunStack != null && gunStack.func_77973_b() instanceof IPaintableItem) {
-                final PaintableType paintableType = ((IPaintableItem)gunStack.func_77973_b()).GetPaintableType();
+            final ItemStack gunStack = this.inventorySlots.getSlot(0).getStack();
+            if (gunStack != null && gunStack.getItem() instanceof IPaintableItem) {
+                final PaintableType paintableType = ((IPaintableItem)gunStack.getItem()).GetPaintableType();
                 final int numPaintjobs = paintableType.paintjobs.size();
                 for (int numRows = numPaintjobs / 9 + 1, j = 0; j < numRows; ++j) {
                     for (int i = 0; i < 9; ++i) {
                         if (9 * j + i < numPaintjobs) {
                             final Paintjob paintjob = paintableType.paintjobs.get(9 * j + i);
-                            final ItemStack stack = gunStack.func_77946_l();
+                            final ItemStack stack = gunStack.copy();
                             try {
-                                stack.func_77978_p().func_74778_a("Paint", paintjob.iconName);
+                                stack.getTagCompound().setString("Paint", paintjob.iconName);
                             }
                             catch (final NullPointerException ex) {}
                             final int slotX = 7 + i * 18;
@@ -387,8 +387,8 @@ public class GuiPaintjobTable extends GuiContainer
         }
     }
     
-    protected void func_73864_a(final int x, final int y, final int button) {
-        super.func_73864_a(x, y, button);
+    protected void mouseClicked(final int x, final int y, final int button) {
+        super.mouseClicked(x, y, button);
         if (button != 0) {
             return;
         }
@@ -396,7 +396,7 @@ public class GuiPaintjobTable extends GuiContainer
             return;
         }
         FlansMod.getPacketHandler().sendToServer(new PacketGunPaint(this.hoveringOver.ID));
-        ((ContainerPaintjobTable)this.field_147002_h).clickPaintjob(this.hoveringOver.ID);
+        ((ContainerPaintjobTable)this.inventorySlots).clickPaintjob(this.hoveringOver.ID);
     }
     
     static {

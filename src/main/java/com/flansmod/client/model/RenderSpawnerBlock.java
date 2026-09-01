@@ -15,7 +15,7 @@ public class RenderSpawnerBlock implements ISimpleBlockRenderingHandler
     }
     
     public boolean renderWorldBlock(final IBlockAccess world, final int x, final int y, final int z, final Block block, final int modelId, final RenderBlocks renderer) {
-        renderer.func_147769_a(block, x, y, z);
+        renderer.renderBlockAllFaces(block, x, y, z);
         return false;
     }
     

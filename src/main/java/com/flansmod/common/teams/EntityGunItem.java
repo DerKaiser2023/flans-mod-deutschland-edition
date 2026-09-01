@@ -37,17 +37,17 @@ public class EntityGunItem extends EntityItem
     }
     
     public EntityGunItem(final EntityItem entity) {
-        super(entity.field_70170_p, entity.field_70165_t, entity.field_70163_u, entity.field_70161_v, entity.func_92059_d().func_77946_l());
-        this.func_70105_a(1.0f, 1.0f);
+        super(entity.worldObj, entity.posX, entity.posY, entity.posZ, entity.getEntityItem().copy());
+        this.setSize(1.0f, 1.0f);
         this.ammoStacks = new ArrayList<ItemStack>();
     }
     
     public EntityGunItem(final World w, final double x, final double y, final double z, final ItemStack stack, final List<ItemStack> stacks) {
         super(w, x, y, z, stack);
-        this.func_70105_a(1.0f, 1.0f);
+        this.setSize(1.0f, 1.0f);
         this.ammoStacks = new ArrayList<ItemStack>();
         for (final ItemStack ammoStack : stacks) {
-            if (ammoStack != null && ammoStack.func_77973_b() != null && ammoStack.func_77973_b() instanceof ItemBullet) {
+            if (ammoStack != null && ammoStack.getItem() != null && ammoStack.getItem() instanceof ItemBullet) {
                 this.ammoStacks.add(ammoStack);
             }
         }
@@ -57,124 +57,124 @@ public class EntityGunItem extends EntityItem
         super(w, x, y, z);
     }
     
-    public boolean func_70067_L() {
+    public boolean canBeCollidedWith() {
         return true;
     }
     
-    protected boolean func_70041_e_() {
+    protected boolean canTriggerWalking() {
         return true;
     }
     
-    public AxisAlignedBB func_70046_E() {
+    public AxisAlignedBB getBoundingBox() {
         return null;
     }
     
-    public void func_70071_h_() {
-        this.func_70030_z();
-        if (this.func_92059_d() == null || this.func_92059_d().func_77973_b() == null || !(this.func_92059_d().func_77973_b() instanceof ItemGun)) {
-            this.func_70106_y();
+    public void onUpdate() {
+        this.onEntityUpdate();
+        if (this.getEntityItem() == null || this.getEntityItem().getItem() == null || !(this.getEntityItem().getItem() instanceof ItemGun)) {
+            this.setDead();
         }
-        if (!this.field_70170_p.field_72995_K && this.ammoStacks == null) {
-            this.func_70106_y();
+        if (!this.worldObj.isRemote && this.ammoStacks == null) {
+            this.setDead();
         }
-        this.field_70169_q = this.field_70165_t;
-        this.field_70167_r = this.field_70163_u;
-        this.field_70166_s = this.field_70161_v;
-        this.field_70181_x -= 0.03999999910593033;
-        this.func_145771_j(this.field_70165_t, (this.field_70121_D.field_72338_b + this.field_70121_D.field_72337_e) / 2.0, this.field_70161_v);
-        this.func_70091_d(this.field_70159_w, this.field_70181_x, this.field_70179_y);
+        this.prevPosX = this.posX;
+        this.prevPosY = this.posY;
+        this.prevPosZ = this.posZ;
+        this.motionY -= 0.03999999910593033;
+        this.pushOutOfBlocks(this.posX, (this.boundingBox.minY + this.boundingBox.maxY) / 2.0, this.posZ);
+        this.moveEntity(this.motionX, this.motionY, this.motionZ);
         float var2 = 0.98f;
-        if (this.field_70122_E) {
+        if (this.onGround) {
             var2 = 0.58800006f;
-            final Block block = this.field_70170_p.func_147439_a(MathHelper.func_76128_c(this.field_70165_t), MathHelper.func_76128_c(this.field_70121_D.field_72338_b) - 1, MathHelper.func_76128_c(this.field_70161_v));
+            final Block block = this.worldObj.getBlock(MathHelper.floor_double(this.posX), MathHelper.floor_double(this.boundingBox.minY) - 1, MathHelper.floor_double(this.posZ));
             if (block != null) {
-                var2 = block.field_149765_K * 0.98f;
+                var2 = block.slipperiness * 0.98f;
             }
         }
-        this.field_70159_w *= var2;
-        this.field_70181_x *= 0.9800000190734863;
-        this.field_70179_y *= var2;
-        if (this.field_70122_E) {
-            this.field_70181_x *= -0.5;
+        this.motionX *= var2;
+        this.motionY *= 0.9800000190734863;
+        this.motionZ *= var2;
+        if (this.onGround) {
+            this.motionY *= -0.5;
         }
-        ++this.field_70292_b;
-        final ItemStack item = this.func_70096_w().func_82710_f(10);
-        if (!this.field_70170_p.field_72995_K && this.field_70292_b >= this.lifespan) {
+        ++this.age;
+        final ItemStack item = this.getDataWatcher().getWatchableObjectItemStack(10);
+        if (!this.worldObj.isRemote && this.age >= this.lifespan) {
             if (item != null) {
-                final ItemExpireEvent event = new ItemExpireEvent((EntityItem)this, (item.func_77973_b() == null) ? 6000 : item.func_77973_b().getEntityLifespan(item, this.field_70170_p));
+                final ItemExpireEvent event = new ItemExpireEvent((EntityItem)this, (item.getItem() == null) ? 6000 : item.getItem().getEntityLifespan(item, this.worldObj));
                 if (MinecraftForge.EVENT_BUS.post((Event)event)) {
                     this.lifespan += event.extraLife;
                 }
                 else {
-                    this.func_70106_y();
+                    this.setDead();
                 }
             }
             else {
-                this.func_70106_y();
+                this.setDead();
             }
         }
-        if (item != null && item.field_77994_a <= 0) {
-            this.func_70106_y();
+        if (item != null && item.stackSize <= 0) {
+            this.setDead();
         }
-        if (this.field_70170_p.field_72995_K) {
-            this.func_70066_B();
+        if (this.worldObj.isRemote) {
+            this.extinguish();
         }
     }
     
-    public boolean func_70097_a(final DamageSource par1DamageSource, final float par2) {
+    public boolean attackEntityFrom(final DamageSource par1DamageSource, final float par2) {
         return false;
     }
     
-    public void func_70100_b_(final EntityPlayer player) {
-        if (!this.field_70170_p.field_72995_K && this.ammoStacks != null && this.ammoStacks.size() > 0) {
-            for (int i = 0; i < player.field_71071_by.func_70302_i_(); ++i) {
-                final ItemStack stack = player.field_71071_by.func_70301_a(i);
-                if (stack != null && stack.func_77973_b() != null && stack.func_77973_b() instanceof ItemGun) {
-                    final GunType type = ((ItemGun)stack.func_77973_b()).type;
+    public void onCollideWithPlayer(final EntityPlayer player) {
+        if (!this.worldObj.isRemote && this.ammoStacks != null && this.ammoStacks.size() > 0) {
+            for (int i = 0; i < player.inventory.getSizeInventory(); ++i) {
+                final ItemStack stack = player.inventory.getStackInSlot(i);
+                if (stack != null && stack.getItem() != null && stack.getItem() instanceof ItemGun) {
+                    final GunType type = ((ItemGun)stack.getItem()).type;
                     for (int j = this.ammoStacks.size() - 1; j >= 0; --j) {
                         final ItemStack ammoStack = this.ammoStacks.get(j);
-                        if (type.isAmmo(((ItemShootable)ammoStack.func_77973_b()).type, stack) && player.field_71071_by.func_70441_a(ammoStack)) {
+                        if (type.isAmmo(((ItemShootable)ammoStack.getItem()).type, stack) && player.inventory.addItemStackToInventory(ammoStack)) {
                             FMLCommonHandler.instance().firePlayerItemPickupEvent(player, (EntityItem)this);
-                            this.func_85030_a("random.pop", 0.2f, ((this.field_70146_Z.nextFloat() - this.field_70146_Z.nextFloat()) * 0.7f + 1.0f) * 2.0f);
+                            this.playSound("random.pop", 0.2f, ((this.rand.nextFloat() - this.rand.nextFloat()) * 0.7f + 1.0f) * 2.0f);
                             this.ammoStacks.remove(j);
                         }
                     }
                     if (this.ammoStacks.size() == 0) {
-                        this.func_70106_y();
+                        this.setDead();
                     }
                 }
             }
         }
     }
     
-    public boolean func_130002_c(final EntityPlayer player) {
-        if (this.field_70170_p.field_72995_K) {
+    public boolean interactFirst(final EntityPlayer player) {
+        if (this.worldObj.isRemote) {
             return true;
         }
         final EntityItemPickupEvent event = new EntityItemPickupEvent(player, (EntityItem)this);
         TeamsManager.getInstance().playerLoot(event);
         if (!event.isCanceled()) {
-            final ItemStack currentItem = player.func_71045_bC();
-            if (currentItem != null && currentItem.func_77973_b() instanceof ItemGun) {
-                final GunType gunType = ((ItemGun)currentItem.func_77973_b()).type;
+            final ItemStack currentItem = player.getCurrentEquippedItem();
+            if (currentItem != null && currentItem.getItem() instanceof ItemGun) {
+                final GunType gunType = ((ItemGun)currentItem.getItem()).type;
                 final List<ItemStack> newAmmoStacks = new ArrayList<ItemStack>();
-                for (int i = 0; i < player.field_71071_by.func_70302_i_(); ++i) {
-                    final ItemStack stack = player.field_71071_by.func_70301_a(i);
-                    if (stack != null && stack.func_77973_b() instanceof ItemShootable) {
-                        final ShootableType bulletType = ((ItemShootable)stack.func_77973_b()).type;
+                for (int i = 0; i < player.inventory.getSizeInventory(); ++i) {
+                    final ItemStack stack = player.inventory.getStackInSlot(i);
+                    if (stack != null && stack.getItem() instanceof ItemShootable) {
+                        final ShootableType bulletType = ((ItemShootable)stack.getItem()).type;
                         if (gunType.isAmmo(bulletType, currentItem)) {
-                            newAmmoStacks.add(stack.func_77946_l());
-                            player.field_71071_by.func_70299_a(i, (ItemStack)null);
+                            newAmmoStacks.add(stack.copy());
+                            player.inventory.setInventorySlotContents(i, (ItemStack)null);
                         }
                     }
                 }
-                final EntityGunItem newGunItem = new EntityGunItem(this.field_70170_p, this.field_70165_t, this.field_70163_u, this.field_70161_v, currentItem.func_77946_l(), newAmmoStacks);
-                this.field_70170_p.func_72838_d((Entity)newGunItem);
-                player.field_71071_by.func_70299_a(player.field_71071_by.field_70461_c, this.func_92059_d());
+                final EntityGunItem newGunItem = new EntityGunItem(this.worldObj, this.posX, this.posY, this.posZ, currentItem.copy(), newAmmoStacks);
+                this.worldObj.spawnEntityInWorld((Entity)newGunItem);
+                player.inventory.setInventorySlotContents(player.inventory.currentItem, this.getEntityItem());
                 for (final ItemStack stack2 : this.ammoStacks) {
-                    player.field_71071_by.func_70441_a(stack2);
+                    player.inventory.addItemStackToInventory(stack2);
                 }
-                this.func_70106_y();
+                this.setDead();
                 PlayerHandler.getPlayerData(player).shootClickDelay = 10;
                 PlayerHandler.getPlayerData(player).isShootingRight = false;
                 return true;
@@ -183,11 +183,11 @@ public class EntityGunItem extends EntityItem
         return false;
     }
     
-    public boolean func_70075_an() {
+    public boolean canAttackWithItem() {
         return false;
     }
     
-    public boolean func_70027_ad() {
+    public boolean isBurning() {
         return false;
     }
 }

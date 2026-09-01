@@ -19,47 +19,47 @@ public class SlotGun extends Slot
         this.gunSlot = s;
     }
     
-    public boolean func_75214_a(final ItemStack stack) {
+    public boolean isItemValid(final ItemStack stack) {
         switch (this.slotID) {
             case 0: {
-                return stack == null || (stack.func_77973_b() instanceof ItemGun && !((ItemGun)stack.func_77973_b()).type.deployable && stack.func_77978_p() != null);
+                return stack == null || (stack.getItem() instanceof ItemGun && !((ItemGun)stack.getItem()).type.deployable && stack.getTagCompound() != null);
             }
             case 1: {
-                return stack == null || (this.canAttachToCurrentGun(stack) && ((ItemAttachment)stack.func_77973_b()).type.type == EnumAttachmentType.barrel);
+                return stack == null || (this.canAttachToCurrentGun(stack) && ((ItemAttachment)stack.getItem()).type.type == EnumAttachmentType.barrel);
             }
             case 2: {
-                return stack == null || (this.canAttachToCurrentGun(stack) && ((ItemAttachment)stack.func_77973_b()).type.type == EnumAttachmentType.sights);
+                return stack == null || (this.canAttachToCurrentGun(stack) && ((ItemAttachment)stack.getItem()).type.type == EnumAttachmentType.sights);
             }
             case 3: {
-                return stack == null || (this.canAttachToCurrentGun(stack) && ((ItemAttachment)stack.func_77973_b()).type.type == EnumAttachmentType.stock);
+                return stack == null || (this.canAttachToCurrentGun(stack) && ((ItemAttachment)stack.getItem()).type.type == EnumAttachmentType.stock);
             }
             case 4: {
-                return stack == null || (this.canAttachToCurrentGun(stack) && ((ItemAttachment)stack.func_77973_b()).type.type == EnumAttachmentType.grip);
+                return stack == null || (this.canAttachToCurrentGun(stack) && ((ItemAttachment)stack.getItem()).type.type == EnumAttachmentType.grip);
             }
             case 5: {
-                return stack == null || (this.canAttachToCurrentGun(stack) && ((ItemAttachment)stack.func_77973_b()).type.type == EnumAttachmentType.gadget);
+                return stack == null || (this.canAttachToCurrentGun(stack) && ((ItemAttachment)stack.getItem()).type.type == EnumAttachmentType.gadget);
             }
             case 6: {
-                return stack == null || (this.canAttachToCurrentGun(stack) && ((ItemAttachment)stack.func_77973_b()).type.type == EnumAttachmentType.slide);
+                return stack == null || (this.canAttachToCurrentGun(stack) && ((ItemAttachment)stack.getItem()).type.type == EnumAttachmentType.slide);
             }
             case 7: {
-                return stack == null || (this.canAttachToCurrentGun(stack) && ((ItemAttachment)stack.func_77973_b()).type.type == EnumAttachmentType.pump);
+                return stack == null || (this.canAttachToCurrentGun(stack) && ((ItemAttachment)stack.getItem()).type.type == EnumAttachmentType.pump);
             }
             case 8: {
-                return stack == null || (this.canAttachToCurrentGun(stack) && ((ItemAttachment)stack.func_77973_b()).type.type == EnumAttachmentType.accessory);
+                return stack == null || (this.canAttachToCurrentGun(stack) && ((ItemAttachment)stack.getItem()).type.type == EnumAttachmentType.accessory);
             }
             default: {
-                return stack == null || (this.canAttachToCurrentGun(stack) && ((ItemAttachment)stack.func_77973_b()).type.type == EnumAttachmentType.generic);
+                return stack == null || (this.canAttachToCurrentGun(stack) && ((ItemAttachment)stack.getItem()).type.type == EnumAttachmentType.generic);
             }
         }
     }
     
     public boolean canAttachToCurrentGun(final ItemStack stack) {
-        if (stack == null || !(stack.func_77973_b() instanceof ItemAttachment) || !this.gunSlot.func_75216_d() || !(this.gunSlot.func_75211_c().func_77973_b() instanceof ItemGun)) {
+        if (stack == null || !(stack.getItem() instanceof ItemAttachment) || !this.gunSlot.getHasStack() || !(this.gunSlot.getStack().getItem() instanceof ItemGun)) {
             return false;
         }
-        final AttachmentType attachmentType = ((ItemAttachment)stack.func_77973_b()).type;
-        final GunType gunType = ((ItemGun)this.gunSlot.func_75211_c().func_77973_b()).type;
+        final AttachmentType attachmentType = ((ItemAttachment)stack.getItem()).type;
+        final GunType gunType = ((ItemGun)this.gunSlot.getStack().getItem()).type;
         return gunType.allowAllAttachments || gunType.allowedAttachments.contains(attachmentType);
     }
 }

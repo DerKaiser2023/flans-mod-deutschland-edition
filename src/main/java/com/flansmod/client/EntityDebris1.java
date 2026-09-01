@@ -12,39 +12,39 @@ public class EntityDebris1 extends EntityFX
 {
     public EntityDebris1(final World w, final double px, final double py, final double pz, final double mx, final double my, final double mz) {
         super(w, px, py, pz, mx, my, mz);
-        this.field_70547_e *= 5;
-        this.field_70545_g = 1.0f;
-        this.field_70159_w = mx;
-        this.field_70181_x = my;
-        this.field_70179_y = mz;
+        this.particleMaxAge *= 5;
+        this.particleGravity = 1.0f;
+        this.motionX = mx;
+        this.motionY = my;
+        this.motionZ = mz;
     }
     
-    public void func_70071_h_() {
-        this.field_70169_q = this.field_70165_t;
-        this.field_70167_r = this.field_70163_u;
-        this.field_70166_s = this.field_70161_v;
-        if (this.field_70546_d++ >= this.field_70547_e) {
-            this.func_70106_y();
+    public void onUpdate() {
+        this.prevPosX = this.posX;
+        this.prevPosY = this.posY;
+        this.prevPosZ = this.posZ;
+        if (this.particleAge++ >= this.particleMaxAge) {
+            this.setDead();
         }
-        this.field_70181_x -= 0.04 * this.field_70545_g;
-        this.func_70091_d(this.field_70159_w, this.field_70181_x, this.field_70179_y);
-        this.field_70159_w *= 0.99;
-        this.field_70181_x *= 0.99;
-        this.field_70179_y *= 0.99;
-        if (this.field_70163_u < 0.0) {
-            this.func_70106_y();
+        this.motionY -= 0.04 * this.particleGravity;
+        this.moveEntity(this.motionX, this.motionY, this.motionZ);
+        this.motionX *= 0.99;
+        this.motionY *= 0.99;
+        this.motionZ *= 0.99;
+        if (this.posY < 0.0) {
+            this.setDead();
         }
         for (int NUM = 5, i = 0; i < NUM; ++i) {
-            final double dx = (this.field_70165_t - this.field_70169_q) / NUM;
-            final double dy = (this.field_70163_u - this.field_70167_r) / NUM;
-            final double dz = (this.field_70161_v - this.field_70166_s) / NUM;
-            if (this.field_70546_d < 10) {
-                FlansMod.proxy.spawnParticle("flame", this.field_70169_q + dx * i, this.field_70167_r + dy * i, this.field_70166_s + dz * i, 0.0, 0.0, 0.0);
+            final double dx = (this.posX - this.prevPosX) / NUM;
+            final double dy = (this.posY - this.prevPosY) / NUM;
+            final double dz = (this.posZ - this.prevPosZ) / NUM;
+            if (this.particleAge < 10) {
+                FlansMod.proxy.spawnParticle("flame", this.prevPosX + dx * i, this.prevPosY + dy * i, this.prevPosZ + dz * i, 0.0, 0.0, 0.0);
             }
-            FlansMod.proxy.spawnParticle("largesmoke", this.field_70169_q + dx * i, this.field_70167_r + dy * i * 2.0, this.field_70166_s + dz * i, 0.0, 0.0, 0.0);
+            FlansMod.proxy.spawnParticle("largesmoke", this.prevPosX + dx * i, this.prevPosY + dy * i * 2.0, this.prevPosZ + dz * i, 0.0, 0.0, 0.0);
         }
-        if (this.field_70122_E) {
-            this.func_70106_y();
+        if (this.onGround) {
+            this.setDead();
         }
     }
 }

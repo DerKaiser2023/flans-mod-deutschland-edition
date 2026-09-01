@@ -37,7 +37,7 @@ public class Vector3f extends Vector implements Serializable, ReadableVector3f, 
     }
     
     public Vector3f(final Vec3 vec) {
-        this((float)vec.field_72450_a, (float)vec.field_72448_b, (float)vec.field_72449_c);
+        this((float)vec.xCoord, (float)vec.yCoord, (float)vec.zCoord);
     }
     
     public Vector3f(final double x, final double y, final double z) {
@@ -45,7 +45,7 @@ public class Vector3f extends Vector implements Serializable, ReadableVector3f, 
     }
     
     public Vec3 toVec3() {
-        return Vec3.func_72443_a((double)this.x, (double)this.y, (double)this.z);
+        return Vec3.createVectorHelper((double)this.x, (double)this.y, (double)this.z);
     }
     
     @Override

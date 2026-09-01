@@ -31,7 +31,7 @@ public class EntityDebugDot extends Entity
         this.green = 1.0f;
         this.blue = 1.0f;
         this.life = 0;
-        this.func_70107_b((double)pos.x, (double)pos.y, (double)pos.z);
+        this.setPosition((double)pos.x, (double)pos.y, (double)pos.z);
         this.life = l;
     }
     
@@ -41,30 +41,30 @@ public class EntityDebugDot extends Entity
         this.green = 1.0f;
         this.blue = 1.0f;
         this.life = 0;
-        this.func_70107_b((double)pos.x, (double)pos.y, (double)pos.z);
+        this.setPosition((double)pos.x, (double)pos.y, (double)pos.z);
         this.life = l;
         this.red = r;
         this.green = g;
         this.blue = b;
     }
     
-    public void func_70071_h_() {
+    public void onUpdate() {
         --this.life;
         if (this.life <= 0) {
-            this.func_70106_y();
+            this.setDead();
         }
     }
     
-    public AxisAlignedBB func_70046_E() {
+    public AxisAlignedBB getBoundingBox() {
         return null;
     }
     
-    protected void func_70088_a() {
+    protected void entityInit() {
     }
     
-    protected void func_70037_a(final NBTTagCompound p_70037_1_) {
+    protected void readEntityFromNBT(final NBTTagCompound p_70037_1_) {
     }
     
-    protected void func_70014_b(final NBTTagCompound p_70014_1_) {
+    protected void writeEntityToNBT(final NBTTagCompound p_70014_1_) {
     }
 }

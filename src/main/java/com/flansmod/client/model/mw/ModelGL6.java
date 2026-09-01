@@ -38,8 +38,8 @@ public class ModelGL6 extends ModelGun
         this.ammoModel = new ModelRendererTurbo[6];
         for (int i = 0; i < 6; ++i) {
             (this.ammoModel[i] = new ModelRendererTurbo(this, 42, 12, textureX, textureY)).addBox(0.9f, -2.75f, -0.75f, 4.0f, 1.5f, 1.5f);
-            this.ammoModel[i].func_78793_a(0.0f, 1.0f, 0.0f);
-            this.ammoModel[i].field_78795_f = 1.0471976f * i;
+            this.ammoModel[i].setRotationPoint(0.0f, 1.0f, 0.0f);
+            this.ammoModel[i].rotateAngleX = 1.0471976f * i;
         }
         this.barrelAttachPoint = new Vector3f(0.46875f, 0.25f, 0.0f);
         this.scopeAttachPoint = new Vector3f(0.375f, 0.3125f, 0.0f);

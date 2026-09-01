@@ -39,7 +39,7 @@ public class PacketRepairDriveable extends PacketBase
     @Override
     public void handleServerSide(final EntityPlayerMP playerEntity) {
         final EnumDriveablePart part = EnumDriveablePart.getPart(this.shortName);
-        FlansMod.proxy.repairDriveable((EntityPlayer)playerEntity, ((EntitySeat)playerEntity.field_70154_o).driveable, ((EntitySeat)playerEntity.field_70154_o).driveable.getDriveableData().parts.get(part));
+        FlansMod.proxy.repairDriveable((EntityPlayer)playerEntity, ((EntitySeat)playerEntity.ridingEntity).driveable, ((EntitySeat)playerEntity.ridingEntity).driveable.getDriveableData().parts.get(part));
     }
     
     @SideOnly(Side.CLIENT)

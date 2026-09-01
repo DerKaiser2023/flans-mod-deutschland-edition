@@ -39,24 +39,24 @@ import net.minecraft.client.renderer.entity.Render;
 public class RenderPlane extends Render implements IItemRenderer
 {
     public RenderPlane() {
-        this.field_76989_e = 1.0f;
+        this.shadowSize = 1.0f;
     }
     
     public void render(final EntityPlane entityPlane, final double d, final double d1, final double d2, final float f, final float f1) {
-        if (entityPlane.field_70154_o != null && entityPlane.field_70154_o.getClass().toString().indexOf("mcheli.aircraft.MCH_EntitySeat") > 0) {
+        if (entityPlane.ridingEntity != null && entityPlane.ridingEntity.getClass().toString().indexOf("mcheli.aircraft.MCH_EntitySeat") > 0) {
             return;
         }
-        this.func_110777_b((Entity)entityPlane);
+        this.bindEntityTexture((Entity)entityPlane);
         final PlaneType type = entityPlane.getPlaneType();
         GL11.glPushMatrix();
         GL11.glTranslatef((float)d, (float)d1, (float)d2);
         float dYaw;
-        for (dYaw = entityPlane.axes.getYaw() - entityPlane.field_70126_B; dYaw > 180.0f; dYaw -= 360.0f) {}
+        for (dYaw = entityPlane.axes.getYaw() - entityPlane.prevRotationYaw; dYaw > 180.0f; dYaw -= 360.0f) {}
         while (dYaw <= -180.0f) {
             dYaw += 360.0f;
         }
         float dPitch;
-        for (dPitch = entityPlane.axes.getPitch() - entityPlane.field_70127_C; dPitch > 180.0f; dPitch -= 360.0f) {}
+        for (dPitch = entityPlane.axes.getPitch() - entityPlane.prevRotationPitch; dPitch > 180.0f; dPitch -= 360.0f) {}
         while (dPitch <= -180.0f) {
             dPitch += 360.0f;
         }
@@ -65,8 +65,8 @@ public class RenderPlane extends Render implements IItemRenderer
         while (dRoll <= -180.0f) {
             dRoll += 360.0f;
         }
-        GL11.glRotatef(180.0f - entityPlane.field_70126_B - dYaw * f1, 0.0f, 1.0f, 0.0f);
-        GL11.glRotatef(entityPlane.field_70127_C + dPitch * f1, 0.0f, 0.0f, 1.0f);
+        GL11.glRotatef(180.0f - entityPlane.prevRotationYaw - dYaw * f1, 0.0f, 1.0f, 0.0f);
+        GL11.glRotatef(entityPlane.prevRotationPitch + dPitch * f1, 0.0f, 0.0f, 1.0f);
         GL11.glRotatef(entityPlane.prevRotationRoll + dRoll * f1, 1.0f, 0.0f, 0.0f);
         final ModelPlane model = (ModelPlane)type.model;
         if (model != null) {
@@ -177,19 +177,19 @@ public class RenderPlane extends Render implements IItemRenderer
                 else {
                     GL11.glColor4f(1.5f, 1.5f, 0.0f, 0.2f);
                 }
-                func_76980_a(AxisAlignedBB.func_72330_a((double)part.box.x, (double)part.box.y, (double)part.box.z, (double)(part.box.x + part.box.w), (double)(part.box.y + part.box.h), (double)(part.box.z + part.box.d)));
+                renderAABB(AxisAlignedBB.getBoundingBox((double)part.box.x, (double)part.box.y, (double)part.box.z, (double)(part.box.x + part.box.w), (double)(part.box.y + part.box.h), (double)(part.box.z + part.box.d)));
             }
             GL11.glColor4f(1.0f, 1.0f, 0.0f, 0.3f);
             for (final Propeller prop : type.propellers) {
-                func_76980_a(AxisAlignedBB.func_72330_a((double)(prop.x / 16.0f - 0.25f), (double)(prop.y / 16.0f - 0.25f), (double)(prop.z / 16.0f - 0.25f), (double)(prop.x / 16.0f + 0.25f), (double)(prop.y / 16.0f + 0.25f), (double)(prop.z / 16.0f + 0.25f)));
+                renderAABB(AxisAlignedBB.getBoundingBox((double)(prop.x / 16.0f - 0.25f), (double)(prop.y / 16.0f - 0.25f), (double)(prop.z / 16.0f - 0.25f), (double)(prop.x / 16.0f + 0.25f), (double)(prop.y / 16.0f + 0.25f), (double)(prop.z / 16.0f + 0.25f)));
             }
             GL11.glColor4f(1.0f, 0.0f, 1.0f, 0.3f);
             for (final ShootPoint point : type.shootPointsPrimary) {
-                func_76980_a(AxisAlignedBB.func_72330_a((double)(point.rootPos.position.x - 0.25f), (double)(point.rootPos.position.y - 0.25f), (double)(point.rootPos.position.z - 0.25f), (double)(point.rootPos.position.x + 0.25f), (double)(point.rootPos.position.y + 0.25f), (double)(point.rootPos.position.z + 0.25f)));
+                renderAABB(AxisAlignedBB.getBoundingBox((double)(point.rootPos.position.x - 0.25f), (double)(point.rootPos.position.y - 0.25f), (double)(point.rootPos.position.z - 0.25f), (double)(point.rootPos.position.x + 0.25f), (double)(point.rootPos.position.y + 0.25f), (double)(point.rootPos.position.z + 0.25f)));
             }
             GL11.glColor4f(0.0f, 1.0f, 0.0f, 0.3f);
             for (final ShootPoint point : type.shootPointsSecondary) {
-                func_76980_a(AxisAlignedBB.func_72330_a((double)(point.rootPos.position.x - 0.25f), (double)(point.rootPos.position.y - 0.25f), (double)(point.rootPos.position.z - 0.25f), (double)(point.rootPos.position.x + 0.25f), (double)(point.rootPos.position.y + 0.25f), (double)(point.rootPos.position.z + 0.25f)));
+                renderAABB(AxisAlignedBB.getBoundingBox((double)(point.rootPos.position.x - 0.25f), (double)(point.rootPos.position.y - 0.25f), (double)(point.rootPos.position.z - 0.25f), (double)(point.rootPos.position.x + 0.25f), (double)(point.rootPos.position.y + 0.25f), (double)(point.rootPos.position.z + 0.25f)));
             }
             GL11.glEnable(3553);
             GL11.glEnable(2929);
@@ -199,45 +199,45 @@ public class RenderPlane extends Render implements IItemRenderer
         if (TeamsManager.shellsEnabled) {
             int slot = -1;
             for (int j = entityPlane.getDriveableData().getMissileInventoryStart(); j < entityPlane.getDriveableData().getMissileInventoryStart() + type.numMissileSlots; ++j) {
-                final ItemStack shell = entityPlane.getDriveableData().func_70301_a(j);
-                if (shell != null && shell.func_77973_b() instanceof ItemBullet) {
+                final ItemStack shell = entityPlane.getDriveableData().getStackInSlot(j);
+                if (shell != null && shell.getItem() instanceof ItemBullet) {
                     slot = j;
                 }
             }
             if (slot != -1) {
-                final ItemStack bulletStack = entityPlane.driveableData.func_70301_a(slot);
-                final ItemBullet item = (ItemBullet)bulletStack.func_77973_b();
+                final ItemStack bulletStack = entityPlane.driveableData.getStackInSlot(slot);
+                final ItemBullet item = (ItemBullet)bulletStack.getItem();
                 if (item instanceof ItemBullet && item.type.model != null && item.type.wingVisible && type.missileVisible) {
                     final BulletType gunType = item.type;
                     final ModelBase modelo = item.type.model;
-                    final TextureManager texturemanager = Minecraft.func_71410_x().func_110434_K();
+                    final TextureManager texturemanager = Minecraft.getMinecraft().getTextureManager();
                     final ModelBase modelLauncher = item.type.launcherMesh;
                     if (item.type.hasLauncherModel) {
-                        texturemanager.func_110577_a(FlansModResourceHandler.getAlternateTexture(gunType));
+                        texturemanager.bindTexture(FlansModResourceHandler.getAlternateTexture(gunType));
                         GL11.glRotatef(-90.0f, 0.0f, 1.0f, 0.0f);
                         if (entityPlane.isPartIntact(EnumDriveablePart.leftWing)) {
                             final IItemRenderer.ItemRenderType typerino = IItemRenderer.ItemRenderType.ENTITY;
                             GL11.glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
                             GL11.glTranslatef(type.missileWingSpan, type.missileForward, -1.0f * type.missileElevation);
-                            modelLauncher.func_78088_a((Entity)null, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0625f);
+                            modelLauncher.render((Entity)null, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0625f);
                         }
                         if (entityPlane.isPartIntact(EnumDriveablePart.rightWing)) {
                             GL11.glTranslatef(type.missileWingSpan * -2.0f, 0.0f, 0.0f);
-                            modelLauncher.func_78088_a((Entity)null, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0625f);
+                            modelLauncher.render((Entity)null, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0625f);
                         }
                     }
                     if (!item.type.hasLauncherModel) {
-                        texturemanager.func_110577_a(FlansModResourceHandler.getTexture(gunType));
+                        texturemanager.bindTexture(FlansModResourceHandler.getTexture(gunType));
                         GL11.glRotatef(-90.0f, 0.0f, 1.0f, 0.0f);
                         final IItemRenderer.ItemRenderType typerino = IItemRenderer.ItemRenderType.ENTITY;
                         if (entityPlane.isPartIntact(EnumDriveablePart.leftWing)) {
                             GL11.glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
                             GL11.glTranslatef(type.missileWingSpan, type.missileForward, -1.0f * type.missileElevation);
-                            modelo.func_78088_a((Entity)null, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0625f);
+                            modelo.render((Entity)null, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0625f);
                         }
                         if (entityPlane.isPartIntact(EnumDriveablePart.rightWing)) {
                             GL11.glTranslatef(type.missileWingSpan * -2.0f, 0.0f, 0.0f);
-                            modelo.func_78088_a((Entity)null, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0625f);
+                            modelo.render((Entity)null, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0625f);
                         }
                     }
                 }
@@ -252,11 +252,11 @@ public class RenderPlane extends Render implements IItemRenderer
         return corrected;
     }
     
-    public void func_76986_a(final Entity entity, final double d, final double d1, final double d2, final float f, final float f1) {
+    public void doRender(final Entity entity, final double d, final double d1, final double d2, final float f, final float f1) {
         this.render((EntityPlane)entity, d, d1, d2, f, f1);
     }
     
-    protected ResourceLocation func_110775_a(final Entity entity) {
+    protected ResourceLocation getEntityTexture(final Entity entity) {
         final DriveableType type = ((EntityDriveable)entity).getDriveableType();
         final Paintjob paintjob = type.getPaintjob(((EntityDriveable)entity).getDriveableData().paintjobID);
         return FlansModResourceHandler.getPaintjobTexture(paintjob);
@@ -267,7 +267,7 @@ public class RenderPlane extends Render implements IItemRenderer
             case EQUIPPED:
             case EQUIPPED_FIRST_PERSON:
             case ENTITY: {
-                return Minecraft.func_71410_x().field_71474_y.field_74347_j && item != null && item.func_77973_b() instanceof ItemPlane && ((ItemPlane)item.func_77973_b()).type.model != null;
+                return Minecraft.getMinecraft().gameSettings.fancyGraphics && item != null && item.getItem() instanceof ItemPlane && ((ItemPlane)item.getItem()).type.model != null;
             }
             default: {
                 return false;
@@ -281,14 +281,14 @@ public class RenderPlane extends Render implements IItemRenderer
     
     public void renderItem(final IItemRenderer.ItemRenderType type, final ItemStack item, final Object... data) {
         GL11.glPushMatrix();
-        if (item != null && item.func_77973_b() instanceof ItemPlane) {
-            final PlaneType planeType = ((ItemPlane)item.func_77973_b()).type;
+        if (item != null && item.getItem() instanceof ItemPlane) {
+            final PlaneType planeType = ((ItemPlane)item.getItem()).type;
             if (planeType.model != null) {
                 float scale = 0.5f;
                 switch (type) {
                     case ENTITY: {
                         scale = 1.5f;
-                        GL11.glRotatef((float)((EntityItem)data[1]).field_70173_aa, 0.0f, 1.0f, 0.0f);
+                        GL11.glRotatef((float)((EntityItem)data[1]).ticksExisted, 0.0f, 1.0f, 0.0f);
                         break;
                     }
                     case EQUIPPED: {
@@ -308,7 +308,7 @@ public class RenderPlane extends Render implements IItemRenderer
                     }
                 }
                 GL11.glScalef(scale / planeType.cameraDistance, scale / planeType.cameraDistance, scale / planeType.cameraDistance);
-                Minecraft.func_71410_x().field_71446_o.func_110577_a(FlansModResourceHandler.getTexture(planeType));
+                Minecraft.getMinecraft().renderEngine.bindTexture(FlansModResourceHandler.getTexture(planeType));
                 final ModelDriveable model = planeType.model;
                 model.render(planeType);
             }

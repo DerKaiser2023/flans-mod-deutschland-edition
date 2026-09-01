@@ -21,8 +21,8 @@ public class ModelAK74 extends ModelGun
         (this.gunModel[2] = new ModelRendererTurbo(this, 0, 6, textureX, textureY)).addShapeBox(8.0f, 3.0f, -1.0f, 3, 1, 2, 0.0f, 0.0f, 0.25f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.25f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
         (this.gunModel[3] = new ModelRendererTurbo(this, 10, 6, textureX, textureY)).addBox(-1.0f, 2.0f, -1.0f, 2, 1, 2);
         (this.gunModel[4] = new ModelRendererTurbo(this, 28, 0, textureX, textureY)).addBox(-0.75f, -3.0f, -0.75f, 1.5f, 4.0f, 1.5f);
-        this.gunModel[4].func_78793_a(-0.2f, 2.0f, 0.0f);
-        this.gunModel[4].field_78808_h = -0.5f;
+        this.gunModel[4].setRotationPoint(-0.2f, 2.0f, 0.0f);
+        this.gunModel[4].rotateAngleZ = -0.5f;
         (this.gunModel[5] = new ModelRendererTurbo(this, 0, 13, textureX, textureY)).addBox(11.0f, 3.75f, -0.25f, 0.5f, 2.0f, 0.5f);
         (this.gunModel[6] = new ModelRendererTurbo(this, 4, 14, textureX, textureY)).addBox(11.0f, 3.25f, -0.25f, 3.0f, 0.5f, 0.5f);
         this.ammoModel = new ModelRendererTurbo[2];

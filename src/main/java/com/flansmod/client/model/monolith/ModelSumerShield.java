@@ -27,10 +27,10 @@ public class ModelSumerShield extends ModelGun
         this.gunModel[1] = new ModelRendererTurbo(this, 1, 1, this.textureX, this.textureY);
         this.gunModel[2] = new ModelRendererTurbo(this, 9, 1, this.textureX, this.textureY);
         this.gunModel[0].addShapeBox(0.0f, 0.0f, 0.0f, 1, 26, 13, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.gunModel[0].func_78793_a(1.0f, -8.0f, -3.5f);
+        this.gunModel[0].setRotationPoint(1.0f, -8.0f, -3.5f);
         this.gunModel[1].addShapeBox(0.0f, 0.0f, 0.0f, 1, 4, 1, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.gunModel[1].func_78793_a(0.0f, -1.0f, -1.0f);
+        this.gunModel[1].setRotationPoint(0.0f, -1.0f, -1.0f);
         this.gunModel[2].addShapeBox(0.0f, 0.0f, 0.0f, 1, 4, 1, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.gunModel[2].func_78793_a(0.0f, -1.0f, 6.0f);
+        this.gunModel[2].setRotationPoint(0.0f, -1.0f, 6.0f);
     }
 }

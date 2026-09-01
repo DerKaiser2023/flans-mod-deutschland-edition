@@ -25,44 +25,44 @@ public class EntityFlag extends Entity implements ITeamObject
     public EntityFlag(final World world) {
         super(world);
         this.isHome = true;
-        this.func_70105_a(1.0f, 1.0f);
-        this.field_70155_l = 100.0;
-        this.field_70158_ak = true;
+        this.setSize(1.0f, 1.0f);
+        this.renderDistanceWeight = 100.0;
+        this.ignoreFrustumCheck = true;
     }
     
     public EntityFlag(final World world, final EntityFlagpole pole) {
         this(world);
-        this.func_70107_b(pole.field_70165_t, pole.field_70163_u + 2.0, pole.field_70161_v);
+        this.setPosition(pole.posX, pole.posY + 2.0, pole.posZ);
         this.setBase(pole);
     }
     
-    public boolean func_70067_L() {
+    public boolean canBeCollidedWith() {
         return true;
     }
     
-    protected void func_70088_a() {
-        this.field_70180_af.func_75682_a(2, (Object)0);
+    protected void entityInit() {
+        this.dataWatcher.addObject(2, (Object)0);
     }
     
-    public void func_70071_h_() {
-        super.func_70071_h_();
-        if (this.base == null && !this.field_70170_p.field_72995_K) {
+    public void onUpdate() {
+        super.onUpdate();
+        if (this.base == null && !this.worldObj.isRemote) {
             this.setBase(TeamsManager.getInstance().getBase(this.baseID));
         }
-        if (this.field_70154_o != null && this.field_70154_o.field_70128_L) {
-            if (this.field_70154_o instanceof EntityPlayerMP) {
-                final EntityPlayerMP player = (EntityPlayerMP)this.field_70154_o;
-                final Team team = PlayerHandler.getPlayerData(player.func_70005_c_()).team;
+        if (this.ridingEntity != null && this.ridingEntity.isDead) {
+            if (this.ridingEntity instanceof EntityPlayerMP) {
+                final EntityPlayerMP player = (EntityPlayerMP)this.ridingEntity;
+                final Team team = PlayerHandler.getPlayerData(player.getCommandSenderName()).team;
                 TeamsManager.getInstance();
-                TeamsManager.messageAll("§f" + player.func_70005_c_() + " dropped the §" + team.textColour + team.name + "§f flag");
+                TeamsManager.messageAll("§f" + player.getCommandSenderName() + " dropped the §" + team.textColour + team.name + "§f flag");
             }
-            this.func_70078_a(null);
+            this.mountEntity(null);
         }
-        if (!this.field_70175_ag) {
-            this.field_70170_p.func_72838_d((Entity)this);
+        if (!this.addedToChunk) {
+            this.worldObj.spawnEntityInWorld((Entity)this);
         }
         if (this.timeUntilReturn > 0) {
-            if (this.field_70154_o != null || this.isHome) {
+            if (this.ridingEntity != null || this.isHome) {
                 this.timeUntilReturn = 0;
             }
             else {
@@ -74,12 +74,12 @@ public class EntityFlag extends Entity implements ITeamObject
                 }
             }
         }
-        if (this.field_70170_p.field_72995_K) {
-            this.func_70066_B();
+        if (this.worldObj.isRemote) {
+            this.extinguish();
         }
     }
     
-    public void func_70078_a(final Entity entity) {
+    public void mountEntity(final Entity entity) {
         if (entity == null) {
             if (TeamsManager.getInstance().currentRound != null && TeamsManager.getInstance().currentRound.gametype instanceof GametypeCTF) {
                 this.timeUntilReturn = ((GametypeCTF)TeamsManager.getInstance().currentRound.gametype).flagReturnTime * 20;
@@ -88,23 +88,23 @@ public class EntityFlag extends Entity implements ITeamObject
                 this.timeUntilReturn = 600;
             }
         }
-        super.func_70078_a(entity);
+        super.mountEntity(entity);
     }
     
     public void reset() {
-        this.func_70078_a(null);
-        this.func_70107_b(this.base.field_70165_t, this.base.field_70163_u + 2.0, this.base.field_70161_v);
+        this.mountEntity(null);
+        this.setPosition(this.base.posX, this.base.posY + 2.0, this.base.posZ);
         this.isHome = true;
     }
     
-    public boolean func_70039_c(final NBTTagCompound tags) {
+    public boolean writeToNBTOptional(final NBTTagCompound tags) {
         return false;
     }
     
-    protected void func_70037_a(final NBTTagCompound tags) {
+    protected void readEntityFromNBT(final NBTTagCompound tags) {
     }
     
-    protected void func_70014_b(final NBTTagCompound tags) {
+    protected void writeEntityToNBT(final NBTTagCompound tags) {
     }
     
     public ITeamBase getBase() {
@@ -112,8 +112,8 @@ public class EntityFlag extends Entity implements ITeamObject
     }
     
     public void onBaseSet(final int newTeamID) {
-        this.field_70180_af.func_75692_b(2, (Object)(byte)newTeamID);
-        this.func_70107_b(this.base.field_70165_t, this.base.field_70163_u + 2.0, this.base.field_70161_v);
+        this.dataWatcher.updateObject(2, (Object)(byte)newTeamID);
+        this.setPosition(this.base.posX, this.base.posY + 2.0, this.base.posZ);
     }
     
     public void onBaseCapture(final int newTeamID) {
@@ -132,30 +132,30 @@ public class EntityFlag extends Entity implements ITeamObject
     }
     
     public void destroy() {
-        this.func_70106_y();
+        this.setDead();
     }
     
     public double getPosX() {
-        return this.field_70165_t;
+        return this.posX;
     }
     
     public double getPosY() {
-        return this.field_70163_u;
+        return this.posY;
     }
     
     public double getPosZ() {
-        return this.field_70161_v;
+        return this.posZ;
     }
     
     public int getTeamID() {
-        return this.field_70180_af.func_75683_a(2);
+        return this.dataWatcher.getWatchableObjectByte(2);
     }
     
     public boolean isSpawnPoint() {
         return false;
     }
     
-    public boolean func_130002_c(final EntityPlayer player) {
+    public boolean interactFirst(final EntityPlayer player) {
         return false;
     }
     
@@ -168,7 +168,7 @@ public class EntityFlag extends Entity implements ITeamObject
         return false;
     }
     
-    public boolean func_70027_ad() {
+    public boolean isBurning() {
         return false;
     }
 }

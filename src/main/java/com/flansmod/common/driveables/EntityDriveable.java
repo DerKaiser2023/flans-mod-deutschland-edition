@@ -80,7 +80,9 @@ import com.hfr.faction.IFaction;
 import com.flansmod.common.RotatedAxes;
 import com.flansmod.api.IExplodeable;
 import com.flansmod.api.IControllable;
+import com.flansmod.common.vector.Vector3f;
 import net.minecraft.entity.Entity;
+import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
 
 public abstract class EntityDriveable extends Entity implements IControllable, IExplodeable, IEntityAdditionalSpawnData
 {
@@ -91,9 +93,9 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
     public boolean atSea;
     public boolean aiming;
     public int serverPositionTransitionTicker;
-    public double field_70118_ct;
-    public double field_70117_cu;
-    public double field_70116_cv;
+    public double serverPosX;
+    public double serverPosY;
+    public double serverPosZ;
     public double serverYaw;
     public double serverPitch;
     public double serverRoll;
@@ -339,11 +341,11 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
         this.activeRadar = true;
         this.axes = new RotatedAxes();
         this.prevAxes = new RotatedAxes();
-        this.field_70156_m = true;
-        this.func_70105_a(1.5f, 1.5f);
-        this.field_70129_M = 0.375f;
-        this.field_70158_ak = true;
-        this.field_70155_l = 20000.0;
+        this.preventEntitySpawning = true;
+        this.setSize(1.5f, 1.5f);
+        this.yOffset = 0.375f;
+        this.ignoreFrustumCheck = true;
+        this.renderDistanceWeight = 20000.0;
     }
     
     public EntityDriveable(final World world, final DriveableType t, final DriveableData d) {
@@ -356,24 +358,24 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
         this.seats = new EntitySeat[type.numPassengers + 1];
         for (int i = 0; i < type.numPassengers + 1; ++i) {
             if (!clientSide) {
-                this.seats[i] = new EntitySeat(this.field_70170_p, this, i);
-                this.field_70170_p.func_72838_d((Entity)this.seats[i]);
+                this.seats[i] = new EntitySeat(this.worldObj, this, i);
+                this.worldObj.spawnEntityInWorld((Entity)this.seats[i]);
             }
         }
         this.wheels = new EntityWheel[type.wheelPositions.length];
         for (int i = 0; i < this.wheels.length; ++i) {
             if (!clientSide) {
-                this.wheels[i] = new EntityWheel(this.field_70170_p, this, i);
-                this.field_70170_p.func_72838_d((Entity)this.wheels[i]);
+                this.wheels[i] = new EntityWheel(this.worldObj, this, i);
+                this.worldObj.spawnEntityInWorld((Entity)this.wheels[i]);
             }
         }
-        this.field_70138_W = type.wheelStepHeight;
-        this.field_70129_M = type.yOffset;
+        this.stepHeight = type.wheelStepHeight;
+        this.yOffset = type.yOffset;
         this.emitterTimers = new int[type.emitters.size()];
         for (int i = 0; i < type.emitters.size(); ++i) {
-            this.emitterTimers[i] = this.field_70146_Z.nextInt(type.emitters.get(i).emitRate);
+            this.emitterTimers[i] = this.rand.nextInt(type.emitters.get(i).emitRate);
         }
-        this.getEntityData().func_74757_a("CanMountEntity", type.canMountEntity);
+        this.getEntityData().setBoolean("CanMountEntity", type.canMountEntity);
         this.isShip = type.epicShip;
         for (int ps = 0; ps < 2; ++ps) {
             EnumWeaponType weaponType = (ps == 0) ? type.primary : type.secondary;
@@ -388,37 +390,37 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
             if (istart >= 0 || isize > 0) {
                 this.prevInventoryItems[ps] = new ItemStack[isize];
                 for (int j = 0; j < isize; ++j) {
-                    this.prevInventoryItems[ps][j] = this.driveableData.func_70301_a(istart + j);
+                    this.prevInventoryItems[ps][j] = this.driveableData.getStackInSlot(istart + j);
                 }
             }
         }
     }
     
-    protected void func_70014_b(final NBTTagCompound tag) {
+    protected void writeEntityToNBT(final NBTTagCompound tag) {
         this.driveableData.writeToNBT(tag);
-        tag.func_74778_a("Type", this.driveableType);
-        tag.func_74776_a("RotationYaw", this.axes.getYaw());
-        tag.func_74776_a("RotationPitch", this.axes.getPitch());
-        tag.func_74776_a("RotationRoll", this.axes.getRoll());
-        tag.func_74757_a("locked", this.locked);
-        tag.func_74757_a("stolen", this.stolen);
+        tag.setString("Type", this.driveableType);
+        tag.setFloat("RotationYaw", this.axes.getYaw());
+        tag.setFloat("RotationPitch", this.axes.getPitch());
+        tag.setFloat("RotationRoll", this.axes.getRoll());
+        tag.setBoolean("locked", this.locked);
+        tag.setBoolean("stolen", this.stolen);
         if (this.owner != null) {
-            tag.func_74778_a("owner", this.owner.getName());
+            tag.setString("owner", this.owner.getName());
         }
     }
     
-    protected void func_70037_a(final NBTTagCompound tag) {
-        this.driveableType = tag.func_74779_i("Type");
+    protected void readEntityFromNBT(final NBTTagCompound tag) {
+        this.driveableType = tag.getString("Type");
         this.driveableData = new DriveableData(tag);
         this.initType(DriveableType.getDriveable(this.driveableType), false);
-        this.field_70126_B = tag.func_74760_g("RotationYaw");
-        this.field_70127_C = tag.func_74760_g("RotationPitch");
-        this.prevRotationRoll = tag.func_74760_g("RotationRoll");
-        this.locked = tag.func_74767_n("locked");
-        this.axes = new RotatedAxes(this.field_70126_B, this.field_70127_C, this.prevRotationRoll);
-        this.stolen = tag.func_74767_n("stolen");
-        if (tag.func_74764_b("owner")) {
-            this.owner = Factions.getFactionFromName(tag.func_74779_i("owner"));
+        this.prevRotationYaw = tag.getFloat("RotationYaw");
+        this.prevRotationPitch = tag.getFloat("RotationPitch");
+        this.prevRotationRoll = tag.getFloat("RotationRoll");
+        this.locked = tag.getBoolean("locked");
+        this.axes = new RotatedAxes(this.prevRotationYaw, this.prevRotationPitch, this.prevRotationRoll);
+        this.stolen = tag.getBoolean("stolen");
+        if (tag.hasKey("owner")) {
+            this.owner = Factions.getFactionFromName(tag.getString("owner"));
         }
     }
     
@@ -452,8 +454,8 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
             this.driveableData = new DriveableData(ByteBufUtils.readTag(data));
             this.initType(this.getDriveableType(), true);
             this.axes.setAngles(data.readFloat(), data.readFloat(), data.readFloat());
-            this.field_70126_B = this.axes.getYaw();
-            this.field_70127_C = this.axes.getPitch();
+            this.prevRotationYaw = this.axes.getYaw();
+            this.prevRotationPitch = this.axes.getPitch();
             this.prevRotationRoll = this.axes.getRoll();
             for (final EnumDriveablePart ep : EnumDriveablePart.values()) {
                 final DriveablePart part = this.getDriveableData().parts.get(ep);
@@ -474,11 +476,11 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
         }
         catch (final Exception e) {
             FlansMod.log("Failed to retreive plane type from server.");
-            super.func_70106_y();
+            super.setDead();
             e.printStackTrace();
         }
-        this.camera = new EntityCamera(this.field_70170_p, this);
-        this.field_70170_p.func_72838_d((Entity)this.camera);
+        this.camera = new EntityCamera(this.worldObj, this);
+        this.worldObj.spawnEntityInWorld((Entity)this.camera);
     }
     
     public abstract void onMouseMoved(final int p0, final int p1);
@@ -489,70 +491,70 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
     }
     
     protected boolean canSit(final int seat) {
-        return this.getDriveableType().numPassengers >= seat && this.seats[seat].field_70153_n == null;
+        return this.getDriveableType().numPassengers >= seat && this.seats[seat].riddenByEntity == null;
     }
     
-    protected boolean func_70041_e_() {
+    protected boolean canTriggerWalking() {
         return false;
     }
     
-    protected void func_70088_a() {
+    protected void entityInit() {
     }
     
-    public AxisAlignedBB func_70114_g(final Entity entity) {
-        if (this.seats[0] != null && this.getDriveableType().collisionDamageEnable && this.seats[0].field_70153_n != null && this.throttle > this.getDriveableType().collisionDamageThrottle) {
-            if (entity instanceof EntityLiving && !entity.func_70115_ae() && !entity.field_70128_L) {
-                entity.func_70097_a(DamageSource.field_76367_g, this.throttle * this.throttle * this.getDriveableType().collisionDamageTimes);
-                if (this.throttle * this.throttle * this.getDriveableType().collisionDamageTimes > 23.0f && ((EntityLiving)entity).func_110143_aJ() > 0.0f) {
-                    FlansMod.proxy.spawnParticle("flansmod.overkill", entity.field_70165_t, entity.field_70163_u - 4.0, entity.field_70161_v, 0.0, 0.10000000149011612, 0.0);
-                    PacketPlaySound.sendSoundPacket(entity.field_70165_t, entity.field_70163_u, entity.field_70161_v, 15.0, entity.field_71093_bK, "goreDeath", true);
-                    FlansMod.getPacketHandler().sendToAllAround(new PacketParticle("flansmod.overkill", entity.field_70165_t, entity.field_70163_u - 4.0, entity.field_70161_v, (float)Math.random() * 1.0f, (float)Math.random() * 1.0f, -(float)Math.random() * 1.0f), entity.field_70165_t, entity.field_70163_u, entity.field_70161_v, 150.0f, entity.field_71093_bK);
+    public AxisAlignedBB getCollisionBox(final Entity entity) {
+        if (this.seats[0] != null && this.getDriveableType().collisionDamageEnable && this.seats[0].riddenByEntity != null && this.throttle > this.getDriveableType().collisionDamageThrottle) {
+            if (entity instanceof EntityLiving && !entity.isRiding() && !entity.isDead) {
+                entity.attackEntityFrom(DamageSource.cactus, this.throttle * this.throttle * this.getDriveableType().collisionDamageTimes);
+                if (this.throttle * this.throttle * this.getDriveableType().collisionDamageTimes > 23.0f && ((EntityLiving)entity).getHealth() > 0.0f) {
+                    FlansMod.proxy.spawnParticle("flansmod.overkill", entity.posX, entity.posY - 4.0, entity.posZ, 0.0, 0.10000000149011612, 0.0);
+                    PacketPlaySound.sendSoundPacket(entity.posX, entity.posY, entity.posZ, 15.0, entity.dimension, "goreDeath", true);
+                    FlansMod.getPacketHandler().sendToAllAround(new PacketParticle("flansmod.overkill", entity.posX, entity.posY - 4.0, entity.posZ, (float)Math.random() * 1.0f, (float)Math.random() * 1.0f, -(float)Math.random() * 1.0f), entity.posX, entity.posY, entity.posZ, 150.0f, entity.dimension);
                 }
             }
-            else if (entity instanceof EntityPlayer && !entity.func_70115_ae() && !entity.field_70128_L) {
-                entity.func_70097_a(DamageSource.field_76367_g, this.throttle * this.throttle * this.getDriveableType().collisionDamageTimes);
-                if (this.throttle * this.throttle * this.getDriveableType().collisionDamageTimes > 23.0f && ((EntityPlayer)entity).func_110143_aJ() > 0.0f) {
-                    FlansMod.proxy.spawnParticle("flansmod.overkill", entity.field_70165_t, entity.field_70163_u - 4.0, entity.field_70161_v, 0.0, 0.10000000149011612, 0.0);
-                    PacketPlaySound.sendSoundPacket(entity.field_70165_t, entity.field_70163_u, entity.field_70161_v, 15.0, entity.field_71093_bK, "goreDeath", true);
-                    FlansMod.getPacketHandler().sendToAllAround(new PacketParticle("flansmod.overkill", entity.field_70165_t, entity.field_70163_u - 4.0, entity.field_70161_v, (float)Math.random() * 1.0f, (float)Math.random() * 1.0f, -(float)Math.random() * 1.0f), entity.field_70165_t, entity.field_70163_u, entity.field_70161_v, 150.0f, entity.field_71093_bK);
+            else if (entity instanceof EntityPlayer && !entity.isRiding() && !entity.isDead) {
+                entity.attackEntityFrom(DamageSource.cactus, this.throttle * this.throttle * this.getDriveableType().collisionDamageTimes);
+                if (this.throttle * this.throttle * this.getDriveableType().collisionDamageTimes > 23.0f && ((EntityPlayer)entity).getHealth() > 0.0f) {
+                    FlansMod.proxy.spawnParticle("flansmod.overkill", entity.posX, entity.posY - 4.0, entity.posZ, 0.0, 0.10000000149011612, 0.0);
+                    PacketPlaySound.sendSoundPacket(entity.posX, entity.posY, entity.posZ, 15.0, entity.dimension, "goreDeath", true);
+                    FlansMod.getPacketHandler().sendToAllAround(new PacketParticle("flansmod.overkill", entity.posX, entity.posY - 4.0, entity.posZ, (float)Math.random() * 1.0f, (float)Math.random() * 1.0f, -(float)Math.random() * 1.0f), entity.posX, entity.posY, entity.posZ, 150.0f, entity.dimension);
                 }
             }
         }
-        return this.field_70121_D;
+        return this.boundingBox;
     }
     
-    public AxisAlignedBB func_70046_E() {
-        return this.field_70121_D;
+    public AxisAlignedBB getBoundingBox() {
+        return this.boundingBox;
     }
     
-    public boolean func_70104_M() {
+    public boolean canBePushed() {
         return false;
     }
     
-    public double func_70042_X() {
+    public double getMountedYOffset() {
         return -0.3;
     }
     
-    public boolean func_70097_a(final DamageSource damagesource, final float i) {
-        if (this.field_70170_p.field_72995_K || this.field_70128_L) {
+    public boolean attackEntityFrom(final DamageSource damagesource, final float i) {
+        if (this.worldObj.isRemote || this.isDead) {
             return true;
         }
-        if (this.isMountedEntity(damagesource.func_76346_g())) {
+        if (this.isMountedEntity(damagesource.getEntity())) {
             return false;
         }
         final boolean broken = this.attackPart(EnumDriveablePart.core, damagesource, i);
         if (i > 0.0f) {
             this.checkPartsWhenAttacked();
-            FlansMod.getPacketHandler().sendToAllAround(new PacketDriveableDamage(this), this.field_70165_t, this.field_70163_u, this.field_70161_v, 100.0f, this.field_71093_bK);
+            FlansMod.getPacketHandler().sendToAllAround(new PacketDriveableDamage(this), this.posX, this.posY, this.posZ, 100.0f, this.dimension);
         }
         return true;
     }
     
     public boolean isMountedEntity(final Entity entity) {
         if (entity != null) {
-            final Entity entity2 = this.field_70170_p.func_73045_a(entity.func_145782_y());
+            final Entity entity2 = this.worldObj.getEntityByID(entity.getEntityId());
             for (final Entity seat : this.seats) {
-                if (seat.field_70153_n != null && (seat.field_70153_n == entity || seat.field_70153_n == entity2)) {
+                if (seat.riddenByEntity != null && (seat.riddenByEntity == entity || seat.riddenByEntity == entity2)) {
                     return true;
                 }
             }
@@ -560,56 +562,56 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
         return false;
     }
     
-    public void func_70106_y() {
-        super.func_70106_y();
-        if (this.field_70170_p.field_72995_K) {
-            this.camera.func_70106_y();
+    public void setDead() {
+        super.setDead();
+        if (this.worldObj.isRemote) {
+            this.camera.setDead();
         }
         for (final EntitySeat seat : this.seats) {
             if (seat != null) {
-                seat.func_70106_y();
+                seat.setDead();
             }
         }
     }
     
-    public void func_70100_b_(final EntityPlayer par1EntityPlayer) {
+    public void onCollideWithPlayer(final EntityPlayer par1EntityPlayer) {
     }
     
-    public boolean func_70067_L() {
+    public boolean canBeCollidedWith() {
         return true;
     }
     
-    public void func_70108_f(final Entity entity) {
+    public void applyEntityCollision(final Entity entity) {
     }
     
-    public void func_70056_a(final double d, final double d1, final double d2, final float f, final float f1, final int i) {
-        if (this.field_70173_aa > 1) {
+    public void setPositionAndRotation2(final double d, final double d1, final double d2, final float f, final float f1, final int i) {
+        if (this.ticksExisted > 1) {
             return;
         }
-        if (!(this.field_70153_n instanceof EntityPlayer) || !FlansMod.proxy.isThePlayer((EntityPlayer)this.field_70153_n)) {
+        if (!(this.riddenByEntity instanceof EntityPlayer) || !FlansMod.proxy.isThePlayer((EntityPlayer)this.riddenByEntity)) {
             if (this.syncFromServer) {
                 this.serverPositionTransitionTicker = i + 5;
             }
             else {
-                final double var10 = d - this.field_70165_t;
-                final double var11 = d1 - this.field_70163_u;
-                final double var12 = d2 - this.field_70161_v;
+                final double var10 = d - this.posX;
+                final double var11 = d1 - this.posY;
+                final double var12 = d2 - this.posZ;
                 final double var13 = var10 * var10 + var11 * var11 + var12 * var12;
                 if (var13 <= 1.0) {
                     return;
                 }
                 this.serverPositionTransitionTicker = 3;
             }
-            this.field_70118_ct = d;
-            this.field_70117_cu = d1;
-            this.field_70116_cv = d2;
+            this.serverPosX = d;
+            this.serverPosY = d1;
+            this.serverPosZ = d2;
             this.serverYaw = f;
             this.serverPitch = f1;
         }
     }
     
     public void setIT1(final boolean canFire, final boolean reloading, final int stag, final int stageTime) {
-        if (this.field_70170_p.field_72995_K && this.field_70173_aa % 5 == 0) {
+        if (this.worldObj.isRemote && this.ticksExisted % 5 == 0) {
             this.canFireIT1 = canFire;
             this.reloadingDrakon = reloading;
             this.stage = stag;
@@ -618,42 +620,42 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
     }
     
     public void setPositionRotationAndMotion(final double x, final double y, final double z, final float yaw, final float pitch, final float roll, final double motX, final double motY, final double motZ, final float velYaw, final float velPitch, final float velRoll, final float throt, final float steeringYaw, final float throtPP) {
-        if (this.field_70170_p.field_72995_K) {
-            this.field_70118_ct = x;
-            this.field_70117_cu = y;
-            this.field_70116_cv = z;
+        if (this.worldObj.isRemote) {
+            this.serverPosX = x;
+            this.serverPosY = y;
+            this.serverPosZ = z;
             this.serverYaw = yaw;
             this.serverPitch = pitch;
             this.serverRoll = roll;
             this.serverPositionTransitionTicker = 5;
         }
         else {
-            this.func_70107_b(x, y, z);
-            this.setRotation(this.field_70126_B = yaw, this.field_70127_C = pitch, this.prevRotationRoll = roll);
+            this.setPosition(x, y, z);
+            this.setRotation(this.prevRotationYaw = yaw, this.prevRotationPitch = pitch, this.prevRotationRoll = roll);
         }
-        this.field_70159_w = motX;
-        this.field_70181_x = motY;
-        this.field_70179_y = motZ;
+        this.motionX = motX;
+        this.motionY = motY;
+        this.motionZ = motZ;
         this.angularVelocity = new Vector3f(velYaw, velPitch, velRoll);
         this.throttle = throt;
         this.throttlePeepee = throtPP;
     }
     
-    public void func_70016_h(final double d, final double d1, final double d2) {
-        this.field_70159_w = d;
-        this.field_70181_x = d1;
-        this.field_70179_y = d2;
+    public void setVelocity(final double d, final double d1, final double d2) {
+        this.motionX = d;
+        this.motionY = d1;
+        this.motionZ = d2;
     }
     
     public boolean pressKey(final int key, final EntityPlayer player) {
         if (this.type.epicShip && !this.atSea) {
             return false;
         }
-        if (!this.field_70170_p.field_72995_K && key == 9 && this.getDriveableType().modePrimary == EnumFireMode.SEMIAUTO) {
+        if (!this.worldObj.isRemote && key == 9 && this.getDriveableType().modePrimary == EnumFireMode.SEMIAUTO) {
             this.shoot(false, false);
             return true;
         }
-        if (!this.field_70170_p.field_72995_K && key == 8 && this.getDriveableType().modeSecondary == EnumFireMode.SEMIAUTO) {
+        if (!this.worldObj.isRemote && key == 8 && this.getDriveableType().modeSecondary == EnumFireMode.SEMIAUTO) {
             this.shoot(true, false);
             return true;
         }
@@ -661,7 +663,7 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
     }
     
     public void updateKeyHeldState(final int key, final boolean held) {
-        if (this.field_70170_p.field_72995_K) {
+        if (this.worldObj.isRemote) {
             FlansMod.getPacketHandler().sendToServer(new PacketDriveableKeyHeld(key, held));
             if (key == 2) {
                 this.leftTurnHeld = true;
@@ -701,7 +703,7 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
             case 31: {
                 if (this.seats != null && this.toggleTimer <= 0) {
                     this.gtfo = !this.gtfo;
-                    ((ICommandSender)this.seats[0].field_70153_n).func_145747_a((IChatComponent)new ChatComponentText("Passengers are now " + (this.gtfo ? "banned" : "allowed")));
+                    ((ICommandSender)this.seats[0].riddenByEntity).addChatMessage((IChatComponent)new ChatComponentText("Passengers are now " + (this.gtfo ? "banned" : "allowed")));
                     this.toggleTimer = 20;
                     break;
                 }
@@ -748,7 +750,7 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
     }
     
     private boolean driverIsCreative() {
-        return this.seats != null && this.seats[0] != null && this.seats[0].field_70153_n instanceof EntityPlayer && ((EntityPlayer)this.seats[0].field_70153_n).field_71075_bZ.field_75098_d;
+        return this.seats != null && this.seats[0] != null && this.seats[0].riddenByEntity instanceof EntityPlayer && ((EntityPlayer)this.seats[0].riddenByEntity).capabilities.isCreativeMode;
     }
     
     public void spawnParticle(final ArrayList<DriveableType.ShootParticle> list, final ShootPoint shootPoint, final Vector3f v) {
@@ -764,7 +766,7 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
                 final Vector3f v3 = this.rotate(this.seats[0].looking.findLocalVectorGlobally(shootPoint.offPos));
                 Vector3f.add(v2, v3, v);
             }
-            FlansMod.getPacketHandler().sendToAllAround(new PacketParticle(s.name, this.field_70165_t + v.x, this.field_70163_u + v.y, this.field_70161_v + v.z, velocity.x, velocity.y, velocity.z), this.field_70165_t + v.x, this.field_70163_u + v.y, this.field_70161_v + v.z, 150.0f, this.field_71093_bK);
+            FlansMod.getPacketHandler().sendToAllAround(new PacketParticle(s.name, this.posX + v.x, this.posY + v.y, this.posZ + v.z, velocity.x, velocity.y, velocity.z), this.posX + v.x, this.posY + v.y, this.posZ + v.z, 150.0f, this.dimension);
             shootPoint.rootPos.position.x = bkx;
             shootPoint.rootPos.position.y = bky;
             shootPoint.rootPos.position.z = bkz;
@@ -796,13 +798,13 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
             final Vector3f evilTargetConverted = lookVector = new Vector3f(this.evilVector.x + type.evilSpread * 0.1f * (1.0 - Math.random()), this.evilVector.y + type.evilSpread * 0.1f * (1.0 - Math.random()), this.evilVector.z + type.evilSpread * 0.1f * (1.0 - Math.random()));
         }
         Vector3f freeLookVec = lookVector;
-        if ((type.planeCoaxPrimary || type.planeCoaxSecondary) && this.seats[0] != null && this.seats[0].field_70153_n != null && this.seats[0].field_70153_n instanceof EntityPlayer) {
-            EntityPlayer owner = (EntityPlayer)this.seats[0].field_70153_n;
+        if ((type.planeCoaxPrimary || type.planeCoaxSecondary) && this.seats[0] != null && this.seats[0].riddenByEntity != null && this.seats[0].riddenByEntity instanceof EntityPlayer) {
+            EntityPlayer owner = (EntityPlayer)this.seats[0].riddenByEntity;
             if (evil) {
                 owner = fakePlayer;
             }
             if (owner != null) {
-                freeLookVec = new Vector3f((float)owner.func_70040_Z().field_72450_a, (float)owner.func_70040_Z().field_72448_b, (float)owner.func_70040_Z().field_72449_c);
+                freeLookVec = new Vector3f((float)owner.getLookVec().xCoord, (float)owner.getLookVec().yCoord, (float)owner.getLookVec().zCoord);
             }
             if ((!secondary && type.planeCoaxPrimary) || (secondary && type.planeCoaxSecondary)) {
                 lookVector = freeLookVec;
@@ -845,8 +847,8 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
                 if (type.rangingGun) {
                     shellSpeed = type.bulletSpeed;
                 }
-                if (bulletItemStack != null && bulletItemStack.func_77973_b() instanceof ItemShootable && TeamsManager.bulletsEnabled && this.driveableData.overheatSuffer < 1) {
-                    final ShootableType bullet = ((ItemShootable)bulletItemStack.func_77973_b()).type;
+                if (bulletItemStack != null && bulletItemStack.getItem() instanceof ItemShootable && TeamsManager.bulletsEnabled && this.driveableData.overheatSuffer < 1) {
+                    final ShootableType bullet = ((ItemShootable)bulletItemStack.getItem()).type;
                     if ((gunType.isAmmo(bullet) && !type.epicShip && this.ticksRepairing == 0) || (type.epicShip && gunType.isAmmo(bullet) && this.getDriveableData().parts.get(EnumDriveablePart.buoyancy).health > 3 && this.ticksFlareUsing <= 0)) {
                         this.spawnParticle(type.shootParticle(secondary), shootPoint, gunVec);
                         final DriveableData driveableData = this.driveableData;
@@ -855,24 +857,24 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
                         if (evil) {
                             human = (EntityLivingBase)this.humanTarget;
                         }
-                        else if (this.seats != null && this.seats[0].field_70153_n != null && this.seats[0].field_70153_n instanceof EntityLivingBase) {
-                            human = (EntityLivingBase)this.seats[0].field_70153_n;
+                        else if (this.seats != null && this.seats[0].riddenByEntity != null && this.seats[0].riddenByEntity instanceof EntityLivingBase) {
+                            human = (EntityLivingBase)this.seats[0].riddenByEntity;
                         }
-                        this.field_70170_p.func_72838_d((Entity)((ItemShootable)bulletItemStack.func_77973_b()).getEntity(this.field_70170_p, Vector3f.add(new Vector3f(this.field_70165_t, this.field_70163_u, this.field_70161_v), gunVec, null), lookVector, human, gunType.bulletSpread / 2.0f, gunType.damage, gunType.bulletSpeed, bulletItemStack.func_77960_j(), type, type.evilGolem));
-                        PacketPlaySound.sendSoundPacket(this.field_70165_t, this.field_70163_u, this.field_70161_v, 50.0, this.field_71093_bK, type.shootSound(secondary), false);
-                        if ((evil || this.driverIsCreative()) && bulletItemStack.func_77960_j() >= bulletItemStack.func_77958_k()) {
-                            bulletItemStack.func_77964_b(0);
+                        this.worldObj.spawnEntityInWorld((Entity)((ItemShootable)bulletItemStack.getItem()).getEntity(this.worldObj, Vector3f.add(new Vector3f(this.posX, this.posY, this.posZ), gunVec, null), lookVector, human, gunType.bulletSpread / 2.0f, gunType.damage, gunType.bulletSpeed, bulletItemStack.getMetadata(), type, type.evilGolem));
+                        PacketPlaySound.sendSoundPacket(this.posX, this.posY, this.posZ, 50.0, this.dimension, type.shootSound(secondary), false);
+                        if ((evil || this.driverIsCreative()) && bulletItemStack.getMetadata() >= bulletItemStack.getMaxDurability()) {
+                            bulletItemStack.setMetadata(0);
                             if (!type.evilGolem || !this.driverIsCreative() || !evil) {
                                 final ItemStack itemStack = bulletItemStack;
-                                --itemStack.field_77994_a;
-                                if (bulletItemStack.field_77994_a <= 0) {
+                                --itemStack.stackSize;
+                                if (bulletItemStack.stackSize <= 0) {
                                     this.onWeaponInventoryChanged(secondary);
                                     bulletItemStack = null;
                                 }
-                                this.driveableData.func_70299_a(this.getDriveableType().numPassengerGunners + currentGun, bulletItemStack);
+                                this.driveableData.setInventorySlotContents(this.getDriveableType().numPassengerGunners + currentGun, bulletItemStack);
                             }
                             else {
-                                bulletItemStack.func_77964_b(bulletItemStack.func_77960_j() + 1);
+                                bulletItemStack.setMetadata(bulletItemStack.getMetadata() + 1);
                             }
                         }
                         if (this.epicShip) {
@@ -897,8 +899,8 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
                     if (TeamsManager.bombsEnabled) {
                         int slot = -1;
                         for (int i = this.driveableData.getBombInventoryStart(); i < this.driveableData.getBombInventoryStart() + type.numBombSlots; ++i) {
-                            final ItemStack bomb = this.driveableData.func_70301_a(i);
-                            if (bomb != null && bomb.func_77973_b() instanceof ItemBullet && type.isValidAmmo(((ItemBullet)bomb.func_77973_b()).type, weaponType)) {
+                            final ItemStack bomb = this.driveableData.getStackInSlot(i);
+                            if (bomb != null && bomb.getItem() instanceof ItemBullet && type.isValidAmmo(((ItemBullet)bomb.getItem()).type, weaponType)) {
                                 slot = i;
                             }
                         }
@@ -906,30 +908,30 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
                             final int spread = 0;
                             final int damageMultiplier = 1;
                             final float shellSpeed = 0.0f;
-                            ItemStack bulletStack = this.driveableData.func_70301_a(slot);
-                            final ItemBullet bulletItem = (ItemBullet)bulletStack.func_77973_b();
+                            ItemStack bulletStack = this.driveableData.getStackInSlot(slot);
+                            final ItemBullet bulletItem = (ItemBullet)bulletStack.getItem();
                             if (shootPoint.rootPos instanceof PilotGun) {
                                 final PilotGun pilotGun2 = (PilotGun)shootPoint.rootPos;
                                 final GunType type2 = pilotGun2.type;
                             }
-                            final EntityShootable bulletEntity = bulletItem.getEntity(this.field_70170_p, Vec3.func_72443_a(gunVec.x + this.field_70165_t, gunVec.y + this.field_70163_u, gunVec.z + this.field_70161_v), this.axes.getYaw(), this.axes.getPitch(), this.field_70159_w, this.field_70181_x, this.field_70179_y, (EntityLivingBase)this.seats[0].field_70153_n, (float)damageMultiplier, this.driveableData.func_70301_a(slot).func_77960_j(), type);
-                            this.field_70170_p.func_72838_d((Entity)bulletEntity);
+                            final EntityShootable bulletEntity = bulletItem.getEntity(this.worldObj, Vec3.createVectorHelper(gunVec.x + this.posX, gunVec.y + this.posY, gunVec.z + this.posZ), this.axes.getYaw(), this.axes.getPitch(), this.motionX, this.motionY, this.motionZ, (EntityLivingBase)this.seats[0].riddenByEntity, (float)damageMultiplier, this.driveableData.getStackInSlot(slot).getMetadata(), type);
+                            this.worldObj.spawnEntityInWorld((Entity)bulletEntity);
                             this.spawnParticle(type.shootParticle(secondary), shootPoint, gunVec);
                             if (type.shootSound(secondary) != null) {
-                                PacketPlaySound.sendSoundPacket(this.field_70165_t, this.field_70163_u, this.field_70161_v, 50.0, this.field_71093_bK, type.shootSound(secondary), false);
+                                PacketPlaySound.sendSoundPacket(this.posX, this.posY, this.posZ, 50.0, this.dimension, type.shootSound(secondary), false);
                             }
                             if (!type.evilGolem && !this.driverIsCreative() && !evil) {
-                                bulletStack.func_77964_b(bulletStack.func_77960_j() + 1);
-                                if (bulletStack.func_77960_j() == bulletStack.func_77958_k()) {
-                                    bulletStack.func_77964_b(0);
+                                bulletStack.setMetadata(bulletStack.getMetadata() + 1);
+                                if (bulletStack.getMetadata() == bulletStack.getMaxDurability()) {
+                                    bulletStack.setMetadata(0);
                                     final ItemStack itemStack2 = bulletStack;
-                                    --itemStack2.field_77994_a;
-                                    if (bulletStack.field_77994_a == 0) {
+                                    --itemStack2.stackSize;
+                                    if (bulletStack.stackSize == 0) {
                                         this.onWeaponInventoryChanged(secondary);
                                         bulletStack = null;
                                     }
                                 }
-                                this.driveableData.func_70299_a(slot, bulletStack);
+                                this.driveableData.setInventorySlotContents(slot, bulletStack);
                             }
                             if (this.epicShip) {
                                 this.setShootDelay((int)(type.shootDelay(secondary) / ((this.driveableData.totalCrew * this.driveableData.totalCrew + this.driveableData.maximumCrew * 0.1) / (this.driveableData.maximumCrew * this.driveableData.maximumCrew * 0.9))), secondary);
@@ -954,8 +956,8 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
                     if ((TeamsManager.shellsEnabled && !type.epicShip && this.ticksRepairing == 0 && this.driveableData.overheatSuffer < 1) || (type.epicShip && this.getDriveableData().parts.get(EnumDriveablePart.buoyancy).health > 3 && this.ticksFlareUsing <= 0)) {
                         int slot = -1;
                         for (int i = this.driveableData.getMissileInventoryStart(); i < this.driveableData.getMissileInventoryStart() + type.numMissileSlots; ++i) {
-                            final ItemStack shell = this.driveableData.func_70301_a(i);
-                            if (shell != null && shell.func_77973_b() instanceof ItemBullet && type.isValidAmmo(((ItemBullet)shell.func_77973_b()).type, weaponType)) {
+                            final ItemStack shell = this.driveableData.getStackInSlot(i);
+                            if (shell != null && shell.getItem() instanceof ItemBullet && type.isValidAmmo(((ItemBullet)shell.getItem()).type, weaponType)) {
                                 slot = i;
                             }
                         }
@@ -963,8 +965,8 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
                             final int damageMultiplier2 = 1;
                             final float spread2 = type.bulletSpread;
                             final float shellSpeed = type.bulletSpeed;
-                            ItemStack bulletStack = this.driveableData.func_70301_a(slot);
-                            final ItemBullet bulletItem = (ItemBullet)bulletStack.func_77973_b();
+                            ItemStack bulletStack = this.driveableData.getStackInSlot(slot);
+                            final ItemBullet bulletItem = (ItemBullet)bulletStack.getItem();
                             float pupperinoSpeed = 1.0f;
                             if (this.getDriveableData().parts.get(EnumDriveablePart.airframe).maxHealth > 5) {
                                 pupperinoSpeed = 1.3f;
@@ -973,41 +975,41 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
                             if (evil) {
                                 human2 = (EntityLivingBase)this.humanTarget;
                             }
-                            else if (this.seats != null && this.seats[0].field_70153_n != null && this.seats[0].field_70153_n instanceof EntityLivingBase) {
-                                human2 = (EntityLivingBase)this.seats[0].field_70153_n;
+                            else if (this.seats != null && this.seats[0].riddenByEntity != null && this.seats[0].riddenByEntity instanceof EntityLivingBase) {
+                                human2 = (EntityLivingBase)this.seats[0].riddenByEntity;
                             }
-                            final EntityShootable bulletEntity2 = bulletItem.getEntity(this.field_70170_p, Vector3f.add(gunVecFake, new Vector3f(this.field_70165_t, this.field_70163_u, this.field_70161_v), null), lookVector, human2, spread2, (float)damageMultiplier2, pupperinoSpeed * shellSpeed * bulletItem.type.speedMultiplier, this.driveableData.func_70301_a(slot).func_77960_j(), type, type.evilGolem);
-                            this.field_70170_p.func_72838_d((Entity)bulletEntity2);
+                            final EntityShootable bulletEntity2 = bulletItem.getEntity(this.worldObj, Vector3f.add(gunVecFake, new Vector3f(this.posX, this.posY, this.posZ), null), lookVector, human2, spread2, (float)damageMultiplier2, pupperinoSpeed * shellSpeed * bulletItem.type.speedMultiplier, this.driveableData.getStackInSlot(slot).getMetadata(), type, type.evilGolem);
+                            this.worldObj.spawnEntityInWorld((Entity)bulletEntity2);
                             this.spawnParticle(type.shootParticle(secondary), shootPoint, gunVec);
                             this.isRecoil = true;
                             if (type.shootSound(secondary) != null) {
-                                PacketPlaySound.sendSoundPacket(this.field_70165_t, this.field_70163_u, this.field_70161_v, 50.0, this.field_71093_bK, type.shootSound(secondary), false);
+                                PacketPlaySound.sendSoundPacket(this.posX, this.posY, this.posZ, 50.0, this.dimension, type.shootSound(secondary), false);
                                 if (this.getDriveableType().shootDelayPrimary > 60 || this.getDriveableType().loudCannon || this.getDriveableType().earRape) {
-                                    PacketPlaySound.sendSoundPacket(this.field_70165_t, this.field_70163_u, this.field_70161_v, 55.0, this.field_71093_bK, type.shootSound(secondary), false);
-                                    PacketPlaySound.sendSoundPacket(this.field_70165_t, this.field_70163_u, this.field_70161_v, 60.0, this.field_71093_bK, type.shootSound(secondary), false);
+                                    PacketPlaySound.sendSoundPacket(this.posX, this.posY, this.posZ, 55.0, this.dimension, type.shootSound(secondary), false);
+                                    PacketPlaySound.sendSoundPacket(this.posX, this.posY, this.posZ, 60.0, this.dimension, type.shootSound(secondary), false);
                                 }
                                 if (this.getDriveableType().earRape) {
-                                    PacketPlaySound.sendSoundPacket(this.field_70165_t, this.field_70163_u, this.field_70161_v, 65.0, this.field_71093_bK, type.shootSound(secondary), false);
-                                    PacketPlaySound.sendSoundPacket(this.field_70165_t, this.field_70163_u, this.field_70161_v, 70.0, this.field_71093_bK, type.shootSound(secondary), false);
+                                    PacketPlaySound.sendSoundPacket(this.posX, this.posY, this.posZ, 65.0, this.dimension, type.shootSound(secondary), false);
+                                    PacketPlaySound.sendSoundPacket(this.posX, this.posY, this.posZ, 70.0, this.dimension, type.shootSound(secondary), false);
                                 }
                             }
                             final DriveableData driveableData2 = this.driveableData;
                             driveableData2.overheat += 5;
                             if (type.farSound != null) {
-                                FlansMod.packetHandler.sendToDonut(new PacketPlaySound(this.field_70165_t, this.field_70163_u, this.field_70161_v, type.farSound), this.field_70165_t, this.field_70163_u, this.field_70161_v, 50.0f, type.farSoundRange, this.field_71093_bK);
+                                FlansMod.packetHandler.sendToDonut(new PacketPlaySound(this.posX, this.posY, this.posZ, type.farSound), this.posX, this.posY, this.posZ, 50.0f, type.farSoundRange, this.dimension);
                             }
                             if (!type.evilGolem && !this.driverIsCreative() && !evil) {
-                                bulletStack.func_77964_b(bulletStack.func_77960_j() + 1);
-                                if (bulletStack.func_77960_j() == bulletStack.func_77958_k()) {
-                                    bulletStack.func_77964_b(0);
+                                bulletStack.setMetadata(bulletStack.getMetadata() + 1);
+                                if (bulletStack.getMetadata() == bulletStack.getMaxDurability()) {
+                                    bulletStack.setMetadata(0);
                                     final ItemStack itemStack3 = bulletStack;
-                                    --itemStack3.field_77994_a;
-                                    if (bulletStack.field_77994_a == 0) {
+                                    --itemStack3.stackSize;
+                                    if (bulletStack.stackSize == 0) {
                                         this.onWeaponInventoryChanged(secondary);
                                         bulletStack = null;
                                     }
                                 }
-                                this.driveableData.func_70299_a(slot, bulletStack);
+                                this.driveableData.setInventorySlotContents(slot, bulletStack);
                             }
                             if (this.epicShip) {
                                 this.setShootDelay((int)(type.shootDelay(secondary) / ((this.driveableData.totalCrew * this.driveableData.totalCrew + this.driveableData.maximumCrew * 0.1) / (this.driveableData.maximumCrew * this.driveableData.maximumCrew * 0.9))), secondary);
@@ -1116,36 +1118,36 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
     }
     
     public void correctWheelPos() {
-        if (this.field_70173_aa % 200 == 0) {
+        if (this.ticksExisted % 200 == 0) {
             for (final EntityWheel wheel : this.wheels) {
                 if (wheel != null) {
                     final Vector3f localVectorGlobally;
                     final Vector3f target = localVectorGlobally = this.axes.findLocalVectorGlobally(this.getDriveableType().wheelPositions[wheel.ID].position);
-                    localVectorGlobally.x += (float)this.field_70165_t;
+                    localVectorGlobally.x += (float)this.posX;
                     final Vector3f vector3f = target;
-                    vector3f.y += (float)this.field_70163_u;
+                    vector3f.y += (float)this.posY;
                     final Vector3f vector3f2 = target;
-                    vector3f2.z += (float)this.field_70161_v;
+                    vector3f2.z += (float)this.posZ;
                     final int tf = 1;
                     final int cf = 1;
                     final int range = 5;
-                    if (MathHelper.func_76135_e(target.x - (float)wheel.field_70165_t) > range) {
-                        wheel.field_70165_t = (target.x * tf + (float)wheel.field_70165_t * cf) / (tf + cf);
+                    if (MathHelper.abs(target.x - (float)wheel.posX) > range) {
+                        wheel.posX = (target.x * tf + (float)wheel.posX * cf) / (tf + cf);
                     }
-                    if (MathHelper.func_76135_e(target.y - (float)wheel.field_70163_u) > range) {
-                        wheel.field_70163_u = (target.y * tf + (float)wheel.field_70163_u * cf) / (tf + cf);
+                    if (MathHelper.abs(target.y - (float)wheel.posY) > range) {
+                        wheel.posY = (target.y * tf + (float)wheel.posY * cf) / (tf + cf);
                     }
-                    if (MathHelper.func_76135_e(target.z - (float)wheel.field_70161_v) > range) {
-                        wheel.field_70161_v = (target.z * tf + (float)wheel.field_70161_v * cf) / (tf + cf);
+                    if (MathHelper.abs(target.z - (float)wheel.posZ) > range) {
+                        wheel.posZ = (target.z * tf + (float)wheel.posZ * cf) / (tf + cf);
                     }
                 }
             }
         }
     }
     
-    public void func_70071_h_() {
+    public void onUpdate() {
         this.epicShip = this.getDriveableType().epicShip;
-        super.func_70071_h_();
+        super.onUpdate();
         final DriveableType type = this.getDriveableType();
         final DriveableData data = this.getDriveableData();
         this.hugeBoat = ((this.getDriveableType().floatOnWater && this.getDriveableType().wheelStepHeight == 0.0f) || this.getDriveableType().solid);
@@ -1166,7 +1168,7 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
         else {
             this.shootingAA = false;
         }
-        this.mounted = this.func_70115_ae();
+        this.mounted = this.isRiding();
         if (this.driveableData.overheat > 0) {
             final DriveableData driveableData = this.driveableData;
             --driveableData.overheat;
@@ -1176,7 +1178,7 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
         }
         if (this.driveableData.overheat > type.overheatLimit) {
             this.driveableData.overheatSuffer = type.overheatPenalty;
-            PacketPlaySound.sendSoundPacket(this.seats[0].field_70165_t, this.seats[0].field_70163_u, this.seats[0].field_70161_v, 15.0, this.field_71093_bK, type.overheatSound, false);
+            PacketPlaySound.sendSoundPacket(this.seats[0].posX, this.seats[0].posY, this.seats[0].posZ, 15.0, this.dimension, type.overheatSound, false);
         }
         if (this.driveableData.overheat > 0) {
             final DriveableData driveableData2 = this.driveableData;
@@ -1186,17 +1188,17 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
             final DriveableData driveableData3 = this.driveableData;
             --driveableData3.overheatSuffer;
         }
-        if (!this.field_70170_p.field_72995_K && type.numMissileSlots > 0 && this.field_70173_aa % 5 == 0) {
+        if (!this.worldObj.isRemote && type.numMissileSlots > 0 && this.ticksExisted % 5 == 0) {
             int slot = -1;
             for (int i = type.numMissileSlots; i > -1; --i) {
-                final ItemStack shellCurrent = this.driveableData.func_70301_a(i);
-                if (shellCurrent != null && shellCurrent.func_77973_b() instanceof ItemBullet && this.getDriveableType().ammo.contains(((ItemBullet)shellCurrent.func_77973_b()).type)) {
+                final ItemStack shellCurrent = this.driveableData.getStackInSlot(i);
+                if (shellCurrent != null && shellCurrent.getItem() instanceof ItemBullet && this.getDriveableType().ammo.contains(((ItemBullet)shellCurrent.getItem()).type)) {
                     slot = i;
                     break;
                 }
             }
-            if (slot != -1 && this.seats != null && this.seats[0] != null && this.seats[0].field_70153_n != null && this.seats[0].field_70153_n instanceof EntityPlayerMP) {
-                FlansMod.getPacketHandler().sendTo(new PacketCurrentMissile(this.func_145782_y(), this.driveableData.func_70301_a(slot)), (EntityPlayerMP)this.seats[0].field_70153_n);
+            if (slot != -1 && this.seats != null && this.seats[0] != null && this.seats[0].riddenByEntity != null && this.seats[0].riddenByEntity instanceof EntityPlayerMP) {
+                FlansMod.getPacketHandler().sendTo(new PacketCurrentMissile(this.getEntityId(), this.driveableData.getStackInSlot(slot)), (EntityPlayerMP)this.seats[0].riddenByEntity);
             }
         }
         if (this.driveableData.WarpLimit < type.numPassengers) {
@@ -1213,17 +1215,17 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
             this.warpTimer = 1200;
         }
         if (this.hugeBoat) {
-            for (int j = 0; j < this.field_70170_p.field_72996_f.size(); ++j) {
-                final Object obj = this.field_70170_p.field_72996_f.get(j);
+            for (int j = 0; j < this.worldObj.loadedEntityList.size(); ++j) {
+                final Object obj = this.worldObj.loadedEntityList.get(j);
                 if (obj instanceof EntityPlayer && !this.isPartOfThis((Entity)obj)) {
                     this.moveRiders((Entity)obj);
                 }
-                if (!(obj instanceof EntityWheel) || this.isPartOfThis((Entity)obj) || this.func_70032_d((Entity)obj) <= this.getDriveableType().bulletDetectionRadius) {}
-                if (!(obj instanceof EntityDriveable) || this.isPartOfThis((Entity)obj) || this.func_70032_d((Entity)obj) <= this.getDriveableType().bulletDetectionRadius) {}
+                if (!(obj instanceof EntityWheel) || this.isPartOfThis((Entity)obj) || this.getDistanceToEntity((Entity)obj) <= this.getDriveableType().bulletDetectionRadius) {}
+                if (!(obj instanceof EntityDriveable) || this.isPartOfThis((Entity)obj) || this.getDistanceToEntity((Entity)obj) <= this.getDriveableType().bulletDetectionRadius) {}
             }
         }
-        if (this.seats[0] != null && this.seats[0].field_70153_n != null && type.nightScope && this.aiming && !this.field_70170_p.field_72995_K) {
-            ((EntityLivingBase)this.seats[0].field_70153_n).func_70690_d(new PotionEffect(Potion.field_76439_r.field_76415_H, 60));
+        if (this.seats[0] != null && this.seats[0].riddenByEntity != null && type.nightScope && this.aiming && !this.worldObj.isRemote) {
+            ((EntityLivingBase)this.seats[0].riddenByEntity).addPotionEffect(new PotionEffect(Potion.nightVision.id, 60));
         }
         if (this.deckCheck != this.prevDeckCheck) {
             this.onDeck = true;
@@ -1325,14 +1327,14 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
             this.backwardsTimer = 0;
         }
         this.checkInventoryChanged();
-        if (this.field_70170_p.func_72953_d(this.field_70121_D) && !this.hugeBoat) {
+        if (this.worldObj.isAnyLiquid(this.boundingBox) && !this.hugeBoat) {
             if (this.throttle >= type.maxThrottleInWater) {
                 this.throttle = type.maxThrottleInWater;
             }
             if (this.throttle <= -type.maxThrottleInWater) {
                 this.throttle = -type.maxThrottleInWater;
             }
-            if (this.field_70170_p.func_72953_d(this.field_70121_D.func_72329_c().func_72317_d(0.0, (double)type.maxDepth, 0.0))) {
+            if (this.worldObj.isAnyLiquid(this.boundingBox.copy().offset(0.0, (double)type.maxDepth, 0.0))) {
                 this.throttle = 0.0f;
                 this.disabled = true;
             }
@@ -1344,26 +1346,26 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
             this.throttle = 0.0f;
         }
         if (this.isShowedPosition) {
-            for (final Object obj2 : this.field_70170_p.field_72996_f) {
+            for (final Object obj2 : this.worldObj.loadedEntityList) {
                 final Entity entityy = (Entity)obj2;
                 if (entityy instanceof EntityPlayer) {
-                    ((EntityPlayer)entityy).func_145747_a((IChatComponent)new ChatComponentText("Position is " + this.field_70165_t + this.field_70161_v + " Distance is " + this.func_70032_d(entityy)));
+                    ((EntityPlayer)entityy).addChatMessage((IChatComponent)new ChatComponentText("Position is " + this.posX + this.posZ + " Distance is " + this.getDistanceToEntity(entityy)));
                 }
             }
         }
-        if ((type.lockOnToLivings || type.lockOnToMechas || type.lockOnToPlanes || type.lockOnToPlayers || type.lockOnToVehicles) && !this.field_70170_p.field_72995_K && this.seats.length > 0 && this.lockOnSoundDelay <= 0 && this.seats[0] != null && this.seats[0].field_70153_n instanceof EntityPlayer) {
+        if ((type.lockOnToLivings || type.lockOnToMechas || type.lockOnToPlanes || type.lockOnToPlayers || type.lockOnToVehicles) && !this.worldObj.isRemote && this.seats.length > 0 && this.lockOnSoundDelay <= 0 && this.seats[0] != null && this.seats[0].riddenByEntity instanceof EntityPlayer) {
             final Vector3f playerVecRelToVehicle = this.seats[0].playerLooking.findGlobalVectorLocally(new Vector3f(-1.0f, 0.0f, 0.0f));
             final Vector3f playerVec = this.axes.findGlobalVectorLocally(playerVecRelToVehicle);
-            for (final Object obj3 : this.field_70170_p.field_72996_f) {
+            for (final Object obj3 : this.worldObj.loadedEntityList) {
                 final Entity entity = (Entity)obj3;
-                if (((type.lockOnToMechas && entity instanceof EntityMecha) || (type.lockOnToVehicles && entity instanceof EntityVehicle) || (type.lockOnToPlanes && entity instanceof EntityPlane) || (type.lockOnToPlayers && entity instanceof EntityPlayer) || (type.lockOnToLivings && entity instanceof EntityLivingBase)) && this.func_70068_e(entity) < type.maxRangeLockOn * type.maxRangeLockOn) {
+                if (((type.lockOnToMechas && entity instanceof EntityMecha) || (type.lockOnToVehicles && entity instanceof EntityVehicle) || (type.lockOnToPlanes && entity instanceof EntityPlane) || (type.lockOnToPlayers && entity instanceof EntityPlayer) || (type.lockOnToLivings && entity instanceof EntityLivingBase)) && this.getDistanceSqToEntity(entity) < type.maxRangeLockOn * type.maxRangeLockOn) {
                     FlansMod.log(entity.toString());
-                    final Vector3f relPosVec = new Vector3f(-entity.field_70165_t + this.seats[0].field_70165_t, -entity.field_70163_u + this.seats[0].field_70163_u, entity.field_70161_v - this.seats[0].field_70161_v);
+                    final Vector3f relPosVec = new Vector3f(-entity.posX + this.seats[0].posX, -entity.posY + this.seats[0].posY, entity.posZ - this.seats[0].posZ);
                     final float angle = Math.abs(Vector3f.angle(playerVec, relPosVec));
                     if (angle < Math.toRadians(type.canLockOnAngle)) {
-                        PacketPlaySound.sendSoundPacket(this.seats[0].field_70165_t, this.seats[0].field_70163_u, this.seats[0].field_70161_v, 10.0, this.field_71093_bK, type.lockOnSound, false);
+                        PacketPlaySound.sendSoundPacket(this.seats[0].posX, this.seats[0].posY, this.seats[0].posZ, 10.0, this.dimension, type.lockOnSound, false);
                         if (entity instanceof EntityDriveable) {
-                            PacketPlaySound.sendSoundPacket(entity.field_70165_t, entity.field_70163_u, entity.field_70161_v, ((EntityDriveable)entity).getDriveableType().lockedOnSoundRange, entity.field_71093_bK, ((EntityDriveable)entity).getDriveableType().lockingOnSound, false);
+                            PacketPlaySound.sendSoundPacket(entity.posX, entity.posY, entity.posZ, ((EntityDriveable)entity).getDriveableType().lockedOnSoundRange, entity.dimension, ((EntityDriveable)entity).getDriveableType().lockingOnSound, false);
                         }
                         this.lockOnSoundDelay = type.lockOnSoundTime;
                         break;
@@ -1389,23 +1391,23 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
         if (type.crewEngine && this.throttle < -0.01 && this.throttle < -1.0f * this.driveableData.totalCrew / this.driveableData.maximumCrew) {
             this.throttle = -1.0f * this.driveableData.totalCrew / this.driveableData.maximumCrew;
         }
-        if (this.field_70154_o != null) {
+        if (this.ridingEntity != null) {
             this.invulnerableUnmountCount = 80;
         }
         else if (this.invulnerableUnmountCount > 0) {
             --this.invulnerableUnmountCount;
         }
-        if (!this.field_70170_p.field_72995_K) {
+        if (!this.worldObj.isRemote) {
             for (int k = 0; k < this.getDriveableType().numPassengers + 1; ++k) {
-                if (this.seats[k] == null || !this.seats[k].field_70175_ag) {
-                    this.seats[k] = new EntitySeat(this.field_70170_p, this, k);
-                    this.field_70170_p.func_72838_d((Entity)this.seats[k]);
+                if (this.seats[k] == null || !this.seats[k].addedToChunk) {
+                    this.seats[k] = new EntitySeat(this.worldObj, this, k);
+                    this.worldObj.spawnEntityInWorld((Entity)this.seats[k]);
                 }
             }
             for (int k = 0; k < type.wheelPositions.length; ++k) {
-                if (this.wheels[k] == null || !this.wheels[k].field_70175_ag) {
-                    this.wheels[k] = new EntityWheel(this.field_70170_p, this, k);
-                    this.field_70170_p.func_72838_d((Entity)this.wheels[k]);
+                if (this.wheels[k] == null || !this.wheels[k].addedToChunk) {
+                    this.wheels[k] = new EntityWheel(this.worldObj, this, k);
+                    this.worldObj.spawnEntityInWorld((Entity)this.wheels[k]);
                 }
             }
         }
@@ -1415,64 +1417,64 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
         for (final DriveablePart part : this.getDriveableData().parts.values()) {
             if (part.box != null) {
                 part.update(this);
-                if (this.field_70170_p.field_72995_K) {
+                if (this.worldObj.isRemote) {
                     if (part.onFire) {
-                        final Vector3f pos = this.axes.findLocalVectorGlobally(new Vector3f(part.box.x + this.field_70146_Z.nextFloat() * part.box.w, part.box.y + this.field_70146_Z.nextFloat() * part.box.h, part.box.z + this.field_70146_Z.nextFloat() * part.box.d));
-                        this.field_70170_p.func_72869_a("flame", this.field_70165_t + pos.x, this.field_70163_u + pos.y, this.field_70161_v + pos.z, 0.0, 0.0, 0.0);
+                        final Vector3f pos = this.axes.findLocalVectorGlobally(new Vector3f(part.box.x + this.rand.nextFloat() * part.box.w, part.box.y + this.rand.nextFloat() * part.box.h, part.box.z + this.rand.nextFloat() * part.box.d));
+                        this.worldObj.spawnParticle("flame", this.posX + pos.x, this.posY + pos.y, this.posZ + pos.z, 0.0, 0.0, 0.0);
                     }
                     if (part.health > 0 && part.health < part.maxHealth / 2) {
-                        final Vector3f pos = this.axes.findLocalVectorGlobally(new Vector3f(part.box.x + this.field_70146_Z.nextFloat() * part.box.w, part.box.y + this.field_70146_Z.nextFloat() * part.box.h, part.box.z + this.field_70146_Z.nextFloat() * part.box.d));
-                        this.field_70170_p.func_72869_a((part.health < part.maxHealth / 4) ? "largesmoke" : "smoke", this.field_70165_t + pos.x, this.field_70163_u + pos.y, this.field_70161_v + pos.z, 0.0, 0.0, 0.0);
+                        final Vector3f pos = this.axes.findLocalVectorGlobally(new Vector3f(part.box.x + this.rand.nextFloat() * part.box.w, part.box.y + this.rand.nextFloat() * part.box.h, part.box.z + this.rand.nextFloat() * part.box.d));
+                        this.worldObj.spawnParticle((part.health < part.maxHealth / 4) ? "largesmoke" : "smoke", this.posX + pos.x, this.posY + pos.y, this.posZ + pos.z, 0.0, 0.0, 0.0);
                     }
                     if (this.getDriveableData().parts.get(EnumDriveablePart.turretWeak).maxHealth > 0 && this.getDriveableData().parts.get(EnumDriveablePart.turretWeak).health == 0 && this.getDriveableData().parts.get(EnumDriveablePart.turret).health > 0) {
-                        final Vector3f pos = this.axes.findLocalVectorGlobally(new Vector3f(this.getDriveableData().parts.get(EnumDriveablePart.turretWeak).box.x + this.field_70146_Z.nextFloat() * this.getDriveableData().parts.get(EnumDriveablePart.turretWeak).box.w, this.getDriveableData().parts.get(EnumDriveablePart.turretWeak).box.y + this.field_70146_Z.nextFloat() * this.getDriveableData().parts.get(EnumDriveablePart.turretWeak).box.h, this.getDriveableData().parts.get(EnumDriveablePart.turretWeak).box.z + this.field_70146_Z.nextFloat() * this.getDriveableData().parts.get(EnumDriveablePart.turretWeak).box.d));
-                        this.field_70170_p.func_72869_a("flame", this.field_70165_t + pos.x, this.field_70163_u + pos.y, this.field_70161_v + pos.z, 0.0, 0.0, 0.0);
-                        final Vector3f posturret = this.axes.findLocalVectorGlobally(new Vector3f(this.getDriveableData().parts.get(EnumDriveablePart.turret).box.x + this.field_70146_Z.nextFloat() * this.getDriveableData().parts.get(EnumDriveablePart.turret).box.w, this.getDriveableData().parts.get(EnumDriveablePart.turret).box.y + this.field_70146_Z.nextFloat() * this.getDriveableData().parts.get(EnumDriveablePart.turret).box.h, this.getDriveableData().parts.get(EnumDriveablePart.turret).box.z + this.field_70146_Z.nextFloat() * this.getDriveableData().parts.get(EnumDriveablePart.turret).box.d));
-                        this.field_70170_p.func_72869_a("flame", this.field_70165_t + posturret.x, this.field_70163_u + posturret.y, this.field_70161_v + posturret.z, 0.0, 0.0, 0.0);
+                        final Vector3f pos = this.axes.findLocalVectorGlobally(new Vector3f(this.getDriveableData().parts.get(EnumDriveablePart.turretWeak).box.x + this.rand.nextFloat() * this.getDriveableData().parts.get(EnumDriveablePart.turretWeak).box.w, this.getDriveableData().parts.get(EnumDriveablePart.turretWeak).box.y + this.rand.nextFloat() * this.getDriveableData().parts.get(EnumDriveablePart.turretWeak).box.h, this.getDriveableData().parts.get(EnumDriveablePart.turretWeak).box.z + this.rand.nextFloat() * this.getDriveableData().parts.get(EnumDriveablePart.turretWeak).box.d));
+                        this.worldObj.spawnParticle("flame", this.posX + pos.x, this.posY + pos.y, this.posZ + pos.z, 0.0, 0.0, 0.0);
+                        final Vector3f posturret = this.axes.findLocalVectorGlobally(new Vector3f(this.getDriveableData().parts.get(EnumDriveablePart.turret).box.x + this.rand.nextFloat() * this.getDriveableData().parts.get(EnumDriveablePart.turret).box.w, this.getDriveableData().parts.get(EnumDriveablePart.turret).box.y + this.rand.nextFloat() * this.getDriveableData().parts.get(EnumDriveablePart.turret).box.h, this.getDriveableData().parts.get(EnumDriveablePart.turret).box.z + this.rand.nextFloat() * this.getDriveableData().parts.get(EnumDriveablePart.turret).box.d));
+                        this.worldObj.spawnParticle("flame", this.posX + posturret.x, this.posY + posturret.y, this.posZ + posturret.z, 0.0, 0.0, 0.0);
                     }
                     if (this.getDriveableData().parts.get(EnumDriveablePart.turretWeak2).maxHealth > 0 && this.getDriveableData().parts.get(EnumDriveablePart.turretWeak2).health == 0 && this.getDriveableData().parts.get(EnumDriveablePart.turret).health > 0) {
-                        final Vector3f pos = this.axes.findLocalVectorGlobally(new Vector3f(part.box.x + this.field_70146_Z.nextFloat() * this.getDriveableData().parts.get(EnumDriveablePart.turretWeak2).box.w, this.getDriveableData().parts.get(EnumDriveablePart.turretWeak2).box.y + this.field_70146_Z.nextFloat() * this.getDriveableData().parts.get(EnumDriveablePart.turretWeak2).box.h, this.getDriveableData().parts.get(EnumDriveablePart.turretWeak2).box.z + this.field_70146_Z.nextFloat() * this.getDriveableData().parts.get(EnumDriveablePart.turretWeak2).box.d));
-                        this.field_70170_p.func_72869_a("flame", this.field_70165_t + pos.x, this.field_70163_u + pos.y, this.field_70161_v + pos.z, 0.0, 0.0, 0.0);
-                        final Vector3f posturret = this.axes.findLocalVectorGlobally(new Vector3f(this.getDriveableData().parts.get(EnumDriveablePart.turret).box.x + this.field_70146_Z.nextFloat() * this.getDriveableData().parts.get(EnumDriveablePart.turret).box.w, this.getDriveableData().parts.get(EnumDriveablePart.turret).box.y + this.field_70146_Z.nextFloat() * this.getDriveableData().parts.get(EnumDriveablePart.turret).box.h, this.getDriveableData().parts.get(EnumDriveablePart.turret).box.z + this.field_70146_Z.nextFloat() * this.getDriveableData().parts.get(EnumDriveablePart.turret).box.d));
-                        this.field_70170_p.func_72869_a("flame", this.field_70165_t + posturret.x, this.field_70163_u + posturret.y, this.field_70161_v + posturret.z, 0.0, 0.0, 0.0);
+                        final Vector3f pos = this.axes.findLocalVectorGlobally(new Vector3f(part.box.x + this.rand.nextFloat() * this.getDriveableData().parts.get(EnumDriveablePart.turretWeak2).box.w, this.getDriveableData().parts.get(EnumDriveablePart.turretWeak2).box.y + this.rand.nextFloat() * this.getDriveableData().parts.get(EnumDriveablePart.turretWeak2).box.h, this.getDriveableData().parts.get(EnumDriveablePart.turretWeak2).box.z + this.rand.nextFloat() * this.getDriveableData().parts.get(EnumDriveablePart.turretWeak2).box.d));
+                        this.worldObj.spawnParticle("flame", this.posX + pos.x, this.posY + pos.y, this.posZ + pos.z, 0.0, 0.0, 0.0);
+                        final Vector3f posturret = this.axes.findLocalVectorGlobally(new Vector3f(this.getDriveableData().parts.get(EnumDriveablePart.turret).box.x + this.rand.nextFloat() * this.getDriveableData().parts.get(EnumDriveablePart.turret).box.w, this.getDriveableData().parts.get(EnumDriveablePart.turret).box.y + this.rand.nextFloat() * this.getDriveableData().parts.get(EnumDriveablePart.turret).box.h, this.getDriveableData().parts.get(EnumDriveablePart.turret).box.z + this.rand.nextFloat() * this.getDriveableData().parts.get(EnumDriveablePart.turret).box.d));
+                        this.worldObj.spawnParticle("flame", this.posX + posturret.x, this.posY + posturret.y, this.posZ + posturret.z, 0.0, 0.0, 0.0);
                     }
                     if ((type.epicShip && this.ticksFlareUsing > 0) || this.ticksRepairing > 0) {
                         if (this.getDriveableData().parts.get(EnumDriveablePart.left).maxHealth > 0) {
-                            final Vector3f posleft = this.axes.findLocalVectorGlobally(new Vector3f(this.getDriveableData().parts.get(EnumDriveablePart.left).box.x + this.field_70146_Z.nextFloat() * this.getDriveableData().parts.get(EnumDriveablePart.left).box.w, this.getDriveableData().parts.get(EnumDriveablePart.left).box.y + this.field_70146_Z.nextFloat() * this.getDriveableData().parts.get(EnumDriveablePart.left).box.h, this.getDriveableData().parts.get(EnumDriveablePart.left).box.z + this.field_70146_Z.nextFloat() * this.getDriveableData().parts.get(EnumDriveablePart.left).box.d));
-                            FlansMod.getPacketHandler().sendToAllAround(new PacketFlak(this.field_70165_t + posleft.x, this.field_70163_u + posleft.y, this.field_70161_v + posleft.z, 1, "heart"), this.field_70165_t + posleft.x, this.field_70163_u + posleft.y, this.field_70161_v + posleft.z, 200.0f, this.field_71093_bK);
+                            final Vector3f posleft = this.axes.findLocalVectorGlobally(new Vector3f(this.getDriveableData().parts.get(EnumDriveablePart.left).box.x + this.rand.nextFloat() * this.getDriveableData().parts.get(EnumDriveablePart.left).box.w, this.getDriveableData().parts.get(EnumDriveablePart.left).box.y + this.rand.nextFloat() * this.getDriveableData().parts.get(EnumDriveablePart.left).box.h, this.getDriveableData().parts.get(EnumDriveablePart.left).box.z + this.rand.nextFloat() * this.getDriveableData().parts.get(EnumDriveablePart.left).box.d));
+                            FlansMod.getPacketHandler().sendToAllAround(new PacketFlak(this.posX + posleft.x, this.posY + posleft.y, this.posZ + posleft.z, 1, "heart"), this.posX + posleft.x, this.posY + posleft.y, this.posZ + posleft.z, 200.0f, this.dimension);
                         }
                         if (this.getDriveableData().parts.get(EnumDriveablePart.core).maxHealth > 0) {
-                            final Vector3f posleft = this.axes.findLocalVectorGlobally(new Vector3f(this.getDriveableData().parts.get(EnumDriveablePart.core).box.x + this.field_70146_Z.nextFloat() * this.getDriveableData().parts.get(EnumDriveablePart.core).box.w, this.getDriveableData().parts.get(EnumDriveablePart.core).box.y + this.field_70146_Z.nextFloat() * this.getDriveableData().parts.get(EnumDriveablePart.core).box.h, this.getDriveableData().parts.get(EnumDriveablePart.core).box.z + this.field_70146_Z.nextFloat() * this.getDriveableData().parts.get(EnumDriveablePart.core).box.d));
-                            FlansMod.getPacketHandler().sendToAllAround(new PacketFlak(this.field_70165_t + posleft.x, this.field_70163_u + posleft.y, this.field_70161_v + posleft.z, 1, "heart"), this.field_70165_t + posleft.x, this.field_70163_u + posleft.y, this.field_70161_v + posleft.z, 200.0f, this.field_71093_bK);
+                            final Vector3f posleft = this.axes.findLocalVectorGlobally(new Vector3f(this.getDriveableData().parts.get(EnumDriveablePart.core).box.x + this.rand.nextFloat() * this.getDriveableData().parts.get(EnumDriveablePart.core).box.w, this.getDriveableData().parts.get(EnumDriveablePart.core).box.y + this.rand.nextFloat() * this.getDriveableData().parts.get(EnumDriveablePart.core).box.h, this.getDriveableData().parts.get(EnumDriveablePart.core).box.z + this.rand.nextFloat() * this.getDriveableData().parts.get(EnumDriveablePart.core).box.d));
+                            FlansMod.getPacketHandler().sendToAllAround(new PacketFlak(this.posX + posleft.x, this.posY + posleft.y, this.posZ + posleft.z, 1, "heart"), this.posX + posleft.x, this.posY + posleft.y, this.posZ + posleft.z, 200.0f, this.dimension);
                         }
                         if (this.getDriveableData().parts.get(EnumDriveablePart.turret).maxHealth > 0) {
-                            final Vector3f posleft = this.axes.findLocalVectorGlobally(new Vector3f(this.getDriveableData().parts.get(EnumDriveablePart.turret).box.x + this.field_70146_Z.nextFloat() * this.getDriveableData().parts.get(EnumDriveablePart.turret).box.w, this.getDriveableData().parts.get(EnumDriveablePart.turret).box.y + this.field_70146_Z.nextFloat() * this.getDriveableData().parts.get(EnumDriveablePart.turret).box.h, this.getDriveableData().parts.get(EnumDriveablePart.turret).box.z + this.field_70146_Z.nextFloat() * this.getDriveableData().parts.get(EnumDriveablePart.turret).box.d));
-                            FlansMod.getPacketHandler().sendToAllAround(new PacketFlak(this.field_70165_t + posleft.x, this.field_70163_u + posleft.y, this.field_70161_v + posleft.z, 1, "heart"), this.field_70165_t + posleft.x, this.field_70163_u + posleft.y, this.field_70161_v + posleft.z, 200.0f, this.field_71093_bK);
+                            final Vector3f posleft = this.axes.findLocalVectorGlobally(new Vector3f(this.getDriveableData().parts.get(EnumDriveablePart.turret).box.x + this.rand.nextFloat() * this.getDriveableData().parts.get(EnumDriveablePart.turret).box.w, this.getDriveableData().parts.get(EnumDriveablePart.turret).box.y + this.rand.nextFloat() * this.getDriveableData().parts.get(EnumDriveablePart.turret).box.h, this.getDriveableData().parts.get(EnumDriveablePart.turret).box.z + this.rand.nextFloat() * this.getDriveableData().parts.get(EnumDriveablePart.turret).box.d));
+                            FlansMod.getPacketHandler().sendToAllAround(new PacketFlak(this.posX + posleft.x, this.posY + posleft.y, this.posZ + posleft.z, 1, "heart"), this.posX + posleft.x, this.posY + posleft.y, this.posZ + posleft.z, 200.0f, this.dimension);
                         }
                         if (this.getDriveableData().parts.get(EnumDriveablePart.right).maxHealth > 0) {
-                            final Vector3f posright = this.axes.findLocalVectorGlobally(new Vector3f(this.getDriveableData().parts.get(EnumDriveablePart.right).box.x + this.field_70146_Z.nextFloat() * this.getDriveableData().parts.get(EnumDriveablePart.right).box.w, this.getDriveableData().parts.get(EnumDriveablePart.right).box.y + this.field_70146_Z.nextFloat() * this.getDriveableData().parts.get(EnumDriveablePart.right).box.h, this.getDriveableData().parts.get(EnumDriveablePart.right).box.z + this.field_70146_Z.nextFloat() * this.getDriveableData().parts.get(EnumDriveablePart.right).box.d));
-                            FlansMod.getPacketHandler().sendToAllAround(new PacketFlak(this.field_70165_t + posright.x, this.field_70163_u + posright.y, this.field_70161_v + posright.z, 1, "heart"), this.field_70165_t + posright.x, this.field_70163_u + posright.y, this.field_70161_v + posright.z, 200.0f, this.field_71093_bK);
+                            final Vector3f posright = this.axes.findLocalVectorGlobally(new Vector3f(this.getDriveableData().parts.get(EnumDriveablePart.right).box.x + this.rand.nextFloat() * this.getDriveableData().parts.get(EnumDriveablePart.right).box.w, this.getDriveableData().parts.get(EnumDriveablePart.right).box.y + this.rand.nextFloat() * this.getDriveableData().parts.get(EnumDriveablePart.right).box.h, this.getDriveableData().parts.get(EnumDriveablePart.right).box.z + this.rand.nextFloat() * this.getDriveableData().parts.get(EnumDriveablePart.right).box.d));
+                            FlansMod.getPacketHandler().sendToAllAround(new PacketFlak(this.posX + posright.x, this.posY + posright.y, this.posZ + posright.z, 1, "heart"), this.posX + posright.x, this.posY + posright.y, this.posZ + posright.z, 200.0f, this.dimension);
                         }
                         if (this.getDriveableData().parts.get(EnumDriveablePart.bow).maxHealth > 0) {
-                            final Vector3f posbow = this.axes.findLocalVectorGlobally(new Vector3f(this.getDriveableData().parts.get(EnumDriveablePart.bow).box.x + this.field_70146_Z.nextFloat() * this.getDriveableData().parts.get(EnumDriveablePart.bow).box.w, this.getDriveableData().parts.get(EnumDriveablePart.bow).box.y + this.field_70146_Z.nextFloat() * this.getDriveableData().parts.get(EnumDriveablePart.bow).box.h, this.getDriveableData().parts.get(EnumDriveablePart.bow).box.z + this.field_70146_Z.nextFloat() * this.getDriveableData().parts.get(EnumDriveablePart.bow).box.d));
-                            FlansMod.getPacketHandler().sendToAllAround(new PacketFlak(this.field_70165_t + posbow.x, this.field_70163_u + posbow.y, this.field_70161_v + posbow.z, 1, "heart"), this.field_70165_t + posbow.x, this.field_70163_u + posbow.y, this.field_70161_v + posbow.z, 200.0f, this.field_71093_bK);
+                            final Vector3f posbow = this.axes.findLocalVectorGlobally(new Vector3f(this.getDriveableData().parts.get(EnumDriveablePart.bow).box.x + this.rand.nextFloat() * this.getDriveableData().parts.get(EnumDriveablePart.bow).box.w, this.getDriveableData().parts.get(EnumDriveablePart.bow).box.y + this.rand.nextFloat() * this.getDriveableData().parts.get(EnumDriveablePart.bow).box.h, this.getDriveableData().parts.get(EnumDriveablePart.bow).box.z + this.rand.nextFloat() * this.getDriveableData().parts.get(EnumDriveablePart.bow).box.d));
+                            FlansMod.getPacketHandler().sendToAllAround(new PacketFlak(this.posX + posbow.x, this.posY + posbow.y, this.posZ + posbow.z, 1, "heart"), this.posX + posbow.x, this.posY + posbow.y, this.posZ + posbow.z, 200.0f, this.dimension);
                         }
                         if (this.getDriveableData().parts.get(EnumDriveablePart.stern).maxHealth > 0) {
-                            final Vector3f posstern = this.axes.findLocalVectorGlobally(new Vector3f(this.getDriveableData().parts.get(EnumDriveablePart.stern).box.x + this.field_70146_Z.nextFloat() * this.getDriveableData().parts.get(EnumDriveablePart.stern).box.w, this.getDriveableData().parts.get(EnumDriveablePart.stern).box.y + this.field_70146_Z.nextFloat() * this.getDriveableData().parts.get(EnumDriveablePart.stern).box.h, this.getDriveableData().parts.get(EnumDriveablePart.stern).box.z + this.field_70146_Z.nextFloat() * this.getDriveableData().parts.get(EnumDriveablePart.stern).box.d));
-                            FlansMod.getPacketHandler().sendToAllAround(new PacketFlak(this.field_70165_t + posstern.x, this.field_70163_u + posstern.y, this.field_70161_v + posstern.z, 1, "heart"), this.field_70165_t + posstern.x, this.field_70163_u + posstern.y, this.field_70161_v + posstern.z, 200.0f, this.field_71093_bK);
+                            final Vector3f posstern = this.axes.findLocalVectorGlobally(new Vector3f(this.getDriveableData().parts.get(EnumDriveablePart.stern).box.x + this.rand.nextFloat() * this.getDriveableData().parts.get(EnumDriveablePart.stern).box.w, this.getDriveableData().parts.get(EnumDriveablePart.stern).box.y + this.rand.nextFloat() * this.getDriveableData().parts.get(EnumDriveablePart.stern).box.h, this.getDriveableData().parts.get(EnumDriveablePart.stern).box.z + this.rand.nextFloat() * this.getDriveableData().parts.get(EnumDriveablePart.stern).box.d));
+                            FlansMod.getPacketHandler().sendToAllAround(new PacketFlak(this.posX + posstern.x, this.posY + posstern.y, this.posZ + posstern.z, 1, "heart"), this.posX + posstern.x, this.posY + posstern.y, this.posZ + posstern.z, 200.0f, this.dimension);
                         }
                         if (this.getDriveableData().parts.get(EnumDriveablePart.midsection).maxHealth > 0) {
-                            final Vector3f posmid = this.axes.findLocalVectorGlobally(new Vector3f(this.getDriveableData().parts.get(EnumDriveablePart.midsection).box.x + this.field_70146_Z.nextFloat() * this.getDriveableData().parts.get(EnumDriveablePart.midsection).box.w, this.getDriveableData().parts.get(EnumDriveablePart.midsection).box.y + this.field_70146_Z.nextFloat() * this.getDriveableData().parts.get(EnumDriveablePart.midsection).box.h, this.getDriveableData().parts.get(EnumDriveablePart.midsection).box.z + this.field_70146_Z.nextFloat() * this.getDriveableData().parts.get(EnumDriveablePart.midsection).box.d));
-                            FlansMod.getPacketHandler().sendToAllAround(new PacketFlak(this.field_70165_t + posmid.x, this.field_70163_u + posmid.y, this.field_70161_v + posmid.z, 1, "heart"), this.field_70165_t + posmid.x, this.field_70163_u + posmid.y, this.field_70161_v + posmid.z, 200.0f, this.field_71093_bK);
+                            final Vector3f posmid = this.axes.findLocalVectorGlobally(new Vector3f(this.getDriveableData().parts.get(EnumDriveablePart.midsection).box.x + this.rand.nextFloat() * this.getDriveableData().parts.get(EnumDriveablePart.midsection).box.w, this.getDriveableData().parts.get(EnumDriveablePart.midsection).box.y + this.rand.nextFloat() * this.getDriveableData().parts.get(EnumDriveablePart.midsection).box.h, this.getDriveableData().parts.get(EnumDriveablePart.midsection).box.z + this.rand.nextFloat() * this.getDriveableData().parts.get(EnumDriveablePart.midsection).box.d));
+                            FlansMod.getPacketHandler().sendToAllAround(new PacketFlak(this.posX + posmid.x, this.posY + posmid.y, this.posZ + posmid.z, 1, "heart"), this.posX + posmid.x, this.posY + posmid.y, this.posZ + posmid.z, 200.0f, this.dimension);
                         }
                     }
                 }
                 if (part.onFire) {
-                    if (this.field_70170_p.func_72896_J() && this.field_70146_Z.nextInt(40) == 0) {
+                    if (this.worldObj.isRaining() && this.rand.nextInt(40) == 0) {
                         part.onFire = false;
                     }
                     final Vector3f pos = this.axes.findLocalVectorGlobally(new Vector3f(part.box.x + part.box.w / 2.0f, part.box.y + part.box.h / 2.0f, part.box.z + part.box.d / 2.0f));
-                    if (this.field_70170_p.func_147439_a(MathHelper.func_76128_c(this.field_70165_t + pos.x), MathHelper.func_76128_c(this.field_70163_u + pos.y), MathHelper.func_76128_c(this.field_70161_v + pos.z)).func_149688_o() != Material.field_151586_h) {
+                    if (this.worldObj.getBlock(MathHelper.floor_double(this.posX + pos.x), MathHelper.floor_double(this.posY + pos.y), MathHelper.floor_double(this.posZ + pos.z)).getMaterial() != Material.water) {
                         continue;
                     }
                     part.onFire = false;
@@ -1504,21 +1506,21 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
                     Vector3f pos2 = new Vector3f(0.0f, 0.0f, 0.0f);
                     if (this.seats != null && this.seats[0] != null) {
                         if (EnumDriveablePart.getPart(emitter.part) != EnumDriveablePart.turret && EnumDriveablePart.getPart(emitter.part) != EnumDriveablePart.barrel) {
-                            final Vector3f localPosition = new Vector3f(emitter.origin.x + this.field_70146_Z.nextFloat() * emitter.extents.x - emitter.extents.x * 0.5f, emitter.origin.y + this.field_70146_Z.nextFloat() * emitter.extents.y - emitter.extents.y * 0.5f, emitter.origin.z + this.field_70146_Z.nextFloat() * emitter.extents.z - emitter.extents.z * 0.5f);
+                            final Vector3f localPosition = new Vector3f(emitter.origin.x + this.rand.nextFloat() * emitter.extents.x - emitter.extents.x * 0.5f, emitter.origin.y + this.rand.nextFloat() * emitter.extents.y - emitter.extents.y * 0.5f, emitter.origin.z + this.rand.nextFloat() * emitter.extents.z - emitter.extents.z * 0.5f);
                             pos2 = this.axes.findLocalVectorGlobally(localPosition);
                             velocity = this.axes.findLocalVectorGlobally(emitter.velocity);
                         }
                         else if (EnumDriveablePart.getPart(emitter.part) == EnumDriveablePart.turret || (EnumDriveablePart.getPart(emitter.part) == EnumDriveablePart.head && emitter.part != "barrel")) {
-                            final Vector3f localPosition2 = new Vector3f(emitter.origin.x + this.field_70146_Z.nextFloat() * emitter.extents.x - emitter.extents.x * 0.5f, emitter.origin.y + this.field_70146_Z.nextFloat() * emitter.extents.y - emitter.extents.y * 0.5f, emitter.origin.z + this.field_70146_Z.nextFloat() * emitter.extents.z - emitter.extents.z * 0.5f);
+                            final Vector3f localPosition2 = new Vector3f(emitter.origin.x + this.rand.nextFloat() * emitter.extents.x - emitter.extents.x * 0.5f, emitter.origin.y + this.rand.nextFloat() * emitter.extents.y - emitter.extents.y * 0.5f, emitter.origin.z + this.rand.nextFloat() * emitter.extents.z - emitter.extents.z * 0.5f);
                             pos2 = this.getPositionOnTurret(localPosition2, false);
                             velocity = this.getPositionOnTurret(emitter.velocity, false);
                         }
                         else if (EnumDriveablePart.getPart(emitter.part) == EnumDriveablePart.barrel) {
-                            final Vector3f localPosition2 = new Vector3f(emitter.origin.x + this.field_70146_Z.nextFloat() * emitter.extents.x - emitter.extents.x * 0.5f, emitter.origin.y + this.field_70146_Z.nextFloat() * emitter.extents.y - emitter.extents.y * 0.5f, emitter.origin.z + this.field_70146_Z.nextFloat() * emitter.extents.z - emitter.extents.z * 0.5f);
+                            final Vector3f localPosition2 = new Vector3f(emitter.origin.x + this.rand.nextFloat() * emitter.extents.x - emitter.extents.x * 0.5f, emitter.origin.y + this.rand.nextFloat() * emitter.extents.y - emitter.extents.y * 0.5f, emitter.origin.z + this.rand.nextFloat() * emitter.extents.z - emitter.extents.z * 0.5f);
                             pos2 = this.getPositionOnTurret(localPosition2, true);
                             velocity = this.getPositionOnTurret(emitter.velocity, true);
                         }
-                        FlansMod.getPacketHandler().sendToAllAround(new PacketParticle(emitter.effectType, this.field_70165_t + pos2.x, this.field_70163_u + pos2.y, this.field_70161_v + pos2.z, velocity.x, velocity.y, velocity.z), this.field_70165_t + pos2.x, this.field_70163_u + pos2.y, this.field_70161_v + pos2.z, 150.0f, this.field_71093_bK);
+                        FlansMod.getPacketHandler().sendToAllAround(new PacketParticle(emitter.effectType, this.posX + pos2.x, this.posY + pos2.y, this.posZ + pos2.z, velocity.x, velocity.y, velocity.z), this.posX + pos2.x, this.posY + pos2.y, this.posZ + pos2.z, 150.0f, this.dimension);
                     }
                 }
                 this.emitterTimers[k] = emitter.emitRate;
@@ -1535,43 +1537,43 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
                 Vector3f pos3 = new Vector3f(0.0f, 0.0f, 0.0f);
                 if (this.seats != null && this.seats[0] != null) {
                     if (EnumDriveablePart.getPart(emitter2.part) != EnumDriveablePart.turret && EnumDriveablePart.getPart(emitter2.part) != EnumDriveablePart.barrel) {
-                        final Vector3f localPosition3 = new Vector3f(emitter2.origin.x + this.field_70146_Z.nextFloat() * emitter2.extents.x - emitter2.extents.x * 0.5f, emitter2.origin.y + this.field_70146_Z.nextFloat() * emitter2.extents.y - emitter2.extents.y * 0.5f, emitter2.origin.z + this.field_70146_Z.nextFloat() * emitter2.extents.z - emitter2.extents.z * 0.5f);
+                        final Vector3f localPosition3 = new Vector3f(emitter2.origin.x + this.rand.nextFloat() * emitter2.extents.x - emitter2.extents.x * 0.5f, emitter2.origin.y + this.rand.nextFloat() * emitter2.extents.y - emitter2.extents.y * 0.5f, emitter2.origin.z + this.rand.nextFloat() * emitter2.extents.z - emitter2.extents.z * 0.5f);
                         pos3 = this.axes.findLocalVectorGlobally(localPosition3);
                         velocity2 = this.axes.findLocalVectorGlobally(emitter2.velocity);
                     }
                     else if (EnumDriveablePart.getPart(emitter2.part) == EnumDriveablePart.turret || (EnumDriveablePart.getPart(emitter2.part) == EnumDriveablePart.head && emitter2.part != "barrel")) {
-                        final Vector3f localPosition4 = new Vector3f(emitter2.origin.x + this.field_70146_Z.nextFloat() * emitter2.extents.x - emitter2.extents.x * 0.5f, emitter2.origin.y + this.field_70146_Z.nextFloat() * emitter2.extents.y - emitter2.extents.y * 0.5f, emitter2.origin.z + this.field_70146_Z.nextFloat() * emitter2.extents.z - emitter2.extents.z * 0.5f);
+                        final Vector3f localPosition4 = new Vector3f(emitter2.origin.x + this.rand.nextFloat() * emitter2.extents.x - emitter2.extents.x * 0.5f, emitter2.origin.y + this.rand.nextFloat() * emitter2.extents.y - emitter2.extents.y * 0.5f, emitter2.origin.z + this.rand.nextFloat() * emitter2.extents.z - emitter2.extents.z * 0.5f);
                         pos3 = this.getPositionOnTurret(localPosition4, false);
                         velocity2 = this.getPositionOnTurret(emitter2.velocity, false);
                     }
                     else if (EnumDriveablePart.getPart(emitter2.part) == EnumDriveablePart.barrel) {
-                        final Vector3f localPosition4 = new Vector3f(emitter2.origin.x + this.field_70146_Z.nextFloat() * emitter2.extents.x - emitter2.extents.x * 0.5f, emitter2.origin.y + this.field_70146_Z.nextFloat() * emitter2.extents.y - emitter2.extents.y * 0.5f, emitter2.origin.z + this.field_70146_Z.nextFloat() * emitter2.extents.z - emitter2.extents.z * 0.5f);
+                        final Vector3f localPosition4 = new Vector3f(emitter2.origin.x + this.rand.nextFloat() * emitter2.extents.x - emitter2.extents.x * 0.5f, emitter2.origin.y + this.rand.nextFloat() * emitter2.extents.y - emitter2.extents.y * 0.5f, emitter2.origin.z + this.rand.nextFloat() * emitter2.extents.z - emitter2.extents.z * 0.5f);
                         pos3 = this.getPositionOnTurret(localPosition4, true);
                         velocity2 = this.getPositionOnTurret(emitter2.velocity, true);
                     }
-                    FlansMod.getPacketHandler().sendToAllAround(new PacketParticle(emitter2.effectType, this.field_70165_t + pos3.x, this.field_70163_u + pos3.y, this.field_70161_v + pos3.z, velocity2.x, velocity2.y, velocity2.z), this.field_70165_t + pos3.x, this.field_70163_u + pos3.y, this.field_70161_v + pos3.z, 150.0f, this.field_71093_bK);
+                    FlansMod.getPacketHandler().sendToAllAround(new PacketParticle(emitter2.effectType, this.posX + pos3.x, this.posY + pos3.y, this.posZ + pos3.z, velocity2.x, velocity2.y, velocity2.z), this.posX + pos3.x, this.posY + pos3.y, this.posZ + pos3.z, 150.0f, this.dimension);
                 }
             }
         }
         this.checkParts();
-        this.field_70126_B = this.axes.getYaw();
-        this.field_70127_C = this.axes.getPitch();
+        this.prevRotationYaw = this.axes.getYaw();
+        this.prevRotationPitch = this.axes.getPitch();
         this.prevRotationRoll = this.axes.getRoll();
         this.prevAxes = this.axes.clone();
-        if (this.field_70153_n != null && this.field_70153_n.field_70128_L) {
-            this.field_70153_n = null;
+        if (this.riddenByEntity != null && this.riddenByEntity.isDead) {
+            this.riddenByEntity = null;
         }
-        if (this.field_70153_n != null && this.field_70128_L) {
-            this.field_70153_n.func_70078_a((Entity)null);
+        if (this.riddenByEntity != null && this.isDead) {
+            this.riddenByEntity.mountEntity((Entity)null);
         }
-        if (this.field_70153_n != null) {
-            this.field_70153_n.field_70143_R = 0.0f;
+        if (this.riddenByEntity != null) {
+            this.riddenByEntity.fallDistance = 0.0f;
         }
         final boolean canThrust = this.driverIsCreative() || this.driveableData.fuelInTank > 0.0f;
-        if ((this.seats[0] != null && this.seats[0].field_70153_n == null) || (!canThrust && this.getDriveableType().maxThrottle != 0.0f && this.getDriveableType().maxNegativeThrottle != 0.0f)) {
+        if ((this.seats[0] != null && this.seats[0].riddenByEntity == null) || (!canThrust && this.getDriveableType().maxThrottle != 0.0f && this.getDriveableType().maxNegativeThrottle != 0.0f)) {
             this.throttle *= 0.9995f;
         }
-        if (this.seats[0] != null && this.seats[0].field_70153_n == null) {
+        if (this.seats[0] != null && this.seats[0].riddenByEntity == null) {
             final boolean b = false;
             this.leftMouseHeld = b;
             this.rightMouseHeld = b;
@@ -1589,14 +1591,14 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
         final DriveableData driveableData6 = data;
         --driveableData6.fakeReloadMissile;
         if (this.getDriveableType().reloadSoundTick != 15214541 && this.shootDelayPrimary == this.getDriveableType().reloadSoundTick) {
-            PacketPlaySound.sendSoundPacket(this.field_70165_t, this.field_70163_u, this.field_70161_v, 50.0, this.field_71093_bK, type.shootReloadSound, false);
+            PacketPlaySound.sendSoundPacket(this.posX, this.posY, this.posZ, 50.0, this.dimension, type.shootReloadSound, false);
         }
-        if (this.field_70173_aa == 40) {
-            this.driveableData.originX = (int)this.field_70165_t;
-            this.driveableData.originY = (int)this.field_70163_u + 1;
-            this.driveableData.originZ = (int)this.field_70161_v;
+        if (this.ticksExisted == 40) {
+            this.driveableData.originX = (int)this.posX;
+            this.driveableData.originY = (int)this.posY + 1;
+            this.driveableData.originZ = (int)this.posZ;
         }
-        if (this.field_70173_aa == 1) {
+        if (this.ticksExisted == 1) {
             if (type.hasAPS) {
                 this.APSchecker = 1;
             }
@@ -1608,31 +1610,31 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
                 data.fakeReloadShell = (float)this.getDriveableType().placeTimePrimary;
                 data.fakeReloadMissile = (float)this.getDriveableType().placeTimeSecondary;
             }
-            if (!this.field_70170_p.field_72995_K) {
+            if (!this.worldObj.isRemote) {
                 if (!this.getDriveableType().placeSoundPrimary.isEmpty()) {
-                    PacketPlaySound.sendSoundPacket(this.field_70165_t, this.field_70163_u, this.field_70161_v, 50.0, this.field_71093_bK, this.getDriveableType().placeSoundPrimary, false);
+                    PacketPlaySound.sendSoundPacket(this.posX, this.posY, this.posZ, 50.0, this.dimension, this.getDriveableType().placeSoundPrimary, false);
                 }
                 if (!this.getDriveableType().placeSoundSecondary.isEmpty()) {
-                    PacketPlaySound.sendSoundPacket(this.field_70165_t, this.field_70163_u, this.field_70161_v, 50.0, this.field_71093_bK, this.getDriveableType().placeSoundSecondary, false);
+                    PacketPlaySound.sendSoundPacket(this.posX, this.posY, this.posZ, 50.0, this.dimension, this.getDriveableType().placeSoundSecondary, false);
                 }
             }
         }
         if (type.evilGolem) {
-            if (this.softTarget != null && (this.softTarget.field_70128_L || (this.softTarget.func_70115_ae() && this.softTarget.field_70154_o != null && this.softTarget.field_70154_o instanceof EntitySeat && ((EntitySeat)this.softTarget.field_70154_o).driveable != null && ((EntitySeat)this.softTarget.field_70154_o).driveable instanceof EntityVehicle))) {
+            if (this.softTarget != null && (this.softTarget.isDead || (this.softTarget.isRiding() && this.softTarget.ridingEntity != null && this.softTarget.ridingEntity instanceof EntitySeat && ((EntitySeat)this.softTarget.ridingEntity).driveable != null && ((EntitySeat)this.softTarget.ridingEntity).driveable instanceof EntityVehicle))) {
                 this.softTarget = null;
             }
-            if (this.airTarget != null && this.airTarget.field_70128_L) {
+            if (this.airTarget != null && this.airTarget.isDead) {
                 this.airTarget = null;
             }
-            if (this.softTarget == null && this.airTarget == null && this.field_70173_aa % 10.0f == 0.0f && !this.field_70170_p.field_72995_K) {
-                if (this.field_70170_p.field_72995_K) {
+            if (this.softTarget == null && this.airTarget == null && this.ticksExisted % 10.0f == 0.0f && !this.worldObj.isRemote) {
+                if (this.worldObj.isRemote) {
                     this.softTarget = null;
                     this.airTarget = null;
                 }
-                for (final Object obj4 : this.field_70170_p.func_72839_b((Entity)this, this.field_70121_D.func_72314_b((double)type.evilRange, (double)type.evilRange, (double)type.evilRange))) {
+                for (final Object obj4 : this.worldObj.getEntitiesWithinAABBExcludingEntity((Entity)this, this.boundingBox.expand((double)type.evilRange, (double)type.evilRange, (double)type.evilRange))) {
                     final Entity candidateEntity = (Entity)obj4;
-                    if (candidateEntity != null && candidateEntity != this && (candidateEntity instanceof EntityPlayer || candidateEntity instanceof EntityPlane) && candidateEntity.func_70032_d((Entity)this) < type.evilRange) {
-                        if (candidateEntity instanceof EntityPlayer && (!candidateEntity.func_70115_ae() || candidateEntity.field_70154_o == null || !(candidateEntity.field_70154_o instanceof EntitySeat) || ((EntitySeat)candidateEntity.field_70154_o).driveable == null || !(((EntitySeat)candidateEntity.field_70154_o).driveable instanceof EntityVehicle))) {
+                    if (candidateEntity != null && candidateEntity != this && (candidateEntity instanceof EntityPlayer || candidateEntity instanceof EntityPlane) && candidateEntity.getDistanceToEntity((Entity)this) < type.evilRange) {
+                        if (candidateEntity instanceof EntityPlayer && (!candidateEntity.isRiding() || candidateEntity.ridingEntity == null || !(candidateEntity.ridingEntity instanceof EntitySeat) || ((EntitySeat)candidateEntity.ridingEntity).driveable == null || !(((EntitySeat)candidateEntity.ridingEntity).driveable instanceof EntityVehicle))) {
                             this.softTarget = (EntityPlayer)candidateEntity;
                         }
                         else {
@@ -1652,14 +1654,14 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
                 float dy2 = 0.0f;
                 float dz2 = 0.0f;
                 if (this.softTarget != null && this.seats != null && this.seats[0] != null) {
-                    dX = this.softTarget.field_70165_t - this.seats[0].field_70165_t;
-                    dY = this.softTarget.field_70163_u - (this.seats[0].field_70163_u + 0.5);
-                    dZ = this.softTarget.field_70161_v - this.seats[0].field_70161_v;
+                    dX = this.softTarget.posX - this.seats[0].posX;
+                    dY = this.softTarget.posY - (this.seats[0].posY + 0.5);
+                    dZ = this.softTarget.posZ - this.seats[0].posZ;
                 }
                 if (this.airTarget != null && this.seats != null && this.seats[0] != null) {
-                    dX = this.airTarget.field_70165_t - this.seats[0].field_70165_t;
-                    dY = this.airTarget.field_70163_u - (this.seats[0].field_70163_u + 1.5);
-                    dZ = this.airTarget.field_70161_v - this.seats[0].field_70161_v;
+                    dX = this.airTarget.posX - this.seats[0].posX;
+                    dY = this.airTarget.posY - (this.seats[0].posY + 1.5);
+                    dZ = this.airTarget.posZ - this.seats[0].posZ;
                 }
                 final double distanceToSoftTarget = Math.sqrt(dX * dX + dY * dY + dZ * dZ);
                 dx2 = (float)(dX / distanceToSoftTarget);
@@ -1677,7 +1679,7 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
                 }
             }
         }
-        if (!this.field_70170_p.field_72995_K) {
+        if (!this.worldObj.isRemote) {
             if (type.evilGolem && this.getDriveableType().modePrimary == EnumFireMode.FULLAUTO && this.shootingAA) {
                 this.shoot(false, true);
                 this.shoot(true, true);
@@ -1714,11 +1716,11 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
         if (data.fuelInTank >= type.fuelTankSize) {
             return;
         }
-        for (int l = 0; l < data.func_70302_i_(); ++l) {
-            final ItemStack stack = data.func_70301_a(l);
+        for (int l = 0; l < data.getSizeInventory(); ++l) {
+            final ItemStack stack = data.getStackInSlot(l);
             if (stack != null) {
-                if (stack.field_77994_a > 0) {
-                    final Item item = stack.func_77973_b();
+                if (stack.stackSize > 0) {
+                    final Item item = stack.getItem();
                     if (data.engine.useRFPower) {
                         if (item instanceof IEnergyContainerItem) {
                             final IEnergyContainerItem energy = (IEnergyContainerItem)item;
@@ -1732,34 +1734,34 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
                             if (part3.category == 9) {
                                 final DriveableData driveableData8 = data;
                                 driveableData8.fuelInTank += fuelMultiplier;
-                                final int damage = stack.func_77960_j();
-                                stack.func_77964_b(damage + 1);
-                                if (damage < stack.func_77958_k()) {
+                                final int damage = stack.getMetadata();
+                                stack.setMetadata(damage + 1);
+                                if (damage < stack.getMaxDurability()) {
                                     break;
                                 }
-                                stack.func_77964_b(0);
+                                stack.setMetadata(0);
                                 final ItemStack itemStack = stack;
-                                --itemStack.field_77994_a;
-                                if (stack.field_77994_a <= 0) {
-                                    data.func_70299_a(l, null);
+                                --itemStack.stackSize;
+                                if (stack.stackSize <= 0) {
+                                    data.setInventorySlotContents(l, null);
                                     break;
                                 }
                                 break;
                             }
                         }
-                        else if (FlansMod.hooks.BuildCraftLoaded && stack.func_77969_a(FlansMod.hooks.BuildCraftOilBucket) && data.fuelInTank + 1000 * fuelMultiplier <= type.fuelTankSize) {
+                        else if (FlansMod.hooks.BuildCraftLoaded && stack.isItemEqual(FlansMod.hooks.BuildCraftOilBucket) && data.fuelInTank + 1000 * fuelMultiplier <= type.fuelTankSize) {
                             final DriveableData driveableData9 = data;
                             driveableData9.fuelInTank += 1000 * fuelMultiplier;
-                            data.func_70299_a(l, new ItemStack(Items.field_151133_ar));
+                            data.setInventorySlotContents(l, new ItemStack(Items.bucket));
                         }
-                        else if (FlansMod.hooks.BuildCraftLoaded && stack.func_77969_a(FlansMod.hooks.BuildCraftFuelBucket) && data.fuelInTank + 2000 * fuelMultiplier <= type.fuelTankSize) {
+                        else if (FlansMod.hooks.BuildCraftLoaded && stack.isItemEqual(FlansMod.hooks.BuildCraftFuelBucket) && data.fuelInTank + 2000 * fuelMultiplier <= type.fuelTankSize) {
                             final DriveableData driveableData10 = data;
                             driveableData10.fuelInTank += 2000 * fuelMultiplier;
-                            data.func_70299_a(l, new ItemStack(Items.field_151133_ar));
+                            data.setInventorySlotContents(l, new ItemStack(Items.bucket));
                         }
-                        this.field_70169_q = this.field_70165_t;
-                        this.field_70167_r = this.field_70163_u;
-                        this.field_70166_s = this.field_70161_v;
+                        this.prevPosX = this.posX;
+                        this.prevPosY = this.posY;
+                        this.prevPosZ = this.posZ;
                     }
                 }
             }
@@ -1781,7 +1783,7 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
         if (type == null) {
             return;
         }
-        if (this.field_70170_p.field_72995_K) {
+        if (this.worldObj.isRemote) {
             return;
         }
         if (!this.driveableData.inventoryChanged) {
@@ -1804,14 +1806,14 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
                         this.prevInventoryItems[ps] = new ItemStack[isize];
                     }
                     for (int i = 0; i < isize; ++i) {
-                        final ItemStack itemStack = this.driveableData.func_70301_a(istart + i);
-                        if (itemStack != null && itemStack.func_77973_b() instanceof ItemBullet && (this.prevInventoryItems[ps][i] == null || !ItemStack.func_77989_b(itemStack, this.prevInventoryItems[ps][i])) && type.isValidAmmo(((ItemBullet)itemStack.func_77973_b()).type, weaponType)) {
+                        final ItemStack itemStack = this.driveableData.getStackInSlot(istart + i);
+                        if (itemStack != null && itemStack.getItem() instanceof ItemBullet && (this.prevInventoryItems[ps][i] == null || !ItemStack.areItemStacksEqual(itemStack, this.prevInventoryItems[ps][i])) && type.isValidAmmo(((ItemBullet)itemStack.getItem()).type, weaponType)) {
                             this.onWeaponInventoryChanged(ps == 1);
                             break;
                         }
                     }
                     for (int i = 0; i < isize; ++i) {
-                        this.prevInventoryItems[ps][i] = this.driveableData.func_70301_a(istart + i);
+                        this.prevInventoryItems[ps][i] = this.driveableData.getStackInSlot(istart + i);
                     }
                 }
             }
@@ -1827,13 +1829,13 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
             if (type.reloadTimePrimary > 0 && this.getShootDelay(secondary) <= 0) {
                 FlansMod.log("EntityDriveable Reload Primary " + type.reloadTimePrimary + " tick");
                 this.setShootDelay(type.reloadTimePrimary, secondary);
-                PacketPlaySound.sendSoundPacket(this.field_70165_t, this.field_70163_u, this.field_70161_v, 50.0, this.field_71093_bK, this.getDriveableType().reloadSoundPrimary, false);
+                PacketPlaySound.sendSoundPacket(this.posX, this.posY, this.posZ, 50.0, this.dimension, this.getDriveableType().reloadSoundPrimary, false);
             }
         }
         else if (type.reloadTimeSecondary > 0 && this.getShootDelay(secondary) <= 0) {
             FlansMod.log("EntityDriveable Reload Secondary " + type.reloadTimeSecondary + " tick");
             this.setShootDelay(type.reloadTimeSecondary, secondary);
-            PacketPlaySound.sendSoundPacket(this.field_70165_t, this.field_70163_u, this.field_70161_v, 50.0, this.field_71093_bK, this.getDriveableType().reloadSoundSecondary, false);
+            PacketPlaySound.sendSoundPacket(this.posX, this.posY, this.posZ, 50.0, this.dimension, this.getDriveableType().reloadSoundSecondary, false);
         }
     }
     
@@ -1886,83 +1888,83 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
                 continue;
             }
             final Vector3f lastRelPos = this.prevAxes.findLocalVectorGlobally(p.position);
-            final Vec3 lastPos = Vec3.func_72443_a(this.field_70169_q + lastRelPos.x, this.field_70167_r + lastRelPos.y, this.field_70166_s + lastRelPos.z);
+            final Vec3 lastPos = Vec3.createVectorHelper(this.prevPosX + lastRelPos.x, this.prevPosY + lastRelPos.y, this.prevPosZ + lastRelPos.z);
             final Vector3f currentRelPos = this.axes.findLocalVectorGlobally(p.position);
-            final Vec3 currentPos = Vec3.func_72443_a(this.field_70165_t + currentRelPos.x, this.field_70163_u + currentRelPos.y, this.field_70161_v + currentRelPos.z);
-            if (FlansMod.DEBUG && this.field_70170_p.field_72995_K) {
-                this.field_70170_p.func_72838_d((Entity)new EntityDebugVector(this.field_70170_p, new Vector3f(lastPos), Vector3f.sub(currentRelPos, lastRelPos, null), 10, 1.0f, 0.0f, 0.0f));
+            final Vec3 currentPos = Vec3.createVectorHelper(this.posX + currentRelPos.x, this.posY + currentRelPos.y, this.posZ + currentRelPos.z);
+            if (FlansMod.DEBUG && this.worldObj.isRemote) {
+                this.worldObj.spawnEntityInWorld((Entity)new EntityDebugVector(this.worldObj, new Vector3f(lastPos), Vector3f.sub(currentRelPos, lastRelPos, null), 10, 1.0f, 0.0f, 0.0f));
             }
-            final MovingObjectPosition hit = this.field_70170_p.func_72901_a(lastPos, currentPos, crashInWater);
-            if (hit == null || hit.field_72313_a != MovingObjectPosition.MovingObjectType.BLOCK) {
+            final MovingObjectPosition hit = this.worldObj.rayTraceBlocks(lastPos, currentPos, crashInWater);
+            if (hit == null || hit.typeOfHit != MovingObjectPosition.MovingObjectType.BLOCK) {
                 continue;
             }
-            final int x = hit.field_72311_b;
-            final int y = hit.field_72312_c;
-            final int z = hit.field_72309_d;
-            final Block blockHit = this.field_70170_p.func_147439_a(x, y, z);
-            final int meta = this.field_70170_p.func_72805_g(x, y, z);
-            final float blockHardness = blockHit.func_149712_f(this.field_70170_p, x, y, z);
+            final int x = hit.blockX;
+            final int y = hit.blockY;
+            final int z = hit.blockZ;
+            final Block blockHit = this.worldObj.getBlock(x, y, z);
+            final int meta = this.worldObj.getBlockMetadata(x, y, z);
+            final float blockHardness = blockHit.getBlockHardness(this.worldObj, x, y, z);
             float damage = 1.0f + blockHardness * blockHardness * (float)speed;
-            if (null == blockHit.func_149668_a(this.field_70170_p, x, y, z)) {
+            if (null == blockHit.getCollisionBoundingBoxFromPool(this.worldObj, x, y, z)) {
                 damage = 0.0f;
             }
             if (damage > 0.0f) {
                 damagePart = true;
                 this.getDriveableData().parts.get(p.part).health -= (int)damage;
             }
-            if (!this.attackPart(p.part, DamageSource.field_76368_d, damage) && TeamsManager.driveablesBreakBlocks) {
-                this.field_70170_p.func_72889_a((EntityPlayer)null, 2001, x, y, z, Block.func_149682_b(blockHit) + (meta << 12));
+            if (!this.attackPart(p.part, DamageSource.inWall, damage) && TeamsManager.driveablesBreakBlocks) {
+                this.worldObj.playAuxSFXAtEntity((EntityPlayer)null, 2001, x, y, z, Block.getIdFromBlock(blockHit) + (meta << 12));
                 this.getDriveableData().parts.get(p.part).health -= (int)damage + 1;
-                if (this.field_70170_p.field_72995_K) {
+                if (this.worldObj.isRemote) {
                     continue;
                 }
-                blockHit.func_149697_b(this.field_70170_p, x, y, z, meta, 1);
-                this.field_70170_p.func_147468_f(x, y, z);
+                blockHit.dropBlockAsItem(this.worldObj, x, y, z, meta, 1);
+                this.worldObj.setBlockToAir(x, y, z);
             }
             else {
                 this.getDriveableData().parts.get(p.part).health -= (int)damage;
-                this.field_70170_p.func_72876_a((Entity)this, currentPos.field_72450_a, currentPos.field_72448_b, currentPos.field_72449_c, 1.0f, false);
+                this.worldObj.createExplosion((Entity)this, currentPos.xCoord, currentPos.yCoord, currentPos.zCoord, 1.0f, false);
             }
         }
-        if (damagePart && !this.field_70170_p.field_72995_K) {
-            FlansMod.getPacketHandler().sendToAllAround(new PacketDriveableDamage(this), this.field_70165_t, this.field_70163_u, this.field_70161_v, 100.0f, this.field_71093_bK);
+        if (damagePart && !this.worldObj.isRemote) {
+            FlansMod.getPacketHandler().sendToAllAround(new PacketDriveableDamage(this), this.posX, this.posY, this.posZ, 100.0f, this.dimension);
         }
     }
     
-    protected void func_70069_a(final float k) {
-        final double fallDist = (this.field_70163_u - this.field_70167_r + this.field_70181_x) / 2.0;
+    protected void fall(final float k) {
+        final double fallDist = (this.posY - this.prevPosY + this.motionY) / 2.0;
         float damage = (float)((fallDist < -0.3) ? (-fallDist * 50.0) : 0.0);
         boolean no_damage = true;
-        if (damage > 0.0f && this.invulnerableUnmountCount == 0 && this.field_70173_aa > 20 && !no_damage) {
+        if (damage > 0.0f && this.invulnerableUnmountCount == 0 && this.ticksExisted > 20 && !no_damage) {
             final DriveableType type = this.getDriveableType();
             damage = (int)(damage * type.fallDamageFactor) * 0.5f;
             this.getDriveableData().parts.get(EnumDriveablePart.core).health -= (int)damage + 1;
             if (type.wheelPositions.length > 0) {
-                this.attackPart(type.wheelPositions[0].part, DamageSource.field_76379_h, damage / 5.0f);
+                this.attackPart(type.wheelPositions[0].part, DamageSource.fall, damage / 5.0f);
             }
             no_damage = false;
         }
     }
     
-    public boolean func_70112_a(final double d) {
-        final double d2 = this.field_70155_l;
+    public boolean isInRangeToRenderDist(final double d) {
+        final double d2 = this.renderDistanceWeight;
         return d < d2 * d2;
     }
     
     public boolean attackPart(final EnumDriveablePart ep, final DamageSource source, final float damage) {
         if (ep == EnumDriveablePart.core) {
-            if (source.func_76364_f() instanceof EntityLivingBase) {
-                this.lastAtkEntity = source.func_76364_f();
+            if (source.getSourceOfDamage() instanceof EntityLivingBase) {
+                this.lastAtkEntity = source.getSourceOfDamage();
             }
-            else if (source.func_76346_g() instanceof EntityLivingBase) {
-                this.lastAtkEntity = source.func_76346_g();
+            else if (source.getEntity() instanceof EntityLivingBase) {
+                this.lastAtkEntity = source.getEntity();
             }
             else {
                 this.lastAtkEntity = null;
             }
         }
         final DriveablePart part = this.driveableData.parts.get(ep);
-        return part.attack(damage, source.func_76347_k());
+        return part.attack(damage, source.isFireDamage());
     }
     
     public Vector3f rotate(final Vector3f inVec) {
@@ -1970,7 +1972,7 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
     }
     
     public Vector3f rotate(final Vec3 inVec) {
-        return this.rotate(inVec.field_72450_a, inVec.field_72448_b, inVec.field_72449_c);
+        return this.rotate(inVec.xCoord, inVec.yCoord, inVec.zCoord);
     }
     
     public Vector3f rotate(final double x, final double y, final double z) {
@@ -2002,19 +2004,19 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
     }
     
     public void updatePrevAngles() {
-        final double dYaw = this.axes.getYaw() - this.field_70126_B;
+        final double dYaw = this.axes.getYaw() - this.prevRotationYaw;
         if (dYaw > 180.0) {
-            this.field_70126_B += 360.0f;
+            this.prevRotationYaw += 360.0f;
         }
         if (dYaw < -180.0) {
-            this.field_70126_B -= 360.0f;
+            this.prevRotationYaw -= 360.0f;
         }
-        final double dPitch = this.axes.getPitch() - this.field_70127_C;
+        final double dPitch = this.axes.getPitch() - this.prevRotationPitch;
         if (dPitch > 180.0) {
-            this.field_70127_C += 360.0f;
+            this.prevRotationPitch += 360.0f;
         }
         if (dPitch < -180.0) {
-            this.field_70127_C -= 360.0f;
+            this.prevRotationPitch -= 360.0f;
         }
         final double dRoll = this.axes.getRoll() - this.prevRotationRoll;
         if (dRoll > 180.0) {
@@ -2035,7 +2037,7 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
                 if (ent == seat) {
                     return true;
                 }
-                if (seat.field_70153_n == ent) {
+                if (seat.riddenByEntity == ent) {
                     return true;
                 }
             }
@@ -2044,10 +2046,10 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
     }
     
     public boolean hitboxPartOfThis(final Entity ent) {
-        return this.seats[0] != null && this.seats[0].field_70153_n != null && ent != null && ent instanceof EntityPlayer && this.seats[0].field_70153_n instanceof EntityPlayer && ent == this.seats[0].field_70153_n;
+        return this.seats[0] != null && this.seats[0].riddenByEntity != null && ent != null && ent instanceof EntityPlayer && this.seats[0].riddenByEntity instanceof EntityPlayer && ent == this.seats[0].riddenByEntity;
     }
     
-    public float func_70053_R() {
+    public float getShadowSize() {
         return 0.0f;
     }
     
@@ -2060,7 +2062,7 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
     }
     
     public boolean isDead() {
-        return this.field_70128_L;
+        return this.isDead;
     }
     
     public Entity getControllingEntity() {
@@ -2069,13 +2071,13 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
     
     public ItemStack getPickedResult(final MovingObjectPosition target) {
         final ItemStack stack = new ItemStack(this.getDriveableType().item, 1, 0);
-        stack.field_77990_d = new NBTTagCompound();
-        this.driveableData.writeToNBT(stack.field_77990_d);
+        stack.stackTagCompound = new NBTTagCompound();
+        this.driveableData.writeToNBT(stack.stackTagCompound);
         return stack;
     }
     
     public boolean hasFuel() {
-        return this.seats != null && this.seats[0] != null && this.seats[0].field_70153_n != null && (this.driverIsCreative() || this.driveableData.fuelInTank > 0.0f);
+        return this.seats != null && this.seats[0] != null && this.seats[0].riddenByEntity != null && (this.driverIsCreative() || this.driveableData.fuelInTank > 0.0f);
     }
     
     public boolean hasEnoughFuel() {
@@ -2083,22 +2085,22 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
     }
     
     public double getSpeedXYZ() {
-        return Math.sqrt(this.field_70159_w * this.field_70159_w + this.field_70181_x * this.field_70181_x + this.field_70179_y * this.field_70179_y);
+        return Math.sqrt(this.motionX * this.motionX + this.motionY * this.motionY + this.motionZ * this.motionZ);
     }
     
     public double getMPH() {
-        final float advancedSpeed = (float)Math.sqrt(this.field_70159_w * this.field_70159_w + this.field_70181_x * this.field_70181_x + this.field_70179_y * this.field_70179_y);
-        if (advancedSpeed >= 1.05 && (Math.abs(this.field_70159_w) > 0.2 || Math.abs(this.field_70179_y) > 0.2)) {
+        final float advancedSpeed = (float)Math.sqrt(this.motionX * this.motionX + this.motionY * this.motionY + this.motionZ * this.motionZ);
+        if (advancedSpeed >= 1.05 && (Math.abs(this.motionX) > 0.2 || Math.abs(this.motionZ) > 0.2)) {
             return 1572.6646f * (float)Math.log(advancedSpeed);
         }
-        if (Math.abs(this.field_70159_w) > 0.2 || Math.abs(this.field_70179_y) > 0.2) {
+        if (Math.abs(this.motionX) > 0.2 || Math.abs(this.motionZ) > 0.2) {
             return 0.0f + advancedSpeed * 74.0f;
         }
         return 0.0;
     }
     
     public double getSpeedXZ() {
-        return Math.sqrt(this.field_70159_w * this.field_70159_w + this.field_70179_y * this.field_70179_y);
+        return Math.sqrt(this.motionX * this.motionX + this.motionZ * this.motionZ);
     }
     
     public boolean landVehicle() {
@@ -2110,7 +2112,7 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
     }
     
     public boolean onGround() {
-        return this.field_70122_E;
+        return this.onGround;
     }
     
     public void moveRiders(final Entity rider) {
@@ -2122,13 +2124,13 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
         if (!(rider instanceof EntityPlayer)) {
             return;
         }
-        final Vector3f riderPos = new Vector3f(rider.field_70165_t, rider.field_70163_u, rider.field_70161_v);
-        final Vector3f riderMotion = new Vector3f(rider.field_70159_w, rider.field_70181_x, rider.field_70181_x);
-        Vector3f vehicleMotion = new Vector3f(this.field_70165_t - this.lastPos.x, this.field_70163_u - this.lastPos.y, this.field_70161_v - this.lastPos.z);
+        final Vector3f riderPos = new Vector3f(rider.posX, rider.posY, rider.posZ);
+        final Vector3f riderMotion = new Vector3f(rider.motionX, rider.motionY, rider.motionY);
+        Vector3f vehicleMotion = new Vector3f(this.posX - this.lastPos.x, this.posY - this.lastPos.y, this.posZ - this.lastPos.z);
         if (rider instanceof EntityVehicle) {
             vehicleMotion = ((EntityVehicle)rider).lastPos;
         }
-        final Vector3f vehiclePos = new Vector3f(this.field_70165_t, this.field_70163_u, this.field_70161_v);
+        final Vector3f vehiclePos = new Vector3f(this.posX, this.posY, this.posZ);
         Vector3f relativePos = Vector3f.sub(riderPos, vehiclePos, null);
         if (rider instanceof EntityPlayer) {
             isHuman = true;
@@ -2139,7 +2141,7 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
         relativePos = new Vector3f(relativePos.x, relativePos.y - (isHuman ? 0.55f : 0.0f), relativePos.z);
         final Vector3f rotatedPosVector = this.axes.findGlobalVectorLocally(relativePos);
         final Vector3f rotatedMotionVector = this.axes.findGlobalVectorLocally(riderMotion);
-        final Vector3f ellipsoid = new Vector3f(rider.field_70130_N / 2.0f, rider.field_70131_O, rider.field_70130_N / 2.0f);
+        final Vector3f ellipsoid = new Vector3f(rider.width / 2.0f, rider.height, rider.width / 2.0f);
         final CollisionTest test = new CollisionTest(ellipsoid, new Vector3f(relativePos.x, relativePos.y, relativePos.z), riderMotion);
         test.collisionRecursiveDepth = 0;
         final Vector3f eSpacePosition = test.ConvertR3ToESpace(test.R3Position);
@@ -2170,31 +2172,31 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
             test.ConvertESpaceToR3(velocity);
             finalPos = new Vector3f(finalPos.x * test.eRad.x, finalPos.y * test.eRad.y, finalPos.z * test.eRad.z);
             final Vector3f diff = Vector3f.sub(finalPos, vehiclePos, null);
-            if (!rider.field_70122_E || this.field_70163_u + finalPos.y + 0.625 < riderPos.y) {}
+            if (!rider.onGround || this.posY + finalPos.y + 0.625 < riderPos.y) {}
             final boolean stationary = this.throttle == 0.0f;
             test.ConvertESpaceToR3(finalPos);
             final boolean onTop = test.collisionPlaneNormal.y >= 0.5f;
-            if (this.field_70163_u + finalPos.y + 0.625 < riderPos.y) {
-                finalPos.y = riderPos.y - (float)this.field_70163_u - 0.625f;
+            if (this.posY + finalPos.y + 0.625 < riderPos.y) {
+                finalPos.y = riderPos.y - (float)this.posY - 0.625f;
             }
             if (!this.hugeBoat) {
-                rider.func_70107_b(onTop ? ((double)riderPos.x) : ((double)(riderPos.x + finalPos.x / (48.0f * Math.abs(relativePos.x)))), onTop ? (this.field_70163_u + finalPos.y + 0.625) : ((double)riderPos.y), onTop ? ((double)riderPos.z) : ((double)(riderPos.z + finalPos.z / (48.0f * Math.abs(relativePos.z)))));
+                rider.setPosition(onTop ? ((double)riderPos.x) : ((double)(riderPos.x + finalPos.x / (48.0f * Math.abs(relativePos.x)))), onTop ? (this.posY + finalPos.y + 0.625) : ((double)riderPos.y), onTop ? ((double)riderPos.z) : ((double)(riderPos.z + finalPos.z / (48.0f * Math.abs(relativePos.z)))));
             }
             if (this.hugeBoat && !stationary) {
-                rider.func_70107_b((double)riderPos.x, this.field_70163_u + finalPos.y + 0.59375, (double)riderPos.z);
+                rider.setPosition((double)riderPos.x, this.posY + finalPos.y + 0.59375, (double)riderPos.z);
             }
             else if (this.hugeBoat && stationary) {
-                rider.func_70107_b((double)riderPos.x, this.field_70163_u + finalPos.y + 0.625, (double)riderPos.z);
+                rider.setPosition((double)riderPos.x, this.posY + finalPos.y + 0.625, (double)riderPos.z);
             }
             finalPos = Vector3f.sub(finalPos, riderPos, null);
             finalPos.normalise();
-            rider.field_70181_x = 0.0;
+            rider.motionY = 0.0;
             this.updateRiderPos(rider, test, finalPos, riderMotion);
             for (final EntitySeat seat : this.seats) {
                 if (this.getDriveableType().collisionDamageEnable && !test.isOnTop && (this.throttle > this.getDriveableType().collisionDamageThrottle || (type.mechStomp && this.throttle > this.getDriveableType().collisionDamageThrottle))) {
                     boolean canDamage = true;
-                    if (seat != null && TeamsManager.getInstance() != null && TeamsManager.getInstance().currentRound != null && rider instanceof EntityPlayerMP && this.seats[0].field_70153_n instanceof EntityPlayer) {
-                        final EntityPlayerMP attacker = (EntityPlayerMP)this.seats[0].field_70153_n;
+                    if (seat != null && TeamsManager.getInstance() != null && TeamsManager.getInstance().currentRound != null && rider instanceof EntityPlayerMP && this.seats[0].riddenByEntity instanceof EntityPlayer) {
+                        final EntityPlayerMP attacker = (EntityPlayerMP)this.seats[0].riddenByEntity;
                         final EntityPlayerMP player = (EntityPlayerMP)rider;
                         final Gametype gametype = TeamsManager.getInstance().currentRound.gametype;
                         if (Gametype.getPlayerData(attacker) != null) {
@@ -2215,17 +2217,17 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
                             }
                         }
                     }
-                    if (this.seats[0].field_70153_n != null && ((canDamage && rider != this.seats[0].field_70153_n) || (this.ticksFlareUsing > 0 && rider != this.seats[0].field_70153_n))) {
+                    if (this.seats[0].riddenByEntity != null && ((canDamage && rider != this.seats[0].riddenByEntity) || (this.ticksFlareUsing > 0 && rider != this.seats[0].riddenByEntity))) {
                         if (rider instanceof EntityLiving) {
-                            ((EntityLivingBase)rider).func_70690_d(new PotionEffect(Potion.field_76433_i.field_76415_H, 10, 5));
+                            ((EntityLivingBase)rider).addPotionEffect(new PotionEffect(Potion.harm.id, 10, 5));
                             if (type.panic) {
-                                ((EntityLivingBase)rider).func_70690_d(new PotionEffect(Potion.field_76433_i.field_76415_H, 10, 5));
+                                ((EntityLivingBase)rider).addPotionEffect(new PotionEffect(Potion.harm.id, 10, 5));
                             }
                         }
                         else if (rider instanceof EntityPlayer) {
-                            ((EntityLivingBase)rider).func_70690_d(new PotionEffect(Potion.field_76433_i.field_76415_H, 10, 5));
+                            ((EntityLivingBase)rider).addPotionEffect(new PotionEffect(Potion.harm.id, 10, 5));
                             if (type.panic) {
-                                ((EntityLivingBase)rider).func_70690_d(new PotionEffect(Potion.field_76433_i.field_76415_H, 10, 5));
+                                ((EntityLivingBase)rider).addPotionEffect(new PotionEffect(Potion.harm.id, 10, 5));
                             }
                         }
                     }
@@ -2233,9 +2235,9 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
             }
             if (rider instanceof EntityPlayer) {
                 final EntityPlayer player2 = (EntityPlayer)rider;
-                player2.field_70122_E = true;
-                player2.field_70160_al = false;
-                player2.field_70143_R = 0.0f;
+                player2.onGround = true;
+                player2.isAirBorne = false;
+                player2.fallDistance = 0.0f;
             }
         }
         else if (rider instanceof EntityDriveable) {
@@ -2245,18 +2247,18 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
     
     public DamageSource getBulletDamage(final boolean headshot) {
         final DriveableType type = this.getDriveableType();
-        final EntityLivingBase owner = (EntityLivingBase)this.seats[0].field_70153_n;
+        final EntityLivingBase owner = (EntityLivingBase)this.seats[0].riddenByEntity;
         if (owner instanceof EntityPlayer) {
-            return new EntityDamageSourceFlans(this.getDriveableType().shortName, this, (EntityPlayer)owner, type, headshot, false).func_76349_b();
+            return new EntityDamageSourceFlans(this.getDriveableType().shortName, this, (EntityPlayer)owner, type, headshot, false).setProjectile();
         }
-        return new EntityDamageSourceIndirect(type.shortName, (Entity)this, (Entity)owner).func_76349_b();
+        return new EntityDamageSourceIndirect(type.shortName, (Entity)this, (Entity)owner).setProjectile();
     }
     
     public void checkCollision(final CollisionTest tester, final CollisionShapeBox box) {
         double distance = tester.nearestDistance;
         Vector3f collisionPoint = new Vector3f(0.0f, 0.0f, 0.0f);
         int surface = 0;
-        final Vector3f pos = new Vector3f(this.field_70165_t, this.field_70163_u, this.field_70161_v);
+        final Vector3f pos = new Vector3f(this.posX, this.posY, this.posZ);
         final RotatedAxes shift = this.axes;
         final float f4 = box.pos.x + box.size.x;
         final float f5 = -box.pos.y + box.size.y;
@@ -2398,7 +2400,7 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
     }
     
     public void renderTri(final Vector3f p1, final Vector3f p2, final Vector3f p3) {
-        final Vector3f pos = new Vector3f(this.field_70165_t, this.field_70163_u, this.field_70161_v);
+        final Vector3f pos = new Vector3f(this.posX, this.posY, this.posZ);
         final Vector3f p1a = Vector3f.add(p1, pos, null);
         final Vector3f p2a = Vector3f.add(p2, pos, null);
         final Vector3f p3a = Vector3f.add(p3, pos, null);
@@ -2482,7 +2484,7 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
             isDriveable = true;
         }
         final Vector3f vehicleMotion = this.lastPos;
-        final Vector3f riderMountPoint = new Vector3f(rider.field_70165_t - this.field_70165_t, rider.field_70163_u - this.field_70163_u, rider.field_70161_v - this.field_70161_v);
+        final Vector3f riderMountPoint = new Vector3f(rider.posX - this.posX, rider.posY - this.posY, rider.posZ - this.posZ);
         final float yawDiff = this.axes.getYaw() - this.prevAxes.getYaw();
         final float pitchDiff = this.axes.getPitch() - this.prevAxes.getPitch();
         final float rollDiff = this.axes.getRoll() - this.prevAxes.getRoll();
@@ -2494,26 +2496,26 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
             nextGlobalPos = new Vector3f(0.0f, 0.0f, 0.0f);
         }
         Vector3f.add(vehicleMotion, diff, diff);
-        rider.func_70107_b(nextGlobalPos.x + this.field_70165_t + (this.hugeBoat ? (diff.x / 1.5) : 0.0), isDriveable ? ((EntityDriveable)rider).deckHeight : rider.field_70163_u, nextGlobalPos.z + this.field_70161_v + (this.hugeBoat ? (diff.z / 1.5) : 0.0));
+        rider.setPosition(nextGlobalPos.x + this.posX + (this.hugeBoat ? (diff.x / 1.5) : 0.0), isDriveable ? ((EntityDriveable)rider).deckHeight : rider.posY, nextGlobalPos.z + this.posZ + (this.hugeBoat ? (diff.z / 1.5) : 0.0));
         if (this.hugeBoat) {
             if (this.lastPos.x == 0.0f && this.lastPos.y == 0.0f && this.lastPos.z == 0.0f) {
-                rider.field_70159_w = rider.field_70159_w;
-                rider.field_70181_x = rider.field_70181_x;
-                rider.field_70179_y = rider.field_70179_y;
-                if (rider.field_70181_x < 0.0) {
-                    rider.field_70181_x = 0.0;
+                rider.motionX = rider.motionX;
+                rider.motionY = rider.motionY;
+                rider.motionZ = rider.motionZ;
+                if (rider.motionY < 0.0) {
+                    rider.motionY = 0.0;
                 }
             }
         }
         else if (this.lastPos.x == 0.0f && this.lastPos.y == 0.0f && this.lastPos.z == 0.0f) {
-            rider.field_70159_w = rider.field_70159_w;
-            rider.field_70181_x = rider.field_70181_x;
-            rider.field_70179_y = rider.field_70179_y;
+            rider.motionX = rider.motionX;
+            rider.motionY = rider.motionY;
+            rider.motionZ = rider.motionZ;
         }
         else {
-            rider.field_70159_w = diff.x;
-            rider.field_70181_x = diff.y;
-            rider.field_70179_y = diff.z;
+            rider.motionX = diff.x;
+            rider.motionY = diff.y;
+            rider.motionZ = diff.z;
         }
     }
     
@@ -2522,7 +2524,7 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
     
     public ArrayList<BulletHit> attackFromBulletClassic(final Vector3f origin, final Vector3f motion, final boolean evilBullet) {
         final ArrayList<BulletHit> hits = new ArrayList<BulletHit>();
-        final Vector3f relativePosVector = Vector3f.sub(origin, new Vector3f((float)this.field_70165_t, (float)this.field_70163_u, (float)this.field_70161_v), null);
+        final Vector3f relativePosVector = Vector3f.sub(origin, new Vector3f((float)this.posX, (float)this.posY, (float)this.posZ), null);
         final Vector3f rotatedPosVector = this.axes.findGlobalVectorLocally(relativePosVector);
         final Vector3f rotatedMotVector = this.axes.findGlobalVectorLocally(motion);
         for (final DriveablePart part : this.getDriveableData().parts.values()) {
@@ -2536,8 +2538,8 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
     
     public ArrayList<BulletHit> attackFromBullet(final Vector3f origin, final Vector3f motion, final boolean evil) {
         final ArrayList<BulletHit> hits = new ArrayList<BulletHit>();
-        final Vector3f vehicleMotion = new Vector3f(this.field_70165_t - this.lastPos.x, this.field_70163_u - this.lastPos.y, this.field_70161_v - this.lastPos.z);
-        final Vector3f vehiclePos = new Vector3f(this.field_70165_t, this.field_70163_u, this.field_70161_v);
+        final Vector3f vehicleMotion = new Vector3f(this.posX - this.lastPos.x, this.posY - this.lastPos.y, this.posZ - this.lastPos.z);
+        final Vector3f vehiclePos = new Vector3f(this.posX, this.posY, this.posZ);
         final Vector3f relativePos = Vector3f.sub(origin, vehiclePos, null);
         final Vector3f rotatedPosVector = this.axes.findGlobalVectorLocally(relativePos);
         final Vector3f rotatedMotionVector = this.axes.findGlobalVectorLocally(motion);
@@ -2565,17 +2567,17 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
         if (bullet != null) {
             part.hitByBullet(bullet, hit);
         }
-        if (!this.field_70170_p.field_72995_K) {
+        if (!this.worldObj.isRemote) {
             this.checkParts();
-            FlansMod.getPacketHandler().sendToAllAround(new PacketDriveableDamage(this), this.field_70165_t, this.field_70163_u, this.field_70161_v, 100.0f, this.field_71093_bK);
+            FlansMod.getPacketHandler().sendToAllAround(new PacketDriveableDamage(this), this.posX, this.posY, this.posZ, 100.0f, this.dimension);
         }
         EntitySeat parkingSeat = null;
         EntitySeat shooterSeat = null;
-        if (bullet != null && bullet.owner != null && bullet.owner.func_70115_ae() && bullet.owner.field_70154_o != null && bullet.owner.field_70154_o instanceof EntitySeat) {
-            shooterSeat = (EntitySeat)bullet.owner.field_70154_o;
+        if (bullet != null && bullet.owner != null && bullet.owner.isRiding() && bullet.owner.ridingEntity != null && bullet.owner.ridingEntity instanceof EntitySeat) {
+            shooterSeat = (EntitySeat)bullet.owner.ridingEntity;
         }
-        if (this.func_70115_ae() && this.field_70154_o != null && this.field_70154_o instanceof EntitySeat) {
-            parkingSeat = (EntitySeat)this.field_70154_o;
+        if (this.isRiding() && this.ridingEntity != null && this.ridingEntity instanceof EntitySeat) {
+            parkingSeat = (EntitySeat)this.ridingEntity;
         }
         if (shooterSeat != null && parkingSeat != null && shooterSeat.driveable != null && parkingSeat.driveable != null && (parkingSeat.driveable == shooterSeat.driveable || this == shooterSeat.driveable)) {
             return penetratingPower - 0.0f;
@@ -2605,7 +2607,7 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
     }
     
     public DriveablePart raytraceParts(final Vector3f origin, final Vector3f motion) {
-        final Vector3f relativePosVector = Vector3f.sub(origin, new Vector3f((float)this.field_70165_t, (float)this.field_70163_u, (float)this.field_70161_v), null);
+        final Vector3f relativePosVector = Vector3f.sub(origin, new Vector3f((float)this.posX, (float)this.posY, (float)this.posZ), null);
         final Vector3f rotatedPosVector = this.axes.findGlobalVectorLocally(relativePosVector);
         final Vector3f rotatedMotVector = this.axes.findGlobalVectorLocally(motion);
         for (final DriveablePart part : this.getDriveableData().parts.values()) {
@@ -2676,134 +2678,134 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
             this.crushed = true;
         }
         final int seatNum = this.seats.length;
-        if (!this.field_70170_p.field_72995_K) {
+        if (!this.worldObj.isRemote) {
             for (int i = 0; i < this.seats.length; ++i) {
-                if (this.seats[i].field_70153_n != null && this.seats[i].field_70153_n instanceof EntityPlayer) {
-                    final Entity entity = this.seats[i].field_70153_n;
+                if (this.seats[i].riddenByEntity != null && this.seats[i].riddenByEntity instanceof EntityPlayer) {
+                    final Entity entity = this.seats[i].riddenByEntity;
                     if (this.getDriveableData().parts.get(EnumDriveablePart.turret).health <= 0.0f && this.getDriveableData().parts.get(EnumDriveablePart.turret).maxHealth > 0.0f && this.seats[i].seatInfo.part == EnumDriveablePart.turret) {
-                        this.seats[i].field_70153_n.func_70078_a((Entity)null);
+                        this.seats[i].riddenByEntity.mountEntity((Entity)null);
                         if (this.lastAtkEntity instanceof EntityPlayer) {
-                            ((EntityLivingBase)entity).func_70690_d(new PotionEffect(Potion.field_76433_i.field_76415_H, 10, 5));
+                            ((EntityLivingBase)entity).addPotionEffect(new PotionEffect(Potion.harm.id, 10, 5));
                         }
                     }
                     if (this.getDriveableData().parts.get(EnumDriveablePart.turret1).health <= 0.0f && this.getDriveableData().parts.get(EnumDriveablePart.turret1).maxHealth > 0.0f && this.seats[i].seatInfo.part == EnumDriveablePart.turret1) {
-                        this.seats[i].field_70153_n.func_70078_a((Entity)null);
+                        this.seats[i].riddenByEntity.mountEntity((Entity)null);
                         if (this.lastAtkEntity instanceof EntityPlayer) {
-                            ((EntityLivingBase)entity).func_70690_d(new PotionEffect(Potion.field_76433_i.field_76415_H, 10, 5));
+                            ((EntityLivingBase)entity).addPotionEffect(new PotionEffect(Potion.harm.id, 10, 5));
                         }
                     }
                     if (this.getDriveableData().parts.get(EnumDriveablePart.turret2).health <= 0.0f && this.getDriveableData().parts.get(EnumDriveablePart.turret2).maxHealth > 0.0f && this.seats[i].seatInfo.part == EnumDriveablePart.turret2) {
-                        this.seats[i].field_70153_n.func_70078_a((Entity)null);
+                        this.seats[i].riddenByEntity.mountEntity((Entity)null);
                         if (this.lastAtkEntity instanceof EntityPlayer) {
-                            ((EntityLivingBase)entity).func_70690_d(new PotionEffect(Potion.field_76433_i.field_76415_H, 10, 5));
+                            ((EntityLivingBase)entity).addPotionEffect(new PotionEffect(Potion.harm.id, 10, 5));
                         }
                     }
                     if (this.getDriveableData().parts.get(EnumDriveablePart.turret3).health <= 0.0f && this.getDriveableData().parts.get(EnumDriveablePart.turret3).maxHealth > 0.0f && this.seats[i].seatInfo.part == EnumDriveablePart.turret3) {
-                        this.seats[i].field_70153_n.func_70078_a((Entity)null);
+                        this.seats[i].riddenByEntity.mountEntity((Entity)null);
                         if (this.lastAtkEntity instanceof EntityPlayer) {
-                            ((EntityLivingBase)entity).func_70690_d(new PotionEffect(Potion.field_76433_i.field_76415_H, 10, 5));
+                            ((EntityLivingBase)entity).addPotionEffect(new PotionEffect(Potion.harm.id, 10, 5));
                         }
                     }
                     if (this.getDriveableData().parts.get(EnumDriveablePart.turret4).health <= 0.0f && this.getDriveableData().parts.get(EnumDriveablePart.turret4).maxHealth > 0.0f && this.seats[i].seatInfo.part == EnumDriveablePart.turret4) {
-                        this.seats[i].field_70153_n.func_70078_a((Entity)null);
+                        this.seats[i].riddenByEntity.mountEntity((Entity)null);
                         if (this.lastAtkEntity instanceof EntityPlayer) {
-                            ((EntityLivingBase)entity).func_70690_d(new PotionEffect(Potion.field_76433_i.field_76415_H, 10, 5));
+                            ((EntityLivingBase)entity).addPotionEffect(new PotionEffect(Potion.harm.id, 10, 5));
                         }
                     }
                     if (this.getDriveableData().parts.get(EnumDriveablePart.turret5).health <= 0.0f && this.getDriveableData().parts.get(EnumDriveablePart.turret5).maxHealth > 0.0f && this.seats[i].seatInfo.part == EnumDriveablePart.turret5) {
-                        this.seats[i].field_70153_n.func_70078_a((Entity)null);
+                        this.seats[i].riddenByEntity.mountEntity((Entity)null);
                         if (this.lastAtkEntity instanceof EntityPlayer) {
-                            ((EntityLivingBase)entity).func_70690_d(new PotionEffect(Potion.field_76433_i.field_76415_H, 10, 5));
+                            ((EntityLivingBase)entity).addPotionEffect(new PotionEffect(Potion.harm.id, 10, 5));
                         }
                     }
                     if (this.getDriveableData().parts.get(EnumDriveablePart.turret6).health <= 0.0f && this.getDriveableData().parts.get(EnumDriveablePart.turret6).maxHealth > 0.0f && this.seats[i].seatInfo.part == EnumDriveablePart.turret6) {
-                        this.seats[i].field_70153_n.func_70078_a((Entity)null);
+                        this.seats[i].riddenByEntity.mountEntity((Entity)null);
                         if (this.lastAtkEntity instanceof EntityPlayer) {
-                            ((EntityLivingBase)entity).func_70690_d(new PotionEffect(Potion.field_76433_i.field_76415_H, 10, 5));
+                            ((EntityLivingBase)entity).addPotionEffect(new PotionEffect(Potion.harm.id, 10, 5));
                         }
                     }
                     if (this.getDriveableData().parts.get(EnumDriveablePart.turret7).health <= 0.0f && this.getDriveableData().parts.get(EnumDriveablePart.turret7).maxHealth > 0.0f && this.seats[i].seatInfo.part == EnumDriveablePart.turret7) {
-                        this.seats[i].field_70153_n.func_70078_a((Entity)null);
+                        this.seats[i].riddenByEntity.mountEntity((Entity)null);
                         if (this.lastAtkEntity instanceof EntityPlayer) {
-                            ((EntityLivingBase)entity).func_70690_d(new PotionEffect(Potion.field_76433_i.field_76415_H, 10, 5));
+                            ((EntityLivingBase)entity).addPotionEffect(new PotionEffect(Potion.harm.id, 10, 5));
                         }
                     }
                     if (this.getDriveableData().parts.get(EnumDriveablePart.turret8).health <= 0.0f && this.getDriveableData().parts.get(EnumDriveablePart.turret8).maxHealth > 0.0f && this.seats[i].seatInfo.part == EnumDriveablePart.turret8) {
-                        this.seats[i].field_70153_n.func_70078_a((Entity)null);
+                        this.seats[i].riddenByEntity.mountEntity((Entity)null);
                         if (this.lastAtkEntity instanceof EntityPlayer) {
-                            ((EntityLivingBase)entity).func_70690_d(new PotionEffect(Potion.field_76433_i.field_76415_H, 10, 5));
+                            ((EntityLivingBase)entity).addPotionEffect(new PotionEffect(Potion.harm.id, 10, 5));
                         }
                     }
                     if (this.getDriveableData().parts.get(EnumDriveablePart.turret9).health <= 0.0f && this.getDriveableData().parts.get(EnumDriveablePart.turret9).maxHealth > 0.0f && this.seats[i].seatInfo.part == EnumDriveablePart.turret9) {
-                        this.seats[i].field_70153_n.func_70078_a((Entity)null);
+                        this.seats[i].riddenByEntity.mountEntity((Entity)null);
                         if (this.lastAtkEntity instanceof EntityPlayer) {
-                            ((EntityLivingBase)entity).func_70690_d(new PotionEffect(Potion.field_76433_i.field_76415_H, 10, 5));
+                            ((EntityLivingBase)entity).addPotionEffect(new PotionEffect(Potion.harm.id, 10, 5));
                         }
                     }
                     if (this.getDriveableData().parts.get(EnumDriveablePart.airframe).health <= 0.0f && this.getDriveableData().parts.get(EnumDriveablePart.airframe).maxHealth > 0.0f && this.seats[i].seatInfo.part == EnumDriveablePart.airframe) {
-                        this.seats[i].field_70153_n.func_70078_a((Entity)null);
+                        this.seats[i].riddenByEntity.mountEntity((Entity)null);
                         if (this.lastAtkEntity instanceof EntityPlayer) {
-                            ((EntityLivingBase)entity).func_70690_d(new PotionEffect(Potion.field_76433_i.field_76415_H, 10, 5));
+                            ((EntityLivingBase)entity).addPotionEffect(new PotionEffect(Potion.harm.id, 10, 5));
                         }
                     }
                     if (this.getDriveableData().parts.get(EnumDriveablePart.superstructure).health <= 0.0f && this.getDriveableData().parts.get(EnumDriveablePart.superstructure).maxHealth > 0.0f && this.seats[i].seatInfo.part == EnumDriveablePart.superstructure) {
-                        this.seats[i].field_70153_n.func_70078_a((Entity)null);
+                        this.seats[i].riddenByEntity.mountEntity((Entity)null);
                         if (this.lastAtkEntity instanceof EntityPlayer) {
-                            ((EntityLivingBase)entity).func_70690_d(new PotionEffect(Potion.field_76433_i.field_76415_H, 10, 5));
+                            ((EntityLivingBase)entity).addPotionEffect(new PotionEffect(Potion.harm.id, 10, 5));
                         }
                     }
                     if (this.getDriveableData().parts.get(EnumDriveablePart.deck).health <= 0.0f && this.getDriveableData().parts.get(EnumDriveablePart.deck).maxHealth > 0.0f && this.seats[i].seatInfo.part == EnumDriveablePart.deck) {
-                        this.seats[i].field_70153_n.func_70078_a((Entity)null);
+                        this.seats[i].riddenByEntity.mountEntity((Entity)null);
                         if (this.lastAtkEntity instanceof EntityPlayer) {
-                            ((EntityLivingBase)entity).func_70690_d(new PotionEffect(Potion.field_76433_i.field_76415_H, 10, 5));
+                            ((EntityLivingBase)entity).addPotionEffect(new PotionEffect(Potion.harm.id, 10, 5));
                         }
                     }
                     if (this.getDriveableData().parts.get(EnumDriveablePart.citadel).health <= 0.0f && this.getDriveableData().parts.get(EnumDriveablePart.citadel).maxHealth > 0.0f && this.seats[i].seatInfo.part == EnumDriveablePart.citadel) {
-                        this.seats[i].field_70153_n.func_70078_a((Entity)null);
+                        this.seats[i].riddenByEntity.mountEntity((Entity)null);
                         if (this.lastAtkEntity instanceof EntityPlayer) {
-                            ((EntityLivingBase)entity).func_70690_d(new PotionEffect(Potion.field_76433_i.field_76415_H, 10, 5));
+                            ((EntityLivingBase)entity).addPotionEffect(new PotionEffect(Potion.harm.id, 10, 5));
                         }
                     }
                     if (this.getDriveableData().parts.get(EnumDriveablePart.bow).health <= 0.0f && this.getDriveableData().parts.get(EnumDriveablePart.bow).maxHealth > 0.0f && this.seats[i].seatInfo.part == EnumDriveablePart.bow) {
-                        this.seats[i].field_70153_n.func_70078_a((Entity)null);
+                        this.seats[i].riddenByEntity.mountEntity((Entity)null);
                         if (this.lastAtkEntity instanceof EntityPlayer) {
-                            ((EntityLivingBase)entity).func_70690_d(new PotionEffect(Potion.field_76433_i.field_76415_H, 10, 5));
+                            ((EntityLivingBase)entity).addPotionEffect(new PotionEffect(Potion.harm.id, 10, 5));
                         }
                     }
                     if (this.getDriveableData().parts.get(EnumDriveablePart.midsection).health <= 0.0f && this.getDriveableData().parts.get(EnumDriveablePart.midsection).maxHealth > 0.0f && this.seats[i].seatInfo.part == EnumDriveablePart.midsection) {
-                        this.seats[i].field_70153_n.func_70078_a((Entity)null);
+                        this.seats[i].riddenByEntity.mountEntity((Entity)null);
                         if (this.lastAtkEntity instanceof EntityPlayer) {
-                            ((EntityLivingBase)entity).func_70690_d(new PotionEffect(Potion.field_76433_i.field_76415_H, 10, 5));
+                            ((EntityLivingBase)entity).addPotionEffect(new PotionEffect(Potion.harm.id, 10, 5));
                         }
                     }
                     if (this.getDriveableData().parts.get(EnumDriveablePart.stern).health <= 0.0f && this.getDriveableData().parts.get(EnumDriveablePart.stern).maxHealth > 0.0f && this.seats[i].seatInfo.part == EnumDriveablePart.stern) {
-                        this.seats[i].field_70153_n.func_70078_a((Entity)null);
+                        this.seats[i].riddenByEntity.mountEntity((Entity)null);
                         if (this.lastAtkEntity instanceof EntityPlayer) {
-                            ((EntityLivingBase)entity).func_70690_d(new PotionEffect(Potion.field_76433_i.field_76415_H, 10, 5));
+                            ((EntityLivingBase)entity).addPotionEffect(new PotionEffect(Potion.harm.id, 10, 5));
                         }
                     }
                     if (this.getDriveableData().parts.get(EnumDriveablePart.tail).health <= 0.0f && this.getDriveableData().parts.get(EnumDriveablePart.tail).maxHealth > 0.0f && this.seats[i].seatInfo.part == EnumDriveablePart.tail) {
-                        this.seats[i].field_70153_n.func_70078_a((Entity)null);
+                        this.seats[i].riddenByEntity.mountEntity((Entity)null);
                         if (this.lastAtkEntity instanceof EntityPlayer) {
-                            ((EntityLivingBase)entity).func_70690_d(new PotionEffect(Potion.field_76433_i.field_76415_H, 10, 5));
+                            ((EntityLivingBase)entity).addPotionEffect(new PotionEffect(Potion.harm.id, 10, 5));
                         }
                     }
                     if (this.getDriveableData().parts.get(EnumDriveablePart.bay).health <= 0.0f && this.getDriveableData().parts.get(EnumDriveablePart.bay).maxHealth > 0.0f && this.seats[i].seatInfo.part == EnumDriveablePart.bay) {
-                        this.seats[i].field_70153_n.func_70078_a((Entity)null);
+                        this.seats[i].riddenByEntity.mountEntity((Entity)null);
                         if (this.lastAtkEntity instanceof EntityPlayer) {
-                            ((EntityLivingBase)entity).func_70690_d(new PotionEffect(Potion.field_76433_i.field_76415_H, 10, 5));
+                            ((EntityLivingBase)entity).addPotionEffect(new PotionEffect(Potion.harm.id, 10, 5));
                         }
                     }
                     if (this.getDriveableData().parts.get(EnumDriveablePart.left).health <= 0.0f && this.getDriveableData().parts.get(EnumDriveablePart.left).maxHealth > 0.0f && this.seats[i].seatInfo.part == EnumDriveablePart.left) {
-                        this.seats[i].field_70153_n.func_70078_a((Entity)null);
+                        this.seats[i].riddenByEntity.mountEntity((Entity)null);
                         if (this.lastAtkEntity instanceof EntityPlayer) {
-                            ((EntityLivingBase)entity).func_70690_d(new PotionEffect(Potion.field_76433_i.field_76415_H, 10, 5));
+                            ((EntityLivingBase)entity).addPotionEffect(new PotionEffect(Potion.harm.id, 10, 5));
                         }
                     }
                     if (this.getDriveableData().parts.get(EnumDriveablePart.right).health <= 0.0f && this.getDriveableData().parts.get(EnumDriveablePart.right).maxHealth > 0.0f && this.seats[i].seatInfo.part == EnumDriveablePart.right) {
-                        this.seats[i].field_70153_n.func_70078_a((Entity)null);
+                        this.seats[i].riddenByEntity.mountEntity((Entity)null);
                         if (this.lastAtkEntity instanceof EntityPlayer) {
-                            ((EntityLivingBase)entity).func_70690_d(new PotionEffect(Potion.field_76433_i.field_76415_H, 10, 5));
+                            ((EntityLivingBase)entity).addPotionEffect(new PotionEffect(Potion.harm.id, 10, 5));
                         }
                     }
                 }
@@ -2811,45 +2813,45 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
         }
         if (this.getDriveableData().parts.get(EnumDriveablePart.core).dead && !type.inshallah) {
             for (final EntitySeat seat : this.seats) {
-                if (seat != null && this.seats[0].field_70153_n != null && this.seats[0].field_70153_n instanceof EntityPlayer && this.getDriveableData().parts.get(EnumDriveablePart.core).health == 0 && this.getDriveableData().parts.get(EnumDriveablePart.core).maxHealth > 0) {
-                    ((EntityPlayer)this.seats[0].field_70153_n).func_70690_d(new PotionEffect(Potion.field_76433_i.field_76415_H, 100, 50));
-                    if (this.lastAtkEntity != null && this.lastAtkEntity instanceof EntityPlayer && this.seats[0] != null && this.seats[0].field_70153_n != null) {
-                        this.seats[0].field_70153_n.func_70097_a(DamageSource.func_76365_a((EntityPlayer)this.lastAtkEntity), 1.0E7f);
+                if (seat != null && this.seats[0].riddenByEntity != null && this.seats[0].riddenByEntity instanceof EntityPlayer && this.getDriveableData().parts.get(EnumDriveablePart.core).health == 0 && this.getDriveableData().parts.get(EnumDriveablePart.core).maxHealth > 0) {
+                    ((EntityPlayer)this.seats[0].riddenByEntity).addPotionEffect(new PotionEffect(Potion.harm.id, 100, 50));
+                    if (this.lastAtkEntity != null && this.lastAtkEntity instanceof EntityPlayer && this.seats[0] != null && this.seats[0].riddenByEntity != null) {
+                        this.seats[0].riddenByEntity.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer)this.lastAtkEntity), 1.0E7f);
                     }
                 }
             }
-            if (!this.field_70170_p.field_72995_K) {
+            if (!this.worldObj.isRemote) {
                 for (int i = 0; i < seatNum; ++i) {
-                    if (this.seats[i].field_70153_n != null && this.seats[i].field_70153_n instanceof EntityPlayer) {
-                        final Entity entity = this.seats[i].field_70153_n;
-                        this.seats[i].field_70153_n.func_70078_a((Entity)null);
+                    if (this.seats[i].riddenByEntity != null && this.seats[i].riddenByEntity instanceof EntityPlayer) {
+                        final Entity entity = this.seats[i].riddenByEntity;
+                        this.seats[i].riddenByEntity.mountEntity((Entity)null);
                         if (this.lastAtkEntity instanceof EntityPlayer) {
-                            ((EntityLivingBase)entity).func_70690_d(new PotionEffect(Potion.field_76433_i.field_76415_H, 100, 50));
-                            entity.func_70097_a(DamageSource.func_76365_a((EntityPlayer)this.lastAtkEntity), 1.0E7f);
+                            ((EntityLivingBase)entity).addPotionEffect(new PotionEffect(Potion.harm.id, 100, 50));
+                            entity.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer)this.lastAtkEntity), 1.0E7f);
                         }
                         else if (this.lastAtkEntity instanceof EntityLivingBase) {
-                            ((EntityLivingBase)entity).func_70690_d(new PotionEffect(Potion.field_76433_i.field_76415_H, 100, 50));
-                            entity.func_70097_a(DamageSource.func_76358_a((EntityLivingBase)this.lastAtkEntity), 1.0E7f);
+                            ((EntityLivingBase)entity).addPotionEffect(new PotionEffect(Potion.harm.id, 100, 50));
+                            entity.attackEntityFrom(DamageSource.causeMobDamage((EntityLivingBase)this.lastAtkEntity), 1.0E7f);
                         }
                     }
                 }
                 if (type.isExplosionWhenDestroyed && type.isExplosionWhenDestroyedRadius == 0.0f) {
-                    this.field_70170_p.func_72876_a((Entity)this, this.field_70165_t, this.field_70163_u, this.field_70161_v, 4.0f, false);
+                    this.worldObj.createExplosion((Entity)this, this.posX, this.posY, this.posZ, 4.0f, false);
                 }
                 else if (type.isExplosionWhenDestroyedRadius > 0.0f) {
-                    this.field_70170_p.func_72876_a((Entity)this, this.field_70165_t, this.field_70163_u, this.field_70161_v, type.isExplosionWhenDestroyedRadius, false);
+                    this.worldObj.createExplosion((Entity)this, this.posX, this.posY, this.posZ, type.isExplosionWhenDestroyedRadius, false);
                 }
                 if (type.nuclearDeath) {
-                    FlansMod.proxy.spawnParticle("flansmod.FMNuke", this.field_70165_t, this.field_70163_u, this.field_70161_v, 0.0, 0.0, 0.0);
-                    PacketPlaySound.sendSoundPacket(this.field_70165_t, this.field_70163_u, this.field_70161_v, 250.0, this.field_71093_bK, "YamatoGun", false);
+                    FlansMod.proxy.spawnParticle("flansmod.FMNuke", this.posX, this.posY, this.posZ, 0.0, 0.0, 0.0);
+                    PacketPlaySound.sendSoundPacket(this.posX, this.posY, this.posZ, 250.0, this.dimension, "YamatoGun", false);
                 }
                 if (type.bigDeath) {
-                    FlansMod.getPacketHandler().sendToAllAround(new PacketFlak(this.field_70165_t, this.field_70163_u, this.field_70161_v, 1, "shippuDeath"), this.field_70165_t, this.field_70163_u, this.field_70161_v, 200.0f, this.field_71093_bK);
-                    PacketPlaySound.sendSoundPacket(this.field_70165_t, this.field_70163_u, this.field_70161_v, 250.0, this.field_71093_bK, "BattleshipGun", false);
+                    FlansMod.getPacketHandler().sendToAllAround(new PacketFlak(this.posX, this.posY, this.posZ, 1, "shippuDeath"), this.posX, this.posY, this.posZ, 200.0f, this.dimension);
+                    PacketPlaySound.sendSoundPacket(this.posX, this.posY, this.posZ, 250.0, this.dimension, "BattleshipGun", false);
                 }
                 if (type.Death) {
-                    FlansMod.getPacketHandler().sendToAllAround(new PacketFlak(this.field_70165_t, this.field_70163_u, this.field_70161_v, 1, "tankkuDeath"), this.field_70165_t, this.field_70163_u, this.field_70161_v, 200.0f, this.field_71093_bK);
-                    PacketPlaySound.sendSoundPacket(this.field_70165_t, this.field_70163_u, this.field_70161_v, 250.0, this.field_71093_bK, "explcls6", false);
+                    FlansMod.getPacketHandler().sendToAllAround(new PacketFlak(this.posX, this.posY, this.posZ, 1, "tankkuDeath"), this.posX, this.posY, this.posZ, 200.0f, this.dimension);
+                    PacketPlaySound.sendSoundPacket(this.posX, this.posY, this.posZ, 250.0, this.dimension, "explcls6", false);
                 }
                 for (final DriveablePart part2 : this.driveableData.parts.values()) {
                     if (part2.health > 0 && !part2.dead) {
@@ -2858,41 +2860,41 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
                 }
             }
             data2.depth = -9000.0f;
-            this.func_70106_y();
+            this.setDead();
         }
         for (final EntitySeat seat : this.seats) {
             if ((this.getDriveableData().parts.get(EnumDriveablePart.core).dead && seat != null && type.inshallah) || (this.getDriveableData().parts.get(EnumDriveablePart.core).dead && seat != null && type.canDive) || (this.suicide && seat != null && type.inshallah)) {
-                if (seat == null || (this.seats[0].field_70153_n != null && this.seats[0].field_70153_n instanceof EntityPlayer && type.inshallah) || this.seats[0].field_70153_n == null || !(this.seats[0].field_70153_n instanceof EntityPlayer) || type.canDive) {}
-                if (!this.field_70170_p.field_72995_K) {
+                if (seat == null || (this.seats[0].riddenByEntity != null && this.seats[0].riddenByEntity instanceof EntityPlayer && type.inshallah) || this.seats[0].riddenByEntity == null || !(this.seats[0].riddenByEntity instanceof EntityPlayer) || type.canDive) {}
+                if (!this.worldObj.isRemote) {
                     for (int j = 0; j < seatNum; ++j) {
-                        if (this.seats[j].field_70153_n != null && this.seats[j].field_70153_n instanceof EntityPlayer) {
-                            final Entity entity2 = this.seats[j].field_70153_n;
-                            this.seats[j].field_70153_n.func_70078_a((Entity)null);
+                        if (this.seats[j].riddenByEntity != null && this.seats[j].riddenByEntity instanceof EntityPlayer) {
+                            final Entity entity2 = this.seats[j].riddenByEntity;
+                            this.seats[j].riddenByEntity.mountEntity((Entity)null);
                             if (this.lastAtkEntity instanceof EntityPlayer) {
-                                entity2.func_70097_a(DamageSource.func_76365_a((EntityPlayer)this.lastAtkEntity), 1.0E7f);
+                                entity2.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer)this.lastAtkEntity), 1.0E7f);
                             }
                             else if (this.lastAtkEntity instanceof EntityLivingBase) {
-                                entity2.func_70097_a(DamageSource.func_76358_a((EntityLivingBase)this.lastAtkEntity), 1.0E7f);
+                                entity2.attackEntityFrom(DamageSource.causeMobDamage((EntityLivingBase)this.lastAtkEntity), 1.0E7f);
                             }
                         }
                     }
                     if (type.isExplosionWhenDestroyed && type.isExplosionWhenDestroyedRadius == 0.0f) {
-                        this.field_70170_p.func_72876_a((Entity)this, this.field_70165_t, this.field_70163_u, this.field_70161_v, 4.0f, false);
+                        this.worldObj.createExplosion((Entity)this, this.posX, this.posY, this.posZ, 4.0f, false);
                     }
                     else if (type.isExplosionWhenDestroyedRadius > 0.0f) {
-                        this.field_70170_p.func_72876_a((Entity)this, this.field_70165_t, this.field_70163_u, this.field_70161_v, type.isExplosionWhenDestroyedRadius, false);
+                        this.worldObj.createExplosion((Entity)this, this.posX, this.posY, this.posZ, type.isExplosionWhenDestroyedRadius, false);
                     }
                     if (type.nuclearDeath) {
-                        FlansMod.proxy.spawnParticle("flansmod.FMNuke", this.field_70165_t, this.field_70163_u, this.field_70161_v, 0.0, 0.0, 0.0);
-                        PacketPlaySound.sendSoundPacket(this.field_70165_t, this.field_70163_u, this.field_70161_v, 250.0, this.field_71093_bK, "YamatoGun", false);
+                        FlansMod.proxy.spawnParticle("flansmod.FMNuke", this.posX, this.posY, this.posZ, 0.0, 0.0, 0.0);
+                        PacketPlaySound.sendSoundPacket(this.posX, this.posY, this.posZ, 250.0, this.dimension, "YamatoGun", false);
                     }
                     if (type.bigDeath) {
-                        FlansMod.proxy.spawnParticle("flansmod.shipDeath", this.field_70165_t, this.field_70163_u, this.field_70161_v, 0.0, 0.0, 0.0);
-                        PacketPlaySound.sendSoundPacket(this.field_70165_t, this.field_70163_u, this.field_70161_v, 250.0, this.field_71093_bK, "BattleshipGun", false);
+                        FlansMod.proxy.spawnParticle("flansmod.shipDeath", this.posX, this.posY, this.posZ, 0.0, 0.0, 0.0);
+                        PacketPlaySound.sendSoundPacket(this.posX, this.posY, this.posZ, 250.0, this.dimension, "BattleshipGun", false);
                     }
                     if (type.Death) {
-                        FlansMod.proxy.spawnParticle("flansmod.tankDeath", this.field_70165_t, this.field_70163_u, this.field_70161_v, 0.0, 0.0, 0.0);
-                        PacketPlaySound.sendSoundPacket(this.field_70165_t, this.field_70163_u, this.field_70161_v, 250.0, this.field_71093_bK, "explcls6", false);
+                        FlansMod.proxy.spawnParticle("flansmod.tankDeath", this.posX, this.posY, this.posZ, 0.0, 0.0, 0.0);
+                        PacketPlaySound.sendSoundPacket(this.posX, this.posY, this.posZ, 250.0, this.dimension, "explcls6", false);
                     }
                     for (final DriveablePart part3 : this.driveableData.parts.values()) {
                         if (part3.health > 0 && !part3.dead) {
@@ -2902,7 +2904,7 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
                 }
                 data2.depth = -9000.0f;
                 if (seat != null) {
-                    this.func_70106_y();
+                    this.setDead();
                 }
             }
         }
@@ -2923,9 +2925,9 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
         part.health = 0;
         part.crew = 0;
         part.dead = true;
-        FlansMod.proxy.spawnParticle("largeexplode", this.field_70165_t, this.field_70163_u, this.field_70161_v, 0.0, 0.0, 0.0);
+        FlansMod.proxy.spawnParticle("largeexplode", this.posX, this.posY, this.posZ, 0.0, 0.0, 0.0);
         final DriveableType type = this.getDriveableType();
-        if (!this.field_70170_p.field_72995_K) {
+        if (!this.worldObj.isRemote) {
             Vector3f pos = new Vector3f(0.0f, 0.0f, 0.0f);
             if (part.box != null) {
                 pos = this.axes.findLocalVectorGlobally(new Vector3f(part.box.x / 16.0f + part.box.w / 32.0f, part.box.y / 16.0f + part.box.h / 32.0f, part.box.z / 16.0f + part.box.d / 32.0f));
@@ -2936,10 +2938,10 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
             }
             this.dropItemsOnPartDeath(pos, part);
             if (part.type == EnumDriveablePart.core) {
-                for (int i = 0; i < this.getDriveableData().func_70302_i_(); ++i) {
-                    final ItemStack stack = this.getDriveableData().func_70301_a(i);
+                for (int i = 0; i < this.getDriveableData().getSizeInventory(); ++i) {
+                    final ItemStack stack = this.getDriveableData().getStackInSlot(i);
                     if (stack != null) {
-                        this.field_70170_p.func_72838_d((Entity)new EntityItem(this.field_70170_p, this.field_70165_t + this.field_70146_Z.nextGaussian(), this.field_70163_u + this.field_70146_Z.nextGaussian(), this.field_70161_v + this.field_70146_Z.nextGaussian(), stack));
+                        this.worldObj.spawnEntityInWorld((Entity)new EntityItem(this.worldObj, this.posX + this.rand.nextGaussian(), this.posY + this.rand.nextGaussian(), this.posZ + this.rand.nextGaussian(), stack));
                     }
                 }
             }
@@ -2973,8 +2975,8 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
     }
     
     public boolean hudMode() {
-        final EntityPlayer driver = (EntityPlayer)this.seats[0].field_70153_n;
-        return Minecraft.func_71410_x().field_71474_y.field_74320_O == 0 && driver != null;
+        final EntityPlayer driver = (EntityPlayer)this.seats[0].riddenByEntity;
+        return Minecraft.getMinecraft().gameSettings.thirdPersonView == 0 && driver != null;
     }
     
     public float healthPercent(final EnumDriveablePart part) {
@@ -2995,7 +2997,7 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
         return seat.part == EnumDriveablePart.turret;
     }
     
-    public String func_70005_c_() {
+    public String getCommandSenderName() {
         return this.getDriveableType().name;
     }
     
@@ -3061,7 +3063,7 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
     
     public void lock(final String tool, final EntityPlayer player) {
         this.locked = true;
-        player.func_145747_a((IChatComponent)new ChatComponentText("Locked"));
+        player.addChatMessage((IChatComponent)new ChatComponentText("Locked"));
     }
     
     public void IT1Reload() {
@@ -3129,7 +3131,7 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
         if (this.stage == 8) {
             this.drakonDoorAngle = this.moveToTarget(this.drakonDoorAngle, 0.0f, 10.0f);
             this.drakonArmAngle = this.moveToTarget(this.drakonArmAngle, 0.0f, 3.0f);
-            if (this.field_70170_p.field_72995_K && this.field_70173_aa > 2) {
+            if (this.worldObj.isRemote && this.ticksExisted > 2) {
                 this.drakonRailAngle = this.moveToTarget(this.drakonRailAngle, -this.seats[0].looking.getPitch(), this.seats[0].seatInfo.aimingSpeed.y);
             }
             if (!this.IT1Loaded()) {
@@ -3169,8 +3171,8 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
         final DriveableType type = this.getDriveableType();
         boolean loaded = false;
         for (int i = this.driveableData.getMissileInventoryStart(); i < this.driveableData.getMissileInventoryStart() + type.numMissileSlots; ++i) {
-            final ItemStack shell = this.driveableData.func_70301_a(i);
-            if (shell != null && shell.func_77973_b() instanceof ItemBullet && type.isValidAmmo(((ItemBullet)shell.func_77973_b()).type, EnumWeaponType.MISSILE)) {
+            final ItemStack shell = this.driveableData.getStackInSlot(i);
+            if (shell != null && shell.getItem() instanceof ItemBullet && type.isValidAmmo(((ItemBullet)shell.getItem()).type, EnumWeaponType.MISSILE)) {
                 loaded = true;
             }
         }
@@ -3181,8 +3183,8 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
         int slot = -1;
         final DriveableType type = this.getDriveableType();
         for (int i = this.driveableData.getMissileInventoryStart(); i < this.driveableData.getMissileInventoryStart() + type.numMissileSlots; ++i) {
-            final ItemStack shell = this.driveableData.func_70301_a(i);
-            if (shell != null && shell.func_77973_b() instanceof ItemBullet && type.isValidAmmo(((ItemBullet)shell.func_77973_b()).type, EnumWeaponType.SHELL)) {
+            final ItemStack shell = this.driveableData.getStackInSlot(i);
+            if (shell != null && shell.getItem() instanceof ItemBullet && type.isValidAmmo(((ItemBullet)shell.getItem()).type, EnumWeaponType.SHELL)) {
                 slot = i;
             }
         }
@@ -3195,8 +3197,8 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
         int slot = -1;
         final DriveableType type = this.getDriveableType();
         for (int i = this.driveableData.getMissileInventoryStart(); i < this.driveableData.getMissileInventoryStart() + type.numMissileSlots; ++i) {
-            final ItemStack shell = this.driveableData.func_70301_a(i);
-            if (shell != null && shell.func_77973_b() instanceof ItemBullet && type.isValidAmmo(((ItemBullet)shell.func_77973_b()).type, EnumWeaponType.SHELL)) {
+            final ItemStack shell = this.driveableData.getStackInSlot(i);
+            if (shell != null && shell.getItem() instanceof ItemBullet && type.isValidAmmo(((ItemBullet)shell.getItem()).type, EnumWeaponType.SHELL)) {
                 slot = i;
             }
         }
@@ -3216,37 +3218,37 @@ public abstract class EntityDriveable extends Entity implements IControllable, I
     
     public void unlock(final EntityPlayer player) {
         this.locked = false;
-        player.func_145747_a((IChatComponent)new ChatComponentText("Unlocked"));
+        player.addChatMessage((IChatComponent)new ChatComponentText("Unlocked"));
     }
     
     public NBTTagCompound extractDataToUpdate() {
         final NBTTagCompound data = new NBTTagCompound();
-        data.func_74757_a("l", this.locked);
-        data.func_74757_a("s", this.stolen);
-        data.func_74778_a("o", (this.owner == null) ? "None" : this.owner.getName());
+        data.setBoolean("l", this.locked);
+        data.setBoolean("s", this.stolen);
+        data.setString("o", (this.owner == null) ? "None" : this.owner.getName());
         final NBTTagList unlocks = new NBTTagList();
         for (final Map.Entry<String, Integer> entry : this.unlocks.entrySet()) {
             final NBTTagCompound tag = new NBTTagCompound();
-            tag.func_74778_a("k", (String)entry.getKey());
-            tag.func_74768_a("v", (int)entry.getValue());
-            unlocks.func_74742_a((NBTBase)tag);
+            tag.setString("k", (String)entry.getKey());
+            tag.setInteger("v", (int)entry.getValue());
+            unlocks.appendTag((NBTBase)tag);
         }
-        data.func_74782_a("u", (NBTBase)unlocks);
+        data.setTag("u", (NBTBase)unlocks);
         return data;
     }
     
     public void updateDataWithNBT(final NBTTagCompound data) {
-        this.locked = data.func_74767_n("l");
-        this.stolen = data.func_74767_n("s");
-        this.ownerName = data.func_74779_i("o");
-        final NBTTagList unlocks = data.func_150295_c("u", 10);
-        for (int i = 0; i < unlocks.func_74745_c(); ++i) {
-            final NBTTagCompound tag = unlocks.func_150305_b(i);
-            this.unlocks.put(tag.func_74779_i("k"), tag.func_74762_e("v"));
+        this.locked = data.getBoolean("l");
+        this.stolen = data.getBoolean("s");
+        this.ownerName = data.getString("o");
+        final NBTTagList unlocks = data.getTagList("u", 10);
+        for (int i = 0; i < unlocks.tagCount(); ++i) {
+            final NBTTagCompound tag = unlocks.getCompoundTagAt(i);
+            this.unlocks.put(tag.getString("k"), tag.getInteger("v"));
         }
     }
     
     public int getID() {
-        return this.func_145782_y();
+        return this.getEntityId();
     }
 }

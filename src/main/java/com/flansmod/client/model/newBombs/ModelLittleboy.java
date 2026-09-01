@@ -37,48 +37,48 @@ public class ModelLittleboy extends ModelBase
         this.littleboyModel[17] = new ModelRendererTurbo(this, 33, 57, this.textureX, this.textureY);
         this.littleboyModel[18] = new ModelRendererTurbo(this, 81, 57, this.textureX, this.textureY);
         this.littleboyModel[0].addShapeBox(0.0f, 0.0f, 0.0f, 5, 25, 9, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.littleboyModel[0].func_78793_a(0.0f, -8.0f, 0.5f);
+        this.littleboyModel[0].setRotationPoint(0.0f, -8.0f, 0.5f);
         this.littleboyModel[1].addShapeBox(0.0f, 0.0f, 0.0f, 2, 25, 9, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -2.0f, 0.0f, 0.0f, -2.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -2.0f, 0.0f, 0.0f, -2.0f, 0.0f, 0.0f, 0.0f);
-        this.littleboyModel[1].func_78793_a(5.0f, -8.0f, 0.5f);
+        this.littleboyModel[1].setRotationPoint(5.0f, -8.0f, 0.5f);
         this.littleboyModel[2].addShapeBox(0.0f, 0.0f, 0.0f, 2, 25, 9, 0.0f, 0.0f, 0.0f, -2.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -2.0f, 0.0f, 0.0f, -2.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -2.0f);
-        this.littleboyModel[2].func_78793_a(-2.0f, -8.0f, 0.5f);
+        this.littleboyModel[2].setRotationPoint(-2.0f, -8.0f, 0.5f);
         this.littleboyModel[3].addShapeBox(0.0f, 0.0f, 0.0f, 2, 2, 9, 0.0f, 0.0f, 0.0f, -2.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -2.0f, -3.0f, 0.0f, -3.0f, 1.0f, 0.0f, -3.0f, 1.0f, 0.0f, -3.0f, -3.0f, 0.0f, -3.0f);
-        this.littleboyModel[3].func_78793_a(-2.0f, 17.0f, 0.5f);
+        this.littleboyModel[3].setRotationPoint(-2.0f, 17.0f, 0.5f);
         this.littleboyModel[4].addShapeBox(0.0f, 0.0f, 0.0f, 5, 2, 9, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, -3.0f, -1.0f, 0.0f, -3.0f, -1.0f, 0.0f, -3.0f, -1.0f, 0.0f, -3.0f);
-        this.littleboyModel[4].func_78793_a(0.0f, 17.0f, 0.5f);
+        this.littleboyModel[4].setRotationPoint(0.0f, 17.0f, 0.5f);
         this.littleboyModel[5].addShapeBox(0.0f, 0.0f, 0.0f, 2, 2, 9, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -2.0f, 0.0f, 0.0f, -2.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, -3.0f, -3.0f, 0.0f, -3.0f, -3.0f, 0.0f, -3.0f, 1.0f, 0.0f, -3.0f);
-        this.littleboyModel[5].func_78793_a(5.0f, 17.0f, 0.5f);
+        this.littleboyModel[5].setRotationPoint(5.0f, 17.0f, 0.5f);
         this.littleboyModel[6].addShapeBox(0.0f, 0.0f, 0.0f, 2, 8, 9, 0.0f, 2.0f, 0.0f, -3.0f, -3.0f, 0.0f, -3.0f, -3.0f, 0.0f, -3.0f, 2.0f, 0.0f, -3.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -2.0f, 0.0f, 0.0f, -2.0f, 0.0f, 0.0f, 0.0f);
-        this.littleboyModel[6].func_78793_a(5.0f, -16.0f, 0.5f);
+        this.littleboyModel[6].setRotationPoint(5.0f, -16.0f, 0.5f);
         this.littleboyModel[7].addShapeBox(0.0f, 0.0f, 0.0f, 5, 8, 9, 0.0f, -2.0f, 0.0f, -3.0f, -2.0f, 0.0f, -3.0f, -2.0f, 0.0f, -3.0f, -2.0f, 0.0f, -3.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.littleboyModel[7].func_78793_a(0.0f, -16.0f, 0.5f);
+        this.littleboyModel[7].setRotationPoint(0.0f, -16.0f, 0.5f);
         this.littleboyModel[8].addShapeBox(0.0f, 0.0f, 0.0f, 2, 8, 9, 0.0f, -3.0f, 0.0f, -3.0f, 2.0f, 0.0f, -3.0f, 2.0f, 0.0f, -3.0f, -3.0f, 0.0f, -3.0f, 0.0f, 0.0f, -2.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -2.0f);
-        this.littleboyModel[8].func_78793_a(-2.0f, -16.0f, 0.5f);
+        this.littleboyModel[8].setRotationPoint(-2.0f, -16.0f, 0.5f);
         this.littleboyModel[9].addShapeBox(0.0f, 0.0f, 0.0f, 3, 7, 3, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.littleboyModel[9].func_78793_a(1.0f, -23.0f, 3.5f);
+        this.littleboyModel[9].setRotationPoint(1.0f, -23.0f, 3.5f);
         this.littleboyModel[10].addShapeBox(0.0f, 0.0f, 0.0f, 12, 5, 1, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.littleboyModel[10].func_78793_a(-4.0f, -27.0f, 10.0f);
+        this.littleboyModel[10].setRotationPoint(-4.0f, -27.0f, 10.0f);
         this.littleboyModel[11].addShapeBox(0.0f, 0.0f, 0.0f, 1, 5, 12, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.littleboyModel[11].func_78793_a(-4.0f, -27.0f, -1.0f);
+        this.littleboyModel[11].setRotationPoint(-4.0f, -27.0f, -1.0f);
         this.littleboyModel[12].addShapeBox(0.0f, 0.0f, 0.0f, 12, 5, 1, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.littleboyModel[12].func_78793_a(-4.0f, -27.0f, -1.0f);
+        this.littleboyModel[12].setRotationPoint(-4.0f, -27.0f, -1.0f);
         this.littleboyModel[13].addShapeBox(0.0f, 0.0f, 0.0f, 1, 5, 12, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.littleboyModel[13].func_78793_a(7.0f, -27.0f, -1.0f);
+        this.littleboyModel[13].setRotationPoint(7.0f, -27.0f, -1.0f);
         this.littleboyModel[14].addShapeBox(0.0f, 0.0f, 0.0f, 2, 7, 1, 0.0f, 0.0f, 0.0f, -0.5f, 0.5f, 4.0f, 3.5f, 1.0f, 4.0f, -4.0f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f, -0.5f, 0.5f, -6.0f, 3.5f, 1.0f, -6.0f, -4.0f, -0.5f, 0.0f, 0.0f);
-        this.littleboyModel[14].func_78793_a(3.5f, -23.0f, 3.0f);
+        this.littleboyModel[14].setRotationPoint(3.5f, -23.0f, 3.0f);
         this.littleboyModel[15].addShapeBox(0.0f, 0.0f, 0.0f, 1, 7, 4, 0.0f, 3.5f, 4.0f, 0.5f, -4.0f, 4.0f, 1.0f, 0.0f, 0.0f, -0.5f, -0.5f, 0.0f, 0.0f, 3.5f, -6.0f, 0.5f, -4.0f, -6.0f, 1.0f, 0.0f, 0.0f, -0.5f, -0.5f, 0.0f, 0.0f);
-        this.littleboyModel[15].func_78793_a(0.5f, -23.0f, 0.0f);
+        this.littleboyModel[15].setRotationPoint(0.5f, -23.0f, 0.0f);
         this.littleboyModel[16].addShapeBox(0.0f, 0.0f, 0.0f, 2, 7, 1, 0.0f, -0.5f, 0.0f, 0.0f, 1.0f, 4.0f, -4.0f, 0.5f, 4.0f, 3.5f, 0.0f, 0.0f, -0.5f, -0.5f, 0.0f, 0.0f, 1.0f, -6.0f, -4.0f, 0.5f, -6.0f, 3.5f, 0.0f, 0.0f, -0.5f);
-        this.littleboyModel[16].func_78793_a(3.5f, -23.0f, 6.0f);
+        this.littleboyModel[16].setRotationPoint(3.5f, -23.0f, 6.0f);
         this.littleboyModel[17].addShapeBox(0.0f, 0.0f, 0.0f, 1, 7, 4, 0.0f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f, -0.5f, -4.0f, 4.0f, 1.0f, 3.5f, 4.0f, 0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f, -0.5f, -4.0f, -6.0f, 1.0f, 3.5f, -6.0f, 0.5f);
-        this.littleboyModel[17].func_78793_a(0.5f, -23.0f, 6.0f);
+        this.littleboyModel[17].setRotationPoint(0.5f, -23.0f, 6.0f);
         this.littleboyModel[18].addShapeBox(0.0f, 0.0f, 0.0f, 10, 1, 10, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.littleboyModel[18].func_78793_a(-3.0f, -27.0f, 0.0f);
+        this.littleboyModel[18].setRotationPoint(-3.0f, -27.0f, 0.0f);
     }
     
-    public void func_78088_a(final Entity entity, final float f, final float f1, final float f2, final float f3, final float f4, final float f5) {
+    public void render(final Entity entity, final float f, final float f1, final float f2, final float f3, final float f4, final float f5) {
         for (int i = 0; i < 19; ++i) {
-            this.littleboyModel[i].func_78785_a(f5);
+            this.littleboyModel[i].render(f5);
         }
     }
     

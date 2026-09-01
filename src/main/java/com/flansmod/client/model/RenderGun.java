@@ -45,14 +45,14 @@ public class RenderGun implements IItemRenderer
     public boolean handleRenderType(final ItemStack item, final IItemRenderer.ItemRenderType type) {
         switch (type) {
             case ENTITY: {
-                if (!Minecraft.func_71410_x().field_71474_y.field_74347_j) {
+                if (!Minecraft.getMinecraft().gameSettings.fancyGraphics) {
                     return false;
                 }
-                return item != null && item.func_77973_b() instanceof ItemGun && ((ItemGun)item.func_77973_b()).type.model != null;
+                return item != null && item.getItem() instanceof ItemGun && ((ItemGun)item.getItem()).type.model != null;
             }
             case EQUIPPED:
             case EQUIPPED_FIRST_PERSON: {
-                return item != null && item.func_77973_b() instanceof ItemGun && ((ItemGun)item.func_77973_b()).type.model != null;
+                return item != null && item.getItem() instanceof ItemGun && ((ItemGun)item.getItem()).type.model != null;
             }
             default: {
                 return false;
@@ -65,11 +65,11 @@ public class RenderGun implements IItemRenderer
     }
     
     public void renderItem(final IItemRenderer.ItemRenderType type, final ItemStack item, final Object... data) {
-        if (!(item.func_77973_b() instanceof ItemGun)) {
+        if (!(item.getItem() instanceof ItemGun)) {
             return;
         }
         final RenderBlocks renderBlocks = (RenderBlocks)data[0];
-        final GunType gunType = ((ItemGun)item.func_77973_b()).type;
+        final GunType gunType = ((ItemGun)item.getItem()).type;
         if (gunType == null) {
             return;
         }
@@ -90,11 +90,11 @@ public class RenderGun implements IItemRenderer
                         animations2 = new GunAnimations();
                         FlansModClient.gunAnimationsLeft.put((EntityLivingBase)data[1], animations2);
                     }
-                    final ItemStack offHandItem = player.field_71071_by.func_70301_a(playerData.offHandGunSlot - 1);
-                    if (offHandItem == null || !(offHandItem.func_77973_b() instanceof ItemGun)) {
+                    final ItemStack offHandItem = player.inventory.getStackInSlot(playerData.offHandGunSlot - 1);
+                    if (offHandItem == null || !(offHandItem.getItem() instanceof ItemGun)) {
                         return;
                     }
-                    final GunType offHandGunType = ((ItemGun)offHandItem.func_77973_b()).type;
+                    final GunType offHandGunType = ((ItemGun)offHandItem.getItem()).type;
                     if (!offHandGunType.oneHanded) {
                         return;
                     }
@@ -110,7 +110,7 @@ public class RenderGun implements IItemRenderer
             animations = new GunAnimations();
             FlansModClient.gunAnimationsLeft.put((EntityLivingBase)player, animations);
         }
-        final GunType offHandGunType = ((ItemGun)offHandItemStack.func_77973_b()).type;
+        final GunType offHandGunType = ((ItemGun)offHandItemStack.getItem()).type;
         if (!offHandGunType.oneHanded) {
             return;
         }
@@ -126,7 +126,7 @@ public class RenderGun implements IItemRenderer
         switch (type) {
             case ENTITY: {
                 final EntityItem entity = (EntityItem)data[1];
-                GL11.glRotatef(entity.field_70292_b + ((entity.field_70292_b == 0) ? 0.0f : RenderGun.smoothing), 0.0f, 1.0f, 0.0f);
+                GL11.glRotatef(entity.age + ((entity.age == 0) ? 0.0f : RenderGun.smoothing), 0.0f, 1.0f, 0.0f);
                 GL11.glTranslatef(-0.2f + model.itemFrameOffset.x, 0.2f + model.itemFrameOffset.y, 0.1f + model.itemFrameOffset.z);
                 break;
             }
@@ -395,7 +395,7 @@ public class RenderGun implements IItemRenderer
         final float randomNum = new Random().nextFloat();
         final float result = min + randomNum * (max - min);
         if (RenderGun.renderEngine == null) {
-            RenderGun.renderEngine = Minecraft.func_71410_x().field_71446_o;
+            RenderGun.renderEngine = Minecraft.getMinecraft().renderEngine;
         }
         if (animations == null) {
             animations = GunAnimations.defaults;
@@ -437,10 +437,10 @@ public class RenderGun implements IItemRenderer
         boolean empty = true;
         int numRounds = 0;
         for (int i = 0; i < type.getNumAmmoItemsInGun(item); ++i) {
-            bulletStacks[i] = ((ItemGun)item.func_77973_b()).getBulletItemStack(item, i);
-            if (bulletStacks[i] != null && bulletStacks[i].func_77973_b() instanceof ItemShootable && bulletStacks[i].func_77960_j() < bulletStacks[i].func_77958_k()) {
+            bulletStacks[i] = ((ItemGun)item.getItem()).getBulletItemStack(item, i);
+            if (bulletStacks[i] != null && bulletStacks[i].getItem() instanceof ItemShootable && bulletStacks[i].getMetadata() < bulletStacks[i].getMaxDurability()) {
                 empty = false;
-                numRounds += bulletStacks[i].func_77958_k() - bulletStacks[i].func_77960_j();
+                numRounds += bulletStacks[i].getMaxDurability() - bulletStacks[i].getMetadata();
             }
         }
         if (model.slideLockOnEmpty) {
@@ -452,10 +452,10 @@ public class RenderGun implements IItemRenderer
             }
         }
         if (rtype == IItemRenderer.ItemRenderType.EQUIPPED_FIRST_PERSON && model.hasArms && FlansMod.armsEnable) {
-            final Minecraft mc = Minecraft.func_71410_x();
-            renderFirstPersonArm((EntityPlayer)mc.field_71439_g, model, animations);
+            final Minecraft mc = Minecraft.getMinecraft();
+            renderFirstPersonArm((EntityPlayer)mc.thePlayer, model, animations);
         }
-        RenderGun.renderEngine.func_110577_a(FlansModResourceHandler.getPaintjobTexture(type.getPaintjob(item.func_77960_j())));
+        RenderGun.renderEngine.bindTexture(FlansModResourceHandler.getPaintjobTexture(type.getPaintjob(item.getMetadata())));
         if (scopeAttachment != null && model.gunOffset != 0.0f && FlansModClient.zoomProgress >= 0.5f) {
             GL11.glTranslatef(0.0f, -scopeAttachment.model.renderOffset + model.gunOffset / 16.0f, 0.0f);
         }
@@ -501,11 +501,11 @@ public class RenderGun implements IItemRenderer
             else {
                 GL11.glTranslatef(model.muzzleFlashPoint.x + model.defaultBarrelFlashPoint.x, model.muzzleFlashPoint.y + model.defaultBarrelFlashPoint.y, model.muzzleFlashPoint.z + model.defaultBarrelFlashPoint.z);
             }
-            RenderGun.renderEngine.func_110577_a(FlansModResourceHandler.getAuxiliaryTexture(type.flashTexture));
+            RenderGun.renderEngine.bindTexture(FlansModResourceHandler.getAuxiliaryTexture(type.flashTexture));
             ModelGun.glowOn();
             flash.renderFlash(f, animations.flashInt);
             ModelGun.glowOff();
-            RenderGun.renderEngine.func_110577_a(FlansModResourceHandler.getPaintjobTexture(type.getPaintjob(item.func_77960_j())));
+            RenderGun.renderEngine.bindTexture(FlansModResourceHandler.getPaintjobTexture(type.getPaintjob(item.getMetadata())));
             GL11.glPopMatrix();
         }
         if (slideAttachment == null && !type.getSecondaryFire(item)) {
@@ -565,7 +565,7 @@ public class RenderGun implements IItemRenderer
             if (FlansModClient.shotState != -1 && -(1.0f - Math.abs(animations.lastPumped + (animations.pumped - animations.lastPumped) * RenderGun.smoothing)) * model.pumpHandleDistance != -0.0) {
                 FlansModClient.shotState = -1;
                 if (type.actionSound != null) {
-                    Minecraft.func_71410_x().func_147118_V().func_147682_a((ISound)PositionedSoundRecord.func_147674_a(FlansModResourceHandler.getSound(type.actionSound), 1.0f));
+                    Minecraft.getMinecraft().getSoundHandler().playSound((ISound)PositionedSoundRecord.createPositionedSoundRecord(FlansModResourceHandler.getSound(type.actionSound), 1.0f));
                 }
             }
             GL11.glPopMatrix();
@@ -634,7 +634,7 @@ public class RenderGun implements IItemRenderer
                 break;
             }
         }
-        if (shouldRender && animations.reloading && Minecraft.func_71410_x().field_71474_y.field_74320_O == 0) {
+        if (shouldRender && animations.reloading && Minecraft.getMinecraft().gameSettings.thirdPersonView == 0) {
             final float effectiveReloadAnimationProgress = animations.lastReloadAnimationProgress + (animations.reloadAnimationProgress - animations.lastReloadAnimationProgress) * RenderGun.smoothing;
             float clipPosition = 0.0f;
             if (effectiveReloadAnimationProgress > tiltGunTime && effectiveReloadAnimationProgress < tiltGunTime + unloadClipTime) {
@@ -711,7 +711,7 @@ public class RenderGun implements IItemRenderer
                 }
                 case RIFLE: {
                     final float ammoPosition = clipPosition * getNumBulletsInReload(animations, gripAttachment, type, item);
-                    final int bulletNum = MathHelper.func_76141_d(ammoPosition);
+                    final int bulletNum = MathHelper.floor_float(ammoPosition);
                     final float bulletProgress = ammoPosition - bulletNum;
                     GL11.glRotatef(bulletProgress * 15.0f, 0.0f, 1.0f, 0.0f);
                     GL11.glRotatef(bulletProgress * 15.0f, 0.0f, 0.0f, 1.0f);
@@ -721,21 +721,21 @@ public class RenderGun implements IItemRenderer
                 case CUSTOMRIFLE: {
                     final float maxBullets = getNumBulletsInReload(animations, gripAttachment, type, item);
                     final float ammoPosition2 = clipPosition * maxBullets;
-                    final int bulletNum2 = MathHelper.func_76141_d(ammoPosition2);
+                    final int bulletNum2 = MathHelper.floor_float(ammoPosition2);
                     final float bulletProgress2 = ammoPosition2 - bulletNum2;
                     if (type.getNumAmmoItemsInGun(item) > 1 && type.bulletInsert != null && FlansModClient.lastBulletReload != -2) {
                         if (maxBullets == 2.0f && FlansModClient.lastBulletReload != -1) {
                             final int time = (int)(animations.reloadAnimationTime / maxBullets);
-                            Minecraft.func_71410_x().func_147118_V().func_147681_a((ISound)PositionedSoundRecord.func_147674_a(FlansModResourceHandler.getSound(type.bulletInsert), 1.0f), time);
+                            Minecraft.getMinecraft().getSoundHandler().playDelayedSound((ISound)PositionedSoundRecord.createPositionedSoundRecord(FlansModResourceHandler.getSound(type.bulletInsert), 1.0f), time);
                             FlansModClient.lastBulletReload = -1;
                         }
                         else if (bulletNum2 == (int)maxBullets || bulletNum2 == FlansModClient.lastBulletReload - 1) {
                             FlansModClient.lastBulletReload = bulletNum2;
-                            Minecraft.func_71410_x().func_147118_V().func_147682_a((ISound)PositionedSoundRecord.func_147674_a(FlansModResourceHandler.getSound(type.bulletInsert), 1.0f));
+                            Minecraft.getMinecraft().getSoundHandler().playSound((ISound)PositionedSoundRecord.createPositionedSoundRecord(FlansModResourceHandler.getSound(type.bulletInsert), 1.0f));
                         }
                         if (ammoPosition2 < 0.03 && bulletProgress2 > 0.0f) {
                             FlansModClient.lastBulletReload = -2;
-                            Minecraft.func_71410_x().func_147118_V().func_147682_a((ISound)PositionedSoundRecord.func_147674_a(FlansModResourceHandler.getSound(type.bulletInsert), 1.0f));
+                            Minecraft.getMinecraft().getSoundHandler().playSound((ISound)PositionedSoundRecord.createPositionedSoundRecord(FlansModResourceHandler.getSound(type.bulletInsert), 1.0f));
                         }
                     }
                     GL11.glRotatef(bulletProgress2 * model.rotateClipVertical, 0.0f, 1.0f, 0.0f);
@@ -747,7 +747,7 @@ public class RenderGun implements IItemRenderer
                 case RIFLE_TOP:
                 case CUSTOMRIFLE_TOP: {
                     final float ammoPosition = clipPosition * 1.0f;
-                    final int bulletNum = MathHelper.func_76141_d(ammoPosition);
+                    final int bulletNum = MathHelper.floor_float(ammoPosition);
                     final float bulletProgress = ammoPosition - bulletNum;
                     GL11.glRotatef(bulletProgress * 55.0f, 0.0f, 1.0f, 0.0f);
                     GL11.glRotatef(bulletProgress * 95.0f, 0.0f, 0.0f, 1.0f);
@@ -759,7 +759,7 @@ public class RenderGun implements IItemRenderer
                 case STRIKER:
                 case CUSTOMSTRIKER: {
                     final float ammoPosition = clipPosition * getNumBulletsInReload(animations, gripAttachment, type, item);
-                    final int bulletNum = MathHelper.func_76141_d(ammoPosition);
+                    final int bulletNum = MathHelper.floor_float(ammoPosition);
                     final float bulletProgress = ammoPosition - bulletNum;
                     GL11.glRotatef(bulletProgress * -30.0f, 0.0f, 0.0f, 1.0f);
                     GL11.glTranslatef(bulletProgress * -0.5f * 1.0f / type.modelScale, bulletProgress * -1.0f * 1.0f / type.modelScale, 0.0f);
@@ -814,13 +814,13 @@ public class RenderGun implements IItemRenderer
             }
         }
         if (rtype == IItemRenderer.ItemRenderType.EQUIPPED_FIRST_PERSON && model.hasArms && FlansMod.armsEnable) {
-            final Minecraft mc2 = Minecraft.func_71410_x();
-            renderAnimArm((EntityPlayer)mc2.field_71439_g, model, type, animations);
+            final Minecraft mc2 = Minecraft.getMinecraft();
+            renderAnimArm((EntityPlayer)mc2.thePlayer, model, type, animations);
         }
-        RenderGun.renderEngine.func_110577_a(FlansModResourceHandler.getPaintjobTexture(type.getPaintjob(item.func_77960_j())));
+        RenderGun.renderEngine.bindTexture(FlansModResourceHandler.getPaintjobTexture(type.getPaintjob(item.getMetadata())));
         if (shouldRender) {
             if (gripAttachment != null && type.getSecondaryFire(item)) {
-                renderAttachmentAmmo(f, gripAttachment, model, gripAttachment.getPaintjob(gripItemStack.func_77960_j()), type.getPaintjob(item.func_77960_j()));
+                renderAttachmentAmmo(f, gripAttachment, model, gripAttachment.getPaintjob(gripItemStack.getMetadata()), type.getPaintjob(item.getMetadata()));
             }
             else {
                 model.renderAmmo(f);
@@ -837,7 +837,7 @@ public class RenderGun implements IItemRenderer
             model.renderAmmo(f);
         }
         else if (gripAttachment != null && !type.getSecondaryFire(item)) {
-            renderAttachmentAmmo(f, gripAttachment, model, gripAttachment.getPaintjob(gripItemStack.func_77960_j()), type.getPaintjob(item.func_77960_j()));
+            renderAttachmentAmmo(f, gripAttachment, model, gripAttachment.getPaintjob(gripItemStack.getMetadata()), type.getPaintjob(item.getMetadata()));
         }
         GL11.glPopMatrix();
         if (rtype == IItemRenderer.ItemRenderType.EQUIPPED_FIRST_PERSON && FlansMod.casingEnable && type.casingModel != null && !type.getSecondaryFire(item)) {
@@ -853,9 +853,9 @@ public class RenderGun implements IItemRenderer
             GL11.glScalef(model.caseScale, model.caseScale, model.caseScale);
             GL11.glTranslatef(model.casingAttachPoint.x + casingProg * moveX, model.casingAttachPoint.y + casingProg * moveY, model.casingAttachPoint.z + casingProg * moveZ);
             GL11.glRotatef(casingProg * 180.0f, model.casingRotateVector.x, model.casingRotateVector.y, model.casingRotateVector.z);
-            RenderGun.renderEngine.func_110577_a(FlansModResourceHandler.getAuxiliaryTexture(type.casingTexture));
+            RenderGun.renderEngine.bindTexture(FlansModResourceHandler.getAuxiliaryTexture(type.casingTexture));
             casing.renderCasing(f);
-            RenderGun.renderEngine.func_110577_a(FlansModResourceHandler.getPaintjobTexture(type.getPaintjob(item.func_77960_j())));
+            RenderGun.renderEngine.bindTexture(FlansModResourceHandler.getPaintjobTexture(type.getPaintjob(item.getMetadata())));
             GL11.glPopMatrix();
         }
         GL11.glPopMatrix();
@@ -927,38 +927,38 @@ public class RenderGun implements IItemRenderer
     }
     
     private static void preRenderAttachment(final AttachmentType attachment, final ItemStack stack, final Vector3f model, final GunType type) {
-        final Paintjob paintjob = attachment.getPaintjob(stack.func_77960_j());
-        RenderGun.renderEngine.func_110577_a(FlansModResourceHandler.getPaintjobTexture(paintjob));
+        final Paintjob paintjob = attachment.getPaintjob(stack.getMetadata());
+        RenderGun.renderEngine.bindTexture(FlansModResourceHandler.getPaintjobTexture(paintjob));
         GL11.glTranslatef(model.x * type.modelScale, model.y * type.modelScale, model.z * type.modelScale);
         GL11.glScalef(attachment.modelScale, attachment.modelScale, attachment.modelScale);
     }
     
     private static void postRenderAttachment(final AttachmentType attachment, final ItemStack stack, final float f) {
-        final Paintjob paintjob = attachment.getPaintjob(stack.func_77960_j());
+        final Paintjob paintjob = attachment.getPaintjob(stack.getMetadata());
         final ModelAttachment model = attachment.model;
         if (model != null) {
             model.renderAttachment(f);
         }
-        RenderGun.renderEngine.func_110577_a(FlansModResourceHandler.getPaintjobTexture(paintjob));
+        RenderGun.renderEngine.bindTexture(FlansModResourceHandler.getPaintjobTexture(paintjob));
     }
     
     private static void renderAttachmentAmmo(final float f, final AttachmentType grip, final ModelGun model, final Paintjob ammo, final Paintjob otherAmmo) {
-        RenderGun.renderEngine.func_110577_a(FlansModResourceHandler.getPaintjobTexture(ammo));
+        RenderGun.renderEngine.bindTexture(FlansModResourceHandler.getPaintjobTexture(ammo));
         GL11.glTranslatef(model.gripAttachPoint.x, model.gripAttachPoint.y, model.gripAttachPoint.z);
         grip.model.renderAttachmentAmmo(f);
-        RenderGun.renderEngine.func_110577_a(FlansModResourceHandler.getPaintjobTexture(otherAmmo));
+        RenderGun.renderEngine.bindTexture(FlansModResourceHandler.getPaintjobTexture(otherAmmo));
     }
     
     private void renderArms(final EntityPlayer player, final ModelGun model, final GunType type, final GunAnimations anim) {
     }
     
     private static void renderFirstPersonArm(final EntityPlayer player, final ModelGun model, final GunAnimations anim) {
-        final Minecraft mc = Minecraft.func_71410_x();
+        final Minecraft mc = Minecraft.getMinecraft();
         final ModelBiped modelBipedMain = new ModelBiped(0.0f);
-        mc.field_71446_o.func_110577_a(mc.field_71439_g.func_110306_p());
+        mc.renderEngine.bindTexture(mc.thePlayer.getLocationSkin());
         final float f = 1.0f;
         GL11.glColor3f(f, f, f);
-        modelBipedMain.field_78095_p = 0.0f;
+        modelBipedMain.swingProgress = 0.0f;
         GL11.glPushMatrix();
         if (!anim.reloading && model.righthandPump) {
             RenderArms.renderArmPump(model, anim, RenderGun.smoothing, model.rightArmRot, model.rightArmPos);
@@ -976,28 +976,28 @@ public class RenderGun implements IItemRenderer
             RenderArms.renderArmReload(model, anim, RenderGun.smoothing, model.rightArmReloadRot, model.rightArmReloadPos);
         }
         GL11.glScalef(model.rightArmScale.x, model.rightArmScale.y, model.rightArmScale.z);
-        modelBipedMain.func_78087_a(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0625f, (Entity)player);
-        modelBipedMain.field_78112_f.field_82908_p = 0.0f;
+        modelBipedMain.setRotationAngles(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0625f, (Entity)player);
+        modelBipedMain.bipedRightArm.offsetY = 0.0f;
         if (!model.rightHandAmmo) {
-            if (!player.func_70644_a(Potion.field_76441_p)) {
-                modelBipedMain.field_78112_f.func_78785_a(0.0625f);
+            if (!player.isPotionActive(Potion.invisibility)) {
+                modelBipedMain.bipedRightArm.render(0.0625f);
             }
             for (int a = 0; a < 4; ++a) {
-                if (Minecraft.func_71410_x().field_71439_g.func_82169_q(a) != null && Minecraft.func_71410_x().field_71439_g.func_82169_q(a).func_77973_b() instanceof ItemTeamArmour) {
-                    final ItemTeamArmour kiyafet = (ItemTeamArmour)Minecraft.func_71410_x().field_71439_g.func_82169_q(a).func_77973_b();
+                if (Minecraft.getMinecraft().thePlayer.getCurrentArmor(a) != null && Minecraft.getMinecraft().thePlayer.getCurrentArmor(a).getItem() instanceof ItemTeamArmour) {
+                    final ItemTeamArmour kiyafet = (ItemTeamArmour)Minecraft.getMinecraft().thePlayer.getCurrentArmor(a).getItem();
                     final ModelCustomArmour sekil = (ModelCustomArmour)kiyafet.type.GetModel();
-                    Minecraft.func_71410_x().field_71446_o.func_110577_a(new ResourceLocation("flansmod:armor/" + kiyafet.type.armourTextureName + "_" + ((kiyafet.type.type == 2) ? "2" : "1") + ".png"));
+                    Minecraft.getMinecraft().renderEngine.bindTexture(new ResourceLocation("flansmod:armor/" + kiyafet.type.armourTextureName + "_" + ((kiyafet.type.type == 2) ? "2" : "1") + ".png"));
                     for (int i = 0; i < sekil.rightArmModel.length; ++i) {
-                        sekil.rightArmModel[i].field_78795_f = modelBipedMain.field_78112_f.field_78795_f;
-                        sekil.rightArmModel[i].field_78796_g = modelBipedMain.field_78112_f.field_78796_g;
-                        sekil.rightArmModel[i].field_78808_h = modelBipedMain.field_78112_f.field_78808_h;
-                        sekil.rightArmModel[i].field_78800_c = modelBipedMain.field_78112_f.field_78800_c;
-                        sekil.rightArmModel[i].field_78797_d = modelBipedMain.field_78112_f.field_78797_d;
-                        sekil.rightArmModel[i].field_78798_e = modelBipedMain.field_78112_f.field_78798_e;
-                        sekil.rightArmModel[i].func_78785_a(0.0625f);
+                        sekil.rightArmModel[i].rotateAngleX = modelBipedMain.bipedRightArm.rotateAngleX;
+                        sekil.rightArmModel[i].rotateAngleY = modelBipedMain.bipedRightArm.rotateAngleY;
+                        sekil.rightArmModel[i].rotateAngleZ = modelBipedMain.bipedRightArm.rotateAngleZ;
+                        sekil.rightArmModel[i].rotationPointX = modelBipedMain.bipedRightArm.rotationPointX;
+                        sekil.rightArmModel[i].rotationPointY = modelBipedMain.bipedRightArm.rotationPointY;
+                        sekil.rightArmModel[i].rotationPointZ = modelBipedMain.bipedRightArm.rotationPointZ;
+                        sekil.rightArmModel[i].render(0.0625f);
                     }
                 }
-                mc.field_71446_o.func_110577_a(mc.field_71439_g.func_110306_p());
+                mc.renderEngine.bindTexture(mc.thePlayer.getLocationSkin());
             }
         }
         GL11.glPopMatrix();
@@ -1018,24 +1018,24 @@ public class RenderGun implements IItemRenderer
             RenderArms.renderArmReload(model, anim, RenderGun.smoothing, model.leftArmReloadRot, model.leftArmReloadPos);
         }
         GL11.glScalef(model.leftArmScale.x, model.leftArmScale.y, model.leftArmScale.z);
-        modelBipedMain.field_78113_g.field_82908_p = 0.0f;
+        modelBipedMain.bipedLeftArm.offsetY = 0.0f;
         if (!model.leftHandAmmo) {
-            if (!player.func_70644_a(Potion.field_76441_p)) {
-                modelBipedMain.field_78113_g.func_78785_a(0.0625f);
+            if (!player.isPotionActive(Potion.invisibility)) {
+                modelBipedMain.bipedLeftArm.render(0.0625f);
             }
             for (int a = 0; a < 4; ++a) {
-                if (Minecraft.func_71410_x().field_71439_g.func_82169_q(a) != null && Minecraft.func_71410_x().field_71439_g.func_82169_q(a).func_77973_b() instanceof ItemTeamArmour) {
-                    final ItemTeamArmour kiyafet = (ItemTeamArmour)Minecraft.func_71410_x().field_71439_g.func_82169_q(a).func_77973_b();
+                if (Minecraft.getMinecraft().thePlayer.getCurrentArmor(a) != null && Minecraft.getMinecraft().thePlayer.getCurrentArmor(a).getItem() instanceof ItemTeamArmour) {
+                    final ItemTeamArmour kiyafet = (ItemTeamArmour)Minecraft.getMinecraft().thePlayer.getCurrentArmor(a).getItem();
                     final ModelCustomArmour sekil = (ModelCustomArmour)kiyafet.type.GetModel();
-                    Minecraft.func_71410_x().field_71446_o.func_110577_a(new ResourceLocation("flansmod:armor/" + kiyafet.type.armourTextureName + "_" + ((kiyafet.type.type == 2) ? "2" : "1") + ".png"));
+                    Minecraft.getMinecraft().renderEngine.bindTexture(new ResourceLocation("flansmod:armor/" + kiyafet.type.armourTextureName + "_" + ((kiyafet.type.type == 2) ? "2" : "1") + ".png"));
                     for (int i = 0; i < sekil.leftArmModel.length; ++i) {
-                        sekil.leftArmModel[i].field_78795_f = modelBipedMain.field_78113_g.field_78795_f;
-                        sekil.leftArmModel[i].field_78796_g = modelBipedMain.field_78113_g.field_78796_g;
-                        sekil.leftArmModel[i].field_78808_h = modelBipedMain.field_78113_g.field_78808_h;
-                        sekil.leftArmModel[i].field_78800_c = modelBipedMain.field_78113_g.field_78800_c;
-                        sekil.leftArmModel[i].field_78797_d = modelBipedMain.field_78113_g.field_78797_d;
-                        sekil.leftArmModel[i].field_78798_e = modelBipedMain.field_78113_g.field_78798_e;
-                        sekil.leftArmModel[i].func_78785_a(0.0625f);
+                        sekil.leftArmModel[i].rotateAngleX = modelBipedMain.bipedLeftArm.rotateAngleX;
+                        sekil.leftArmModel[i].rotateAngleY = modelBipedMain.bipedLeftArm.rotateAngleY;
+                        sekil.leftArmModel[i].rotateAngleZ = modelBipedMain.bipedLeftArm.rotateAngleZ;
+                        sekil.leftArmModel[i].rotationPointX = modelBipedMain.bipedLeftArm.rotationPointX;
+                        sekil.leftArmModel[i].rotationPointY = modelBipedMain.bipedLeftArm.rotationPointY;
+                        sekil.leftArmModel[i].rotationPointZ = modelBipedMain.bipedLeftArm.rotationPointZ;
+                        sekil.leftArmModel[i].render(0.0625f);
                     }
                 }
             }
@@ -1044,14 +1044,14 @@ public class RenderGun implements IItemRenderer
     }
     
     private static void renderAnimArm(final EntityPlayer player, final ModelGun model, final GunType type, final GunAnimations anim) {
-        final Minecraft mc = Minecraft.func_71410_x();
+        final Minecraft mc = Minecraft.getMinecraft();
         final ModelBiped modelBipedMain = new ModelBiped(0.0f);
-        mc.field_71446_o.func_110577_a(mc.field_71439_g.func_110306_p());
+        mc.renderEngine.bindTexture(mc.thePlayer.getLocationSkin());
         GL11.glPushMatrix();
         GL11.glScalef(1.0f / type.modelScale, 1.0f / type.modelScale, 1.0f / type.modelScale);
         final float f = 1.0f;
         GL11.glColor3f(f, f, f);
-        modelBipedMain.field_78095_p = 0.0f;
+        modelBipedMain.swingProgress = 0.0f;
         GL11.glPushMatrix();
         final float effectiveReloadAnimationProgress = anim.lastReloadAnimationProgress + (anim.reloadAnimationProgress - anim.lastReloadAnimationProgress) * RenderGun.smoothing;
         if (anim.charged < 0.9 && model.rightHandCharge && model.rightHandAmmo && anim.charged != -1.0f) {
@@ -1067,28 +1067,28 @@ public class RenderGun implements IItemRenderer
             RenderArms.renderArmReload(model, anim, RenderGun.smoothing, model.rightArmReloadRot, model.rightArmReloadPos);
         }
         GL11.glScalef(model.rightArmScale.x, model.rightArmScale.y, model.rightArmScale.z);
-        modelBipedMain.func_78087_a(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0625f, (Entity)player);
-        modelBipedMain.field_78112_f.field_82908_p = 0.0f;
+        modelBipedMain.setRotationAngles(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0625f, (Entity)player);
+        modelBipedMain.bipedRightArm.offsetY = 0.0f;
         if (model.rightHandAmmo) {
-            if (!player.func_70644_a(Potion.field_76441_p)) {
-                modelBipedMain.field_78112_f.func_78785_a(0.0625f);
+            if (!player.isPotionActive(Potion.invisibility)) {
+                modelBipedMain.bipedRightArm.render(0.0625f);
             }
             for (int a = 0; a < 4; ++a) {
-                if (Minecraft.func_71410_x().field_71439_g.func_82169_q(a) != null && Minecraft.func_71410_x().field_71439_g.func_82169_q(a).func_77973_b() instanceof ItemTeamArmour) {
-                    final ItemTeamArmour kiyafet = (ItemTeamArmour)Minecraft.func_71410_x().field_71439_g.func_82169_q(a).func_77973_b();
+                if (Minecraft.getMinecraft().thePlayer.getCurrentArmor(a) != null && Minecraft.getMinecraft().thePlayer.getCurrentArmor(a).getItem() instanceof ItemTeamArmour) {
+                    final ItemTeamArmour kiyafet = (ItemTeamArmour)Minecraft.getMinecraft().thePlayer.getCurrentArmor(a).getItem();
                     final ModelCustomArmour sekil = (ModelCustomArmour)kiyafet.type.GetModel();
-                    Minecraft.func_71410_x().field_71446_o.func_110577_a(new ResourceLocation("flansmod:armor/" + kiyafet.type.armourTextureName + "_" + ((kiyafet.type.type == 2) ? "2" : "1") + ".png"));
+                    Minecraft.getMinecraft().renderEngine.bindTexture(new ResourceLocation("flansmod:armor/" + kiyafet.type.armourTextureName + "_" + ((kiyafet.type.type == 2) ? "2" : "1") + ".png"));
                     for (int i = 0; i < sekil.rightArmModel.length; ++i) {
-                        sekil.rightArmModel[i].field_78795_f = modelBipedMain.field_78112_f.field_78795_f;
-                        sekil.rightArmModel[i].field_78796_g = modelBipedMain.field_78112_f.field_78796_g;
-                        sekil.rightArmModel[i].field_78808_h = modelBipedMain.field_78112_f.field_78808_h;
-                        sekil.rightArmModel[i].field_78800_c = modelBipedMain.field_78112_f.field_78800_c;
-                        sekil.rightArmModel[i].field_78797_d = modelBipedMain.field_78112_f.field_78797_d;
-                        sekil.rightArmModel[i].field_78798_e = modelBipedMain.field_78112_f.field_78798_e;
-                        sekil.rightArmModel[i].func_78785_a(0.0625f);
+                        sekil.rightArmModel[i].rotateAngleX = modelBipedMain.bipedRightArm.rotateAngleX;
+                        sekil.rightArmModel[i].rotateAngleY = modelBipedMain.bipedRightArm.rotateAngleY;
+                        sekil.rightArmModel[i].rotateAngleZ = modelBipedMain.bipedRightArm.rotateAngleZ;
+                        sekil.rightArmModel[i].rotationPointX = modelBipedMain.bipedRightArm.rotationPointX;
+                        sekil.rightArmModel[i].rotationPointY = modelBipedMain.bipedRightArm.rotationPointY;
+                        sekil.rightArmModel[i].rotationPointZ = modelBipedMain.bipedRightArm.rotationPointZ;
+                        sekil.rightArmModel[i].render(0.0625f);
                     }
                 }
-                mc.field_71446_o.func_110577_a(mc.field_71439_g.func_110306_p());
+                mc.renderEngine.bindTexture(mc.thePlayer.getLocationSkin());
             }
         }
         GL11.glPopMatrix();
@@ -1112,24 +1112,24 @@ public class RenderGun implements IItemRenderer
             RenderArms.renderArmReload(model, anim, RenderGun.smoothing, model.leftArmReloadRot, model.leftArmReloadPos);
         }
         GL11.glScalef(model.leftArmScale.x, model.leftArmScale.y, model.leftArmScale.z);
-        modelBipedMain.field_78113_g.field_82908_p = 0.0f;
+        modelBipedMain.bipedLeftArm.offsetY = 0.0f;
         if (model.leftHandAmmo) {
-            if (!player.func_70644_a(Potion.field_76441_p)) {
-                modelBipedMain.field_78113_g.func_78785_a(0.0625f);
+            if (!player.isPotionActive(Potion.invisibility)) {
+                modelBipedMain.bipedLeftArm.render(0.0625f);
             }
             for (int a = 0; a < 4; ++a) {
-                if (Minecraft.func_71410_x().field_71439_g.func_82169_q(a) != null && Minecraft.func_71410_x().field_71439_g.func_82169_q(a).func_77973_b() instanceof ItemTeamArmour) {
-                    final ItemTeamArmour kiyafet = (ItemTeamArmour)Minecraft.func_71410_x().field_71439_g.func_82169_q(a).func_77973_b();
+                if (Minecraft.getMinecraft().thePlayer.getCurrentArmor(a) != null && Minecraft.getMinecraft().thePlayer.getCurrentArmor(a).getItem() instanceof ItemTeamArmour) {
+                    final ItemTeamArmour kiyafet = (ItemTeamArmour)Minecraft.getMinecraft().thePlayer.getCurrentArmor(a).getItem();
                     final ModelCustomArmour sekil = (ModelCustomArmour)kiyafet.type.GetModel();
-                    Minecraft.func_71410_x().field_71446_o.func_110577_a(new ResourceLocation("flansmod:armor/" + kiyafet.type.armourTextureName + "_" + ((kiyafet.type.type == 2) ? "2" : "1") + ".png"));
+                    Minecraft.getMinecraft().renderEngine.bindTexture(new ResourceLocation("flansmod:armor/" + kiyafet.type.armourTextureName + "_" + ((kiyafet.type.type == 2) ? "2" : "1") + ".png"));
                     for (int i = 0; i < sekil.leftArmModel.length; ++i) {
-                        sekil.leftArmModel[i].field_78795_f = modelBipedMain.field_78113_g.field_78795_f;
-                        sekil.leftArmModel[i].field_78796_g = modelBipedMain.field_78113_g.field_78796_g;
-                        sekil.leftArmModel[i].field_78808_h = modelBipedMain.field_78113_g.field_78808_h;
-                        sekil.leftArmModel[i].field_78800_c = modelBipedMain.field_78113_g.field_78800_c;
-                        sekil.leftArmModel[i].field_78797_d = modelBipedMain.field_78113_g.field_78797_d;
-                        sekil.leftArmModel[i].field_78798_e = modelBipedMain.field_78113_g.field_78798_e;
-                        sekil.leftArmModel[i].func_78785_a(0.0625f);
+                        sekil.leftArmModel[i].rotateAngleX = modelBipedMain.bipedLeftArm.rotateAngleX;
+                        sekil.leftArmModel[i].rotateAngleY = modelBipedMain.bipedLeftArm.rotateAngleY;
+                        sekil.leftArmModel[i].rotateAngleZ = modelBipedMain.bipedLeftArm.rotateAngleZ;
+                        sekil.leftArmModel[i].rotationPointX = modelBipedMain.bipedLeftArm.rotationPointX;
+                        sekil.leftArmModel[i].rotationPointY = modelBipedMain.bipedLeftArm.rotationPointY;
+                        sekil.leftArmModel[i].rotationPointZ = modelBipedMain.bipedLeftArm.rotationPointZ;
+                        sekil.leftArmModel[i].render(0.0625f);
                     }
                 }
             }

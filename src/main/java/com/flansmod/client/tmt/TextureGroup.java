@@ -29,11 +29,11 @@ public class TextureGroup
     
     public void loadTexture(final int defaultTexture) {
         if (!this.texture.equals("")) {
-            final TextureManager renderengine = RenderManager.field_78727_a.field_78724_e;
-            renderengine.func_110577_a(new ResourceLocation("", this.texture));
+            final TextureManager renderengine = RenderManager.instance.renderEngine;
+            renderengine.bindTexture(new ResourceLocation("", this.texture));
         }
         else if (defaultTexture > -1) {
-            RenderManager.field_78727_a.field_78724_e.func_110577_a(new ResourceLocation("", ""));
+            RenderManager.instance.renderEngine.bindTexture(new ResourceLocation("", ""));
         }
     }
 }

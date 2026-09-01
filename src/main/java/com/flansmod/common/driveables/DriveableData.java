@@ -98,24 +98,24 @@ public class DriveableData implements IInventory
         if (tag == null) {
             return;
         }
-        if (!tag.func_74764_b("Type")) {
+        if (!tag.hasKey("Type")) {
             return;
         }
-        this.type = tag.func_74779_i("Type");
+        this.type = tag.getString("Type");
         final DriveableType dType = DriveableType.getDriveable(this.type);
         this.numBombs = dType.numBombSlots;
         this.numCargo = dType.numCargoSlots;
         this.numMissiles = dType.numMissileSlots;
         this.numGuns = dType.ammoSlots();
-        this.engine = PartType.getPart(tag.func_74779_i("Engine"));
-        this.paintjobID = tag.func_74762_e("Paint");
+        this.engine = PartType.getPart(tag.getString("Engine"));
+        this.paintjobID = tag.getInteger("Paint");
         this.ammo = new ItemStack[this.numGuns];
         this.bombs = new ItemStack[this.numBombs];
         this.missiles = new ItemStack[this.numMissiles];
         this.cargo = new ItemStack[this.numCargo];
         for (int i = 0; i < this.numGuns; ++i) {
             try {
-                this.ammo[i] = ItemStack.loadItemStackFromNBT(tag.func_74775_l("Ammo " + i));
+                this.ammo[i] = ItemStack.loadItemStackFromNBT(tag.getCompoundTag("Ammo " + i));
             }
             catch (final Exception e) {
                 e.printStackTrace();
@@ -123,7 +123,7 @@ public class DriveableData implements IInventory
         }
         for (int i = 0; i < this.numBombs; ++i) {
             try {
-                this.bombs[i] = ItemStack.loadItemStackFromNBT(tag.func_74775_l("Bombs " + i));
+                this.bombs[i] = ItemStack.loadItemStackFromNBT(tag.getCompoundTag("Bombs " + i));
             }
             catch (final Exception e) {
                 e.printStackTrace();
@@ -131,7 +131,7 @@ public class DriveableData implements IInventory
         }
         for (int i = 0; i < this.numMissiles; ++i) {
             try {
-                this.missiles[i] = ItemStack.loadItemStackFromNBT(tag.func_74775_l("Missiles " + i));
+                this.missiles[i] = ItemStack.loadItemStackFromNBT(tag.getCompoundTag("Missiles " + i));
             }
             catch (final Exception e) {
                 e.printStackTrace();
@@ -139,19 +139,19 @@ public class DriveableData implements IInventory
         }
         for (int i = 0; i < this.numCargo; ++i) {
             try {
-                this.cargo[i] = ItemStack.loadItemStackFromNBT(tag.func_74775_l("Cargo " + i));
+                this.cargo[i] = ItemStack.loadItemStackFromNBT(tag.getCompoundTag("Cargo " + i));
             }
             catch (final Exception e) {
                 e.printStackTrace();
             }
         }
         try {
-            this.fuel = ItemStack.loadItemStackFromNBT(tag.func_74775_l("Fuel"));
+            this.fuel = ItemStack.loadItemStackFromNBT(tag.getCompoundTag("Fuel"));
         }
         catch (final Exception e2) {
             e2.printStackTrace();
         }
-        this.fuelInTank = (float)tag.func_74762_e("FuelInTank");
+        this.fuelInTank = (float)tag.getInteger("FuelInTank");
         for (final EnumDriveablePart part : EnumDriveablePart.values()) {
             this.parts.put(part, new DriveablePart(part, dType.health.get(part)));
             this.parts.put(part, new DriveablePart(part, dType.crew.get(part)));
@@ -159,62 +159,62 @@ public class DriveableData implements IInventory
         for (final DriveablePart part2 : this.parts.values()) {
             part2.readFromNBT(tag);
         }
-        if (!tag.func_74764_b("seatBelt")) {
+        if (!tag.hasKey("seatBelt")) {
             this.seatBelt = "null";
             return;
         }
-        this.seatBelt = tag.func_74779_i("seatBelt");
-        this.emergencyMode = tag.func_74767_n("emergencyMode");
-        this.seatBelt = tag.func_74779_i("seatBelt");
-        if (!tag.func_74764_b("WarpLimiterino")) {
+        this.seatBelt = tag.getString("seatBelt");
+        this.emergencyMode = tag.getBoolean("emergencyMode");
+        this.seatBelt = tag.getString("seatBelt");
+        if (!tag.hasKey("WarpLimiterino")) {
             this.WarpLimit = dType.numPassengers;
         }
         else {
-            this.WarpLimit = tag.func_74762_e("WarpLimiterino");
+            this.WarpLimit = tag.getInteger("WarpLimiterino");
         }
     }
     
     public void writeToNBT(final NBTTagCompound tag) {
-        tag.func_74778_a("Type", this.type);
-        tag.func_74778_a("Engine", this.engine.shortName);
-        tag.func_74768_a("Paint", this.paintjobID);
+        tag.setString("Type", this.type);
+        tag.setString("Engine", this.engine.shortName);
+        tag.setInteger("Paint", this.paintjobID);
         for (int i = 0; i < this.ammo.length; ++i) {
             if (this.ammo[i] != null) {
-                tag.func_74782_a("Ammo " + i, (NBTBase)this.ammo[i].writeToNBT(new NBTTagCompound()));
+                tag.setTag("Ammo " + i, (NBTBase)this.ammo[i].writeToNBT(new NBTTagCompound()));
             }
         }
         for (int i = 0; i < this.bombs.length; ++i) {
             if (this.bombs[i] != null) {
-                tag.func_74782_a("Bombs " + i, (NBTBase)this.bombs[i].writeToNBT(new NBTTagCompound()));
+                tag.setTag("Bombs " + i, (NBTBase)this.bombs[i].writeToNBT(new NBTTagCompound()));
             }
         }
         for (int i = 0; i < this.missiles.length; ++i) {
             if (this.missiles[i] != null) {
-                tag.func_74782_a("Missiles " + i, (NBTBase)this.missiles[i].writeToNBT(new NBTTagCompound()));
+                tag.setTag("Missiles " + i, (NBTBase)this.missiles[i].writeToNBT(new NBTTagCompound()));
             }
         }
         for (int i = 0; i < this.cargo.length; ++i) {
             if (this.cargo[i] != null) {
-                tag.func_74782_a("Cargo " + i, (NBTBase)this.cargo[i].writeToNBT(new NBTTagCompound()));
+                tag.setTag("Cargo " + i, (NBTBase)this.cargo[i].writeToNBT(new NBTTagCompound()));
             }
         }
         if (this.fuel != null) {
-            tag.func_74782_a("Fuel", (NBTBase)this.fuel.writeToNBT(new NBTTagCompound()));
+            tag.setTag("Fuel", (NBTBase)this.fuel.writeToNBT(new NBTTagCompound()));
         }
-        tag.func_74768_a("FuelInTank", (int)this.fuelInTank);
+        tag.setInteger("FuelInTank", (int)this.fuelInTank);
         for (final DriveablePart part : this.parts.values()) {
             part.writeToNBT(tag);
         }
-        tag.func_74757_a("emergencyMode", this.emergencyMode);
-        tag.func_74778_a("seatBelt", this.seatBelt);
-        tag.func_74768_a("WarpLimiterino", this.WarpLimit);
+        tag.setBoolean("emergencyMode", this.emergencyMode);
+        tag.setString("seatBelt", this.seatBelt);
+        tag.setInteger("WarpLimiterino", this.WarpLimit);
     }
     
-    public int func_70302_i_() {
+    public int getSizeInventory() {
         return this.getFuelSlot() + 1;
     }
     
-    public ItemStack func_70301_a(int i) {
+    public ItemStack getStackInSlot(int i) {
         ItemStack[] inv = this.ammo;
         if (i >= this.ammo.length) {
             i -= this.ammo.length;
@@ -234,7 +234,7 @@ public class DriveableData implements IInventory
         return inv[i];
     }
     
-    public ItemStack func_70298_a(int i, final int j) {
+    public ItemStack decrStackSize(int i, final int j) {
         ItemStack[] inv = this.ammo;
         if (i >= this.ammo.length) {
             i -= this.ammo.length;
@@ -248,7 +248,7 @@ public class DriveableData implements IInventory
                     if (i >= this.cargo.length) {
                         i -= this.cargo.length;
                         inv = new ItemStack[] { this.fuel };
-                        this.func_70299_a(this.getFuelSlot(), null);
+                        this.setInventorySlotContents(this.getFuelSlot(), null);
                     }
                 }
             }
@@ -256,23 +256,23 @@ public class DriveableData implements IInventory
         if (inv[i] == null) {
             return null;
         }
-        if (inv[i].field_77994_a <= j) {
+        if (inv[i].stackSize <= j) {
             final ItemStack itemstack = inv[i];
             inv[i] = null;
             return itemstack;
         }
-        final ItemStack itemstack2 = inv[i].func_77979_a(j);
-        if (inv[i].field_77994_a <= 0) {
+        final ItemStack itemstack2 = inv[i].splitStack(j);
+        if (inv[i].stackSize <= 0) {
             inv[i] = null;
         }
         return itemstack2;
     }
     
-    public ItemStack func_70304_b(final int i) {
-        return this.func_70301_a(i);
+    public ItemStack getStackInSlotOnClosing(final int i) {
+        return this.getStackInSlot(i);
     }
     
-    public void func_70299_a(int i, final ItemStack stack) {
+    public void setInventorySlotContents(int i, final ItemStack stack) {
         if (stack != null) {
             this.inventoryChanged = true;
         }
@@ -296,25 +296,25 @@ public class DriveableData implements IInventory
         inv[i] = stack;
     }
     
-    public String func_145825_b() {
+    public String getInventoryName() {
         return "Flan's Secret Data";
     }
     
-    public int func_70297_j_() {
+    public int getInventoryStackLimit() {
         return 64;
     }
     
-    public void func_70296_d() {
+    public void markDirty() {
     }
     
-    public boolean func_70300_a(final EntityPlayer player) {
+    public boolean isUseableByPlayer(final EntityPlayer player) {
         return true;
     }
     
-    public void func_70295_k_() {
+    public void openChest() {
     }
     
-    public void func_70305_f() {
+    public void closeChest() {
     }
     
     public int getAmmoInventoryStart() {
@@ -337,11 +337,11 @@ public class DriveableData implements IInventory
         return this.ammo.length + this.bombs.length + this.missiles.length + this.cargo.length;
     }
     
-    public boolean func_145818_k_() {
+    public boolean isCustomInventoryName() {
         return false;
     }
     
-    public boolean func_94041_b(final int i, final ItemStack itemstack) {
-        return (i < this.getBombInventoryStart() && itemstack != null && itemstack.func_77973_b() instanceof ItemBullet) || (i >= this.getBombInventoryStart() && i < this.getMissileInventoryStart() && itemstack != null && itemstack.func_77973_b() instanceof ItemBullet) || (i >= this.getMissileInventoryStart() && i < this.getCargoInventoryStart() && itemstack != null && itemstack.func_77973_b() instanceof ItemBullet) || (i >= this.getCargoInventoryStart() && i < this.getFuelSlot()) || (i == this.getFuelSlot() && itemstack != null && itemstack.func_77973_b() instanceof ItemPart && ((ItemPart)itemstack.func_77973_b()).type.category == 9);
+    public boolean isItemValidForSlot(final int i, final ItemStack itemstack) {
+        return (i < this.getBombInventoryStart() && itemstack != null && itemstack.getItem() instanceof ItemBullet) || (i >= this.getBombInventoryStart() && i < this.getMissileInventoryStart() && itemstack != null && itemstack.getItem() instanceof ItemBullet) || (i >= this.getMissileInventoryStart() && i < this.getCargoInventoryStart() && itemstack != null && itemstack.getItem() instanceof ItemBullet) || (i >= this.getCargoInventoryStart() && i < this.getFuelSlot()) || (i == this.getFuelSlot() && itemstack != null && itemstack.getItem() instanceof ItemPart && ((ItemPart)itemstack.getItem()).type.category == 9);
     }
 }

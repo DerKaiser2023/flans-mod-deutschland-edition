@@ -139,8 +139,8 @@ public class ModelPlane extends ModelDriveable
         this.renderPart(this.tailModel);
         for (final ModelRendererTurbo[] prop : this.propellerModels) {
             for (int j = 0; j < prop.length; ++j) {
-                prop[j].field_78795_f = j * 2.0f * 3.1415927f / prop.length;
-                prop[j].func_78785_a(0.0625f);
+                prop[j].rotateAngleX = j * 2.0f * 3.1415927f / prop.length;
+                prop[j].render(0.0625f);
             }
         }
         for (final ModelRendererTurbo[] heliMainRotorModel : this.heliMainRotorModels) {
@@ -200,131 +200,131 @@ public class ModelPlane extends ModelDriveable
         for (final Propeller propeller : plane.getPlaneType().propellers) {
             if (plane.isPartIntact(propeller.planePart) && this.propellerModels.length > propeller.ID) {
                 for (int numParts = this.propellerModels[propeller.ID].length, j = 0; j < numParts; ++j) {
-                    this.propellerModels[propeller.ID][j].field_78795_f = angle + j * 2.0f * 3.1415927f / numParts;
-                    this.propellerModels[propeller.ID][j].func_78785_a(f5);
+                    this.propellerModels[propeller.ID][j].rotateAngleX = angle + j * 2.0f * 3.1415927f / numParts;
+                    this.propellerModels[propeller.ID][j].render(f5);
                 }
             }
         }
         if (plane.isPartIntact(EnumDriveablePart.nose)) {
             for (final ModelRendererTurbo aNoseModel : this.noseModel) {
-                aNoseModel.func_78785_a(f5);
+                aNoseModel.render(f5);
             }
         }
         if (plane.isPartIntact(EnumDriveablePart.bay)) {
             for (final ModelRendererTurbo aBayModel : this.bayModel) {
-                aBayModel.func_78785_a(f5);
+                aBayModel.render(f5);
             }
         }
         if (plane.isPartIntact(EnumDriveablePart.tail)) {
             for (final ModelRendererTurbo aTailModel : this.tailModel) {
-                aTailModel.func_78785_a(f5);
+                aTailModel.render(f5);
             }
             for (final ModelRendererTurbo aTailDoorOpenModel : this.tailDoorOpenModel) {
                 if (plane.varDoor) {
-                    aTailDoorOpenModel.func_78785_a(f5);
+                    aTailDoorOpenModel.render(f5);
                 }
             }
             for (final ModelRendererTurbo aTailDoorCloseModel : this.tailDoorCloseModel) {
                 if (!plane.varDoor) {
-                    aTailDoorCloseModel.func_78785_a(f5);
+                    aTailDoorCloseModel.render(f5);
                 }
             }
             for (final ModelRendererTurbo aYawFlapModel : this.yawFlapModel) {
-                aYawFlapModel.field_78796_g = plane.flapsYaw * 3.1415927f / 180.0f;
-                aYawFlapModel.func_78785_a(f5);
+                aYawFlapModel.rotateAngleY = plane.flapsYaw * 3.1415927f / 180.0f;
+                aYawFlapModel.render(f5);
             }
             for (final ModelRendererTurbo aPitchFlapLeftModel : this.pitchFlapLeftModel) {
-                aPitchFlapLeftModel.field_78808_h = plane.flapsPitchLeft * 3.1415927f / 180.0f;
-                aPitchFlapLeftModel.func_78785_a(f5);
+                aPitchFlapLeftModel.rotateAngleZ = plane.flapsPitchLeft * 3.1415927f / 180.0f;
+                aPitchFlapLeftModel.render(f5);
             }
             for (final ModelRendererTurbo aPitchFlapRightModel : this.pitchFlapRightModel) {
-                aPitchFlapRightModel.field_78808_h = plane.flapsPitchRight * 3.1415927f / 180.0f;
-                aPitchFlapRightModel.func_78785_a(f5);
+                aPitchFlapRightModel.rotateAngleZ = plane.flapsPitchRight * 3.1415927f / 180.0f;
+                aPitchFlapRightModel.render(f5);
             }
         }
         if (plane.isPartIntact(EnumDriveablePart.skids)) {
             for (final ModelRendererTurbo aSkidsModel : this.skidsModel) {
                 if (plane.varGear) {
-                    aSkidsModel.func_78785_a(f5);
+                    aSkidsModel.render(f5);
                 }
             }
         }
         if (plane.isPartIntact(EnumDriveablePart.tailWheel)) {
             for (final ModelRendererTurbo aTailWheelModel : this.tailWheelModel) {
                 if (plane.varGear) {
-                    aTailWheelModel.func_78785_a(f5);
+                    aTailWheelModel.render(f5);
                 }
             }
         }
         if (plane.isPartIntact(EnumDriveablePart.leftWing)) {
             for (final ModelRendererTurbo aLeftWingModel : this.leftWingModel) {
-                aLeftWingModel.func_78785_a(f5);
+                aLeftWingModel.render(f5);
             }
             for (final ModelRendererTurbo aLeftWingPos1Model : this.leftWingPos1Model) {
                 if (plane.varWing) {
-                    aLeftWingPos1Model.func_78785_a(f5);
+                    aLeftWingPos1Model.render(f5);
                 }
             }
             for (final ModelRendererTurbo aLeftWingPos2Model : this.leftWingPos2Model) {
                 if (!plane.varWing) {
-                    aLeftWingPos2Model.func_78785_a(f5);
+                    aLeftWingPos2Model.render(f5);
                 }
             }
             for (final ModelRendererTurbo aPitchFlapLeftWingModel : this.pitchFlapLeftWingModel) {
-                aPitchFlapLeftWingModel.field_78808_h = plane.flapsPitchLeft * 3.1415927f / 180.0f;
-                aPitchFlapLeftWingModel.func_78785_a(f5);
+                aPitchFlapLeftWingModel.rotateAngleZ = plane.flapsPitchLeft * 3.1415927f / 180.0f;
+                aPitchFlapLeftWingModel.render(f5);
             }
         }
         if (plane.isPartIntact(EnumDriveablePart.rightWing)) {
             for (final ModelRendererTurbo aRightWingModel : this.rightWingModel) {
-                aRightWingModel.func_78785_a(f5);
+                aRightWingModel.render(f5);
             }
             for (final ModelRendererTurbo aRightWingPos1Model : this.rightWingPos1Model) {
                 if (plane.varWing) {
-                    aRightWingPos1Model.func_78785_a(f5);
+                    aRightWingPos1Model.render(f5);
                 }
             }
             for (final ModelRendererTurbo aRightWingPos2Model : this.rightWingPos2Model) {
                 if (!plane.varWing) {
-                    aRightWingPos2Model.func_78785_a(f5);
+                    aRightWingPos2Model.render(f5);
                 }
             }
             for (final ModelRendererTurbo aPitchFlapRightWingModel : this.pitchFlapRightWingModel) {
-                aPitchFlapRightWingModel.field_78808_h = plane.flapsPitchRight * 3.1415927f / 180.0f;
-                aPitchFlapRightWingModel.func_78785_a(f5);
+                aPitchFlapRightWingModel.rotateAngleZ = plane.flapsPitchRight * 3.1415927f / 180.0f;
+                aPitchFlapRightWingModel.render(f5);
             }
         }
         if (plane.isPartIntact(EnumDriveablePart.leftWingWheel)) {
             for (final ModelRendererTurbo aLeftWingWheelModel : this.leftWingWheelModel) {
                 if (plane.varGear) {
-                    aLeftWingWheelModel.func_78785_a(f5);
+                    aLeftWingWheelModel.render(f5);
                 }
             }
         }
         if (plane.isPartIntact(EnumDriveablePart.rightWingWheel)) {
             for (final ModelRendererTurbo aRightWingWheelModel : this.rightWingWheelModel) {
                 if (plane.varGear) {
-                    aRightWingWheelModel.func_78785_a(f5);
+                    aRightWingWheelModel.render(f5);
                 }
             }
         }
         if (plane.isPartIntact(EnumDriveablePart.core)) {
             for (final ModelRendererTurbo aBodyModel : this.bodyModel) {
-                aBodyModel.func_78785_a(f5);
+                aBodyModel.render(f5);
             }
             for (final ModelRendererTurbo aBodyDoorOpenModel : this.bodyDoorOpenModel) {
                 if (plane.varDoor) {
-                    aBodyDoorOpenModel.func_78785_a(f5);
+                    aBodyDoorOpenModel.render(f5);
                 }
             }
             for (final ModelRendererTurbo aBodyDoorCloseModel : this.bodyDoorCloseModel) {
                 if (!plane.varDoor) {
-                    aBodyDoorCloseModel.func_78785_a(f5);
+                    aBodyDoorCloseModel.render(f5);
                 }
             }
             for (final ModelRendererTurbo aHudModel : this.hudModel) {
-                aHudModel.field_78795_f = -(plane.axes.getRoll() * 3.1415927f / 180.0f);
-                aHudModel.func_78785_a(f5);
+                aHudModel.rotateAngleX = -(plane.axes.getRoll() * 3.1415927f / 180.0f);
+                aHudModel.render(f5);
             }
             if (plane.mode == EnumPlaneMode.HELI) {
                 this.renderPart(this.helicopterModeParts);
@@ -336,13 +336,13 @@ public class ModelPlane extends ModelDriveable
         if (plane.isPartIntact(EnumDriveablePart.coreWheel)) {
             for (final ModelRendererTurbo aBodyWheelModel : this.bodyWheelModel) {
                 if (plane.varGear) {
-                    aBodyWheelModel.func_78785_a(f5);
+                    aBodyWheelModel.render(f5);
                 }
             }
         }
         if (plane.isPartIntact(EnumDriveablePart.topWing)) {
             for (final ModelRendererTurbo aTopWingModel : this.topWingModel) {
-                aTopWingModel.func_78785_a(f5);
+                aTopWingModel.render(f5);
             }
         }
         for (final EntitySeat seat : plane.seats) {
@@ -351,26 +351,26 @@ public class ModelPlane extends ModelDriveable
                 final float pitch = seat.prevLooking.getPitch() + (seat.looking.getPitch() - seat.prevLooking.getPitch()) * f;
                 final ModelRendererTurbo[][] gunModel = this.gunModels.get(seat.seatInfo.gunName);
                 for (final ModelRendererTurbo gunModelPart : gunModel[0]) {
-                    gunModelPart.field_78796_g = (180.0f - yaw) * 3.1415927f / 180.0f;
-                    gunModelPart.func_78785_a(f5);
+                    gunModelPart.rotateAngleY = (180.0f - yaw) * 3.1415927f / 180.0f;
+                    gunModelPart.render(f5);
                 }
                 for (final ModelRendererTurbo gunModelPart : gunModel[1]) {
-                    gunModelPart.field_78796_g = (180.0f - yaw) * 3.1415927f / 180.0f;
-                    gunModelPart.field_78808_h = -pitch * 3.1415927f / 180.0f;
-                    gunModelPart.func_78785_a(f5);
+                    gunModelPart.rotateAngleY = (180.0f - yaw) * 3.1415927f / 180.0f;
+                    gunModelPart.rotateAngleZ = -pitch * 3.1415927f / 180.0f;
+                    gunModelPart.render(f5);
                 }
                 for (final ModelRendererTurbo gunModelPart : gunModel[2]) {
-                    gunModelPart.field_78796_g = (180.0f - yaw) * 3.1415927f / 180.0f;
-                    gunModelPart.field_78808_h = -pitch * 3.1415927f / 180.0f;
-                    gunModelPart.func_78785_a(f5);
+                    gunModelPart.rotateAngleY = (180.0f - yaw) * 3.1415927f / 180.0f;
+                    gunModelPart.rotateAngleZ = -pitch * 3.1415927f / 180.0f;
+                    gunModelPart.render(f5);
                 }
                 if (gunModel.length > 3) {
                     final float minigunSpeed = seat.getMinigunSpeed();
                     for (final ModelRendererTurbo gunModelPart2 : gunModel[3]) {
-                        gunModelPart2.field_78796_g = (180.0f - yaw) * 3.1415927f / 180.0f;
-                        gunModelPart2.field_78808_h = -pitch * 3.1415927f / 180.0f;
-                        gunModelPart2.field_78795_f = seat.minigunAngle * 0.5f;
-                        gunModelPart2.func_78785_a(f5);
+                        gunModelPart2.rotateAngleY = (180.0f - yaw) * 3.1415927f / 180.0f;
+                        gunModelPart2.rotateAngleZ = -pitch * 3.1415927f / 180.0f;
+                        gunModelPart2.rotateAngleX = seat.minigunAngle * 0.5f;
+                        gunModelPart2.render(f5);
                     }
                 }
             }
@@ -379,14 +379,14 @@ public class ModelPlane extends ModelDriveable
     
     public void renderValk(final EntityPlane plane, final float f5, final int id) {
         for (final ModelRendererTurbo aModel : this.valkyrie[id]) {
-            aModel.func_78785_a(f5);
+            aModel.render(f5);
         }
     }
     
     public void renderLeftWing(final EntityPlane plane, final float f5) {
         if (plane.isPartIntact(EnumDriveablePart.leftWing)) {
             for (final ModelRendererTurbo aAnimLeftWingModel : this.leftAnimWingModel) {
-                aAnimLeftWingModel.func_78785_a(f5);
+                aAnimLeftWingModel.render(f5);
             }
         }
     }
@@ -394,7 +394,7 @@ public class ModelPlane extends ModelDriveable
     public void renderRightWing(final EntityPlane plane, final float f5) {
         if (plane.isPartIntact(EnumDriveablePart.rightWing)) {
             for (final ModelRendererTurbo aAnimRightWingModel : this.rightAnimWingModel) {
-                aAnimRightWingModel.func_78785_a(f5);
+                aAnimRightWingModel.render(f5);
             }
         }
     }
@@ -402,7 +402,7 @@ public class ModelPlane extends ModelDriveable
     public void renderLeftWingWheel(final EntityPlane plane, final float f5) {
         if (plane.isPartIntact(EnumDriveablePart.leftWingWheel)) {
             for (final ModelRendererTurbo aAnimLeftWingWheelModel : this.leftAnimWingWheelModel) {
-                aAnimLeftWingWheelModel.func_78785_a(f5);
+                aAnimLeftWingWheelModel.render(f5);
             }
         }
     }
@@ -410,7 +410,7 @@ public class ModelPlane extends ModelDriveable
     public void renderRightWingWheel(final EntityPlane plane, final float f5) {
         if (plane.isPartIntact(EnumDriveablePart.rightWingWheel)) {
             for (final ModelRendererTurbo aAnimRightWingWheelModel : this.rightAnimWingWheelModel) {
-                aAnimRightWingWheelModel.func_78785_a(f5);
+                aAnimRightWingWheelModel.render(f5);
             }
         }
     }
@@ -418,7 +418,7 @@ public class ModelPlane extends ModelDriveable
     public void renderCoreWheel(final EntityPlane plane, final float f5) {
         if (plane.isPartIntact(EnumDriveablePart.coreWheel)) {
             for (final ModelRendererTurbo aAnimBodyWheelModel : this.bodyAnimWheelModel) {
-                aAnimBodyWheelModel.func_78785_a(f5);
+                aAnimBodyWheelModel.render(f5);
             }
         }
     }
@@ -426,7 +426,7 @@ public class ModelPlane extends ModelDriveable
     public void renderTailWheel(final EntityPlane plane, final float f5) {
         if (plane.isPartIntact(EnumDriveablePart.tailWheel)) {
             for (final ModelRendererTurbo aAnimTailWheelModel : this.tailAnimWheelModel) {
-                aAnimTailWheelModel.func_78785_a(f5);
+                aAnimTailWheelModel.render(f5);
             }
         }
     }
@@ -434,7 +434,7 @@ public class ModelPlane extends ModelDriveable
     public void renderDoor(final EntityPlane plane, final float f5) {
         if (plane.isPartIntact(EnumDriveablePart.core)) {
             for (final ModelRendererTurbo aDoorAnimModel : this.doorAnimModel) {
-                aDoorAnimModel.func_78785_a(f5);
+                aDoorAnimModel.render(f5);
             }
         }
     }
@@ -443,7 +443,7 @@ public class ModelPlane extends ModelDriveable
         final PlaneType type = plane.getPlaneType();
         if (i >= type.heliPropellers.size() || plane.isPartIntact(type.heliPropellers.get(i).planePart)) {
             for (int j = 0; j < this.heliMainRotorModels[i].length; ++j) {
-                this.heliMainRotorModels[i][j].func_78785_a(f5);
+                this.heliMainRotorModels[i][j].render(f5);
             }
         }
     }
@@ -452,7 +452,7 @@ public class ModelPlane extends ModelDriveable
         final PlaneType type = plane.getPlaneType();
         if (i >= type.heliTailPropellers.size() || plane.isPartIntact(type.heliTailPropellers.get(i).planePart)) {
             for (int j = 0; j < this.heliTailRotorModels[i].length; ++j) {
-                this.heliTailRotorModels[i][j].func_78785_a(f5);
+                this.heliTailRotorModels[i][j].render(f5);
             }
         }
     }

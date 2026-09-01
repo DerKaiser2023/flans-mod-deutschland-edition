@@ -39,7 +39,7 @@ public class MechaInventory implements IInventory
         }
         for (final EnumMechaSlotType type : EnumMechaSlotType.values()) {
             try {
-                this.stacks.put(type, ItemStack.loadItemStackFromNBT(tags.func_74775_l(type.toString())));
+                this.stacks.put(type, ItemStack.loadItemStackFromNBT(tags.getCompoundTag(type.toString())));
             }
             catch (final Exception e) {
                 e.printStackTrace();
@@ -53,17 +53,17 @@ public class MechaInventory implements IInventory
         }
         for (final EnumMechaSlotType type : EnumMechaSlotType.values()) {
             if (this.stacks.get(type) != null) {
-                tags.func_74782_a(type.toString(), (NBTBase)((ItemStack)this.stacks.get(type)).writeToNBT(new NBTTagCompound()));
+                tags.setTag(type.toString(), (NBTBase)((ItemStack)this.stacks.get(type)).writeToNBT(new NBTTagCompound()));
             }
         }
         return tags;
     }
     
-    public int func_70302_i_() {
+    public int getSizeInventory() {
         return EnumMechaSlotType.values().length;
     }
     
-    public ItemStack func_70301_a(final int i) {
+    public ItemStack getStackInSlot(final int i) {
         return this.stacks.get(EnumMechaSlotType.values()[i]);
     }
     
@@ -71,67 +71,67 @@ public class MechaInventory implements IInventory
         return this.stacks.get(e);
     }
     
-    public ItemStack func_70298_a(final int i, final int j) {
-        this.func_70296_d();
-        ItemStack slot = this.func_70301_a(i);
+    public ItemStack decrStackSize(final int i, final int j) {
+        this.markDirty();
+        ItemStack slot = this.getStackInSlot(i);
         if (slot == null) {
             return null;
         }
-        final int numToTake = Math.min(j, slot.field_77994_a);
-        final ItemStack returnStack = slot.func_77946_l();
-        returnStack.field_77994_a = numToTake;
+        final int numToTake = Math.min(j, slot.stackSize);
+        final ItemStack returnStack = slot.copy();
+        returnStack.stackSize = numToTake;
         final ItemStack itemStack = slot;
-        itemStack.field_77994_a -= numToTake;
-        if (slot.field_77994_a <= 0) {
+        itemStack.stackSize -= numToTake;
+        if (slot.stackSize <= 0) {
             slot = null;
         }
-        this.func_70299_a(i, slot);
+        this.setInventorySlotContents(i, slot);
         return returnStack;
     }
     
-    public ItemStack func_70304_b(final int i) {
-        return this.func_70301_a(i);
+    public ItemStack getStackInSlotOnClosing(final int i) {
+        return this.getStackInSlot(i);
     }
     
-    public void func_70299_a(final int i, final ItemStack itemstack) {
+    public void setInventorySlotContents(final int i, final ItemStack itemstack) {
         this.setInventorySlotContents(EnumMechaSlotType.values()[i], itemstack);
     }
     
     public void setInventorySlotContents(final EnumMechaSlotType e, final ItemStack itemstack) {
-        this.func_70296_d();
+        this.markDirty();
         this.stacks.put(e, itemstack);
     }
     
-    public String func_145825_b() {
+    public String getInventoryName() {
         return "Mecha";
     }
     
-    public boolean func_145818_k_() {
+    public boolean isCustomInventoryName() {
         return true;
     }
     
-    public int func_70297_j_() {
+    public int getInventoryStackLimit() {
         return 64;
     }
     
-    public void func_70296_d() {
+    public void markDirty() {
         if (this.mecha != null) {
             this.mecha.couldNotFindFuel = false;
         }
     }
     
-    public boolean func_70300_a(final EntityPlayer entityplayer) {
-        return this.mecha != null && entityplayer.func_70032_d((Entity)this.mecha) <= 10.0;
+    public boolean isUseableByPlayer(final EntityPlayer entityplayer) {
+        return this.mecha != null && entityplayer.getDistanceToEntity((Entity)this.mecha) <= 10.0;
     }
     
-    public void func_70295_k_() {
+    public void openChest() {
     }
     
-    public void func_70305_f() {
+    public void closeChest() {
     }
     
-    public boolean func_94041_b(final int i, final ItemStack itemstack) {
-        final Item item = itemstack.func_77973_b();
+    public boolean isItemValidForSlot(final int i, final ItemStack itemstack) {
+        final Item item = itemstack.getItem();
         if (item == null) {
             return true;
         }

@@ -16,12 +16,12 @@ public class ModelRoundGrenade extends ModelBase
     public ModelRoundGrenade() {
         (this.bodyModel = new ModelRendererTurbo(this, 0, 0, 16, 8)).addBox(-1.0f, -1.0f, -1.0f, 2, 2, 2);
         (this.headModel = new ModelRendererTurbo(this, 8, 0, 16, 8)).addBox(-0.5f, -0.5f, 0.5f, 1, 1, 1);
-        this.bodyModel.field_78795_f = -1.5707964f;
-        this.headModel.field_78795_f = -1.5707964f;
+        this.bodyModel.rotateAngleX = -1.5707964f;
+        this.headModel.rotateAngleX = -1.5707964f;
     }
     
-    public void func_78088_a(final Entity entity, final float f, final float f1, final float f2, final float f3, final float f4, final float f5) {
-        this.headModel.func_78785_a(f5);
-        this.bodyModel.func_78785_a(f5);
+    public void render(final Entity entity, final float f, final float f1, final float f2, final float f3, final float f4, final float f5) {
+        this.headModel.render(f5);
+        this.bodyModel.render(f5);
     }
 }

@@ -8,6 +8,7 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.network.Packet;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.gui.IUpdatePlayerListBox;
@@ -22,65 +23,65 @@ public class TileEntityPaintjobTable extends TileEntity implements IInventory, I
         this.inventoryStacks = new ItemStack[2];
     }
     
-    public int func_70302_i_() {
+    public int getSizeInventory() {
         return 2;
     }
     
-    public ItemStack func_70301_a(final int index) {
+    public ItemStack getStackInSlot(final int index) {
         return this.inventoryStacks[index];
     }
     
-    public ItemStack func_70298_a(final int index, final int count) {
-        if (this.func_70301_a(index) == null) {
+    public ItemStack decrStackSize(final int index, final int count) {
+        if (this.getStackInSlot(index) == null) {
             return null;
         }
-        if (count >= this.func_70301_a(index).field_77994_a) {
-            final ItemStack returnStack = this.func_70301_a(index);
-            this.func_70299_a(index, null);
+        if (count >= this.getStackInSlot(index).stackSize) {
+            final ItemStack returnStack = this.getStackInSlot(index);
+            this.setInventorySlotContents(index, null);
             return returnStack;
         }
-        final ItemStack returnStack = this.func_70301_a(index).func_77979_a(count);
+        final ItemStack returnStack = this.getStackInSlot(index).splitStack(count);
         return returnStack;
     }
     
-    public ItemStack func_70304_b(final int index) {
-        final ItemStack returnStack = this.func_70301_a(index);
-        this.func_70299_a(index, null);
+    public ItemStack getStackInSlotOnClosing(final int index) {
+        final ItemStack returnStack = this.getStackInSlot(index);
+        this.setInventorySlotContents(index, null);
         return returnStack;
     }
     
-    public void func_70299_a(final int index, final ItemStack stack) {
+    public void setInventorySlotContents(final int index, final ItemStack stack) {
         this.inventoryStacks[index] = stack;
     }
     
-    public int func_70297_j_() {
+    public int getInventoryStackLimit() {
         return 64;
     }
     
-    public boolean func_70300_a(final EntityPlayer player) {
+    public boolean isUseableByPlayer(final EntityPlayer player) {
         return true;
     }
     
-    public boolean func_94041_b(final int index, final ItemStack stack) {
+    public boolean isItemValidForSlot(final int index, final ItemStack stack) {
         return true;
     }
     
-    public void func_145841_b(final NBTTagCompound nbt) {
-        super.func_145841_b(nbt);
+    public void writeToNBT(final NBTTagCompound nbt) {
+        super.writeToNBT(nbt);
         for (int i = 0; i < this.inventoryStacks.length; ++i) {
             NBTTagCompound stackNBT = new NBTTagCompound();
-            if (this.func_70301_a(i) != null) {
-                stackNBT = this.func_70301_a(i).writeToNBT(new NBTTagCompound());
+            if (this.getStackInSlot(i) != null) {
+                stackNBT = this.getStackInSlot(i).writeToNBT(new NBTTagCompound());
             }
-            nbt.func_74782_a("stack_" + i, (NBTBase)stackNBT);
+            nbt.setTag("stack_" + i, (NBTBase)stackNBT);
         }
     }
     
-    public void func_145839_a(final NBTTagCompound nbt) {
-        super.func_145839_a(nbt);
+    public void readFromNBT(final NBTTagCompound nbt) {
+        super.readFromNBT(nbt);
         for (int i = 0; i < this.inventoryStacks.length; ++i) {
             try {
-                this.func_70299_a(i, ItemStack.loadItemStackFromNBT(nbt.func_74775_l("stack_" + i)));
+                this.setInventorySlotContents(i, ItemStack.loadItemStackFromNBT(nbt.getCompoundTag("stack_" + i)));
             }
             catch (final Exception e) {
                 e.printStackTrace();
@@ -88,17 +89,17 @@ public class TileEntityPaintjobTable extends TileEntity implements IInventory, I
         }
     }
     
-    public void func_73660_a() {
+    public void update() {
     }
     
-    public Packet func_145844_m() {
+    public Packet getDescriptionPacket() {
         final NBTTagCompound nbt = new NBTTagCompound();
-        this.func_145841_b(nbt);
-        return (Packet)new S35PacketUpdateTileEntity(this.field_145851_c, this.field_145848_d, this.field_145849_e, this.func_145832_p(), nbt);
+        this.writeToNBT(nbt);
+        return (Packet)new S35PacketUpdateTileEntity(this.xCoord, this.yCoord, this.zCoord, this.getBlockMetadata(), nbt);
     }
     
     public void onDataPacket(final NetworkManager net, final S35PacketUpdateTileEntity packet) {
-        this.func_145839_a(packet.func_148857_g());
+        this.readFromNBT(packet.getNbtCompound());
     }
     
     public ItemStack getPaintableStack() {
@@ -113,17 +114,17 @@ public class TileEntityPaintjobTable extends TileEntity implements IInventory, I
         return this.inventoryStacks[1];
     }
     
-    public String func_145825_b() {
+    public String getInventoryName() {
         return "PaintjobTable";
     }
     
-    public boolean func_145818_k_() {
+    public boolean isCustomInventoryName() {
         return false;
     }
     
-    public void func_70295_k_() {
+    public void openChest() {
     }
     
-    public void func_70305_f() {
+    public void closeChest() {
     }
 }

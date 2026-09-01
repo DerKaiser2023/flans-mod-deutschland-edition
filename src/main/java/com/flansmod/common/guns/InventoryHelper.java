@@ -16,21 +16,21 @@ public class InventoryHelper
         if (stack == null) {
             return false;
         }
-        if (stack.field_77994_a == 0) {
+        if (stack.stackSize == 0) {
             return false;
         }
         try {
-            if (stack.func_77951_h()) {
+            if (stack.isItemDamaged()) {
                 final int i = getFirstEmptyStack(inventory);
                 if (i >= 0) {
-                    final ItemStack stackToAdd = ItemStack.func_77944_b(stack);
-                    stackToAdd.field_77992_b = 5;
-                    inventory.func_70299_a(i, stackToAdd);
-                    stack.field_77994_a = 0;
+                    final ItemStack stackToAdd = ItemStack.copyItemStack(stack);
+                    stackToAdd.animationsToGo = 5;
+                    inventory.setInventorySlotContents(i, stackToAdd);
+                    stack.stackSize = 0;
                     return true;
                 }
                 if (creative) {
-                    stack.field_77994_a = 0;
+                    stack.stackSize = 0;
                     return true;
                 }
                 return false;
@@ -38,14 +38,14 @@ public class InventoryHelper
             else {
                 int i;
                 do {
-                    i = stack.field_77994_a;
-                    stack.field_77994_a = storePartialItemStack(inventory, stack);
-                } while (stack.field_77994_a > 0 && stack.field_77994_a < i);
-                if (stack.field_77994_a == i && creative) {
-                    stack.field_77994_a = 0;
+                    i = stack.stackSize;
+                    stack.stackSize = storePartialItemStack(inventory, stack);
+                } while (stack.stackSize > 0 && stack.stackSize < i);
+                if (stack.stackSize == i && creative) {
+                    stack.stackSize = 0;
                     return true;
                 }
-                return stack.field_77994_a < i;
+                return stack.stackSize < i;
             }
         }
         catch (final Throwable throwable) {
@@ -55,9 +55,9 @@ public class InventoryHelper
     }
     
     public static int storeItemStack(final IInventory inventory, final ItemStack stack) {
-        for (int i = 0; i < inventory.func_70302_i_(); ++i) {
-            final ItemStack oldStack = inventory.func_70301_a(i);
-            if (oldStack != null && oldStack.func_77973_b() == stack.func_77973_b() && oldStack.func_77985_e() && oldStack.field_77994_a < oldStack.func_77976_d() && oldStack.field_77994_a < inventory.func_70297_j_() && (!oldStack.func_77981_g() || oldStack.func_77960_j() == stack.func_77960_j()) && ItemStack.func_77970_a(oldStack, stack)) {
+        for (int i = 0; i < inventory.getSizeInventory(); ++i) {
+            final ItemStack oldStack = inventory.getStackInSlot(i);
+            if (oldStack != null && oldStack.getItem() == stack.getItem() && oldStack.isStackable() && oldStack.stackSize < oldStack.getMaxStackSize() && oldStack.stackSize < inventory.getInventoryStackLimit() && (!oldStack.getHasSubtypes() || oldStack.getMetadata() == stack.getMetadata()) && ItemStack.areItemStackTagsEqual(oldStack, stack)) {
                 return i;
             }
         }
@@ -65,15 +65,15 @@ public class InventoryHelper
     }
     
     public static int storePartialItemStack(final IInventory inventory, final ItemStack stack) {
-        final Item item = stack.func_77973_b();
-        int j = stack.field_77994_a;
-        if (stack.func_77976_d() == 1) {
+        final Item item = stack.getItem();
+        int j = stack.stackSize;
+        if (stack.getMaxStackSize() == 1) {
             final int k = getFirstEmptyStack(inventory);
             if (k < 0) {
                 return j;
             }
-            if (inventory.func_70301_a(k) == null) {
-                inventory.func_70299_a(k, ItemStack.func_77944_b(stack));
+            if (inventory.getStackInSlot(k) == null) {
+                inventory.setInventorySlotContents(k, ItemStack.copyItemStack(stack));
             }
             return 0;
         }
@@ -85,35 +85,35 @@ public class InventoryHelper
             if (k < 0) {
                 return j;
             }
-            ItemStack oldStack = inventory.func_70301_a(k);
+            ItemStack oldStack = inventory.getStackInSlot(k);
             if (oldStack == null) {
-                oldStack = new ItemStack(item, 0, stack.func_77960_j());
-                if (stack.func_77942_o()) {
-                    oldStack.func_77982_d((NBTTagCompound)stack.func_77978_p().func_74737_b());
+                oldStack = new ItemStack(item, 0, stack.getMetadata());
+                if (stack.hasTagCompound()) {
+                    oldStack.setTagCompound((NBTTagCompound)stack.getTagCompound().copy());
                 }
-                inventory.func_70299_a(k, oldStack);
+                inventory.setInventorySlotContents(k, oldStack);
             }
             int l;
-            if ((l = j) > oldStack.func_77976_d() - oldStack.field_77994_a) {
-                l = oldStack.func_77976_d() - oldStack.field_77994_a;
+            if ((l = j) > oldStack.getMaxStackSize() - oldStack.stackSize) {
+                l = oldStack.getMaxStackSize() - oldStack.stackSize;
             }
-            if (l > inventory.func_70297_j_() - oldStack.field_77994_a) {
-                l = inventory.func_70297_j_() - oldStack.field_77994_a;
+            if (l > inventory.getInventoryStackLimit() - oldStack.stackSize) {
+                l = inventory.getInventoryStackLimit() - oldStack.stackSize;
             }
             if (l == 0) {
                 return j;
             }
             j -= l;
             final ItemStack itemStack = oldStack;
-            itemStack.field_77994_a += l;
-            oldStack.field_77992_b = 5;
+            itemStack.stackSize += l;
+            oldStack.animationsToGo = 5;
             return j;
         }
     }
     
     public static int getFirstEmptyStack(final IInventory inventory) {
-        for (int i = 0; i < inventory.func_70302_i_(); ++i) {
-            if (inventory.func_70301_a(i) == null) {
+        for (int i = 0; i < inventory.getSizeInventory(); ++i) {
+            if (inventory.getStackInSlot(i) == null) {
                 return i;
             }
         }

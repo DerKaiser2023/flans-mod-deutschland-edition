@@ -24,22 +24,22 @@ public class ModelCorpseAmmo extends ModelBase
         this.corpseammoModel[4] = new ModelRendererTurbo(this, 1, 25, this.textureX, this.textureY);
         this.corpseammoModel[5] = new ModelRendererTurbo(this, 41, 25, this.textureX, this.textureY);
         this.corpseammoModel[0].addShapeBox(-4.0f, -2.0f, -6.0f, 8, 4, 12, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.corpseammoModel[0].func_78793_a(0.0f, 0.0f, 0.0f);
+        this.corpseammoModel[0].setRotationPoint(0.0f, 0.0f, 0.0f);
         this.corpseammoModel[1].addShapeBox(-4.0f, -4.0f, 6.0f, 8, 8, 8, 0.0f, 1.0f, -0.5f, 0.0f, -1.0f, 0.5f, 0.0f, -1.0f, 0.5f, 0.0f, 1.0f, -0.5f, 0.0f, -1.0f, 0.5f, 0.0f, 1.0f, -0.5f, 0.0f, 1.0f, -0.5f, 0.0f, -1.0f, 0.5f, 0.0f);
-        this.corpseammoModel[1].func_78793_a(0.0f, 0.0f, 0.0f);
+        this.corpseammoModel[1].setRotationPoint(0.0f, 0.0f, 0.0f);
         this.corpseammoModel[2].addShapeBox(4.0f, -2.0f, 2.0f, 12, 4, 4, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -2.0f, -1.0f, 0.0f, 2.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -2.0f, -1.0f, 0.0f, 2.0f, 0.0f, 0.0f, 0.0f);
-        this.corpseammoModel[2].func_78793_a(0.0f, 0.0f, 0.0f);
+        this.corpseammoModel[2].setRotationPoint(0.0f, 0.0f, 0.0f);
         this.corpseammoModel[3].addShapeBox(-16.0f, -2.0f, 2.0f, 12, 4, 4, 0.0f, -1.0f, 0.0f, 4.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -4.0f, -1.0f, 0.0f, 4.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -4.0f);
-        this.corpseammoModel[3].func_78793_a(0.0f, 0.0f, 0.0f);
+        this.corpseammoModel[3].setRotationPoint(0.0f, 0.0f, 0.0f);
         this.corpseammoModel[4].addShapeBox(-4.0f, -2.0f, -18.0f, 4, 4, 12, 0.0f, 1.0f, 0.0f, -1.0f, -1.0f, 0.0f, 1.0f, 0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f, 1.0f, 0.0f, -1.0f, -1.0f, 0.0f, 1.0f, 0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f);
-        this.corpseammoModel[4].func_78793_a(0.0f, 0.0f, 0.0f);
+        this.corpseammoModel[4].setRotationPoint(0.0f, 0.0f, 0.0f);
         this.corpseammoModel[5].addShapeBox(1.0f, -2.0f, -18.0f, 4, 4, 12, 0.0f, -6.0f, 0.0f, -2.0f, 6.0f, 0.0f, -4.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, -1.0f, -6.0f, 0.0f, -2.0f, 6.0f, 0.0f, -4.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, -1.0f);
-        this.corpseammoModel[5].func_78793_a(0.0f, 0.0f, 0.0f);
+        this.corpseammoModel[5].setRotationPoint(0.0f, 0.0f, 0.0f);
     }
     
-    public void func_78088_a(final Entity entity, final float f, final float f1, final float f2, final float f3, final float f4, final float f5) {
+    public void render(final Entity entity, final float f, final float f1, final float f2, final float f3, final float f4, final float f5) {
         for (int i = 0; i < 6; ++i) {
-            this.corpseammoModel[i].func_78785_a(f5);
+            this.corpseammoModel[i].render(f5);
         }
     }
     

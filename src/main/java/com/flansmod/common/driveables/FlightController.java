@@ -264,8 +264,8 @@ public class FlightController
             agility *= 0.8f;
             lowpowerAgility *= 0.8f;
             final float hullDamage = 1.0f + this.Gfactor * 0.0015f * plane.getDriveableData().parts.get(EnumDriveablePart.airframe).maxHealth;
-            plane.attackPart(EnumDriveablePart.airframe, DamageSource.field_76367_g, hullDamage);
-            FlansMod.getPacketHandler().sendToAllAround(new PacketParticle("largeexplode", plane.field_70165_t, plane.field_70163_u + 1.0, plane.field_70161_v, 0.0, 0.0, 0.0), plane.field_70165_t, plane.field_70163_u, plane.field_70161_v, 150.0f, plane.field_71093_bK);
+            plane.attackPart(EnumDriveablePart.airframe, DamageSource.cactus, hullDamage);
+            FlansMod.getPacketHandler().sendToAllAround(new PacketParticle("largeexplode", plane.posX, plane.posY + 1.0, plane.posZ, 0.0, 0.0, 0.0), plane.posX, plane.posY, plane.posZ, 150.0f, plane.dimension);
         }
         if (lowpowerAgility > 0.0f) {
             yaw = this.yawControl * ((this.yawControl > 0.0f) ? (type.yawBoost * lowpowerAgility * 1.0f) : (type.yawBoost * lowpowerAgility * 1.0f)) * (sensitivityAdjustYaw *= 0.5f);
@@ -279,32 +279,32 @@ public class FlightController
         }
         final float turnRate = (0.35f * Math.abs(yaw) + 0.4f * Math.abs(roll) + 0.9f * Math.abs(pitch)) / 5.0f;
         this.Gfactor = this.V * 1.5f * turnRate / 18.0f + 1.0f;
-        if (plane.axes.getPitch() < 0.0f && plane.field_70163_u > type.ceiling - 10.0f) {
+        if (plane.axes.getPitch() < 0.0f && plane.posY > type.ceiling - 10.0f) {
             plane.axes.rotateLocalPitch(-1.0f);
         }
         if (this.mode == EnumPlaneMode.PLANE) {
-            if (!plane.isPartIntact(EnumDriveablePart.tail) && plane.func_70090_H()) {
-                plane.attackPart(EnumDriveablePart.core, DamageSource.field_76367_g, 10.0f);
+            if (!plane.isPartIntact(EnumDriveablePart.tail) && plane.isInWater()) {
+                plane.attackPart(EnumDriveablePart.core, DamageSource.cactus, 10.0f);
             }
-            if (!plane.isPartIntact(EnumDriveablePart.nose) && plane.func_70090_H()) {
-                plane.attackPart(EnumDriveablePart.core, DamageSource.field_76367_g, 10.0f);
+            if (!plane.isPartIntact(EnumDriveablePart.nose) && plane.isInWater()) {
+                plane.attackPart(EnumDriveablePart.core, DamageSource.cactus, 10.0f);
             }
-            if (!plane.isPartIntact(EnumDriveablePart.tail) && plane.func_70090_H()) {
-                plane.attackPart(EnumDriveablePart.core, DamageSource.field_76367_g, 10.0f);
+            if (!plane.isPartIntact(EnumDriveablePart.tail) && plane.isInWater()) {
+                plane.attackPart(EnumDriveablePart.core, DamageSource.cactus, 10.0f);
             }
-            if (!plane.isPartIntact(EnumDriveablePart.leftWing) && plane.func_70090_H()) {
-                plane.attackPart(EnumDriveablePart.core, DamageSource.field_76367_g, 10.0f);
+            if (!plane.isPartIntact(EnumDriveablePart.leftWing) && plane.isInWater()) {
+                plane.attackPart(EnumDriveablePart.core, DamageSource.cactus, 10.0f);
             }
-            if (!plane.isPartIntact(EnumDriveablePart.rightWing) && plane.func_70090_H()) {
-                plane.attackPart(EnumDriveablePart.core, DamageSource.field_76367_g, 10.0f);
+            if (!plane.isPartIntact(EnumDriveablePart.rightWing) && plane.isInWater()) {
+                plane.attackPart(EnumDriveablePart.core, DamageSource.cactus, 10.0f);
             }
         }
         else if (this.mode == EnumPlaneMode.HELI && !plane.isPartIntact(EnumDriveablePart.tail)) {
             yaw = 25.0f * this.throttle;
             roll = 5.0f * this.throttle;
-            plane.field_70181_x += -this.gravity;
-            if (plane.func_70090_H()) {
-                plane.attackPart(EnumDriveablePart.core, DamageSource.field_76367_g, 10.0f);
+            plane.motionY += -this.gravity;
+            if (plane.isInWater()) {
+                plane.attackPart(EnumDriveablePart.core, DamageSource.cactus, 10.0f);
             }
         }
         if (!plane.mounted) {
@@ -438,7 +438,7 @@ public class FlightController
         if (this.acceleration > 1.0f) {
             this.acceleration = 1.0f;
         }
-        if ((plane.seats[0] != null && plane.seats[0].field_70153_n == null && plane.throttle < 0.05f) || (plane.field_70173_aa < 140 && this.throttle < 0.05f)) {
+        if ((plane.seats[0] != null && plane.seats[0].riddenByEntity == null && plane.throttle < 0.05f) || (plane.ticksExisted < 140 && this.throttle < 0.05f)) {
             this.acceleration = 0.0f;
             this.V = 0.0f;
             this.T = 0.0f;
@@ -458,11 +458,11 @@ public class FlightController
                 diveAngle = plane.axes.getPitch() / 90.0f * ((trueRoll - 90.0f) / 90.0f);
             }
         }
-        if (plane.func_70115_ae() && plane.field_70154_o != null && plane.field_70154_o instanceof EntitySeat && ((EntitySeat)plane.field_70154_o).driveable instanceof EntityPlane) {
-            final EntityPlane mothership = (EntityPlane)((EntitySeat)plane.field_70154_o).driveable;
+        if (plane.isRiding() && plane.ridingEntity != null && plane.ridingEntity instanceof EntitySeat && ((EntitySeat)plane.ridingEntity).driveable instanceof EntityPlane) {
+            final EntityPlane mothership = (EntityPlane)((EntitySeat)plane.ridingEntity).driveable;
             plane.axes.setAngles(mothership.axes.getYaw(), mothership.axes.getPitch(), mothership.axes.getRoll());
         }
-        if (plane.field_70173_aa == 20) {
+        if (plane.ticksExisted == 20) {
             if (plane.varFlap) {
                 plane.varFlap = !plane.varFlap;
             }
@@ -526,36 +526,36 @@ public class FlightController
         else {
             this.V += (1.0f + bonusFactor) * (1.0f + bonusFactor) * this.T / (type.mass * 20.0f) - type.gravityMultiplier * forwards.y * 9.8f / 20.0f;
         }
-        if (!plane.field_70170_p.func_147437_c((int)plane.field_70165_t, (int)(plane.field_70163_u - 2.0), (int)plane.field_70161_v) && this.throttle <= 0.2 && plane.driveableData.landBrake > 5 && this.V < 1.75f * type.takeoffSpeed) {
+        if (!plane.worldObj.isAirBlock((int)plane.posX, (int)(plane.posY - 2.0), (int)plane.posZ) && this.throttle <= 0.2 && plane.driveableData.landBrake > 5 && this.V < 1.75f * type.takeoffSpeed) {
             this.V *= 0.965f;
             if (this.V > -5.0f && this.V < 5.0f) {
                 this.acceleration = 0.0f;
                 this.V *= 0.3f;
             }
             else {
-                FlansMod.getPacketHandler().sendToAllAround(new PacketParticle("cloud", plane.field_70165_t, plane.field_70163_u, plane.field_70161_v, 0.0, 0.0, 0.0), plane.field_70165_t, plane.field_70163_u, plane.field_70161_v, 150.0f, plane.field_71093_bK);
+                FlansMod.getPacketHandler().sendToAllAround(new PacketParticle("cloud", plane.posX, plane.posY, plane.posZ, 0.0, 0.0, 0.0), plane.posX, plane.posY, plane.posZ, 150.0f, plane.dimension);
             }
         }
-        if (!plane.field_70170_p.func_147437_c((int)plane.field_70165_t, (int)(plane.field_70163_u + 1.0), (int)plane.field_70161_v) && plane.field_70170_p.func_72953_d(plane.field_70121_D)) {
+        if (!plane.worldObj.isAirBlock((int)plane.posX, (int)(plane.posY + 1.0), (int)plane.posZ) && plane.worldObj.isAnyLiquid(plane.boundingBox)) {
             this.V *= 0.96f;
             if (this.V > -5.0f && this.V < 5.0f) {
                 this.acceleration = 0.0f;
                 this.V *= 0.3f;
             }
         }
-        if (!plane.field_70170_p.func_147437_c((int)plane.field_70165_t, (int)(plane.field_70163_u - 2.0), (int)plane.field_70161_v) && !plane.field_70170_p.func_147437_c((int)plane.field_70165_t, (int)(plane.field_70163_u - 2.0), (int)plane.field_70161_v) && this.throttle <= 0.2 && !plane.varGear && type.needsGear && !plane.field_70170_p.func_72953_d(plane.field_70121_D)) {
+        if (!plane.worldObj.isAirBlock((int)plane.posX, (int)(plane.posY - 2.0), (int)plane.posZ) && !plane.worldObj.isAirBlock((int)plane.posX, (int)(plane.posY - 2.0), (int)plane.posZ) && this.throttle <= 0.2 && !plane.varGear && type.needsGear && !plane.worldObj.isAnyLiquid(plane.boundingBox)) {
             this.V *= 0.975f;
             if (this.V > -5.0f && this.V < 5.0f) {
                 this.acceleration = 0.0f;
                 this.V *= 0.3f;
             }
             else {
-                FlansMod.getPacketHandler().sendToAllAround(new PacketParticle("cloud", plane.field_70165_t, plane.field_70163_u, plane.field_70161_v, 0.0, 0.0, 0.0), plane.field_70165_t, plane.field_70163_u, plane.field_70161_v, 150.0f, plane.field_71093_bK);
-                FlansMod.getPacketHandler().sendToAllAround(new PacketParticle("largeexplode", plane.field_70165_t, plane.field_70163_u + 1.0, plane.field_70161_v, 0.0, 0.0, 0.0), plane.field_70165_t, plane.field_70163_u, plane.field_70161_v, 150.0f, plane.field_71093_bK);
+                FlansMod.getPacketHandler().sendToAllAround(new PacketParticle("cloud", plane.posX, plane.posY, plane.posZ, 0.0, 0.0, 0.0), plane.posX, plane.posY, plane.posZ, 150.0f, plane.dimension);
+                FlansMod.getPacketHandler().sendToAllAround(new PacketParticle("largeexplode", plane.posX, plane.posY + 1.0, plane.posZ, 0.0, 0.0, 0.0), plane.posX, plane.posY, plane.posZ, 150.0f, plane.dimension);
             }
             if (this.V > 3.0f && plane.isPartIntact(EnumDriveablePart.airframe) && !plane.mounted) {
                 final float hullDamage = 1.0f + 2.5E-4f * plane.getDriveableData().parts.get(EnumDriveablePart.airframe).maxHealth;
-                plane.attackPart(EnumDriveablePart.airframe, DamageSource.field_76367_g, hullDamage);
+                plane.attackPart(EnumDriveablePart.airframe, DamageSource.cactus, hullDamage);
             }
         }
         if (Vmph > type.maxSpeed) {
@@ -588,38 +588,38 @@ public class FlightController
             ++numWingsIntact;
         }
         if (!plane.mounted) {
-            plane.field_70159_w *= 1.0f - Math.abs(proportionOfMotionToCorrect);
-            plane.field_70181_x *= 1.0f - Math.abs(proportionOfMotionToCorrect);
-            plane.field_70179_y *= 1.0f - Math.abs(proportionOfMotionToCorrect);
+            plane.motionX *= 1.0f - Math.abs(proportionOfMotionToCorrect);
+            plane.motionY *= 1.0f - Math.abs(proportionOfMotionToCorrect);
+            plane.motionZ *= 1.0f - Math.abs(proportionOfMotionToCorrect);
             if (this.V > 0.0f) {
-                plane.field_70159_w += proportionOfMotionToCorrect * newSpeed * forwards.x;
-                plane.field_70181_x += proportionOfMotionToCorrect * newSpeed * forwards.y;
-                plane.field_70179_y += proportionOfMotionToCorrect * newSpeed * forwards.z;
+                plane.motionX += proportionOfMotionToCorrect * newSpeed * forwards.x;
+                plane.motionY += proportionOfMotionToCorrect * newSpeed * forwards.y;
+                plane.motionZ += proportionOfMotionToCorrect * newSpeed * forwards.z;
             }
         }
         if (this.lift >= 0.0f && this.doomsday < 1.0f) {
-            plane.field_70181_x += this.lift / 1480.0f;
+            plane.motionY += this.lift / 1480.0f;
         }
-        else if (plane.field_70170_p.func_147437_c((int)plane.field_70165_t, (int)(plane.field_70163_u - 2.0), (int)plane.field_70161_v)) {
-            plane.field_70181_x += this.lift / 1480.0f + 0.13243243243243244 * this.lift - this.doomsday / 300.0f;
+        else if (plane.worldObj.isAirBlock((int)plane.posX, (int)(plane.posY - 2.0), (int)plane.posZ)) {
+            plane.motionY += this.lift / 1480.0f + 0.13243243243243244 * this.lift - this.doomsday / 300.0f;
         }
-        if (plane.driveableData.catapult > 0 && plane.field_70181_x < 0.0) {
-            plane.field_70181_x = 0.009999999776482582;
+        if (plane.driveableData.catapult > 0 && plane.motionY < 0.0) {
+            plane.motionY = 0.009999999776482582;
         }
-        if (plane.field_70163_u > type.ceiling) {
-            plane.field_70181_x = -0.1;
+        if (plane.posY > type.ceiling) {
+            plane.motionY = -0.1;
         }
         if (plane.getDriveableData().emergencyMode) {
-            plane.field_70181_x = 0.009999999776482582;
-            plane.field_70159_w = 0.0;
-            plane.field_70179_y = 0.0;
+            plane.motionY = 0.009999999776482582;
+            plane.motionX = 0.0;
+            plane.motionZ = 0.0;
             this.V = 0.69f * (0.44704f * type.maxSpeed);
         }
         if (this.V > 0.0f && plane.mounted) {
             this.V *= 0.9f;
         }
         if (!plane.isPartIntact(EnumDriveablePart.airframe)) {
-            plane.field_70181_x += -this.gravity;
+            plane.motionY += -this.gravity;
             this.lift = -9.8f;
             plane.throttle = 0.0f;
             if (plane.axes.getRoll() > 0.1f) {
@@ -632,15 +632,15 @@ public class FlightController
             if (plane.axes.getPitch() < 35.0f) {
                 plane.axes.rotateLocalPitch(-0.05f * this.doomsday);
             }
-            if (plane.func_70090_H()) {
-                plane.attackPart(EnumDriveablePart.core, DamageSource.field_76367_g, 10.0f);
+            if (plane.isInWater()) {
+                plane.attackPart(EnumDriveablePart.core, DamageSource.cactus, 10.0f);
             }
         }
-        plane.field_70159_w *= this.drag;
-        plane.field_70179_y *= this.drag;
-        plane.lastPos = new Vector3f(plane.field_70159_w, plane.field_70181_x, plane.field_70179_y);
+        plane.motionX *= this.drag;
+        plane.motionZ *= this.drag;
+        plane.lastPos = new Vector3f(plane.motionX, plane.motionY, plane.motionZ);
         if (!plane.isPartIntact(EnumDriveablePart.tail)) {
-            plane.field_70181_x += -this.gravity;
+            plane.motionY += -this.gravity;
             this.lift *= 0.8f;
             this.lift -= (float)1.960000029206276;
             this.tail = false;
@@ -648,97 +648,97 @@ public class FlightController
                 ++this.doomsday;
             }
             if (this.doomsday >= 750.0f) {
-                plane.attackPart(EnumDriveablePart.core, DamageSource.field_76367_g, 10.0f);
+                plane.attackPart(EnumDriveablePart.core, DamageSource.cactus, 10.0f);
             }
             plane.axes.rotateLocalPitch(type.lookUpModifier * this.doomsday / (this.doomsday / 2.0f));
-            if (plane.func_70090_H()) {
-                plane.attackPart(EnumDriveablePart.core, DamageSource.field_76367_g, 10.0f);
+            if (plane.isInWater()) {
+                plane.attackPart(EnumDriveablePart.core, DamageSource.cactus, 10.0f);
             }
         }
         if (!plane.isPartIntact(EnumDriveablePart.leftWing)) {
-            plane.field_70181_x += -this.gravity;
+            plane.motionY += -this.gravity;
             this.leftWing = false;
             if (this.doomsday < 750.0f) {
                 ++this.doomsday;
             }
             if (this.doomsday >= 750.0f) {
-                plane.attackPart(EnumDriveablePart.core, DamageSource.field_76367_g, 10.0f);
+                plane.attackPart(EnumDriveablePart.core, DamageSource.cactus, 10.0f);
             }
             plane.axes.rotateLocalRoll(type.rollRightModifier * this.doomsday / (this.doomsday / 10.0f));
-            if (plane.func_70090_H()) {
-                plane.attackPart(EnumDriveablePart.core, DamageSource.field_76367_g, 10.0f);
+            if (plane.isInWater()) {
+                plane.attackPart(EnumDriveablePart.core, DamageSource.cactus, 10.0f);
             }
         }
         if (!plane.isPartIntact(EnumDriveablePart.rightWing)) {
-            plane.field_70181_x += -this.gravity;
+            plane.motionY += -this.gravity;
             this.rightWing = false;
             if (this.doomsday < 750.0f) {
                 ++this.doomsday;
             }
             if (this.doomsday >= 750.0f) {
-                plane.attackPart(EnumDriveablePart.core, DamageSource.field_76367_g, 10.0f);
+                plane.attackPart(EnumDriveablePart.core, DamageSource.cactus, 10.0f);
             }
             plane.axes.rotateLocalRoll(-type.rollLeftModifier * this.doomsday / (this.doomsday / 15.0f));
-            if (plane.func_70090_H()) {
-                plane.attackPart(EnumDriveablePart.core, DamageSource.field_76367_g, 10.0f);
+            if (plane.isInWater()) {
+                plane.attackPart(EnumDriveablePart.core, DamageSource.cactus, 10.0f);
             }
         }
         if (this.doomsday >= 100.0f) {
-            FlansMod.getPacketHandler().sendToAllAround(new PacketParticle("largeexplode", plane.field_70165_t, plane.field_70163_u + 1.0, plane.field_70161_v, 0.0, 0.0, 0.0), plane.field_70165_t, plane.field_70163_u, plane.field_70161_v, 150.0f, plane.field_71093_bK);
+            FlansMod.getPacketHandler().sendToAllAround(new PacketParticle("largeexplode", plane.posX, plane.posY + 1.0, plane.posZ, 0.0, 0.0, 0.0), plane.posX, plane.posY, plane.posZ, 150.0f, plane.dimension);
         }
         if (this.doomsday >= 100.0f) {
-            FlansMod.getPacketHandler().sendToAllAround(new PacketParticle("largesmoke", plane.field_70165_t, plane.field_70163_u, plane.field_70161_v, 0.0, 0.0, 0.0), plane.field_70165_t, plane.field_70163_u, plane.field_70161_v, 150.0f, plane.field_71093_bK);
+            FlansMod.getPacketHandler().sendToAllAround(new PacketParticle("largesmoke", plane.posX, plane.posY, plane.posZ, 0.0, 0.0, 0.0), plane.posX, plane.posY, plane.posZ, 150.0f, plane.dimension);
         }
         if (this.doomsday >= 20.0f) {
-            FlansMod.getPacketHandler().sendToAllAround(new PacketParticle("flame", plane.field_70165_t, plane.field_70163_u, plane.field_70161_v + 1.0, 0.0, 0.0, 0.0), plane.field_70165_t, plane.field_70163_u, plane.field_70161_v, 150.0f, plane.field_71093_bK);
+            FlansMod.getPacketHandler().sendToAllAround(new PacketParticle("flame", plane.posX, plane.posY, plane.posZ + 1.0, 0.0, 0.0, 0.0), plane.posX, plane.posY, plane.posZ, 150.0f, plane.dimension);
         }
         if (this.doomsday >= 20.0f) {
-            FlansMod.getPacketHandler().sendToAllAround(new PacketParticle("flame", plane.field_70165_t, plane.field_70163_u + 3.0, plane.field_70161_v - 0.7, 0.0, 0.0, 0.0), plane.field_70165_t, plane.field_70163_u, plane.field_70161_v, 150.0f, plane.field_71093_bK);
+            FlansMod.getPacketHandler().sendToAllAround(new PacketParticle("flame", plane.posX, plane.posY + 3.0, plane.posZ - 0.7, 0.0, 0.0, 0.0), plane.posX, plane.posY, plane.posZ, 150.0f, plane.dimension);
         }
         if (this.doomsday >= 20.0f) {
-            FlansMod.getPacketHandler().sendToAllAround(new PacketParticle("flame", plane.field_70165_t, plane.field_70163_u + 1.0, plane.field_70161_v + 1.3, 0.0, 0.0, 0.0), plane.field_70165_t, plane.field_70163_u, plane.field_70161_v, 150.0f, plane.field_71093_bK);
+            FlansMod.getPacketHandler().sendToAllAround(new PacketParticle("flame", plane.posX, plane.posY + 1.0, plane.posZ + 1.3, 0.0, 0.0, 0.0), plane.posX, plane.posY, plane.posZ, 150.0f, plane.dimension);
         }
         if (this.doomsday >= 100.0f) {
-            FlansMod.getPacketHandler().sendToAllAround(new PacketParticle("largesmoke", plane.field_70165_t, plane.field_70163_u + 1.5, plane.field_70161_v + 0.5, 0.0, 0.0, 0.0), plane.field_70165_t, plane.field_70163_u, plane.field_70161_v, 150.0f, plane.field_71093_bK);
+            FlansMod.getPacketHandler().sendToAllAround(new PacketParticle("largesmoke", plane.posX, plane.posY + 1.5, plane.posZ + 0.5, 0.0, 0.0, 0.0), plane.posX, plane.posY, plane.posZ, 150.0f, plane.dimension);
         }
         if (this.doomsday >= 100.0f) {
-            FlansMod.getPacketHandler().sendToAllAround(new PacketParticle("flame", plane.field_70165_t, plane.field_70163_u + 1.0, plane.field_70161_v - 0.5, 0.0, 0.0, 0.0), plane.field_70165_t, plane.field_70163_u, plane.field_70161_v, 150.0f, plane.field_71093_bK);
+            FlansMod.getPacketHandler().sendToAllAround(new PacketParticle("flame", plane.posX, plane.posY + 1.0, plane.posZ - 0.5, 0.0, 0.0, 0.0), plane.posX, plane.posY, plane.posZ, 150.0f, plane.dimension);
         }
         if (this.doomsday >= 100.0f) {
-            FlansMod.getPacketHandler().sendToAllAround(new PacketParticle("flame", plane.field_70165_t, plane.field_70163_u, plane.field_70161_v + 0.5, 0.0, 0.0, 0.0), plane.field_70165_t, plane.field_70163_u, plane.field_70161_v, 150.0f, plane.field_71093_bK);
+            FlansMod.getPacketHandler().sendToAllAround(new PacketParticle("flame", plane.posX, plane.posY, plane.posZ + 0.5, 0.0, 0.0, 0.0), plane.posX, plane.posY, plane.posZ, 150.0f, plane.dimension);
         }
         if (this.doomsday >= 100.0f) {
-            FlansMod.getPacketHandler().sendToAllAround(new PacketParticle("flame", plane.field_70165_t, plane.field_70163_u - 0.5, plane.field_70161_v - 2.0, 0.0, 0.0, 0.0), plane.field_70165_t, plane.field_70163_u, plane.field_70161_v, 150.0f, plane.field_71093_bK);
+            FlansMod.getPacketHandler().sendToAllAround(new PacketParticle("flame", plane.posX, plane.posY - 0.5, plane.posZ - 2.0, 0.0, 0.0, 0.0), plane.posX, plane.posY, plane.posZ, 150.0f, plane.dimension);
         }
         if (this.doomsday >= 100.0f) {
-            FlansMod.getPacketHandler().sendToAllAround(new PacketParticle("flansmod.fmflame", plane.field_70165_t, plane.field_70163_u + 1.0, plane.field_70161_v, 0.0, 0.0, 0.0), plane.field_70165_t, plane.field_70163_u, plane.field_70161_v, 150.0f, plane.field_71093_bK);
+            FlansMod.getPacketHandler().sendToAllAround(new PacketParticle("flansmod.fmflame", plane.posX, plane.posY + 1.0, plane.posZ, 0.0, 0.0, 0.0), plane.posX, plane.posY, plane.posZ, 150.0f, plane.dimension);
         }
         if (this.doomsday == 5.0f) {
-            FlansMod.getPacketHandler().sendToAllAround(new PacketParticle("hugeexplosion", plane.field_70165_t, plane.field_70163_u + 1.0, plane.field_70161_v, 0.0, 0.0, 0.0), plane.field_70165_t, plane.field_70163_u, plane.field_70161_v, 150.0f, plane.field_71093_bK);
+            FlansMod.getPacketHandler().sendToAllAround(new PacketParticle("hugeexplosion", plane.posX, plane.posY + 1.0, plane.posZ, 0.0, 0.0, 0.0), plane.posX, plane.posY, plane.posZ, 150.0f, plane.dimension);
         }
         if (this.doomsday == 18.0f) {
-            FlansMod.getPacketHandler().sendToAllAround(new PacketParticle("largeexplode", plane.field_70165_t, plane.field_70163_u + 1.0, plane.field_70161_v, 0.0, 0.0, 0.0), plane.field_70165_t, plane.field_70163_u, plane.field_70161_v, 150.0f, plane.field_71093_bK);
+            FlansMod.getPacketHandler().sendToAllAround(new PacketParticle("largeexplode", plane.posX, plane.posY + 1.0, plane.posZ, 0.0, 0.0, 0.0), plane.posX, plane.posY, plane.posZ, 150.0f, plane.dimension);
         }
         if (this.doomsday == 30.0f) {
-            FlansMod.getPacketHandler().sendToAllAround(new PacketParticle("largeexplode", plane.field_70165_t, plane.field_70163_u + 1.0, plane.field_70161_v, 0.0, 0.0, 0.0), plane.field_70165_t, plane.field_70163_u, plane.field_70161_v, 150.0f, plane.field_71093_bK);
+            FlansMod.getPacketHandler().sendToAllAround(new PacketParticle("largeexplode", plane.posX, plane.posY + 1.0, plane.posZ, 0.0, 0.0, 0.0), plane.posX, plane.posY, plane.posZ, 150.0f, plane.dimension);
         }
         if (this.doomsday == 100.0f) {
-            FlansMod.getPacketHandler().sendToAllAround(new PacketParticle("hugeexplosion", plane.field_70165_t, plane.field_70163_u + 1.0, plane.field_70161_v, 0.0, 0.0, 0.0), plane.field_70165_t, plane.field_70163_u, plane.field_70161_v, 150.0f, plane.field_71093_bK);
+            FlansMod.getPacketHandler().sendToAllAround(new PacketParticle("hugeexplosion", plane.posX, plane.posY + 1.0, plane.posZ, 0.0, 0.0, 0.0), plane.posX, plane.posY, plane.posZ, 150.0f, plane.dimension);
         }
         if (this.doomsday == 700.0f && (!this.leftWing || !this.tail || !this.rightWing)) {
-            FlansMod.getPacketHandler().sendToAllAround(new PacketParticle("hugeexplosion", plane.field_70165_t, plane.field_70163_u + 1.0, plane.field_70161_v, 0.0, 0.0, 0.0), plane.field_70165_t, plane.field_70163_u, plane.field_70161_v, 150.0f, plane.field_71093_bK);
+            FlansMod.getPacketHandler().sendToAllAround(new PacketParticle("hugeexplosion", plane.posX, plane.posY + 1.0, plane.posZ, 0.0, 0.0, 0.0), plane.posX, plane.posY, plane.posZ, 150.0f, plane.dimension);
         }
         if (this.doomsday == 720.0f && (!this.leftWing || !this.tail || !this.rightWing)) {
-            FlansMod.getPacketHandler().sendToAllAround(new PacketParticle("hugeexplosion", plane.field_70165_t, plane.field_70163_u + 1.0, plane.field_70161_v, 0.0, 0.0, 0.0), plane.field_70165_t, plane.field_70163_u, plane.field_70161_v, 150.0f, plane.field_71093_bK);
+            FlansMod.getPacketHandler().sendToAllAround(new PacketParticle("hugeexplosion", plane.posX, plane.posY + 1.0, plane.posZ, 0.0, 0.0, 0.0), plane.posX, plane.posY, plane.posZ, 150.0f, plane.dimension);
         }
         if (this.doomsday == 725.0f && (!this.leftWing || !this.tail || !this.rightWing)) {
-            FlansMod.getPacketHandler().sendToAllAround(new PacketParticle("hugeexplosion", plane.field_70165_t, plane.field_70163_u + 1.0, plane.field_70161_v, 0.0, 0.0, 0.0), plane.field_70165_t, plane.field_70163_u, plane.field_70161_v, 150.0f, plane.field_71093_bK);
+            FlansMod.getPacketHandler().sendToAllAround(new PacketParticle("hugeexplosion", plane.posX, plane.posY + 1.0, plane.posZ, 0.0, 0.0, 0.0), plane.posX, plane.posY, plane.posZ, 150.0f, plane.dimension);
         }
         if (this.doomsday == 740.0f && (!this.leftWing || !this.tail || !this.rightWing)) {
-            FlansMod.getPacketHandler().sendToAllAround(new PacketParticle("hugeexplosion", plane.field_70165_t, plane.field_70163_u + 1.0, plane.field_70161_v, 0.0, 0.0, 0.0), plane.field_70165_t, plane.field_70163_u, plane.field_70161_v, 150.0f, plane.field_71093_bK);
+            FlansMod.getPacketHandler().sendToAllAround(new PacketParticle("hugeexplosion", plane.posX, plane.posY + 1.0, plane.posZ, 0.0, 0.0, 0.0), plane.posX, plane.posY, plane.posZ, 150.0f, plane.dimension);
         }
         if (this.doomsday == 748.0f && (!this.leftWing || !this.tail || !this.rightWing)) {
-            FlansMod.getPacketHandler().sendToAllAround(new PacketParticle("flansmod.tankDeath", plane.field_70165_t, plane.field_70163_u + 1.0, plane.field_70161_v, 0.0, 0.0, 0.0), plane.field_70165_t, plane.field_70163_u, plane.field_70161_v, 150.0f, plane.field_71093_bK);
+            FlansMod.getPacketHandler().sendToAllAround(new PacketParticle("flansmod.tankDeath", plane.posX, plane.posY + 1.0, plane.posZ, 0.0, 0.0, 0.0), plane.posX, plane.posY, plane.posZ, 150.0f, plane.dimension);
         }
     }
     
@@ -779,30 +779,30 @@ public class FlightController
             final Vector3f vector3f3 = up;
             vector3f3.z *= -1.0f;
         }
-        if (plane.field_70159_w < 1.0) {
-            plane.field_70159_w += upwardsForce * up.x * 0.5f;
+        if (plane.motionX < 1.0) {
+            plane.motionX += upwardsForce * up.x * 0.5f;
         }
-        if (plane.field_70181_x < 1.0) {
-            plane.field_70181_x += upwardsForce * up.y - this.gravity;
+        if (plane.motionY < 1.0) {
+            plane.motionY += upwardsForce * up.y - this.gravity;
         }
-        if (plane.field_70179_y < 1.0) {
-            plane.field_70179_y += upwardsForce * up.z * 0.5f;
+        if (plane.motionZ < 1.0) {
+            plane.motionZ += upwardsForce * up.z * 0.5f;
         }
-        if (plane.field_70181_x >= 1.0) {
+        if (plane.motionY >= 1.0) {
             upwardsForce = 0.04f;
         }
-        if (plane.field_70159_w >= 1.0) {
+        if (plane.motionX >= 1.0) {
             upwardsForce = 0.04f;
         }
-        if (plane.field_70179_y >= 1.0) {
+        if (plane.motionZ >= 1.0) {
             upwardsForce = 0.04f;
         }
-        if (plane.field_70163_u > type.ceiling) {
-            plane.field_70181_x = -0.1;
+        if (plane.posY > type.ceiling) {
+            plane.motionY = -0.1;
         }
-        plane.field_70159_w *= 1.0f - (1.0f - this.drag) / 5.0f;
-        plane.field_70181_x *= this.drag;
-        plane.field_70179_y *= 1.0f - (1.0f - this.drag) / 5.0f;
-        plane.lastPos = new Vector3f(plane.field_70159_w, plane.field_70181_x, plane.field_70179_y);
+        plane.motionX *= 1.0f - (1.0f - this.drag) / 5.0f;
+        plane.motionY *= this.drag;
+        plane.motionZ *= 1.0f - (1.0f - this.drag) / 5.0f;
+        plane.lastPos = new Vector3f(plane.motionX, plane.motionY, plane.motionZ);
     }
 }

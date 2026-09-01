@@ -37,22 +37,22 @@ public class ModelFrenchHowitzer extends ModelVehicle
         this.bodyModel[5] = new ModelRendererTurbo(this, 17, 33, this.textureX, this.textureY);
         this.bodyModel[6] = new ModelRendererTurbo(this, 25, 33, this.textureX, this.textureY);
         this.bodyModel[0].addShapeBox(-33.0f, -2.0f, -3.0f, 42, 4, 6, 0.0f, 0.5f, -0.6f, -0.5f, 3.0f, -0.3f, 0.0f, 3.0f, -0.3f, 0.0f, 0.5f, -0.6f, -0.5f, -1.0f, -1.5f, -0.5f, -0.5f, 0.5f, 0.0f, -0.5f, 0.5f, 0.0f, -1.0f, -1.5f, -0.5f);
-        this.bodyModel[0].func_78793_a(-8.0f, -4.9f, 0.0f);
-        this.bodyModel[0].field_78808_h = 0.41887903f;
+        this.bodyModel[0].setRotationPoint(-8.0f, -4.9f, 0.0f);
+        this.bodyModel[0].rotateAngleZ = 0.41887903f;
         this.bodyModel[1].addShapeBox(0.0f, -2.0f, -4.0f, 2, 2, 8, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.bodyModel[1].func_78793_a(-1.0f, -12.9f, 0.0f);
+        this.bodyModel[1].setRotationPoint(-1.0f, -12.9f, 0.0f);
         this.bodyModel[2].addShapeBox(0.0f, 0.0f, 0.0f, 6, 2, 1, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 4.0f, 8.0f, -0.15f, 0.3f, 0.0f, 0.0f, 0.3f, 0.0f, 0.0f, 4.0f, 8.0f, -0.1f);
-        this.bodyModel[2].func_78793_a(-3.5f, -14.5f, -3.0f);
-        this.bodyModel[2].field_78808_h = -0.2443461f;
+        this.bodyModel[2].setRotationPoint(-3.5f, -14.5f, -3.0f);
+        this.bodyModel[2].rotateAngleZ = -0.2443461f;
         this.bodyModel[3].addShapeBox(0.0f, 0.0f, 0.0f, 6, 2, 1, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 4.0f, 8.0f, -0.15f, 0.3f, 0.0f, 0.0f, 0.3f, 0.0f, 0.0f, 4.0f, 8.0f, -0.1f);
-        this.bodyModel[3].func_78793_a(-3.5f, -14.5f, 1.95f);
-        this.bodyModel[3].field_78808_h = -0.2443461f;
+        this.bodyModel[3].setRotationPoint(-3.5f, -14.5f, 1.95f);
+        this.bodyModel[3].rotateAngleZ = -0.2443461f;
         this.bodyModel[4].addShapeBox(0.0f, 0.0f, 0.0f, 4, 2, 1, 0.0f, 4.0f, 1.5f, -0.1f, 1.3f, 4.7f, 0.0f, 1.3f, 4.7f, 0.0f, 4.0f, 1.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.bodyModel[4].func_78793_a(-4.5f, -1.5f, -3.0f);
+        this.bodyModel[4].setRotationPoint(-4.5f, -1.5f, -3.0f);
         this.bodyModel[5].addShapeBox(0.0f, 0.0f, 0.0f, 4, 2, 1, 0.0f, 4.0f, 1.5f, 0.0f, 1.3f, 4.7f, 0.0f, 1.3f, 4.7f, 0.0f, 4.0f, 1.5f, -0.1f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.bodyModel[5].func_78793_a(-4.5f, -1.5f, 2.0f);
+        this.bodyModel[5].setRotationPoint(-4.5f, -1.5f, 2.0f);
         this.bodyModel[6].addShapeBox(-1.0f, -1.0f, 0.0f, 2, 2, 22, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.bodyModel[6].func_78793_a(-2.5f, -0.5f, -11.0f);
+        this.bodyModel[6].setRotationPoint(-2.5f, -0.5f, -11.0f);
     }
     
     private void initbarrelModel_1() {
@@ -66,23 +66,23 @@ public class ModelFrenchHowitzer extends ModelVehicle
         this.barrelModel[7] = new ModelRendererTurbo(this, 25, 9, this.textureX, this.textureY);
         this.barrelModel[8] = new ModelRendererTurbo(this, 33, 9, this.textureX, this.textureY);
         this.barrelModel[0].addShapeBox(3.0f, -1.0f, -1.0f, 22, 2, 2, 0.0f, 0.0f, 0.7f, 0.7f, 0.0f, 0.2f, 0.2f, 0.0f, 0.2f, 0.2f, 0.0f, 0.7f, 0.7f, 0.0f, 0.7f, 0.7f, 0.0f, 0.2f, 0.2f, 0.0f, 0.2f, 0.2f, 0.0f, 0.7f, 0.7f);
-        this.barrelModel[0].func_78793_a(0.0f, -14.2f, 0.0f);
+        this.barrelModel[0].setRotationPoint(0.0f, -14.2f, 0.0f);
         this.barrelModel[1].addShapeBox(1.0f, -1.0f, -1.0f, 2, 2, 2, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.7f, 0.7f, 0.0f, 0.7f, 0.7f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.7f, 0.7f, 0.0f, 0.7f, 0.7f, 0.0f, 1.0f, 1.0f);
-        this.barrelModel[1].func_78793_a(0.0f, -14.2f, 0.0f);
+        this.barrelModel[1].setRotationPoint(0.0f, -14.2f, 0.0f);
         this.barrelModel[2].addShapeBox(-13.0f, -2.0f, -2.0f, 14, 4, 4, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.barrelModel[2].func_78793_a(0.0f, -14.2f, 0.0f);
+        this.barrelModel[2].setRotationPoint(0.0f, -14.2f, 0.0f);
         this.barrelModel[3].addShapeBox(-15.0f, -2.0f, -2.0f, 2, 4, 4, 0.0f, 0.0f, 0.3f, 0.3f, 0.0f, 0.3f, 0.3f, 0.0f, 0.3f, 0.3f, 0.0f, 0.3f, 0.3f, 0.0f, 0.3f, 0.3f, 0.0f, 0.3f, 0.3f, 0.0f, 0.3f, 0.3f, 0.0f, 0.3f, 0.3f);
-        this.barrelModel[3].func_78793_a(0.0f, -14.2f, 0.0f);
+        this.barrelModel[3].setRotationPoint(0.0f, -14.2f, 0.0f);
         this.barrelModel[4].addShapeBox(-9.0f, -2.0f, -2.0f, 1, 4, 4, 0.0f, 0.0f, 0.3f, 0.3f, 0.0f, 0.3f, 0.3f, 0.0f, 0.3f, 0.3f, 0.0f, 0.3f, 0.3f, 0.0f, 0.3f, 0.3f, 0.0f, 0.3f, 0.3f, 0.0f, 0.3f, 0.3f, 0.0f, 0.3f, 0.3f);
-        this.barrelModel[4].func_78793_a(0.0f, -14.2f, 0.0f);
+        this.barrelModel[4].setRotationPoint(0.0f, -14.2f, 0.0f);
         this.barrelModel[5].addShapeBox(25.0f, -1.0f, -1.0f, 1, 2, 2, 0.0f, 0.0f, 0.4f, 0.4f, 0.0f, 0.4f, 0.4f, 0.0f, 0.4f, 0.4f, 0.0f, 0.4f, 0.4f, 0.0f, 0.4f, 0.4f, 0.0f, 0.4f, 0.4f, 0.0f, 0.4f, 0.4f, 0.0f, 0.4f, 0.4f);
-        this.barrelModel[5].func_78793_a(0.0f, -14.2f, 0.0f);
+        this.barrelModel[5].setRotationPoint(0.0f, -14.2f, 0.0f);
         this.barrelModel[6].addShapeBox(-2.0f, -3.0f, -0.5f, 1, 1, 1, 0.0f, -0.4f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -0.4f, 0.0f, 0.0f, -0.2f, 0.0f, 0.0f, -0.2f, 0.0f, 0.0f, -0.2f, 0.0f, 0.0f, -0.2f, 0.0f, 0.0f);
-        this.barrelModel[6].func_78793_a(0.0f, -14.2f, 0.0f);
+        this.barrelModel[6].setRotationPoint(0.0f, -14.2f, 0.0f);
         this.barrelModel[7].addShapeBox(0.5f, -3.0f, -0.5f, 1, 1, 1, 0.0f, 0.0f, 0.0f, 0.0f, -0.4f, 0.0f, 0.0f, -0.4f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -0.2f, 0.0f, 0.0f, -0.2f, 0.0f, 0.0f, -0.2f, 0.0f, 0.0f, -0.2f, 0.0f, 0.0f);
-        this.barrelModel[7].func_78793_a(0.0f, -14.2f, 0.0f);
+        this.barrelModel[7].setRotationPoint(0.0f, -14.2f, 0.0f);
         this.barrelModel[8].addShapeBox(-2.0f, -4.0f, -0.5f, 3, 1, 1, 0.0f, -0.8f, -0.5f, 0.0f, -0.3f, -0.5f, 0.0f, -0.3f, -0.5f, 0.0f, -0.8f, -0.5f, 0.0f, -0.4f, 0.0f, 0.0f, 0.1f, 0.0f, 0.0f, 0.1f, 0.0f, 0.0f, -0.4f, 0.0f, 0.0f);
-        this.barrelModel[8].func_78793_a(0.0f, -14.2f, 0.0f);
+        this.barrelModel[8].setRotationPoint(0.0f, -14.2f, 0.0f);
     }
     
     private void initleftBackWheelModel_1() {
@@ -100,31 +100,31 @@ public class ModelFrenchHowitzer extends ModelVehicle
         this.leftBackWheelModel[11] = new ModelRendererTurbo(this, 25, 73, this.textureX, this.textureY);
         this.leftBackWheelModel[12] = new ModelRendererTurbo(this, 41, 73, this.textureX, this.textureY);
         this.leftBackWheelModel[0].addShapeBox(-6.0f, -5.5f, 0.0f, 12, 1, 1, 0.0f, -0.2f, 0.5f, -0.2f, -0.2f, -10.5f, -0.2f, -0.2f, -10.5f, -0.2f, -0.2f, 0.5f, -0.2f, -0.2f, -0.5f, -0.2f, -0.2f, 10.3f, -0.2f, -0.2f, 10.3f, -0.2f, -0.2f, -0.5f, -0.2f);
-        this.leftBackWheelModel[0].func_78793_a(-2.5f, -0.5f, 9.0f);
+        this.leftBackWheelModel[0].setRotationPoint(-2.5f, -0.5f, 9.0f);
         this.leftBackWheelModel[1].addShapeBox(-0.5f, -7.0f, 0.0f, 1, 14, 1, 0.0f, -0.2f, 0.0f, -0.2f, -0.2f, 0.0f, -0.2f, -0.2f, 0.0f, -0.2f, -0.2f, 0.0f, -0.2f, -0.2f, 0.0f, -0.2f, -0.2f, 0.0f, -0.2f, -0.2f, 0.0f, -0.2f, -0.2f, 0.0f, -0.2f);
-        this.leftBackWheelModel[1].func_78793_a(-2.5f, -0.5f, 9.0f);
+        this.leftBackWheelModel[1].setRotationPoint(-2.5f, -0.5f, 9.0f);
         this.leftBackWheelModel[2].addShapeBox(-6.0f, -5.5f, 0.0f, 12, 1, 1, 0.0f, -0.2f, -10.5f, -0.2f, -0.2f, 0.5f, -0.2f, -0.2f, 0.5f, -0.2f, -0.2f, -10.5f, -0.2f, -0.2f, 10.3f, -0.2f, -0.2f, -0.5f, -0.2f, -0.2f, -0.5f, -0.2f, -0.2f, 10.3f, -0.2f);
-        this.leftBackWheelModel[2].func_78793_a(-2.5f, -0.5f, 9.0f);
+        this.leftBackWheelModel[2].setRotationPoint(-2.5f, -0.5f, 9.0f);
         this.leftBackWheelModel[3].addShapeBox(-8.0f, -0.5f, 0.0f, 16, 1, 1, 0.0f, -0.2f, -0.2f, -0.2f, -0.2f, -0.2f, -0.2f, -0.2f, -0.2f, -0.2f, -0.2f, -0.2f, -0.2f, -0.2f, -0.2f, -0.2f, -0.2f, -0.2f, -0.2f, -0.2f, -0.2f, -0.2f, -0.2f, -0.2f, -0.2f);
-        this.leftBackWheelModel[3].func_78793_a(-2.5f, -0.5f, 9.0f);
+        this.leftBackWheelModel[3].setRotationPoint(-2.5f, -0.5f, 9.0f);
         this.leftBackWheelModel[4].addShapeBox(7.0f, -4.0f, 0.0f, 2, 8, 1, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.leftBackWheelModel[4].func_78793_a(-2.5f, -0.5f, 9.0f);
+        this.leftBackWheelModel[4].setRotationPoint(-2.5f, -0.5f, 9.0f);
         this.leftBackWheelModel[5].addShapeBox(4.0f, -9.0f, 0.0f, 6, 2, 1, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, -5.0f, 0.0f, -1.0f, -5.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, -3.0f, 4.0f, 0.0f, -3.0f, 4.0f, 0.0f, 1.0f, 0.0f, 0.0f);
-        this.leftBackWheelModel[5].func_78793_a(-2.5f, -0.5f, 9.0f);
+        this.leftBackWheelModel[5].setRotationPoint(-2.5f, -0.5f, 9.0f);
         this.leftBackWheelModel[6].addShapeBox(-4.0f, -9.0f, 0.0f, 8, 2, 1, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.leftBackWheelModel[6].func_78793_a(-2.5f, -0.5f, 9.0f);
+        this.leftBackWheelModel[6].setRotationPoint(-2.5f, -0.5f, 9.0f);
         this.leftBackWheelModel[7].addShapeBox(-10.0f, -9.0f, 0.0f, 6, 2, 1, 0.0f, -1.0f, -5.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, -5.0f, 0.0f, -3.0f, 4.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, -3.0f, 4.0f, 0.0f);
-        this.leftBackWheelModel[7].func_78793_a(-2.5f, -0.5f, 9.0f);
+        this.leftBackWheelModel[7].setRotationPoint(-2.5f, -0.5f, 9.0f);
         this.leftBackWheelModel[8].addShapeBox(-9.0f, -4.0f, 0.0f, 2, 8, 1, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.leftBackWheelModel[8].func_78793_a(-2.5f, -0.5f, 9.0f);
+        this.leftBackWheelModel[8].setRotationPoint(-2.5f, -0.5f, 9.0f);
         this.leftBackWheelModel[9].addShapeBox(-10.0f, 7.0f, 0.0f, 6, 2, 1, 0.0f, -3.0f, 4.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, -3.0f, 4.0f, 0.0f, -1.0f, -5.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, -5.0f, 0.0f);
-        this.leftBackWheelModel[9].func_78793_a(-2.5f, -0.5f, 9.0f);
+        this.leftBackWheelModel[9].setRotationPoint(-2.5f, -0.5f, 9.0f);
         this.leftBackWheelModel[10].addShapeBox(-4.0f, 7.0f, 0.0f, 8, 2, 1, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.leftBackWheelModel[10].func_78793_a(-2.5f, -0.5f, 9.0f);
+        this.leftBackWheelModel[10].setRotationPoint(-2.5f, -0.5f, 9.0f);
         this.leftBackWheelModel[11].addShapeBox(4.0f, 7.0f, 0.0f, 6, 2, 1, 0.0f, 1.0f, 0.0f, 0.0f, -3.0f, 4.0f, 0.0f, -3.0f, 4.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, -5.0f, 0.0f, -1.0f, -5.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.leftBackWheelModel[11].func_78793_a(-2.5f, -0.5f, 9.0f);
+        this.leftBackWheelModel[11].setRotationPoint(-2.5f, -0.5f, 9.0f);
         this.leftBackWheelModel[12].addShapeBox(-2.0f, -2.0f, 0.0f, 4, 4, 1, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.leftBackWheelModel[12].func_78793_a(-2.5f, -0.5f, 9.0f);
+        this.leftBackWheelModel[12].setRotationPoint(-2.5f, -0.5f, 9.0f);
     }
     
     private void initrightBackWheelModel_1() {
@@ -142,30 +142,30 @@ public class ModelFrenchHowitzer extends ModelVehicle
         this.rightBackWheelModel[11] = new ModelRendererTurbo(this, 57, 49, this.textureX, this.textureY);
         this.rightBackWheelModel[12] = new ModelRendererTurbo(this, 73, 57, this.textureX, this.textureY);
         this.rightBackWheelModel[0].addShapeBox(-2.0f, -2.0f, 0.0f, 4, 4, 1, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.rightBackWheelModel[0].func_78793_a(-2.5f, -0.5f, -10.0f);
+        this.rightBackWheelModel[0].setRotationPoint(-2.5f, -0.5f, -10.0f);
         this.rightBackWheelModel[1].addShapeBox(-4.0f, 7.0f, 0.0f, 8, 2, 1, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.rightBackWheelModel[1].func_78793_a(-2.5f, -0.5f, -10.0f);
+        this.rightBackWheelModel[1].setRotationPoint(-2.5f, -0.5f, -10.0f);
         this.rightBackWheelModel[2].addShapeBox(-9.0f, -4.0f, 0.0f, 2, 8, 1, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.rightBackWheelModel[2].func_78793_a(-2.5f, -0.5f, -10.0f);
+        this.rightBackWheelModel[2].setRotationPoint(-2.5f, -0.5f, -10.0f);
         this.rightBackWheelModel[3].addShapeBox(7.0f, -4.0f, 0.0f, 2, 8, 1, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.rightBackWheelModel[3].func_78793_a(-2.5f, -0.5f, -10.0f);
+        this.rightBackWheelModel[3].setRotationPoint(-2.5f, -0.5f, -10.0f);
         this.rightBackWheelModel[4].addShapeBox(-4.0f, -9.0f, 0.0f, 8, 2, 1, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.rightBackWheelModel[4].func_78793_a(-2.5f, -0.5f, -10.0f);
+        this.rightBackWheelModel[4].setRotationPoint(-2.5f, -0.5f, -10.0f);
         this.rightBackWheelModel[5].addShapeBox(4.0f, -9.0f, 0.0f, 6, 2, 1, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, -5.0f, 0.0f, -1.0f, -5.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, -3.0f, 4.0f, 0.0f, -3.0f, 4.0f, 0.0f, 1.0f, 0.0f, 0.0f);
-        this.rightBackWheelModel[5].func_78793_a(-2.5f, -0.5f, -10.0f);
+        this.rightBackWheelModel[5].setRotationPoint(-2.5f, -0.5f, -10.0f);
         this.rightBackWheelModel[6].addShapeBox(-10.0f, -9.0f, 0.0f, 6, 2, 1, 0.0f, -1.0f, -5.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, -5.0f, 0.0f, -3.0f, 4.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, -3.0f, 4.0f, 0.0f);
-        this.rightBackWheelModel[6].func_78793_a(-2.5f, -0.5f, -10.0f);
+        this.rightBackWheelModel[6].setRotationPoint(-2.5f, -0.5f, -10.0f);
         this.rightBackWheelModel[7].addShapeBox(-10.0f, 7.0f, 0.0f, 6, 2, 1, 0.0f, -3.0f, 4.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, -3.0f, 4.0f, 0.0f, -1.0f, -5.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, -5.0f, 0.0f);
-        this.rightBackWheelModel[7].func_78793_a(-2.5f, -0.5f, -10.0f);
+        this.rightBackWheelModel[7].setRotationPoint(-2.5f, -0.5f, -10.0f);
         this.rightBackWheelModel[8].addShapeBox(4.0f, 7.0f, 0.0f, 6, 2, 1, 0.0f, 1.0f, 0.0f, 0.0f, -3.0f, 4.0f, 0.0f, -3.0f, 4.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, -5.0f, 0.0f, -1.0f, -5.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.rightBackWheelModel[8].func_78793_a(-2.5f, -0.5f, -10.0f);
+        this.rightBackWheelModel[8].setRotationPoint(-2.5f, -0.5f, -10.0f);
         this.rightBackWheelModel[9].addShapeBox(-0.5f, -7.0f, 0.0f, 1, 14, 1, 0.0f, -0.2f, 0.0f, -0.2f, -0.2f, 0.0f, -0.2f, -0.2f, 0.0f, -0.2f, -0.2f, 0.0f, -0.2f, -0.2f, 0.0f, -0.2f, -0.2f, 0.0f, -0.2f, -0.2f, 0.0f, -0.2f, -0.2f, 0.0f, -0.2f);
-        this.rightBackWheelModel[9].func_78793_a(-2.5f, -0.5f, -10.0f);
+        this.rightBackWheelModel[9].setRotationPoint(-2.5f, -0.5f, -10.0f);
         this.rightBackWheelModel[10].addShapeBox(-8.0f, -0.5f, 0.0f, 16, 1, 1, 0.0f, -0.2f, -0.2f, -0.2f, -0.2f, -0.2f, -0.2f, -0.2f, -0.2f, -0.2f, -0.2f, -0.2f, -0.2f, -0.2f, -0.2f, -0.2f, -0.2f, -0.2f, -0.2f, -0.2f, -0.2f, -0.2f, -0.2f, -0.2f, -0.2f);
-        this.rightBackWheelModel[10].func_78793_a(-2.5f, -0.5f, -10.0f);
+        this.rightBackWheelModel[10].setRotationPoint(-2.5f, -0.5f, -10.0f);
         this.rightBackWheelModel[11].addShapeBox(-6.0f, -5.5f, 0.0f, 12, 1, 1, 0.0f, -0.2f, 0.5f, -0.2f, -0.2f, -10.5f, -0.2f, -0.2f, -10.5f, -0.2f, -0.2f, 0.5f, -0.2f, -0.2f, -0.5f, -0.2f, -0.2f, 10.3f, -0.2f, -0.2f, 10.3f, -0.2f, -0.2f, -0.5f, -0.2f);
-        this.rightBackWheelModel[11].func_78793_a(-2.5f, -0.5f, -10.0f);
+        this.rightBackWheelModel[11].setRotationPoint(-2.5f, -0.5f, -10.0f);
         this.rightBackWheelModel[12].addShapeBox(-6.0f, -5.5f, 0.0f, 12, 1, 1, 0.0f, -0.2f, -10.5f, -0.2f, -0.2f, 0.5f, -0.2f, -0.2f, 0.5f, -0.2f, -0.2f, -10.5f, -0.2f, -0.2f, 10.3f, -0.2f, -0.2f, -0.5f, -0.2f, -0.2f, -0.5f, -0.2f, -0.2f, 10.3f, -0.2f);
-        this.rightBackWheelModel[12].func_78793_a(-2.5f, -0.5f, -10.0f);
+        this.rightBackWheelModel[12].setRotationPoint(-2.5f, -0.5f, -10.0f);
     }
 }
