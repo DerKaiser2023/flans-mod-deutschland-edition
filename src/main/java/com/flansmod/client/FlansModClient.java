@@ -279,6 +279,8 @@ public class FlansModClient extends FlansMod
         }
         if (FlansModClient.lamperino > 1) {
             FlansModClient.starStruck = true;
+            FlansModClient.minecraft.gameSettings.gammaSetting = 0.4f + FlansModClient.lamperino / 18.0f;
+
         }
         final List<Entity> foxes = FlansModClient.minecraft.thePlayer.worldObj.getEntitiesWithinAABBExcludingEntity((Entity)FlansModClient.minecraft.thePlayer, AxisAlignedBB.getBoundingBox(FlansModClient.minecraft.thePlayer.posX - 200.0, FlansModClient.minecraft.thePlayer.posY - 500.0, FlansModClient.minecraft.thePlayer.posZ - 200.0, FlansModClient.minecraft.thePlayer.posX + 200.0, FlansModClient.minecraft.thePlayer.posY + 500.0, FlansModClient.minecraft.thePlayer.posZ + 200.0));
         for (final Entity stuff : foxes) {
