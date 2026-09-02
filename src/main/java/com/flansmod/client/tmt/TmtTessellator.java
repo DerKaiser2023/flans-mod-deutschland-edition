@@ -163,8 +163,8 @@ public class TmtTessellator extends Tessellator
                 GL11.glVertexPointer(3, 5126, 40, 0L);
             }
             else {
-                TmtTessellator.floatBuffer.position(0);
-                GL11.glVertexPointer(3, 5126, 40, TmtTessellator.floatBuffer);
+                TmtTessellator.byteBuffer.position(0);
+                GL11.glVertexPointer(3, 5126, 40, TmtTessellator.byteBuffer);
             }
             GL11.glEnableClientState(32884);
             if (this.drawMode == 7 && TmtTessellator.convertQuadsToTriangles) {
