@@ -123,13 +123,13 @@ import cpw.mods.fml.common.SidedProxy;
 import net.minecraftforge.common.config.Configuration;
 import cpw.mods.fml.common.Mod;
 
-@Mod(modid = "flansmod", name = "Flan's Mod Deutschland Edition", version = "DerKaiser2023 Mod Mark 25843 - February 2026", acceptableRemoteVersions = "1.7.10")
+@Mod(modid = "flansmod", name = "Flan's Mod Deutschland Edition", version = "DerKaiser2023 Mod Mark 1.1 build 1.0.3 - February 2026", acceptableRemoteVersions = "1.7.10")
 public class FlansMod
 {
     public static boolean DEBUG;
     public static Configuration configFile;
     public static final String MODID = "flansmod";
-    public static final String VERSION = "DerKaiser2023 Mod Mark 1.1 - February 2026";
+    public static final String VERSION = "DerKaiser2023 Mod Mark 1.1 build 1.0.3 - February 2026";
     @Mod.Instance("flansmod")
     public static FlansMod INSTANCE;
     public static int generalConfigInteger;
