@@ -109,8 +109,8 @@ public class TmtTessellator extends Tessellator
             }
             TmtTessellator.intBuffer.clear();
             TmtTessellator.intBuffer.put(this.rawBuffer, offs * 10, vtc * 10);
-            TmtTessellator.byteBuffer.position();
-            TmtTessellator.byteBuffer.limit();
+            TmtTessellator.byteBuffer.position(0);
+            TmtTessellator.byteBuffer.limit(vtc * 40);
             offs += vtc;
             if (TmtTessellator.useVBO) {
                 this.vboIndex = (this.vboIndex + 1) % TmtTessellator.vboCount;
@@ -122,8 +122,8 @@ public class TmtTessellator extends Tessellator
                     GL11.glTexCoordPointer(4, 5126, 40, 12L);
                 }
                 else {
-                    TmtTessellator.floatBuffer.position();
-                    GL11.glTexCoordPointer(4, 40, TmtTessellator.floatBuffer);
+                    TmtTessellator.byteBuffer.position(12);
+                    GL11.glTexCoordPointer(4, 5126, 40, TmtTessellator.byteBuffer);
                 }
                 GL11.glEnableClientState(32888);
             }
@@ -133,8 +133,8 @@ public class TmtTessellator extends Tessellator
                     GL11.glTexCoordPointer(2, 5122, 40, 36L);
                 }
                 else {
-                    TmtTessellator.shortBuffer.position();
-                    GL11.glTexCoordPointer(2, 40, TmtTessellator.shortBuffer);
+                    TmtTessellator.byteBuffer.position(36);
+                    GL11.glTexCoordPointer(2, 5122, 40, TmtTessellator.byteBuffer);
                 }
                 GL11.glEnableClientState(32888);
                 OpenGlHelper.setClientActiveTexture(OpenGlHelper.defaultTexUnit);
@@ -144,8 +144,8 @@ public class TmtTessellator extends Tessellator
                     GL11.glColorPointer(4, 5121, 40, 28L);
                 }
                 else {
-                    TmtTessellator.byteBuffer.position();
-                    GL11.glColorPointer(4, true, 40, TmtTessellator.byteBuffer);
+                    TmtTessellator.byteBuffer.position(28);
+                    GL11.glColorPointer(4, 5121, 40, TmtTessellator.byteBuffer);
                 }
                 GL11.glEnableClientState(32886);
             }
@@ -154,8 +154,8 @@ public class TmtTessellator extends Tessellator
                     GL11.glNormalPointer(5121, 40, 32L);
                 }
                 else {
-                    TmtTessellator.byteBuffer.position();
-                    GL11.glNormalPointer(40, TmtTessellator.byteBuffer);
+                    TmtTessellator.byteBuffer.position(32);
+                    GL11.glNormalPointer(5121, 40, TmtTessellator.byteBuffer);
                 }
                 GL11.glEnableClientState(32885);
             }
@@ -163,8 +163,8 @@ public class TmtTessellator extends Tessellator
                 GL11.glVertexPointer(3, 5126, 40, 0L);
             }
             else {
-                TmtTessellator.floatBuffer.position();
-                GL11.glVertexPointer(3, 40, TmtTessellator.floatBuffer);
+                TmtTessellator.floatBuffer.position(0);
+                GL11.glVertexPointer(3, 5126, 40, TmtTessellator.floatBuffer);
             }
             GL11.glEnableClientState(32884);
             if (this.drawMode == 7 && TmtTessellator.convertQuadsToTriangles) {
