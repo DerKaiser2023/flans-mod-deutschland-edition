@@ -279,7 +279,6 @@ public class FlansModClient extends FlansMod
         }
         if (FlansModClient.lamperino > 1) {
             FlansModClient.starStruck = true;
-            FlansModClient.minecraft.gameSettings.gammaSetting = 0.4f + FlansModClient.lamperino / 18.0f;
         }
         final List<Entity> foxes = FlansModClient.minecraft.thePlayer.worldObj.getEntitiesWithinAABBExcludingEntity((Entity)FlansModClient.minecraft.thePlayer, AxisAlignedBB.getBoundingBox(FlansModClient.minecraft.thePlayer.posX - 200.0, FlansModClient.minecraft.thePlayer.posY - 500.0, FlansModClient.minecraft.thePlayer.posZ - 200.0, FlansModClient.minecraft.thePlayer.posX + 200.0, FlansModClient.minecraft.thePlayer.posY + 500.0, FlansModClient.minecraft.thePlayer.posZ + 200.0));
         for (final Entity stuff : foxes) {
@@ -476,13 +475,9 @@ public class FlansModClient extends FlansMod
                             Minecraft.getMinecraft().entityRenderer.activateNextShader();
                         }
                         FlansModClient.minecraft.gameSettings.thirdPersonView = 0;
-                        FlansModClient.minecraft.gameSettings.gammaSetting = 0.55f;
                     }
                     else {
                         Minecraft.getMinecraft().entityRenderer.deactivateShader();
-                        if (!FlansModClient.starStruck) {
-                            FlansModClient.minecraft.gameSettings.gammaSetting = 0.4f;
-                        }
                     }
                     if (seat.seatInfo.passengerZoom != 1.0f || (entityCringe != null && entityCringe.aiming)) {
                         FlansModClient.minecraft.gameSettings.thirdPersonView = 0;
@@ -491,9 +486,6 @@ public class FlansModClient extends FlansMod
             }
             else {
                 Minecraft.getMinecraft().entityRenderer.deactivateShader();
-                if (!FlansModClient.starStruck) {
-                    FlansModClient.minecraft.gameSettings.gammaSetting = 0.4f;
-                }
             }
         }
         for (final GunAnimations g : FlansModClient.gunAnimationsRight.values()) {
