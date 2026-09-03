@@ -1479,6 +1479,7 @@ public class ModelRendererTurbo extends ModelRenderer
     
     public void render(final float worldScale, final boolean oldRotateOrder) {
         GL11.glPushMatrix();
+        GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
         if (this.glow) {
             glowOn();
         }
