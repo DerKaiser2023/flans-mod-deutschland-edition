@@ -38,7 +38,13 @@ import com.flansmod.common.types.IFlanItem;
 import net.minecraftforge.common.ISpecialArmor;
 import net.minecraft.item.ItemArmor;
 
-public class ItemTeamArmour extends ItemArmor implements ISpecialArmor, IFlanItem
+import api.hbm.item.IGasMask;
+import com.hbm.util.ArmorRegistry;
+import com.hbm.util.ArmorRegistry.HazardClass;
+import com.hbm.util.ArmorUtil;
+import java.util.ArrayList;
+
+public class ItemTeamArmour extends ItemArmor implements ISpecialArmor, IFlanItem, IGasMask
 {
     public ArmourType type;
     protected static final UUID[] uuid;
@@ -296,6 +302,9 @@ public class ItemTeamArmour extends ItemArmor implements ISpecialArmor, IFlanIte
         if (this.type.hasGunPouch && this.type.pouchMultiplier <= 1.0f) {
             lines.add("§2+Reload for repeating firearms is " + 1.0f / this.type.pouchMultiplier + "§2 times faster");
         }
+        if (this.type.gasMask) {
+            ArmorUtil.addGasMaskTooltip(stack, player, lines, b);
+        }
     }
     
     @SideOnly(Side.CLIENT)
@@ -448,5 +457,50 @@ public class ItemTeamArmour extends ItemArmor implements ISpecialArmor, IFlanIte
     
     static {
         uuid = new UUID[] { UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID() };
+    }
+
+    @Override
+    public ArrayList<HazardClass> getBlacklist(final ItemStack stack, final EntityLivingBase entity) {
+        final ArrayList<HazardClass> blacklist = new ArrayList<HazardClass>();
+        if (this.type.gasMask && this.type.halfMask) {
+            blacklist.add(HazardClass.GAS_LUNG);
+            blacklist.add(HazardClass.BACTERIA);
+        }
+        return blacklist;
+    }
+
+    @Override
+    public ItemStack getFilter(final ItemStack stack, final EntityLivingBase entity) {
+        if (!this.type.gasMask) {
+            return null;
+        }
+        return ArmorUtil.getGasMaskFilter(stack);
+    }
+
+    @Override
+    public boolean isFilterApplicable(final ItemStack stack, final EntityLivingBase entity, final ItemStack filter) {
+        if (!this.type.gasMask) {
+            return false;
+        }
+        if (filter == null) {
+            return false;
+        }
+        return ArmorRegistry.hazardClasses.containsKey(filter.getItem());
+    }
+
+    @Override
+    public void installFilter(final ItemStack stack, final EntityLivingBase entity, final ItemStack filter) {
+        if (!this.type.gasMask) {
+            return;
+        }
+        ArmorUtil.installGasMaskFilter(stack, filter);
+    }
+
+    @Override
+    public void damageFilter(final ItemStack stack, final EntityLivingBase entity, final int damage) {
+        if (!this.type.gasMask) {
+            return;
+        }
+        ArmorUtil.damageGasMaskFilter(stack, damage);
     }
 }
