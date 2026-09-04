@@ -32,6 +32,7 @@ import net.minecraft.item.Item;
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.creativetab.CreativeTabs;
 import com.flansmod.common.FlansMod;
+import com.flansmod.common.teams.RTMHazardCompat;
 import java.util.UUID;
 import com.flansmod.common.types.IFlanItem;
 import net.minecraftforge.common.ISpecialArmor;
@@ -94,6 +95,9 @@ public class ItemTeamArmour extends ItemArmor implements ISpecialArmor, IFlanIte
             this.setMaxDurability(t.durability);
         }
         GameRegistry.registerItem((Item)this, this.type.shortName, "flansmod");
+        if (this.type.type == 0 && this.type.gasMask) {
+            RTMHazardCompat.registerGasMaskHelmet((Item)this);
+        }
     }
     
     public ItemTeamArmour(final ItemArmor.ArmorMaterial armorMaterial, final int renderIndex, final int armourType) {
