@@ -3,7 +3,8 @@ random ass shit
 
 decompiled version of flans mod used in TaP Hearts of Iron ORE
 
-to do:
-see if this abomination works with xenofactions (hfr/clowder mod fork)
-
-remove lord weeders economy plus bullshittery
+features:
+something something tap shit
+gas masks arent useless and can protect the player from airborne hazards
+labjac can fuck off
+![funny](funny/lego-batman.gif)
