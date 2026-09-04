@@ -461,12 +461,7 @@ public class ItemTeamArmour extends ItemArmor implements ISpecialArmor, IFlanIte
 
     @Override
     public ArrayList<HazardClass> getBlacklist(final ItemStack stack, final EntityLivingBase entity) {
-        final ArrayList<HazardClass> blacklist = new ArrayList<HazardClass>();
-        if (this.type.gasMask && this.type.halfMask) {
-            blacklist.add(HazardClass.GAS_LUNG);
-            blacklist.add(HazardClass.BACTERIA);
-        }
-        return blacklist;
+        return new ArrayList<HazardClass>();
     }
 
     @Override
