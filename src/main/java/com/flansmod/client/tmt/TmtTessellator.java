@@ -151,11 +151,13 @@ public class TmtTessellator extends Tessellator
             }
             if (this.hasNormals) {
                 if (TmtTessellator.useVBO) {
-                    GL11.glNormalPointer(5121, 40, 32L);
+                    // setNormal() packs signed bytes; unsigned decoding flips
+                    // negative components and produces incorrectly dark shading.
+                    GL11.glNormalPointer(5120, 40, 32L);
                 }
                 else {
                     TmtTessellator.byteBuffer.position(32);
-                    GL11.glNormalPointer(5121, 40, TmtTessellator.byteBuffer);
+                    GL11.glNormalPointer(5120, 40, TmtTessellator.byteBuffer);
                 }
                 GL11.glEnableClientState(32885);
             }
