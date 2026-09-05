@@ -70,6 +70,8 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraftforge.common.MinecraftForge;
 import java.util.HashMap;
 import java.util.ArrayList;
+import com.hbm.util.ArmorRegistry;
+import com.hbm.util.ArmorUtil;
 
 public class TeamsManager
 {
@@ -504,6 +506,45 @@ public class TeamsManager
         if (event.action == PlayerInteractEvent.Action.LEFT_CLICK_BLOCK && !event.entityPlayer.capabilities.allowEdit && !event.entityPlayer.capabilities.isCreativeMode) {
             event.setCanceled(true);
             return;
+        }
+        if(event.action == PlayerInteractEvent.Action.RIGHT_CLICK_AIR) {
+            final EntityPlayer player = event.entityPlayer;
+            final ItemStack held = player.inventory.getCurrentItem();
+            
+            if(held != null && ArmorRegistry.hazardClasses.containsKey(held.getItem())) {
+                final ItemStack helmet = player.inventory.armorItemInSlot(3);
+                
+                if(helmet != null && helmet.getItem() instanceof ItemTeamArmour) {
+                    final ItemTeamArmour armorItem = (ItemTeamArmour) helmet.getItem();
+                    
+                    if(armorItem.type.gasMask && armorItem.isFilterApplicable(helmet, player, held)) {
+                        event.setCanceled(true);
+                        
+                        if(!player.worldObj.isRemote) {
+                            final ItemStack copy = held.copy();
+                            final ItemStack current = ArmorUtil.getGasMaskFilter(helmet);
+                            
+                            ArmorUtil.installGasMaskFilter(helmet, copy);
+                            player.worldObj.playSoundAtEntity(player, "hbm:item.gasmaskScrew", 1.0F, 1.0F);
+                            
+                            if(current != null) {
+                                if(!player.inventory.addItemStackToInventory(current)) {
+                                    player.dropPlayerItemWithRandomChoice(current, false);
+                                }
+                            }
+                            
+                            if(held.stackSize > 1) {
+                                held.stackSize--;
+                                player.inventory.setInventorySlotContents(player.inventory.currentItem, held);
+                            } else {
+                                player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
+                            }
+                            
+                            player.inventory.markDirty();
+                        }
+                    }
+                }
+            }
         }
         if (event.entityPlayer.worldObj.isRemote) {
             return;
