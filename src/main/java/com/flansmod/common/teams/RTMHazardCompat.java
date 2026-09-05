@@ -8,13 +8,14 @@ public class RTMHazardCompat {
     private static boolean initialized = false;
     private static Method registerHazardMethod;
     private static Class<?> hazardClassClass;
-    private static final String[] HAZARD_NAMES = {
-        "PARTICLE_FINE", "PARTICLE_COARSE", "GAS_BLISTERING",
-        "GAS_LUNG", "BACTERIA", "POISON", "GAS_MONOXIDE"
-    };
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     public static void registerGasMaskHelmet(Item item) {
+        registerGasMaskHelmet(item, (String[]) null);
+    }
+
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public static void registerGasMaskHelmet(Item item, String[] hazardNames) {
         if (!initialized) {
             try {
                 Class<?> armorRegistry = Class.forName("com.hbm.util.ArmorRegistry");
@@ -31,10 +32,17 @@ public class RTMHazardCompat {
             return;
         }
 
+        if (hazardNames == null || hazardNames.length == 0) {
+            hazardNames = new String[] {
+                "PARTICLE_FINE", "PARTICLE_COARSE", "GAS_BLISTERING",
+                "GAS_LUNG", "BACTERIA", "POISON", "GAS_MONOXIDE"
+            };
+        }
+
         try {
-            Object hazards = Array.newInstance(hazardClassClass, HAZARD_NAMES.length);
-            for (int i = 0; i < HAZARD_NAMES.length; i++) {
-                Array.set(hazards, i, Enum.valueOf((Class) hazardClassClass, HAZARD_NAMES[i]));
+            Object hazards = Array.newInstance(hazardClassClass, hazardNames.length);
+            for (int i = 0; i < hazardNames.length; i++) {
+                Array.set(hazards, i, Enum.valueOf((Class) hazardClassClass, hazardNames[i]));
             }
             registerHazardMethod.invoke(null, item, hazards);
         } catch (Exception e) {

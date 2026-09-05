@@ -47,6 +47,7 @@ import java.util.ArrayList;
 public class ItemTeamArmour extends ItemArmor implements ISpecialArmor, IFlanItem, IGasMask
 {
     public ArmourType type;
+    private ArrayList<HazardClass> configuredHazards;
     protected static final UUID[] uuid;
     public int timer;
     public int SoundTimer;
@@ -102,8 +103,24 @@ public class ItemTeamArmour extends ItemArmor implements ISpecialArmor, IFlanIte
         }
         GameRegistry.registerItem((Item)this, this.type.shortName, "flansmod");
         if (this.type.type == 0 && this.type.gasMask) {
-            RTMHazardCompat.registerGasMaskHelmet((Item)this);
+            this.configuredHazards = resolveConfiguredHazards(this.type.gasMaskHazards);
+            RTMHazardCompat.registerGasMaskHelmet((Item)this, this.type.gasMaskHazards);
         }
+    }
+
+    private static ArrayList<HazardClass> resolveConfiguredHazards(String[] names) {
+        ArrayList<HazardClass> list = new ArrayList<HazardClass>();
+        if (names == null) {
+            return list;
+        }
+        for (String name : names) {
+            try {
+                list.add(HazardClass.valueOf(name));
+            } catch (Exception e) {
+                // Unknown hazard class name; skip
+            }
+        }
+        return list;
     }
     
     public ItemTeamArmour(final ItemArmor.ArmorMaterial armorMaterial, final int renderIndex, final int armourType) {
@@ -461,7 +478,7 @@ public class ItemTeamArmour extends ItemArmor implements ISpecialArmor, IFlanIte
 
     @Override
     public ArrayList<HazardClass> getBlacklist(final ItemStack stack, final EntityLivingBase entity) {
-        return new ArrayList<HazardClass>();
+        return configuredHazards != null ? configuredHazards : new ArrayList<HazardClass>();
     }
 
     @Override

@@ -38,6 +38,7 @@ public class ArmourType extends InfoType
     public boolean submarine;
     public boolean playermodel;
     public boolean gasMask;
+    public String[] gasMaskHazards;
     public int maxDamage;
     public int rechargeTimer;
     public int warningSoundTimer;
@@ -100,6 +101,7 @@ public class ArmourType extends InfoType
         this.submarine = false;
         this.playermodel = false;
         this.gasMask = false;
+        this.gasMaskHazards = null;
         this.maxDamage = 9000;
         this.rechargeTimer = 85;
         this.warningSoundTimer = 10;
@@ -320,6 +322,12 @@ public class ArmourType extends InfoType
             }
             if (split[0].equals("GasMask")) {
                 this.gasMask = Boolean.parseBoolean(split[1]);
+            }
+            if (split[0].equals("GasMaskHazards")) {
+                this.gasMaskHazards = split[1].split(",");
+                for (int h = 0; h < this.gasMaskHazards.length; h++) {
+                    this.gasMaskHazards[h] = this.gasMaskHazards[h].trim();
+                }
             }
             if (split[0].equals("regenerate")) {
                 this.regenerate = Boolean.parseBoolean(split[1]);
