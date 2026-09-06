@@ -28,14 +28,25 @@ public class RTMHazardCompat {
         if (hazardNames == null || hazardNames.length == 0) {
             hazardNames = new String[] {
                 "PARTICLE_FINE", "PARTICLE_COARSE", "GAS_BLISTERING",
-                "GAS_LUNG", "BACTERIA", "POISON", "GAS_MONOXIDE"
+                "GAS_LUNG", "BACTERIA", "GAS_MONOXIDE"
             };
         }
 
         try {
-            Object hazards = Array.newInstance(hazardClassClass, hazardNames.length);
+            java.util.List valid = new java.util.ArrayList();
             for (int i = 0; i < hazardNames.length; i++) {
-                Array.set(hazards, i, Enum.valueOf((Class) hazardClassClass, hazardNames[i]));
+                try {
+                    valid.add(Enum.valueOf((Class) hazardClassClass, hazardNames[i]));
+                } catch (IllegalArgumentException e) {
+                    // skip unknown hazard names individually
+                }
+            }
+            if (valid.isEmpty()) {
+                return;
+            }
+            Object hazards = Array.newInstance(hazardClassClass, valid.size());
+            for (int i = 0; i < valid.size(); i++) {
+                Array.set(hazards, i, valid.get(i));
             }
             registerHazardMethod.invoke(null, item, hazards);
         } catch (Exception e) {

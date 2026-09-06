@@ -511,42 +511,39 @@ public class TeamsManager
         if(event.action == PlayerInteractEvent.Action.RIGHT_CLICK_AIR || event.action == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
             final EntityPlayer player = event.entityPlayer;
             final ItemStack held = player.inventory.getCurrentItem();
-            
-            if(held != null && ArmorRegistry.hazardClasses != null && ArmorRegistry.hazardClasses.containsKey(held.getItem())) {
-                final ItemStack helmet = player.inventory.armorItemInSlot(3);
-                
-                if(helmet != null && helmet.getItem() instanceof ItemTeamArmour) {
-                    final ItemTeamArmour armorItem = (ItemTeamArmour) helmet.getItem();
-                    
-                    if(armorItem.type.gasMask) {
-                        if(!armorItem.hasHazardsRegistered() && ArmorRegistry.hazardClasses != null) {
-                            RTMHazardCompat.registerGasMaskHelmet(armorItem, armorItem.type.gasMaskHazards);
-                        }
-                        if(armorItem.isFilterApplicable(helmet, player, held)) {
-                            event.setCanceled(true);
+            final ItemStack helmet = player.inventory.armorItemInSlot(3);
+
+            if(helmet != null && helmet.getItem() instanceof ItemTeamArmour) {
+                final ItemTeamArmour armorItem = (ItemTeamArmour) helmet.getItem();
+
+                if(armorItem.type.gasMask) {
+                    if(!armorItem.hasHazardsRegistered()) {
+                        RTMHazardCompat.registerGasMaskHelmet(armorItem, armorItem.type.gasMaskHazards);
+                    }
+                    if(held != null && ArmorRegistry.hazardClasses != null && ArmorRegistry.hazardClasses.containsKey(held.getItem()) && armorItem.isFilterApplicable(helmet, player, held)) {
+                        event.setCanceled(true);
+                        
+                        if(!player.worldObj.isRemote) {
+                            final ItemStack copy = held.copy();
+                            final ItemStack current = ArmorUtil.getGasMaskFilter(helmet);
                             
-                            if(!player.worldObj.isRemote) {
-                                final ItemStack copy = held.copy();
-                                final ItemStack current = ArmorUtil.getGasMaskFilter(helmet);
-                                
-                                ArmorUtil.installGasMaskFilter(helmet, copy);
-                                player.worldObj.playSoundAtEntity(player, "hbm:item.gasmaskScrew", 1.0F, 1.0F);
-                                
-                                if(current != null) {
-                                    if(!player.inventory.addItemStackToInventory(current)) {
-                                        player.dropPlayerItemWithRandomChoice(current, false);
-                                    }
+                            ArmorUtil.installGasMaskFilter(helmet, copy);
+                            player.worldObj.playSoundAtEntity(player, "hbm:item.gasmaskScrew", 1.0F, 1.0F);
+                            
+                            if(current != null) {
+                                if(!player.inventory.addItemStackToInventory(current)) {
+                                    player.dropPlayerItemWithRandomChoice(current, false);
                                 }
-                                
-                                if(held.stackSize > 1) {
-                                    held.stackSize--;
-                                    player.inventory.setInventorySlotContents(player.inventory.currentItem, held);
-                                } else {
-                                    player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
-                                }
-                                
-                                player.inventory.markDirty();
                             }
+                            
+                            if(held.stackSize > 1) {
+                                held.stackSize--;
+                                player.inventory.setInventorySlotContents(player.inventory.currentItem, held);
+                            } else {
+                                player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
+                            }
+                            
+                            player.inventory.markDirty();
                         }
                     }
                 }
