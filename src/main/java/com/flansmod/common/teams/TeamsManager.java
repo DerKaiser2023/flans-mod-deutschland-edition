@@ -507,7 +507,7 @@ public class TeamsManager
             event.setCanceled(true);
             return;
         }
-        if(event.action == PlayerInteractEvent.Action.RIGHT_CLICK_AIR) {
+        if(event.action == PlayerInteractEvent.Action.RIGHT_CLICK_AIR || event.action == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
             final EntityPlayer player = event.entityPlayer;
             final ItemStack held = player.inventory.getCurrentItem();
             
