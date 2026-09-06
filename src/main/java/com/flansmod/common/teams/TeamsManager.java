@@ -511,7 +511,7 @@ public class TeamsManager
             final EntityPlayer player = event.entityPlayer;
             final ItemStack held = player.inventory.getCurrentItem();
             
-            if(held != null && ArmorRegistry.hazardClasses.containsKey(held.getItem())) {
+            if(held != null && ArmorRegistry.hazardClasses != null && ArmorRegistry.hazardClasses.containsKey(held.getItem())) {
                 final ItemStack helmet = player.inventory.armorItemInSlot(3);
                 
                 if(helmet != null && helmet.getItem() instanceof ItemTeamArmour) {

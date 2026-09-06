@@ -38,13 +38,12 @@ import com.flansmod.common.types.IFlanItem;
 import net.minecraftforge.common.ISpecialArmor;
 import net.minecraft.item.ItemArmor;
 
-import api.hbm.item.IGasMask;
 import com.hbm.util.ArmorRegistry;
 import com.hbm.util.ArmorRegistry.HazardClass;
 import com.hbm.util.ArmorUtil;
 import java.util.ArrayList;
 
-public class ItemTeamArmour extends ItemArmor implements ISpecialArmor, IFlanItem, IGasMask
+public class ItemTeamArmour extends ItemArmor implements ISpecialArmor, IFlanItem
 {
     public ArmourType type;
     private ArrayList<HazardClass> configuredHazards;
@@ -476,12 +475,10 @@ public class ItemTeamArmour extends ItemArmor implements ISpecialArmor, IFlanIte
         uuid = new UUID[] { UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID() };
     }
 
-    @Override
     public ArrayList<HazardClass> getBlacklist(final ItemStack stack, final EntityLivingBase entity) {
         return configuredHazards != null ? configuredHazards : new ArrayList<HazardClass>();
     }
 
-    @Override
     public ItemStack getFilter(final ItemStack stack, final EntityLivingBase entity) {
         if (!this.type.gasMask) {
             return null;
@@ -489,18 +486,16 @@ public class ItemTeamArmour extends ItemArmor implements ISpecialArmor, IFlanIte
         return ArmorUtil.getGasMaskFilter(stack);
     }
 
-    @Override
     public boolean isFilterApplicable(final ItemStack stack, final EntityLivingBase entity, final ItemStack filter) {
         if (!this.type.gasMask) {
             return false;
         }
-        if (filter == null) {
+        if (ArmorRegistry.hazardClasses == null || filter == null) {
             return false;
         }
         return ArmorRegistry.hazardClasses.containsKey(filter.getItem());
     }
 
-    @Override
     public void installFilter(final ItemStack stack, final EntityLivingBase entity, final ItemStack filter) {
         if (!this.type.gasMask) {
             return;
@@ -508,7 +503,6 @@ public class ItemTeamArmour extends ItemArmor implements ISpecialArmor, IFlanIte
         ArmorUtil.installGasMaskFilter(stack, filter);
     }
 
-    @Override
     public void damageFilter(final ItemStack stack, final EntityLivingBase entity, final int damage) {
         if (!this.type.gasMask) {
             return;

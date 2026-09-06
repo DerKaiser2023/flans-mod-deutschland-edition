@@ -95,6 +95,7 @@ import com.flansmod.client.model.GunAnimations;
 import net.minecraft.entity.EntityLivingBase;
 import java.util.HashMap;
 import com.flansmod.common.teams.BlockArmourBox;
+import com.flansmod.common.teams.ItemGasMaskArmour;
 import com.flansmod.common.teams.ItemTeamArmour;
 import com.flansmod.common.tools.ItemTool;
 import com.flansmod.common.guns.ItemGrenade;
@@ -501,7 +502,14 @@ public class FlansMod
                             continue;
                         }
                         case armour: {
-                            FlansMod.armourItems.add((ItemTeamArmour)new ItemTeamArmour((ArmourType)infoType).setUnlocalizedName(infoType.shortName));
+                            ArmourType armourType = (ArmourType)infoType;
+                            ItemTeamArmour item;
+                            if (armourType.type == 0 && armourType.gasMask) {
+                                item = new ItemGasMaskArmour(armourType);
+                            } else {
+                                item = new ItemTeamArmour(armourType);
+                            }
+                            FlansMod.armourItems.add(item.setUnlocalizedName(infoType.shortName));
                             continue;
                         }
                         case armourBox: {
