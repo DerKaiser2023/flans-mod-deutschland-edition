@@ -72,6 +72,7 @@ import java.util.HashMap;
 import java.util.ArrayList;
 import com.hbm.util.ArmorRegistry;
 import com.hbm.util.ArmorUtil;
+import net.minecraft.item.Item;
 
 public class TeamsManager
 {
@@ -517,30 +518,35 @@ public class TeamsManager
                 if(helmet != null && helmet.getItem() instanceof ItemTeamArmour) {
                     final ItemTeamArmour armorItem = (ItemTeamArmour) helmet.getItem();
                     
-                    if(armorItem.type.gasMask && armorItem.isFilterApplicable(helmet, player, held)) {
-                        event.setCanceled(true);
-                        
-                        if(!player.worldObj.isRemote) {
-                            final ItemStack copy = held.copy();
-                            final ItemStack current = ArmorUtil.getGasMaskFilter(helmet);
+                    if(armorItem.type.gasMask) {
+                        if(!armorItem.hasHazardsRegistered() && ArmorRegistry.hazardClasses != null) {
+                            RTMHazardCompat.registerGasMaskHelmet(armorItem, armorItem.type.gasMaskHazards);
+                        }
+                        if(armorItem.isFilterApplicable(helmet, player, held)) {
+                            event.setCanceled(true);
                             
-                            ArmorUtil.installGasMaskFilter(helmet, copy);
-                            player.worldObj.playSoundAtEntity(player, "hbm:item.gasmaskScrew", 1.0F, 1.0F);
-                            
-                            if(current != null) {
-                                if(!player.inventory.addItemStackToInventory(current)) {
-                                    player.dropPlayerItemWithRandomChoice(current, false);
+                            if(!player.worldObj.isRemote) {
+                                final ItemStack copy = held.copy();
+                                final ItemStack current = ArmorUtil.getGasMaskFilter(helmet);
+                                
+                                ArmorUtil.installGasMaskFilter(helmet, copy);
+                                player.worldObj.playSoundAtEntity(player, "hbm:item.gasmaskScrew", 1.0F, 1.0F);
+                                
+                                if(current != null) {
+                                    if(!player.inventory.addItemStackToInventory(current)) {
+                                        player.dropPlayerItemWithRandomChoice(current, false);
+                                    }
                                 }
+                                
+                                if(held.stackSize > 1) {
+                                    held.stackSize--;
+                                    player.inventory.setInventorySlotContents(player.inventory.currentItem, held);
+                                } else {
+                                    player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
+                                }
+                                
+                                player.inventory.markDirty();
                             }
-                            
-                            if(held.stackSize > 1) {
-                                held.stackSize--;
-                                player.inventory.setInventorySlotContents(player.inventory.currentItem, held);
-                            } else {
-                                player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
-                            }
-                            
-                            player.inventory.markDirty();
                         }
                     }
                 }

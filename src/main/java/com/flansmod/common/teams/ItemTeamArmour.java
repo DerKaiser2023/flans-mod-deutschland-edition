@@ -479,6 +479,10 @@ public class ItemTeamArmour extends ItemArmor implements ISpecialArmor, IFlanIte
         return configuredHazards != null ? configuredHazards : new ArrayList<HazardClass>();
     }
 
+    public boolean hasHazardsRegistered() {
+        return configuredHazards != null && !configuredHazards.isEmpty();
+    }
+
     public ItemStack getFilter(final ItemStack stack, final EntityLivingBase entity) {
         if (!this.type.gasMask) {
             return null;
