@@ -509,7 +509,8 @@ public class FlansMod
                             } else {
                                 item = new ItemTeamArmour(armourType);
                             }
-                            FlansMod.armourItems.add(item.setUnlocalizedName(infoType.shortName));
+                            item.setUnlocalizedName(infoType.shortName);
+                            FlansMod.armourItems.add(item);
                             continue;
                         }
                         case armourBox: {
