@@ -520,7 +520,7 @@ public class TeamsManager
                     if(!armorItem.hasHazardsRegistered()) {
                         RTMHazardCompat.registerGasMaskHelmet(armorItem, armorItem.type.gasMaskHazards);
                     }
-                    if(held != null && ArmorRegistry.hazardClasses != null && ArmorRegistry.hazardClasses.containsKey(held.getItem()) && armorItem.isFilterApplicable(helmet, player, held)) {
+                    if(held != null && armorItem.isFilterApplicable(helmet, player, held)) {
                         event.setCanceled(true);
                         
                         if(!player.worldObj.isRemote) {

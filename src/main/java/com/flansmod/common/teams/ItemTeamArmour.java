@@ -41,6 +41,7 @@ import net.minecraft.item.ItemArmor;
 import com.hbm.util.ArmorRegistry;
 import com.hbm.util.ArmorRegistry.HazardClass;
 import com.hbm.util.ArmorUtil;
+import com.hbm.items.tool.ItemFilter;
 import java.util.ArrayList;
 
 public class ItemTeamArmour extends ItemArmor implements ISpecialArmor, IFlanItem
@@ -476,7 +477,16 @@ public class ItemTeamArmour extends ItemArmor implements ISpecialArmor, IFlanIte
     }
 
     public ArrayList<HazardClass> getBlacklist(final ItemStack stack, final EntityLivingBase entity) {
-        return configuredHazards != null ? configuredHazards : new ArrayList<HazardClass>();
+        if (configuredHazards == null || configuredHazards.isEmpty()) {
+            return new ArrayList<HazardClass>();
+        }
+        ArrayList<HazardClass> blacklist = new ArrayList<HazardClass>();
+        for (HazardClass h : HazardClass.values()) {
+            if (!configuredHazards.contains(h)) {
+                blacklist.add(h);
+            }
+        }
+        return blacklist;
     }
 
     public boolean hasHazardsRegistered() {
@@ -494,10 +504,13 @@ public class ItemTeamArmour extends ItemArmor implements ISpecialArmor, IFlanIte
         if (!this.type.gasMask) {
             return false;
         }
-        if (ArmorRegistry.hazardClasses == null || filter == null) {
+        if (filter == null) {
             return false;
         }
-        return ArmorRegistry.hazardClasses.containsKey(filter.getItem());
+        if (ArmorRegistry.hazardClasses != null && ArmorRegistry.hazardClasses.containsKey(filter.getItem())) {
+            return true;
+        }
+        return filter.getItem() instanceof ItemFilter;
     }
 
     public void installFilter(final ItemStack stack, final EntityLivingBase entity, final ItemStack filter) {
