@@ -9,7 +9,7 @@ features:
 
 something something tap shit
 
-gas masks arent useless and can protect the player from airborne hazards
+gas masks arent useless and can protect the player from ntm hazards
 
 labjac can fuck off
 

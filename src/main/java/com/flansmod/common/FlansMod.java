@@ -96,6 +96,7 @@ import net.minecraft.entity.EntityLivingBase;
 import java.util.HashMap;
 import com.flansmod.common.teams.BlockArmourBox;
 import com.flansmod.common.teams.ItemGasMaskArmour;
+import com.flansmod.common.teams.ItemGasMaskFilter;
 import com.flansmod.common.teams.ItemTeamArmour;
 import com.flansmod.common.tools.ItemTool;
 import com.flansmod.common.guns.ItemGrenade;
@@ -180,6 +181,7 @@ public class FlansMod
     public static ItemOpStick opStick;
     public static ItemFlagpole flag;
     public static ItemTeamsShekel Shekel;
+    public static ItemGasMaskFilter gasMaskFilter;
     public static ArrayList<BlockGunBox> gunBoxBlocks;
     public static ArrayList<ItemBullet> bulletItems;
     public static ArrayList<ItemGun> gunItems;
@@ -222,6 +224,7 @@ public class FlansMod
         FlansMod.flag = (ItemFlagpole)new ItemFlagpole().setUnlocalizedName("flagpole");
         FlansMod.Shekel = (ItemTeamsShekel)new ItemTeamsShekel().setUnlocalizedName("Shekel");
         GameRegistry.registerItem((Item)FlansMod.flag, "flagpole", "flansmod");
+        GameRegistry.registerItem((Item)(FlansMod.gasMaskFilter = new ItemGasMaskFilter()), "gasMaskFilter", "flansmod");
         GameRegistry.registerBlock((Block)(FlansMod.spawner = (BlockSpawner)new BlockSpawner(Material.iron).setUnlocalizedName("teamsSpawner").setBlockUnbreakable().setResistance(1000000.0f)), (Class)ItemBlockManyNames.class, "teamsSpawner");
         GameRegistry.registerTileEntity((Class)TileEntitySpawner.class, "teamsSpawner");
         GameRegistry.registerBlock((Block)(FlansMod.paintjobTable = new BlockPaintjobTable()), "paintjobTable");
@@ -250,6 +253,9 @@ public class FlansMod
             GameRegistry.addShapelessRecipe(new ItemStack(Items.gunpowder), new Object[] { charcoal, charcoal, charcoal, new ItemStack(Items.glowstone_dust) });
         }
         log("Loaded recipes.");
+        if(FlansMod.gasMaskFilter != null) {
+            com.hbm.util.ArmorRegistry.registerHazard(FlansMod.gasMaskFilter, com.hbm.util.ArmorRegistry.HazardClass.PARTICLE_COARSE, com.hbm.util.ArmorRegistry.HazardClass.PARTICLE_FINE, com.hbm.util.ArmorRegistry.HazardClass.GAS_LUNG, com.hbm.util.ArmorRegistry.HazardClass.GAS_BLISTERING, com.hbm.util.ArmorRegistry.HazardClass.BACTERIA, com.hbm.util.ArmorRegistry.HazardClass.GAS_MONOXIDE);
+        }
         EntityRegistry.registerGlobalEntityID((Class)EntityFlagpole.class, "Flagpole", EntityRegistry.findGlobalUniqueEntityId());
         EntityRegistry.registerModEntity((Class)EntityFlagpole.class, "Flagpole", 93, (Object)this, 40, 5, true);
         EntityRegistry.registerGlobalEntityID((Class)EntityFlag.class, "Flag", EntityRegistry.findGlobalUniqueEntityId());
