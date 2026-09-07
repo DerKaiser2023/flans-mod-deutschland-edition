@@ -42,9 +42,10 @@ import com.hbm.util.ArmorRegistry;
 import com.hbm.util.ArmorRegistry.HazardClass;
 import com.hbm.util.ArmorUtil;
 import com.hbm.items.tool.ItemFilter;
+import api.hbm.item.IGasMask;
 import java.util.ArrayList;
 
-public class ItemTeamArmour extends ItemArmor implements ISpecialArmor, IFlanItem
+public class ItemTeamArmour extends ItemArmor implements ISpecialArmor, IFlanItem, IGasMask
 {
     public ArmourType type;
     private ArrayList<HazardClass> configuredHazards;
