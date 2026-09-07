@@ -30,6 +30,8 @@ import com.flansmod.common.guns.boxes.GunBoxType;
 import com.flansmod.common.teams.Team;
 import com.flansmod.common.teams.PlayerClass;
 import com.flansmod.common.teams.ArmourBoxType;
+import com.flansmod.common.teams.GasMaskFilterType;
+import com.flansmod.common.teams.ItemGasMaskFilter;
 import com.flansmod.common.teams.ArmourType;
 import com.flansmod.common.tools.ToolType;
 import com.flansmod.common.guns.GrenadeType;
@@ -60,7 +62,8 @@ public enum EnumType
     box("boxes"), 
     playerClass("classes"), 
     team("teams"), 
-    itemHolder("itemHolders");
+    itemHolder("itemHolders"),
+    gasMaskFilter("gasMaskFilters");
     
     public String folderName;
     
@@ -127,6 +130,9 @@ public enum EnumType
             case part: {
                 return PartType.class;
             }
+            case gasMaskFilter: {
+                return GasMaskFilterType.class;
+            }
             default: {
                 return InfoType.class;
             }
@@ -181,6 +187,9 @@ public enum EnumType
         }
         if (o instanceof PartType || o instanceof ItemPart) {
             return EnumType.part;
+        }
+        if (o instanceof GasMaskFilterType || o instanceof ItemGasMaskFilter) {
+            return EnumType.gasMaskFilter;
         }
         return null;
     }
