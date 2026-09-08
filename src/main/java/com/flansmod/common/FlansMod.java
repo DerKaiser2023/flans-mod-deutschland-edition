@@ -96,9 +96,7 @@ import net.minecraft.entity.EntityLivingBase;
 import java.util.HashMap;
 import com.flansmod.common.teams.BlockArmourBox;
 import com.flansmod.common.teams.ItemGasMaskArmour;
-import com.flansmod.common.teams.ItemGasMaskFilter;
 import com.flansmod.common.teams.ItemTeamArmour;
-import com.flansmod.common.teams.GasMaskFilterType;
 import com.flansmod.common.tools.ItemTool;
 import com.flansmod.common.guns.ItemGrenade;
 import com.flansmod.common.guns.ItemAAGun;
@@ -182,7 +180,6 @@ public class FlansMod
     public static ItemOpStick opStick;
     public static ItemFlagpole flag;
     public static ItemTeamsShekel Shekel;
-    public static ArrayList<ItemGasMaskFilter> gasMaskFilterItems;
     public static ArrayList<BlockGunBox> gunBoxBlocks;
     public static ArrayList<ItemBullet> bulletItems;
     public static ArrayList<ItemGun> gunItems;
@@ -516,10 +513,6 @@ public class FlansMod
                             FlansMod.armourItems.add(item);
                             continue;
                         }
-                        case gasMaskFilter: {
-                            FlansMod.gasMaskFilterItems.add((ItemGasMaskFilter)new ItemGasMaskFilter((GasMaskFilterType)infoType).setUnlocalizedName(infoType.shortName));
-                            continue;
-                        }
                         case armourBox: {
                             FlansMod.armourBoxBlocks.add((BlockArmourBox)new BlockArmourBox((ArmourBoxType)infoType).setUnlocalizedName(infoType.shortName));
                             continue;
@@ -709,7 +702,6 @@ public class FlansMod
         FlansMod.grenadeItems = new ArrayList<ItemGrenade>();
         FlansMod.toolItems = new ArrayList<ItemTool>();
         FlansMod.armourItems = new ArrayList<ItemTeamArmour>();
-        FlansMod.gasMaskFilterItems = new ArrayList<ItemGasMaskFilter>();
         FlansMod.armourBoxBlocks = new ArrayList<BlockArmourBox>();
         FlansMod.tabFlanGuns = new CreativeTabFlan(0);
         FlansMod.tabFlanDriveables = new CreativeTabFlan(1);
