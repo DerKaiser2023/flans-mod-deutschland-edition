@@ -13,7 +13,7 @@ something something tap shit
 
 gas masks arent useless and can protect the player from ntm hazards (bug, fixing)
 
-bomb can be used as nukes using hbm
+bomb can be used as nukes using hbm (not ready)
 
 labjac can fuck off
 
