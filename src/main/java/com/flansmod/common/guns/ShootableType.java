@@ -66,6 +66,7 @@ public abstract class ShootableType extends InfoType
     public boolean destroyOnDeploySubmunition;
     public int smokeParticleCount;
     public int debrisParticleCount;
+    public int hbmNukeRadius;
     public static HashMap<String, ShootableType> shootables;
     
     public ShootableType(final TypeFile file) {
@@ -118,6 +119,7 @@ public abstract class ShootableType extends InfoType
         this.destroyOnDeploySubmunition = false;
         this.smokeParticleCount = 0;
         this.debrisParticleCount = 0;
+        this.hbmNukeRadius = 0;
     }
     
     @Override
@@ -302,6 +304,9 @@ public abstract class ShootableType extends InfoType
             }
             else if (split[0].equals("TrailParticleType")) {
                 this.trailParticleType = split[1];
+            }
+            else if (split[0].equals("HbmNukeRadius")) {
+                this.hbmNukeRadius = Integer.parseInt(split[1]);
             }
             else if (split[0].equals("SwordEnergy")) {
                 this.fuse *= 4;

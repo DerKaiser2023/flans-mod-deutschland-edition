@@ -4,9 +4,11 @@
 
 package com.flansmod.common;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 import cpw.mods.fml.common.Loader;
 import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
 
 public class FlansHooks
 {
@@ -14,6 +16,7 @@ public class FlansHooks
     public ItemStack BuildCraftFuelBucket;
     public ItemStack BuildCraftOilBucket;
     public boolean BuildCraftLoaded;
+    public boolean hbmLoaded;
     
     public void hook() {
         if (Loader.isModLoaded("BuildCraft|Energy")) {
@@ -21,6 +24,10 @@ public class FlansHooks
             this.BuildCraftOilBucket = this.getBuildCraftItem("bucketOil");
             System.out.println("[Flan] BuildCraft integration loaded.");
             this.BuildCraftLoaded = true;
+        }
+        if (Loader.isModLoaded("hbm")) {
+            this.hbmLoaded = true;
+            System.out.println("[Flan] HBM Nuclear Tech integration loaded.");
         }
     }
     
@@ -42,5 +49,26 @@ public class FlansHooks
             System.out.println("[Flan] Unable to retrieve BuildCraft item " + name + ".");
             return null;
         }
+    }
+    
+    public boolean spawnHbmNuke(final World world, double x, double y, double z, int radius) {
+        if (!this.hbmLoaded || world.isRemote || radius <= 0) {
+            return false;
+        }
+        try {
+            Class<?> nukeClass = Class.forName("com.hbm.entity.logic.EntityNukeExplosionMK5");
+            java.lang.reflect.Method statFac = nukeClass.getMethod("statFac", World.class, int.class, double.class, double.class, double.class);
+            Entity nuke = (Entity) statFac.invoke(null, world, radius, x, y, z);
+            if (nuke != null && !nuke.isDead) {
+                world.playSoundEffect(x, y, z, "random.explode", 1.0f, world.rand.nextFloat() * 0.1f + 0.9f);
+                world.spawnEntityInWorld(nuke);
+                return true;
+            }
+        }
+        catch (final Exception e) {
+            System.out.println("[Flan] Failed to spawn HBM nuke.");
+            e.printStackTrace();
+        }
+        return false;
     }
 }

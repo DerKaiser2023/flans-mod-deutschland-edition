@@ -1021,6 +1021,9 @@ public class EntityBullet extends EntityShootable implements IEntityAdditionalSp
             if (this.worldObj.isRemote) {
                 return;
             }
+            if (this.type.hbmNukeRadius > 0 && FlansMod.hooks.hbmLoaded) {
+                FlansMod.hooks.spawnHbmNuke(this.worldObj, this.posX, this.posY, this.posZ, this.type.hbmNukeRadius);
+            }
             if (this.type.explosionRadius > 0.0f) {
                 if (this.owner instanceof EntityPlayer) {
                     final FlansModExplosion flansModExplosion = new FlansModExplosion(this.worldObj, this, (EntityPlayer)this.owner, this.type, this.posX, this.posY, this.posZ, this.type.explosionRadius, TeamsManager.explosions && this.type.explosionBreaksBlocks, this.type.explosionDamageVsLiving, this.type.explosionDamageVsPlayer, this.type.explosionDamageVsPlane, this.type.explosionDamageVsVehicle, this.type.smokeParticleCount, this.type.debrisParticleCount);
@@ -1096,6 +1099,12 @@ public class EntityBullet extends EntityShootable implements IEntityAdditionalSp
         }
         this.detonated = true;
         PacketPlaySound.sendSoundPacket(this.posX, this.posY, this.posZ, 50.0, this.dimension, this.type.detonateSound, true);
+        if (!this.worldObj.isRemote && this.type.hbmNukeRadius > 0 && FlansMod.hooks.hbmLoaded) {
+            if (FlansMod.hooks.spawnHbmNuke(this.worldObj, this.posX, this.posY, this.posZ, this.type.hbmNukeRadius)) {
+                this.isDead = true;
+                return;
+            }
+        }
         if (!this.worldObj.isRemote && this.type.explosionRadius > 0.1f) {
             if (this.owner instanceof EntityPlayer) {
                 new FlansModExplosion(this.worldObj, this, (EntityPlayer)this.owner, this.type, this.posX, this.posY, this.posZ, this.type.explosionRadius, TeamsManager.explosions && this.type.explosionBreaksBlocks, this.type.explosionDamageVsLiving, this.type.explosionDamageVsPlayer, this.type.explosionDamageVsPlane, this.type.explosionDamageVsVehicle, this.type.smokeParticleCount, this.type.debrisParticleCount);

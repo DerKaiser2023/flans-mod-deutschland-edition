@@ -413,6 +413,12 @@ public class EntityGrenade extends EntityShootable implements IEntityAdditionalS
         }
         this.detonated = true;
         PacketPlaySound.sendSoundPacket(this.posX, this.posY, this.posZ, 50.0, this.dimension, this.type.detonateSound, true);
+        if (!this.worldObj.isRemote && this.type.hbmNukeRadius > 0 && FlansMod.hooks.hbmLoaded) {
+            if (FlansMod.hooks.spawnHbmNuke(this.worldObj, this.posX, this.posY, this.posZ, this.type.hbmNukeRadius)) {
+                this.setDead();
+                return;
+            }
+        }
         if (!this.worldObj.isRemote && this.type.explosionRadius > 0.1f && !this.type.pumpkinRaid) {
             if (this.thrower instanceof EntityPlayer) {
                 new FlansModExplosion(this.worldObj, this, (EntityPlayer)this.thrower, this.type, this.posX, this.posY, this.posZ, this.type.explosionRadius, TeamsManager.explosions && this.type.explosionBreaksBlocks, this.type.explosionDamageVsLiving, this.type.explosionDamageVsPlayer, this.type.explosionDamageVsPlane, this.type.explosionDamageVsVehicle, this.type.smokeParticleCount, this.type.debrisParticleCount);
